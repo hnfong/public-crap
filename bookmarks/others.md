@@ -47,6 +47,17 @@
 - https://www.facebook.com/chaplinwu/posts/10203730425715623 - baby wrap
 - http://time.com/12086/how-to-make-your-kids-smarter-10-steps-backed-by-science/
 - https://www.fancyhands.com - Fancy Hands is a team of US-based virtual assistants ready to start working with you today
+- http://www.glass-universe.com/2016/07/satoshi-tomizu-how-to-buy.html -- Nice looking glass art
+- https://kknews.cc/zh-hk/news/knyogb.html - Cheaper Chinese Cleavers
+- http://www.onestopfoodsupply.com - HK imported groceries
+- https://www.youtube.com/watch?v=hVDDLEF0vTU - Mozzarella with Milk Powder
+- https://www.facebook.com/twlazyworker/videos/2290698921042490/ rope a jar 
+- http://robdunnlab.com/projects/wildsourdough/
+- https://www.facebook.com/myschoolbus.com.hk/videos/938079079618755/ - Magnetic Plastic Pieces
+
+
+## Health and Food
+
 - https://paleoleap.com/long-fasts/
 - http://personalexcellence.co/blog/fasting/
 - http://www.toptenreviews.com/business/services/best-virtual-assistants/
@@ -57,12 +68,14 @@
 - https://web.archive.org/web/20170708144924/https://intensivedietarymanagement.com/odious-dietary-guidelines-1977-hormonal-obesity-ii/
 - https://www.reddit.com/r/askscience/comments/5vhrb5/are_human_the_only_animals_that_can_use_ketone/
 - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2495396/pdf/postmedj00315-0056.pdf Features of a successful therapeutic fast of 382 days' duration
-- http://www.glass-universe.com/2016/07/satoshi-tomizu-how-to-buy.html -- Nice looking glass art
-- https://kknews.cc/zh-hk/news/knyogb.html - Cheaper Chinese Cleavers
-- http://www.onestopfoodsupply.com - HK imported groceries
-- https://www.youtube.com/watch?v=hVDDLEF0vTU - Mozzarella with Milk Powder
-- https://www.facebook.com/twlazyworker/videos/2290698921042490/ rope a jar 
-- http://robdunnlab.com/projects/wildsourdough/
+- https://www.youtube.com/watch?v=RuOvn4UqznU - Fasting For Survival Lecture by Dr Pradip Jamnadas
+- https://www.youtube.com/watch?v=z3fO5aTD6JU - Dr. Benjamin Bikman - 'Insulin vs. Glucagon: The relevance of dietary protein'
+- https://www.youtube.com/watch?v=1rz-8H_i1wA red meat fake news
+- https://www.youtube.com/watch?v=7kGnfXXIKZM Dr. Chris Knobbe - 'Diseases of Civilization: Are Seed Oil Excesses the Unifying Mechanism?'
+- https://www.youtube.com/watch?v=bh5eTi9jTPw Ep82 Chris Knobbe MD The Scientific Truth behind Vegetable Oils Vs Real Food Fats
+- https://www.youtube.com/watch?v=xAWReEm4l0w - Lipivore
+- https://www.youtube.com/watch?v=fdr2JPLWNvY 20+ No Carb Foods With No Sugar (80+ Low Carb Foods) Your Ultimate Keto Food Guide
+
 
 ## Jokes
 
@@ -79,6 +92,7 @@
 - https://www.youtube.com/watch?v=ZXerl8sjEUI - Music Improvisation  - Gabriela Montero improvises on Don't cry for my Argentina - No llores por mi Argentina from Vienna
 - https://www.youtube.com/watch?v=8C1nfe6KhoA - ZARD medley
 - http://www.nytimes.com/2015/07/21/science/playing-mozart-piano-pieces-as-mozart-did.html
+- https://www.mfiles.co.uk/scores/brahms-intermezzo-op118-no2.pdf
 
 
 ## Gadgets and Fancy stuff
