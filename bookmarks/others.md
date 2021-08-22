@@ -127,6 +127,18 @@
 - Parrondo's Paradox - two losing games will make a win
 - https://thestatsgeek.com/2020/11/21/interpretation-of-frequentist-confidence-intervals-and-bayesian-credible-intervals/
 
+## Hong Kong Housing
+
+- https://blog.jpmorganinstitutional.com/2017/08/excess-liquidity-in-hong-kong-testing-hibor-libor-limits/
+- http://www.property.hk/mortgage_rate.php
+- http://www.property.hk/tran.php
+- http://hk.centadata.com/
+- https://www.hkma.gov.hk/eng/publications-and-research/half-yearly-monetary-and-financial-stability-report/
+- https://www.hkma.gov.hk/eng/market-data-and-statistics/monthly-statistical-bulletin/table.shtml
+- https://www.censtatd.gov.hk/hkstat/sub/sp200.jsp?tableID=006&ID=0&productType=8 - HISTORICAL UNEMPLOYMENT RATE
+- https://www.censtatd.gov.hk/hkstat/sub/sp200.jsp - LIST OF USEFUL STATS FROM CENSUS
+
+
 ## Others
 
 - http://www.cram.com/flashcards/riot-landlord-meetings-prep-3568372  - No idea what this is
