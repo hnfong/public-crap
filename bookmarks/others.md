@@ -9,6 +9,8 @@
 - http://www.interpreting.hku.hk/glossary/?cat=68&paged=161 -- Glossary of terms used by HKU interpretation
 - https://www.facebook.com/kongpopstory/videos/2196847917194909/ - Gwailo rap in Cantonese
 - https://blog.naver.com/munosuny 廣東話 韓文 字典 
+- http://xiaoxue.iis.sinica.edu.tw/yanbian?kaiOrder=218 -- 字型演變。考古帝用
+- http://blog.justfont.com/2014/05/glyph-font-vs-hanzib/
 
 ## Games
 
@@ -21,6 +23,8 @@
 - http://www.nytimes.com/interactive/2014/upshot/buy-rent-calculator.html?smid=fb-share
 - http://www.businessweek.com/articles/2013-10-10/jeff-bezos-and-the-age-of-amazon-excerpt-from-the-everything-store-by-brad-stone
 - https://koyfin.com/
+- http://rsta.royalsocietypublishing.org/content/358/1765/63 The use, misuse and abuse of mathematics in finance
+- https://warrants-hk.credit-suisse.com/cbbc_tutorial_3r_c.html
 
 
 ## Politics and History
@@ -30,6 +34,12 @@
 - http://www.ap.org/content/press-release/2015/ap-makes-one-million-minutes-of-history-available-on-youtube
 - https://www.youtube.com/watch?v=BNeXlJW70KQ - Steve Jobs brainstorming NEXT 1985
 - https://www.youtube.com/watch?v=xCqD1K7Yfc8 - "China stimulus 'too good to be true', says pro" China Beige Book CEO talking about China Growth, Stimulus, Politics, Trade War, etc.
+- http://www.turingarchive.org/browse.php/B/5 - Turing transcripts
+- https://yescalifornia.org/blue-book/
+- https://www.theguardian.com/news/2018/jan/19/post-work-the-radical-idea-of-a-world-without-jobs?CMP=fb_gu
+- https://www.legco.gov.hk/yr02-03/english/bc/bc55/papers/bc55-113-e.pdf  - Note for the Bills Committee on National Security (Legislative Provisions) Bill Background information on the Societies Ordinance
+- https://qz.com/1093152/why-are-wedding-dresses-white-history-shows-color-stems-from-wealth-not-ideas-of-purity-and-virginity/
+- https://arstechnica.com/science/2018/11/meet-the-father-of-the-fda-a-fearless-crusader-for-food-safety/
 
 ## Lifestyles, Lifehacks
 
@@ -51,6 +61,8 @@
 - https://kknews.cc/zh-hk/news/knyogb.html - Cheaper Chinese Cleavers
 - http://www.onestopfoodsupply.com - HK imported groceries
 - https://www.youtube.com/watch?v=hVDDLEF0vTU - Mozzarella with Milk Powder
+- https://www.facebook.com/twlazyworker/videos/2290698921042490/ rope a jar 
+- http://robdunnlab.com/projects/wildsourdough/
 
 ## Jokes
 
@@ -66,12 +78,22 @@
 - https://musescore.com/bomb_and_kou/wishing - Nice Sheet Music
 - https://www.youtube.com/watch?v=ZXerl8sjEUI - Music Improvisation  - Gabriela Montero improvises on Don't cry for my Argentina - No llores por mi Argentina from Vienna
 - https://www.youtube.com/watch?v=8C1nfe6KhoA - ZARD medley
+- http://www.nytimes.com/2015/07/21/science/playing-mozart-piano-pieces-as-mozart-did.html
 
 
 ## Gadgets and Fancy stuff
 
 - http://iro3d.com/ - Low cost 3D printer that prints high-carbon steel
 - https://doersino.github.io/tixyz/?code=40%2F%28%2B%2Bi-abs%28sin%28t%29\*257-257%29%29
+- https://www.knivesandtools.com/en/ct/knife-steel-types-and-information.htm (High end steels and brands)
+- https://www.knifeplanet.net/best-knife-sharpener-professional-guide/
+- https://www.knifeplanet.net/best-steel-kitchen-knife/
+- https://www.amazon.com/dp/B072MJ33JB/ref=sspa_dk_detail_1?psc=1&pd_rd_i=B072MJ33JB&pd_rd_wg=mT50V&pd_rd_r=1G2JN7Z2FAJAN6KGC48J&pd_rd_w=1mRK0 - DALSTRONG Cleaver - Shogun Series X - AUS-10V- Vacuum Treated - 7" Hammered - Sheath
+-  (中式菜刀)
+- https://www.bladeforums.com/threads/ranking-of-steels-in-categories-based-on-edge-retention-cutting-5-8-rope.793481/
+- http://knifeinformer.com/discovering-the-best-knife-steel/
+- https://www.bladehq.com/cat--Knife-Glossary--389
+- http://zknives.com/knives/articles/index.shtml
 
 
 ## Informative, Academic, References
@@ -80,6 +102,7 @@
 - https://www.academia.edu/3366134/Nietzsches_Critique_of_Truth
 - https://scienceofsharp.wordpress.com/
 - http://sethsd.com/research/ - Using Big Data sources to do research
+- https://scholar.google.com/citations?user=c17VI7YAAAAJ&hl=en - Seth Stephens-Davidowitz (Using online data for social research)
 - https://www.nytimes.com/2018/11/07/magazine/placebo-effect-medicine.html science of placebo
 - https://www.youtube.com/watch?v=3X8drKsdf5E 7 essential knots
 - https://www.lynalden.com/inflation/ The ultimate guide to inflation
@@ -87,6 +110,22 @@
 - https://fas.org/sgp/crs/misc/R43706.pdf - The Doctrine of Constitutional Avoidance: A Legal Overview
 - https://www.youtube.com/watch?v=GCL0bI0i-00 The Prince | Machiavelli
 - https://en.wikipedia.org/wiki/Vanaprastha - I wonder whether this "retirement to seek enlightenment" thing influenced the weird behaviors of Chinese kings during that period.
+- http://ideas.ted.com/2014/08/08/need-to-know-the-ebola-pandemic/
+- http://libgen.org/scimag/index.php  -- Find scholarly articles
+- http://gen.lib.rus.ec/ -- Find scholarly articles
+- http://en.wikipedia.org/wiki/Arrow's_impossibility_theorem
+- http://blog.priceonomics.com/post/47636506327/the-tyranny-of-the-taxi-medallions
+- http://www.sas.upenn.edu/~haroldfs/dravling/grice.html - Grice's Maxims (Linguistics?)
+- http://en.wikipedia.org/wiki/L%C3%B6wenheim%E2%80%93Skolem_theorem - (Pure Maths) a theorem on the existence and cardinality of models
+- http://legalref.judiciary.gov.hk/lrs/common/help/hlptopic.htm  - Hong Kong Case Numbers Reference (Law)
+- http://oyc.yale.edu/sociology/socy-151 - Course on Modern Sociology
+- http://www.thegreatcourses.com/courses/science-and-religion.html?cid=4691
+- http://www.thegreatcourses.com/courses/science-wars-what-scientists-know-and-how-they-know-it.html?cid=1235
+- http://www.nordprag.org/papers/Kitcher4.pdf - Epistemology Without History is Blind (Philip Kitcher) (Philosophy)
+- https://www.youtube.com/watch?v=6jQ4y0LK1kY Heat Treatment -The Science of Forging (feat. Alec Steele)
+- The new law miscellany - Recommended Book by Evil
+- Parrondo's Paradox - two losing games will make a win
+- https://thestatsgeek.com/2020/11/21/interpretation-of-frequentist-confidence-intervals-and-bayesian-credible-intervals/
 
 ## Others
 
@@ -98,3 +137,4 @@
 - https://halfasianpeopledotcom.wordpress.com/2015/06/23/asian-women-and-white-men-the-truth-from-a-eurasian-male-3/
 - https://www.youtube.com/watch?v=Pzvlvu8SNfg How to Make the Southern Classic Boudin Sausage
 - https://artvee.com/ - Classical Art
+- http://www.huffingtonpost.com/2014/02/26/email-successful-people_n_4854701.html
