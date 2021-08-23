@@ -66,7 +66,7 @@ def p(s, d):
             return
 
         print("")
-        print(("#" * (len(d)+1) ) + " " + capitalize_if_necessary(s))
+        print(("#" * (len(d)+2) ) + " " + capitalize_if_necessary(s))
         print("")
 
 root_node = {}
@@ -76,5 +76,7 @@ for root, directories, files in os.walk("."):
         if "/." in root: continue
         if fn.endswith(".md"):
             insert(root_node, root.lstrip("./").split("/"), fn)
+
+print("# 散彈一號公廁")
 
 preorder_dfs(root_node, p)
