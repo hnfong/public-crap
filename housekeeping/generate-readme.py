@@ -57,7 +57,7 @@ def p(s, d):
         if s == "README.md":
             return
 
-        url = '/'.join(dd for dd in d[:-1])
+        url = '/'.join(dd.replace(" ", "%20") for dd in d[:-1])
         print(f"- [{transformback(s)}]({url})")
     else:
         print("")
