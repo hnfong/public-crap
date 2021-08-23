@@ -47,6 +47,8 @@ def transformback(s):
         .replace("_lp_", "(").replace("_rp_", ")")
         .replace("_LP_", "（").replace("_RP_", "）")
         .replace('_cm_', ',').replace('_CM_', '，')
+
+        .replace('_', ' ') # keep this last
         )
 
 def p(s, d):
@@ -57,7 +59,7 @@ def p(s, d):
         if s == "README.md":
             return
 
-        url = '/'.join(dd.replace(" ", "%20") for dd in d[:-1])
+        url = '/'.join(dd for dd in d[:-1])
         print(f"- [{transformback(s)}]({url})")
     else:
         print("")

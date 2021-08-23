@@ -28,6 +28,8 @@ for root, directories, files in os.walk("."):
                    .replace("（", "_LP_").replace("）", "_RP_")
                    .replace(":", "_cl_").replace("：", "_CL_")
                    .replace(",", "_cm_").replace("，", "_CM_")
+
+                   .replace(" ", "_")
                    )
             if nfn != fn:
                 print(root + os.path.sep + fn, root + os.path.sep + nfn)
