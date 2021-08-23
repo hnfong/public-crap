@@ -21,7 +21,10 @@ for root, directories, files in os.walk("."):
         if "/." in root: continue
 
         if fn.endswith(".md"):
-            nfn = fn.replace("?", "_qm_").replace("？", "_qm_").replace("﹖", "_qm_")
+            nfn = (fn
+                   .replace("?", "_qm_").replace("？", "_qm_").replace("﹖", "_qm_")
+                   .replace(",", "_cm_").replace("，", "_CM_")
+                   )
             if nfn != fn:
                 print(root + os.path.sep + fn, root + os.path.sep + nfn)
                 os.rename(root + os.path.sep + fn, root + os.path.sep + nfn)

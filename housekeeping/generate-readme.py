@@ -39,6 +39,13 @@ def preorder_dfs(node, f, d = []):
     else:
         f(node, d + [None,])
 
+def transformback(s):
+    return (s.rstrip('.md')
+        .replace('_qm_', '?')
+        .replace('_cm_', ',')
+        .replace('_CM_', '，')
+        )
+
 def p(s, d):
     if len(d) > 0 and d[-1] is None:
         # Leaf node
@@ -48,7 +55,7 @@ def p(s, d):
             return
 
         url = '/'.join(dd for dd in d[:-1])
-        print(f"- [{s.rstrip('.md').replace('_qm_', '?')}]({url})")
+        print(f"- [{transformback(s)}]({url})")
     else:
         print("")
         print(("#" * (len(d)+1) ) + " " + capitalize_if_necessary(s))
