@@ -48,7 +48,7 @@ def p(s, d):
             return
 
         url = '/'.join(dd for dd in d[:-1])
-        print(f"- [{s.rstrip('.md')}]({url})")
+        print(f"- [{s.rstrip('.md').replace('_qm_', '?')}]({url})")
     else:
         print("")
         print(("#" * (len(d)+1) ) + " " + capitalize_if_necessary(s))
