@@ -47,7 +47,7 @@ def p(s, d):
         if s == "README.md":
             return
 
-        url = '/'.join(url_quote(dd.encode("utf-8")) for dd in d[:-1])
+        url = '/'.join(dd for dd in d[:-1])
         print(f"- [{s.rstrip('.md')}]({url})")
     else:
         print("")
