@@ -199,7 +199,7 @@
 
 ## 0000-2013
 
-- [”Free will”…?](writings/0000-2013/”Free_will”…_qm_.md)
+- [Free will?](writings/0000-2013/Free_will_qm_.md)
 
 # Recipes
 
