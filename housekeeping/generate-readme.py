@@ -42,8 +42,11 @@ def preorder_dfs(node, f, d = []):
 def transformback(s):
     return (s.rstrip('.md')
         .replace('_qm_', '?')
-        .replace('_cm_', ',')
-        .replace('_CM_', '，')
+        .replace("_ex_", "!").replace("_EX_", "！")
+        .replace('_cl_', ':').replace('_CL_', '：')
+        .replace("_lp_", "(").replace("_rp_", ")")
+        .replace("_LP_", "（").replace("_RP_", "）")
+        .replace('_cm_', ',').replace('_CM_', '，')
         )
 
 def p(s, d):
