@@ -62,6 +62,9 @@ def p(s, d):
         url = '/'.join(dd for dd in d[:-1])
         print(f"- [{transformback(s)}]({url})")
     else:
+        if s == "":
+            return
+
         print("")
         print(("#" * (len(d)+1) ) + " " + capitalize_if_necessary(s))
         print("")
