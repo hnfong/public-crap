@@ -1,8 +1,9 @@
+# 散彈一號公廁
 
-# Writings
+## Writings
 
 
-## 2021
+### 2021
 
 - [點解 Donald Trump 衰收尾?](writings/2021/點解_Donald_Trump_衰收尾_qm_.md)
 - [香港嘅政棍咁多年都冇進步過](writings/2021/香港嘅政棍咁多年都冇進步過.md)
@@ -32,7 +33,7 @@
 - [Formal Verification for Software](writings/2021/Formal_Verification_for_Software.md)
 - [Consciousness as a social construct](writings/2021/Consciousness_as_a_social_construct.md)
 
-## 2020
+### 2020
 
 - [點解19才子咁19?](writings/2020/點解19才子咁19_qm_.md)
 - [重新欣賞《岳陽樓記》](writings/2020/重新欣賞《岳陽樓記》.md)
@@ -62,7 +63,7 @@
 - [ADHD](writings/2020/ADHD.md)
 - [9up中美大局](writings/2020/9up中美大局.md)
 
-## 2019
+### 2019
 
 - [點解香港人咁崇尚「法治」?淺談香港特色社會契約論](writings/2019/點解香港人咁崇尚「法治」_qm_淺談香港特色社會契約論.md)
 - [點解反送中遊行有幾十萬人，六四晚會就只得十幾萬?](writings/2019/點解反送中遊行有幾十萬人_CM_六四晚會就只得十幾萬_qm_.md)
@@ -82,7 +83,7 @@
 - [「老母」唔係粗口！](writings/2019/「老母」唔係粗口_EX_.md)
 - [「不誠實使用電腦」](writings/2019/「不誠實使用電腦」.md)
 
-## 2018
+### 2018
 
 - [香港嘅科技人才去晒邊?](writings/2018/香港嘅科技人才去晒邊_qm_.md)
 - [香港嘅民族主義](writings/2018/香港嘅民族主義.md)
@@ -106,7 +107,7 @@
 - [《 1 + 1 = 2 》哲學狂想曲](writings/2018/《_1_+_1_=_2_》哲學狂想曲.md)
 - [Moore’s Law 垂危，經濟仲靠咩持續增長落去?](writings/2018/Moore’s_Law_垂危_CM_經濟仲靠咩持續增長落去_qm_.md)
 
-## 2017
+### 2017
 
 - [點解香港人成日鬧天文台錯誤預報天氣?](writings/2017/點解香港人成日鬧天文台錯誤預報天氣_qm_.md)
 - [點解 startup 可以賺咁多錢?](writings/2017/點解_startup_可以賺咁多錢_qm_.md)
@@ -144,7 +145,7 @@
 - [KFC「豬柳強」食評](writings/2017/KFC「豬柳強」食評.md)
 - [Don’t Starve 玩後感](writings/2017/Don’t_Starve_玩後感.md)
 
-## 2016
+### 2016
 
 - [飄風不終朝，驟雨不終日](writings/2016/飄風不終朝_CM_驟雨不終日.md)
 - [論港獨：「可不可行」和「應唔應該」](writings/2016/論港獨_CL_「可不可行」和「應唔應該」.md)
@@ -165,7 +166,7 @@
 - [Freedom from Necessity](writings/2016/Freedom_from_Necessity.md)
 - [AlphaGo贏一仗，往後一步一擂台](writings/2016/AlphaGo贏一仗_CM_往後一步一擂台.md)
 
-## 2015
+### 2015
 
 - [點解寫軟件咁貴? 為練總拾遺](writings/2015/點解寫軟件咁貴_qm__為練總拾遺.md)
 - [魔法少女許願嘅意義](writings/2015/魔法少女許願嘅意義.md)
@@ -192,16 +193,16 @@
 - [On equality](writings/2015/On_equality.md)
 - [Godiva雪糕減價，排隊搶購有冇意義?](writings/2015/Godiva雪糕減價_CM_排隊搶購有冇意義_qm_.md)
 
-## 2014
+### 2014
 
 - [我愛上咗一碟叉燒飯](writings/2014/我愛上咗一碟叉燒飯.md)
 - [《Endless Eight》觀後感：明天會否來臨?](writings/2014/《Endless_Eight》觀後感_CL_明天會否來臨_qm_.md)
 
-## 0000-2013
+### 0000-2013
 
 - [Free will?](writings/0000-2013/Free_will_qm_.md)
 
-# Recipes
+## Recipes
 
 - [麻婆豆腐 - 沙嗲王XO醬](recipes/麻婆豆腐_-_沙嗲王XO醬.md)
 - [食油](recipes/食油.md)
@@ -219,12 +220,12 @@
 - [仿水煮魚](recipes/仿水煮魚.md)
 - [Duck Leg Carbonara](recipes/Duck_Leg_Carbonara.md)
 
-# Outline
+## Outline
 
 - [tech](outline/tech.md)
 - [law](outline/law.md)
 
-# Bookmarks
+## Bookmarks
 
 - [wishes](bookmarks/wishes.md)
 - [others](bookmarks/others.md)
