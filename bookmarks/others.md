@@ -25,6 +25,7 @@
 - https://koyfin.com/
 - http://rsta.royalsocietypublishing.org/content/358/1765/63 The use, misuse and abuse of mathematics in finance
 - https://warrants-hk.credit-suisse.com/cbbc_tutorial_3r_c.html
+- https://milan.cvitkovic.net/writing/things_youre_allowed_to_do/
 
 
 ## Politics and History

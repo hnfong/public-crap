@@ -29,6 +29,7 @@ Computer technology related.
 - http://www.complexity-explorables.org/ models/simulations for chaotic systems 
 - https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
 - https://github.com/AnthonyCalandra/modern-cpp-features
+- https://github.com/yt-dlp/yt-dlp (youtube-download - fork)
 
 ## Open Source Tools
 
@@ -74,6 +75,7 @@ Computer technology related.
 
 ## Business Tools
 
+- https://github.com/public-apis/public-apis
 - http://sumome.com/ - Sumo. Free tools to automate your site growth.
 - https://hootsuite.com/ - Social Media Management startup company
 - https://projectshield.withgoogle.com/en/ - DDoS/security help from Google
