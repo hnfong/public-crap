@@ -165,3 +165,6 @@
 - https://www.youtube.com/watch?v=Pzvlvu8SNfg How to Make the Southern Classic Boudin Sausage
 - https://artvee.com/ - Classical Art
 - http://www.huffingtonpost.com/2014/02/26/email-successful-people_n_4854701.html
+- https://www.newyorker.com/magazine/2021/08/30/life-after-white-collar-crime Life After White Collar Crime (newyorker.com)
+- https://www.facebook.com/spydernox/ Victorinox + Spyderco based custom knives sak custom 58mm
+
