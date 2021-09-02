@@ -88,6 +88,10 @@ Computer technology related.
 - https://render.com - Cheap and seems robust hosting service
 - https://pdfreal.com/ The Internet's fastest PDF tools. Secure and anonymous. Free of charge.
 - https://playingcards.io/
+- https://www.media.net/ - English country based Advertising network alternative to Adsense.
+- TransferWise (or Wise) - fintech easy wire transfer and currency exchange. local bank accounts for receiving moneys.
+- Payoneer - multiple ways to get paid online by international clients. making international payments, receiving funds, managing your digital business, or accessing capital
+- https://www.snigel.com/blog/top-5-adsense-alternatives-that-can-increase-website-revenue/ - Review of Adsense alternatives by an adsense competitor
 
 ## Graphics, Design, etc.
 
@@ -112,6 +116,10 @@ Computer technology related.
 - https://www.youtube.com/watch?v=wf-BqAjZb8M Raymond Hettinger - Beyond PEP 8 -- Best practices for beautiful intelligible code - PyCon 2015
 - https://news.ycombinator.com/item?id=27136539 very interesting discussion on the implications of the CAP theorem...
 - https://github.com/a327ex/blog/issues/30 - This tutorial series will cover the creation of a complete game with Lua and LÖVE
+- https://www.youtube.com/c/PrimerLearning/videos - Simulating evolution
+- https://www.pagetable.com/?p=764 Using the OS X 10.10 Hypervisor Framework: A Simple DOS Emulator
+- https://www.youtube.com/watch?v=7aONIVSXiJ8 Introduction to Memory Management in Linux (Very informative quite useful info for systems programming)
+- https://beautifulracket.com/appendix/why-lop-why-racket.html 
 
 ## Archive, Stories, etc.
 
