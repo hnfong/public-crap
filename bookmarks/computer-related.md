@@ -169,6 +169,11 @@ Here are some projects I found when researching python speed:
 - https://github.com/tonybaloney/Pyjion - Pyjion, a JIT extension for CPython that compiles your Python code into native CIL and executes it using the .NET CLR.
 - https://pyre-check.org/ - type checker
 
+## Funny
+
+- https://blog.sanctum.geek.nz/vim-koans/
+- https://stevelosh.com/blog/2013/04/git-koans/
+
 ## Unsorted
 
 - https://open.kattis.com/ - not leetcode
