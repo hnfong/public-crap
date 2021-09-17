@@ -40,7 +40,9 @@ def preorder_dfs(node, f, d = []):
         f(node, d + [None,])
 
 def transformback(s):
-    return (s.rstrip('.md')
+    if s.endswith('.md'):
+        s = s[:-3]
+    return (s
         .replace('_qm_', '?')
         .replace("_ex_", "!").replace("_EX_", "！")
         .replace('_cl_', ':').replace('_CL_', '：')
@@ -77,6 +79,6 @@ for root, directories, files in os.walk("."):
         if fn.endswith(".md"):
             insert(root_node, root.lstrip("./").split("/"), fn)
 
-print("# 散彈一號公廁")
+print("# 散彈一號公廁 (shotgun1 public crap)")
 
 preorder_dfs(root_node, p)

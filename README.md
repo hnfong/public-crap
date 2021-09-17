@@ -1,4 +1,4 @@
-# 散彈一號公廁
+# 散彈一號公廁 (shotgun1 public crap)
 
 ## Writings
 
@@ -229,4 +229,5 @@
 
 - [wishes](bookmarks/wishes.md)
 - [others](bookmarks/others.md)
-- [computer-relate](bookmarks/computer-related.md)
+- [law-politics](bookmarks/law-politics.md)
+- [computer-related](bookmarks/computer-related.md)

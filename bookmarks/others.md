@@ -27,18 +27,15 @@
 - https://warrants-hk.credit-suisse.com/cbbc_tutorial_3r_c.html
 - https://milan.cvitkovic.net/writing/things_youre_allowed_to_do/
 
-
-## Politics and History
+# Misc History
 
 - https://www.youtube.com/watch?v=VXGfGwKQDWw - 香港街巷心理戰 Part 2 解碼
-- http://www.jstor.org/stable/653464 - Plans for Constitutional Reform in Hong Kong, 1946-52
 - http://www.ap.org/content/press-release/2015/ap-makes-one-million-minutes-of-history-available-on-youtube
 - https://www.youtube.com/watch?v=BNeXlJW70KQ - Steve Jobs brainstorming NEXT 1985
 - https://www.youtube.com/watch?v=xCqD1K7Yfc8 - "China stimulus 'too good to be true', says pro" China Beige Book CEO talking about China Growth, Stimulus, Politics, Trade War, etc.
 - http://www.turingarchive.org/browse.php/B/5 - Turing transcripts
 - https://yescalifornia.org/blue-book/
 - https://www.theguardian.com/news/2018/jan/19/post-work-the-radical-idea-of-a-world-without-jobs?CMP=fb_gu
-- https://www.legco.gov.hk/yr02-03/english/bc/bc55/papers/bc55-113-e.pdf  - Note for the Bills Committee on National Security (Legislative Provisions) Bill Background information on the Societies Ordinance
 - https://qz.com/1093152/why-are-wedding-dresses-white-history-shows-color-stems-from-wealth-not-ideas-of-purity-and-virginity/
 - https://arstechnica.com/science/2018/11/meet-the-father-of-the-fda-a-fearless-crusader-for-food-safety/
 
@@ -153,7 +150,6 @@
 - https://www.censtatd.gov.hk/hkstat/sub/sp200.jsp?tableID=006&ID=0&productType=8 - HISTORICAL UNEMPLOYMENT RATE
 - https://www.censtatd.gov.hk/hkstat/sub/sp200.jsp - LIST OF USEFUL STATS FROM CENSUS
 
-
 ## Others
 
 - http://www.cram.com/flashcards/riot-landlord-meetings-prep-3568372  - No idea what this is
@@ -167,4 +163,3 @@
 - http://www.huffingtonpost.com/2014/02/26/email-successful-people_n_4854701.html
 - https://www.newyorker.com/magazine/2021/08/30/life-after-white-collar-crime Life After White Collar Crime (newyorker.com)
 - https://www.facebook.com/spydernox/ Victorinox + Spyderco based custom knives sak custom 58mm
-

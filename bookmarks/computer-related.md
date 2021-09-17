@@ -2,6 +2,17 @@
 
 Computer technology related.
 
+## Interesting blogs
+
+- https://danluu.com/
+- https://www.scottaaronson.com/blog/
+- https://aphyr.com/
+- https://eli.thegreenplace.net/archives/all
+- https://preshing.com/
+- http://jvns.ca/
+- https://brooker.co.za/blog/
+- http://pvk.ca/Blog/archives/
+
 ## Reference, Academic Stuff, etc.
 
 - http://pubs.opengroup.org/onlinepubs/000095399/ - POSIX Specification
@@ -30,6 +41,12 @@ Computer technology related.
 - https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
 - https://github.com/AnthonyCalandra/modern-cpp-features
 - https://github.com/yt-dlp/yt-dlp (youtube-download - fork)
+- https://blog.llvm.org/2011/05/what-every-c-programmer-should-know.html
+- https://jepsen.io/analyses - Jepsen has analyzed over two dozen databases, coordination services, and queues—and we’ve found replica divergence, data loss, stale reads, read skew, lock conflicts, and much more
+- https://danluu.com/new-cpu-features/ - What's new in CPUs since the 80s?
+- https://danluu.com/file-consistency/ - File consistency and crash/power outage resilience
+- https://isocpp.org/faq
+- http://yosefk.com/c++fqa/
 
 ## Open Source Tools
 
@@ -72,6 +89,10 @@ Computer technology related.
 - https://news.ycombinator.com/item?id=26523212   ZPL: (Almost) C99 Powerkit (github.com/zpl-c) - Nice basic C library
 - https://betterdev.blog/minimal-safe-bash-script-template/
 - https://github.com/szhorvat/ConnectedGraphSampler Really Random Connected Graphs
+- https://www.falstad.com/circuit/ electronic circuit simulator
+- https://bonsaibrowser.com/
+- https://github.com/rui314/minilisp
+- https://js13kgames.github.io/resources/
 
 ## Business Tools
 
@@ -120,6 +141,8 @@ Computer technology related.
 - https://www.pagetable.com/?p=764 Using the OS X 10.10 Hypervisor Framework: A Simple DOS Emulator
 - https://www.youtube.com/watch?v=7aONIVSXiJ8 Introduction to Memory Management in Linux (Very informative quite useful info for systems programming)
 - https://beautifulracket.com/appendix/why-lop-why-racket.html 
+- https://github.com/fastai/course-nlp
+- https://aphyr.com/posts/265-getting-started-in-software
 
 ## Archive, Stories, etc.
 
