@@ -47,6 +47,7 @@ Computer technology related.
 - https://danluu.com/file-consistency/ - File consistency and crash/power outage resilience
 - https://isocpp.org/faq
 - http://yosefk.com/c++fqa/
+- https://blog.ffwll.ch/2017/08/github-why-cant-host-the-kernel.html Why Github can't host the Linux Kernel Community (A very informative critique of what's missing in GitHub for massively distributed OSS projects)
 
 ## Open Source Tools
 
@@ -93,6 +94,9 @@ Computer technology related.
 - https://bonsaibrowser.com/
 - https://github.com/rui314/minilisp
 - https://js13kgames.github.io/resources/
+- https://github.com/cesanta/v7 (Small Javascript engine)
+- https://github.com/cesanta/mjs (Small Javascript engine)
+- https://github.com/cesanta/elk (Embeded Javascript engine)
 
 ## Business Tools
 
