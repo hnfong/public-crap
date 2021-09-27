@@ -26,6 +26,7 @@
 - http://rsta.royalsocietypublishing.org/content/358/1765/63 The use, misuse and abuse of mathematics in finance
 - https://warrants-hk.credit-suisse.com/cbbc_tutorial_3r_c.html
 - https://milan.cvitkovic.net/writing/things_youre_allowed_to_do/
+- https://en.wikipedia.org/wiki/The_Innovator%27s_Dilemma
 
 # Misc History
 
@@ -38,6 +39,8 @@
 - https://www.theguardian.com/news/2018/jan/19/post-work-the-radical-idea-of-a-world-without-jobs?CMP=fb_gu
 - https://qz.com/1093152/why-are-wedding-dresses-white-history-shows-color-stems-from-wealth-not-ideas-of-purity-and-virginity/
 - https://arstechnica.com/science/2018/11/meet-the-father-of-the-fda-a-fearless-crusader-for-food-safety/
+- https://www.youtube.com/watch?v=Rp8Pw_rGwpM 长平之战！中国古代最大的围歼战！3D沙盘推演【信息素战史】
+
 
 ## Lifestyles, Lifehacks
 

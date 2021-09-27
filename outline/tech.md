@@ -20,6 +20,99 @@
 
 ## Software eating the world
 
+
+## Programming Languages
+
+### C
+- De-facto standard for low level systems programming
+- Standard library tries hard to make you commit programming mistakes
+- Superceded by C++, Objective C, and Rust, among others
+
+### C++
+
+- Most commonly used in higher level apps where speed is important but memory allocations aren't expected to fail.
+- Tries to fix problems in C, but many issues linger, especially memory management problems
+- Generally slow to compile
+- Standard library rather limited in scope
+
+### Rust
+
+- Relatively new comer, but is gaining traction quickly as C and C++ replacement
+- Promises memory safety as long as you don't use unsafe constructs
+
+### Go
+
+- ?
+
+### Java
+
+- One of the first popular high level languages
+- JVM, JIT, GC
+- Found its place in enterprise server technology stacks
+- Tend to have a lot of boilerplate, software written tend to be very verbose
+- Extensive standard library. Lots of third party open source libraries.
+
+### C# / .NET
+
+- Microsoft's clone of Java (in spirit, not in implementation)
+- Arguably better in design and implementation, but no widespread adoption outside Microsoft platforms
+
+### Javascript
+
+- Standard language for web browsers
+- Language is considered by some to be nice enough that people start using it on the backend too
+- Not remotely close to Java (although in these 25 years they seem to have converged a bit)
+
+### Perl
+
+- Pretty much dead language by now
+- Superceded by: PHP, python and ruby
+- Used to be a great scripting language that is everything that PHP, python and ruby was
+
+### Python
+
+- Great language as long as speed and type checking is not important
+- Python devs generally have good "taste" in terms of code cleaniness
+- One obvious way to do things
+- One of the few general programming languages favored by both software engineers and non-software engineers (eg. data scientists, statisticians, etc.)
+
+### PHP
+
+- Used to be popular web programming language before the days of Ruby on Rails and Django.
+- No self-respectable programmer admits to coding primarily on PHP these days
+
+
+### Ruby
+
+- Whenever you are considering using ruby, it is wise to choose Python instead
+- The language is fine. However, the dev community tries its best to encourage people to write unmaintable code:
+  - Encouraging many valid alternative ways of doing the same thing, making it easy for people to write code, but forces readers to learn all the possible ways the language can work to understand the code.
+  - Monkey patching encouraged (via Ruby on Rails probably), as a reader you can only guess what the code is doing after a couple of `require`s
+  - Generally attracts devs who can tolerate this status quo, leading to vicious cycles
+
+### Haskell
+
+- It's pure!
+- Haskell programmers figured out how to represent state change with `monads` and thereafter acted as if they invented imperative programming
+
+### Lisp
+
+- ?
+- Mother of all functional-ish languages
+- Powerful macros
+- Many dialects (Logo is a lisp dialect)
+
+### Objective-C
+
+- Relatively simple dynamic OOP language grafted on top of C
+- Usually only used when working on Apple platforms
+
+### Swift
+
+- Modern language by Apple
+- Usually only used when working on Apple platforms
+
+
 ## Open Source Software
 
 ### Licenses - GPLv2
