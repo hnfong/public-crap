@@ -8,3 +8,6 @@
 - http://www.jstor.org/stable/653464 - Plans for Constitutional Reform in Hong Kong, 1946-52
 - https://www.legco.gov.hk/yr02-03/english/bc/bc55/papers/bc55-113-e.pdf  - Note for the Bills Committee on National Security (Legislative Provisions) Bill Background information on the Societies Ordinance
 
+# Big-Tech
+
+- https://www.forbes.com/sites/thomasbrewster/2021/10/04/google-keyword-warrants-give-us-government-data-on-search-users/

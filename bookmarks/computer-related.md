@@ -204,6 +204,7 @@ Here are some projects I found when researching python speed:
 ## Unsorted
 
 - https://open.kattis.com/ - not leetcode
+- https://adventofcode.com/
 
 Hello, world!
 
