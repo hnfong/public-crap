@@ -12,6 +12,7 @@ Computer technology related.
 - http://jvns.ca/
 - https://brooker.co.za/blog/
 - http://pvk.ca/Blog/archives/
+- https://staffeng.com/
 
 ## Reference, Academic Stuff, etc.
 
@@ -48,6 +49,9 @@ Computer technology related.
 - https://isocpp.org/faq
 - http://yosefk.com/c++fqa/
 - https://blog.ffwll.ch/2017/08/github-why-cant-host-the-kernel.html Why Github can't host the Linux Kernel Community (A very informative critique of what's missing in GitHub for massively distributed OSS projects)
+- http://colah.github.io/posts/2015-08-Understanding-LSTMs/
+- https://www.youtube.com/watch?v=ncHmEUmJZf4 CppCon 2017: Matt Kulukundis “Designing a Fast, Efficient, Cache-friendly Hash Table, Step by Step”
+
 
 ## Open Source Tools
 
@@ -117,6 +121,9 @@ Computer technology related.
 - TransferWise (or Wise) - fintech easy wire transfer and currency exchange. local bank accounts for receiving moneys.
 - Payoneer - multiple ways to get paid online by international clients. making international payments, receiving funds, managing your digital business, or accessing capital
 - https://www.snigel.com/blog/top-5-adsense-alternatives-that-can-increase-website-revenue/ - Review of Adsense alternatives by an adsense competitor
+- https://dribbble.com - Discover the world’s top designers & creatives Dribbble is the leading destination to find & showcase creative work and home to the world's best design professionals.
+
+
 
 ## Graphics, Design, etc.
 
@@ -147,6 +154,8 @@ Computer technology related.
 - https://beautifulracket.com/appendix/why-lop-why-racket.html 
 - https://github.com/fastai/course-nlp
 - https://aphyr.com/posts/265-getting-started-in-software
+- https://www.youtube.com/watch?v=ImLFlLjSveM How C++20 Changes the Way We Write Code - Timur Doumler - CppCon 2020
+
 
 ## Archive, Stories, etc.
 
