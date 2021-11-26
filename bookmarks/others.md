@@ -41,6 +41,16 @@
 - https://arstechnica.com/science/2018/11/meet-the-father-of-the-fda-a-fearless-crusader-for-food-safety/
 - https://www.youtube.com/watch?v=Rp8Pw_rGwpM 长平之战！中国古代最大的围歼战！3D沙盘推演【信息素战史】
 
+# Pre-history
+
+- https://www.pnas.org/content/104/41/16016 - Evidence for an extraterrestrial impact 12,900 years ago that contributed to the megafaunal extinctions and the Younger Dryas cooling
+- https://www.youtube.com/watch?v=quUtlWTB_dc - First Time Exploring The Astonishing Osiris Shaft On The Giza Plateau
+
+# Arcane
+
+- https://en.wikisource.org/wiki/Arcana_Coelestia_(Potts)/Genesis_1
+
+
 
 ## Lifestyles, Lifehacks
 
@@ -166,3 +176,5 @@
 - http://www.huffingtonpost.com/2014/02/26/email-successful-people_n_4854701.html
 - https://www.newyorker.com/magazine/2021/08/30/life-after-white-collar-crime Life After White Collar Crime (newyorker.com)
 - https://www.facebook.com/spydernox/ Victorinox + Spyderco based custom knives sak custom 58mm
+- https://www.weshelterpeople.com (RVs super cool / mobile homes)
+

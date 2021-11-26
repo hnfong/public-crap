@@ -13,6 +13,8 @@ Computer technology related.
 - https://brooker.co.za/blog/
 - http://pvk.ca/Blog/archives/
 - https://staffeng.com/
+- https://www.machow.ski/
+
 
 ## Reference, Academic Stuff, etc.
 
@@ -51,6 +53,7 @@ Computer technology related.
 - https://blog.ffwll.ch/2017/08/github-why-cant-host-the-kernel.html Why Github can't host the Linux Kernel Community (A very informative critique of what's missing in GitHub for massively distributed OSS projects)
 - http://colah.github.io/posts/2015-08-Understanding-LSTMs/
 - https://www.youtube.com/watch?v=ncHmEUmJZf4 CppCon 2017: Matt Kulukundis “Designing a Fast, Efficient, Cache-friendly Hash Table, Step by Step”
+- https://sadh.life/post/builtins/ - Python "Builtins"
 
 
 ## Open Source Tools
@@ -101,6 +104,11 @@ Computer technology related.
 - https://github.com/cesanta/v7 (Small Javascript engine)
 - https://github.com/cesanta/mjs (Small Javascript engine)
 - https://github.com/cesanta/elk (Embeded Javascript engine)
+- http://commoncrawl.org/
+- https://www.thisworddoesnotexist.com/ (probably a very good tool to find real-sounding words)
+- https://github.com/blobcity/autoai https://news.ycombinator.com/item?id=29198819
+- https://catala-lang.org/ Catala Lang: DSL designed for deriving implementations from legislative texts
+- https://github.com/zanellia/prometeo – a Python-to-C transpiler for high-performance computing
 
 ## Business Tools
 
@@ -155,6 +163,8 @@ Computer technology related.
 - https://github.com/fastai/course-nlp
 - https://aphyr.com/posts/265-getting-started-in-software
 - https://www.youtube.com/watch?v=ImLFlLjSveM How C++20 Changes the Way We Write Code - Timur Doumler - CppCon 2020
+- https://www.pagetable.com/?p=764 Using the OS X 10.10 Hypervisor Framework: A Simple DOS Emulator
+- https://caffeinedev.medium.com/how-to-install-tensorflow-on-m1-mac-8e9b91d93706
 
 
 ## Archive, Stories, etc.
@@ -188,6 +198,7 @@ Computer technology related.
 - https://alexkrupp.typepad.com/sensemaking/2021/06/django-for-startup-founders-a-better-software-architecture-for-saas-startups-and-consumer-apps.html
 - https://play.elevatorsaga.com/?utm_source=hackernewsletter&utm_medium=email&utm_term=fun - Elevator programming game.
 - https://lihkg.com/thread/2457149/page/1 IT討論區(114) 1HBU=50K
+- https://blog.immersed.team/working-from-orbit-39bf95a6d385 (VR/AR workspace)
 
 ## Python tools
 
