@@ -45,6 +45,11 @@
 
 - https://www.pnas.org/content/104/41/16016 - Evidence for an extraterrestrial impact 12,900 years ago that contributed to the megafaunal extinctions and the Younger Dryas cooling
 - https://www.youtube.com/watch?v=quUtlWTB_dc - First Time Exploring The Astonishing Osiris Shaft On The Giza Plateau
+- https://www.youtube.com/watch?v=-pcKC_X-1Hg - Lost Ancient Technology Of Jordan: Petra
+- https://www.youtube.com/watch?v=qeS5lrmyD74 - Granite Cutting and Drilling
+- https://www.youtube.com/watch?v=otiO_wKCwEc - How to Cut and Shape Stones | Ask This Old House
+
+
 
 # Arcane
 
@@ -177,4 +182,5 @@
 - https://www.newyorker.com/magazine/2021/08/30/life-after-white-collar-crime Life After White Collar Crime (newyorker.com)
 - https://www.facebook.com/spydernox/ Victorinox + Spyderco based custom knives sak custom 58mm
 - https://www.weshelterpeople.com (RVs super cool / mobile homes)
+- https://www.youtube.com/watch?v=y7bPYXocmsA Dr. Robert Cywes - 'Carbohydrate Addiction: returning to my roots'
 
