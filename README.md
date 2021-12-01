@@ -34,6 +34,7 @@
 - [【公民抗命】發表煽動文字，藐視女皇陛下](writings/2021/【公民抗命】發表煽動文字_CM_藐視女皇陛下.md)
 - [「抄襲」](writings/2021/「抄襲」.md)
 - [Reconciling apparent inconsistencies within the Basic Law -- what is the proper approach?](writings/2021/Reconciling_apparent_inconsistencies_within_the_Basic_Law_--_what_is_the_proper_approach_qm_.md)
+- [Konqueror](writings/2021/Konqueror.md)
 - [Google LLC v. Oracle America, Inc](writings/2021/Google_LLC_v._Oracle_America_cm__Inc.md)
 - [Formal Verification for Software](writings/2021/Formal_Verification_for_Software.md)
 - [Consciousness as a social construct](writings/2021/Consciousness_as_a_social_construct.md)
