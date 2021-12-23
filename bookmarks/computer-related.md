@@ -14,6 +14,7 @@ Computer technology related.
 - http://pvk.ca/Blog/archives/
 - https://staffeng.com/
 - https://www.machow.ski/
+- https://hn.lindylearn.io/ (Best of HN)
 
 
 ## Reference, Academic Stuff, etc.
@@ -54,6 +55,8 @@ Computer technology related.
 - http://colah.github.io/posts/2015-08-Understanding-LSTMs/
 - https://www.youtube.com/watch?v=ncHmEUmJZf4 CppCon 2017: Matt Kulukundis “Designing a Fast, Efficient, Cache-friendly Hash Table, Step by Step”
 - https://sadh.life/post/builtins/ - Python "Builtins"
+- https://swtch.com/~rsc/regexp/regexp4.html Regular Expression Matching with a Trigram Index or How Google Code Search Worked Russ Cox
+
 
 
 ## Open Source Tools
@@ -109,6 +112,10 @@ Computer technology related.
 - https://github.com/blobcity/autoai https://news.ycombinator.com/item?id=29198819
 - https://catala-lang.org/ Catala Lang: DSL designed for deriving implementations from legislative texts
 - https://github.com/zanellia/prometeo – a Python-to-C transpiler for high-performance computing
+- https://github.com/BurntSushi/ripgrep/issues/1497
+- https://httptoolkit.tech/ HTTP Toolkit is a beautiful & open-source tool for debugging, testing and building with HTTP(S) on Windows, Linux & Mac.
+- https://ed25519.cr.yp.to/python/ed25519.py Python implementation of ED25519
+
 
 ## Business Tools
 
@@ -131,7 +138,8 @@ Computer technology related.
 - https://www.snigel.com/blog/top-5-adsense-alternatives-that-can-increase-website-revenue/ - Review of Adsense alternatives by an adsense competitor
 - https://dribbble.com - Discover the world’s top designers & creatives Dribbble is the leading destination to find & showcase creative work and home to the world's best design professionals.
 - https://browserflow.app/ Automate your work on any website
-
+- https://www.pullrequest.com/pricing/ Code Review as a Service
+  - HN discussion: https://news.ycombinator.com/item?id=29623505
 
 
 ## Graphics, Design, etc.

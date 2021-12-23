@@ -11,6 +11,7 @@
 - https://blog.naver.com/munosuny 廣東話 韓文 字典 
 - http://xiaoxue.iis.sinica.edu.tw/yanbian?kaiOrder=218 -- 字型演變。考古帝用
 - http://blog.justfont.com/2014/05/glyph-font-vs-hanzib/
+- http://www.lrec-conf.org/ (International Conference on Language Resources and Evaluation - accepted papers contain links to various useful resources)
 
 ## Games
 
@@ -48,12 +49,13 @@
 - https://www.youtube.com/watch?v=-pcKC_X-1Hg - Lost Ancient Technology Of Jordan: Petra
 - https://www.youtube.com/watch?v=qeS5lrmyD74 - Granite Cutting and Drilling
 - https://www.youtube.com/watch?v=otiO_wKCwEc - How to Cut and Shape Stones | Ask This Old House
-
-
+  - Rebuttal: https://www.youtube.com/watch?v=KFuf-gBuuno The Story of the Enigmatic and Mysterious Tube Drills of Ancient Egypt - UnchartedX full documentary
+- https://www.youtube.com/watch?v=qfBrPKS9aU0 BACK TO BUILDERS OF THE ANCIENT MYSTERIES (BAM) - Full Movie, Documentary (Civilization, Archeology)
 
 # Arcane
 
 - https://en.wikisource.org/wiki/Arcana_Coelestia_(Potts)/Genesis_1
+- https://en.wikipedia.org/wiki/Zenneck_wave - https://youtu.be/PS1azzN0b-I?t=978 (500,000 volts through megalithic stone? An investigation into the possible with UnchartedX...)
 
 
 
@@ -183,4 +185,5 @@
 - https://www.facebook.com/spydernox/ Victorinox + Spyderco based custom knives sak custom 58mm
 - https://www.weshelterpeople.com (RVs super cool / mobile homes)
 - https://www.youtube.com/watch?v=y7bPYXocmsA Dr. Robert Cywes - 'Carbohydrate Addiction: returning to my roots'
+- https://nav.al/failure Groups Never Admit Failure
 
