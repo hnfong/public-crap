@@ -3,6 +3,10 @@
 ## Writings
 
 
+### 2022
+
+- [01-Driven by License](writings/2022/01-Driven_by_License.md)
+
 ### 2021
 
 - [點解 Donald Trump 衰收尾?](writings/2021/點解_Donald_Trump_衰收尾_qm_.md)
@@ -26,6 +30,7 @@
 - [孟晚舟唔使再慢慢周](writings/2021/孟晚舟唔使再慢慢周.md)
 - [大鑊](writings/2021/大鑊.md)
 - [外交部出聲！黎智英案律師被辭退](writings/2021/外交部出聲_EX_黎智英案律師被辭退.md)
+- [地球好危險](writings/2021/地球好危險.md)
 - [君子唔講法治](writings/2021/君子唔講法治.md)
 - [係時候認真做個中國人](writings/2021/係時候認真做個中國人.md)
 - [以超越 Boolean Logic 嘅邏輯解讀黎智英保釋案](writings/2021/以超越_Boolean_Logic_嘅邏輯解讀黎智英保釋案.md)
