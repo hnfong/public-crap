@@ -15,6 +15,10 @@ Computer technology related.
 - https://staffeng.com/
 - https://www.machow.ski/
 - https://hn.lindylearn.io/ (Best of HN)
+- https://blog.wesleyac.com/
+- https://www.gwern.net/Startup-ideas
+- https://twitter.com/TechEmails
+- https://lemire.me/
 
 
 ## Reference, Academic Stuff, etc.
@@ -56,7 +60,11 @@ Computer technology related.
 - https://www.youtube.com/watch?v=ncHmEUmJZf4 CppCon 2017: Matt Kulukundis “Designing a Fast, Efficient, Cache-friendly Hash Table, Step by Step”
 - https://sadh.life/post/builtins/ - Python "Builtins"
 - https://swtch.com/~rsc/regexp/regexp4.html Regular Expression Matching with a Trigram Index or How Google Code Search Worked Russ Cox
-
+- https://gto76.github.io/python-cheatsheet/
+- https://news.ycombinator.com/item?id=29458900 De-google HN discussion and links
+- https://data.research.cornell.edu/content/readme - Guide to writing "readme" style metadata
+- https://www.daemonology.net/blog/2018-01-17-some-thoughts-on-spectre-and-meltdown.html#disqus_thread - Best Summary of Spectre and Meltdown I've read so far.
+- https://blog.frankmtaylor.com/2021/10/21/a-small-guide-for-naming-stuff-in-front-end-code/
 
 
 ## Open Source Tools
@@ -115,7 +123,18 @@ Computer technology related.
 - https://github.com/BurntSushi/ripgrep/issues/1497
 - https://httptoolkit.tech/ HTTP Toolkit is a beautiful & open-source tool for debugging, testing and building with HTTP(S) on Windows, Linux & Mac.
 - https://ed25519.cr.yp.to/python/ed25519.py Python implementation of ED25519
-
+- https://datasette.io/ An open source multi-tool for exploring and publishing data
+- https://github.com/babysor/MockingBird    Mocking Bird – Realtime Voice Clone for Chinese
+- https://github.com/PollRobots/scheme An R7RS Scheme implemented in WebAssembly
+- https://github.com/JeffBezanson/femtolisp Small LISP used as base of Julia parser
+- https://boardgame.io/ Open Source Game Engine for Turn-Based Games
+- https://formulae.brew.sh/formula/tcpflow https://linux.die.net/man/1/tcpflow tcpflow is a program that captures data transmitted as part of TCP connections (flows), and stores the data in a way that is convenient for protocol analysis or debugging. A program like tcpdump(4) shows a summary of packets seen on the wire, but usually doesn't store the data that's actually being transmitted. In contrast, tcpflow reconstructs the actual data streams and stores each flow in a separate file for later analysis. tcpflow understands TCP sequence numbers and will correctly reconstruct data streams regardless of retransmissions or out-of-order delivery.
+- https://typesense.org/about/ Typesense is an open source, typo tolerant search engine that is optimized for instant sub-50ms searches, while providing an intuitive developer experience.
+- https://github.com/akkartik/teliva “Enable all people to modify the software they use in the course of using it.”
+- https://github.com/robmsmt/SpeechLoop toolkit to evaluate many different speech recognition engines.
+- https://en.wikipedia.org/wiki/SipHash SipHash is an add–rotate–xor (ARX) based family of pseudorandom functions created by Jean-Philippe Aumasson and Daniel J. Bernstein in 2012,[1]: 165 [2] in response to a spate of "hash flooding" denial-of-service attacks (HashDoS) in late 2011.[3]
+- https://browsix.org/ UNIX IN YOUR BROWSER TAB (implement POSIX in the browser)
+- https://godotengine.org/ - Open Source Game Engine - Godot provides a huge set of common tools, so you can just focus on making your game without reinventing the wheel.
 
 ## Business Tools
 
@@ -140,6 +159,9 @@ Computer technology related.
 - https://browserflow.app/ Automate your work on any website
 - https://www.pullrequest.com/pricing/ Code Review as a Service
   - HN discussion: https://news.ycombinator.com/item?id=29623505
+- https://beebom.com/best-alexa-com-alternatives/
+- https://tuple.app/ The best remote pair programming app on macOS
+- https://www.re3data.org/ Search for data repositories
 
 
 ## Graphics, Design, etc.
@@ -147,6 +169,8 @@ Computer technology related.
 - http://my-free-vector-art.com/ - Free vector art
 - http://www.makeuseof.com/tag/free-fonts-sites-where-find-them/
 - https://www.mattcrampton.com/blog/mega_list_of_free_image_sites_for_blogging/
+- https://iconduck.com/ 118,894 free open source icons & illustrations
+
 
 ## HOWTOs, Beginners instructions, Learn stuff
 
@@ -174,6 +198,13 @@ Computer technology related.
 - https://www.youtube.com/watch?v=ImLFlLjSveM How C++20 Changes the Way We Write Code - Timur Doumler - CppCon 2020
 - https://www.pagetable.com/?p=764 Using the OS X 10.10 Hypervisor Framework: A Simple DOS Emulator
 - https://caffeinedev.medium.com/how-to-install-tensorflow-on-m1-mac-8e9b91d93706
+
+## Crypto
+
+- https://news.ycombinator.com/item?id=29366310 Proof of stake is incapable of producing a consensus (yanmaani.github.io)
+- https://news.ycombinator.com/item?id=29264374 Ask HN: What are you using for public documentation these days?
+- https://www.psl.com/feed-posts/web3-engineer-take
+
 
 
 ## Archive, Stories, etc.
@@ -208,6 +239,9 @@ Computer technology related.
 - https://play.elevatorsaga.com/?utm_source=hackernewsletter&utm_medium=email&utm_term=fun - Elevator programming game.
 - https://lihkg.com/thread/2457149/page/1 IT討論區(114) 1HBU=50K
 - https://blog.immersed.team/working-from-orbit-39bf95a6d385 (VR/AR workspace)
+- https://graphite.dev/blog/post/DThX8ffP1gmxWJChEv0y Stacked changes: how Facebook and Google engineers stay unblocked and ship faster
+- https://www.npr.org/2010/10/09/130451369/the-zombie-network-beware-free-public-wifi
+
 
 ## Python tools
 
