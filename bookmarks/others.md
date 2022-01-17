@@ -12,11 +12,18 @@
 - http://xiaoxue.iis.sinica.edu.tw/yanbian?kaiOrder=218 -- 字型演變。考古帝用
 - http://blog.justfont.com/2014/05/glyph-font-vs-hanzib/
 - http://www.lrec-conf.org/ (International Conference on Language Resources and Evaluation - accepted papers contain links to various useful resources)
+- https://www.affixes.org/ (Extensive list of prefixes and suffixes of the English language. [Might go down in the foreseeable future, probably works on archive.org])
+- https://github.com/wolfgarbe/SymSpell Spell checking, word normalization and related links
+- https://www.kaggle.com/rtatman/english-word-frequency
+- https://tartarus.org/martin/PorterStemmer/
+- https://github.com/lmorgadodacosta/CantoneseWN/ ( https://raw.githubusercontent.com/lmorgadodacosta/CantoneseWN/master/cantown.tsv )
+
 
 ## Games
 
 - https://www.youtube.com/playlist?list=PL7qFBOhneFnTAZmv35MTlWKC3YBmR7T7L  - Starcraft II 廣東話教學
 - https://pathofexile.gamepedia.com/Occultist%27s_Dominion - Interesting RPG (diablo-like) game
+- https://www.youtube.com/watch?v=hw0thrWVaKQ&t=4975s (Ultimate Beginner Survival Guide (ALL Seasons) Don't Starve Together)
 
 ## Finance and Business
 
@@ -41,6 +48,7 @@
 - https://qz.com/1093152/why-are-wedding-dresses-white-history-shows-color-stems-from-wealth-not-ideas-of-purity-and-virginity/
 - https://arstechnica.com/science/2018/11/meet-the-father-of-the-fda-a-fearless-crusader-for-food-safety/
 - https://www.youtube.com/watch?v=Rp8Pw_rGwpM 长平之战！中国古代最大的围歼战！3D沙盘推演【信息素战史】
+- https://www.youtube.com/watch?v=rN9Ur_NiXXk 中国史上最繁荣强盛的王朝：“父辞子笑，兄有弟攻”的大唐王朝
 
 # Pre-history
 
@@ -57,7 +65,9 @@
 - https://en.wikisource.org/wiki/Arcana_Coelestia_(Potts)/Genesis_1
 - https://en.wikipedia.org/wiki/Zenneck_wave - https://youtu.be/PS1azzN0b-I?t=978 (500,000 volts through megalithic stone? An investigation into the possible with UnchartedX...)
 
+# Deconstruction of English
 
+- https://www.dailyscandinavian.com/language-of-the-vikings/
 
 ## Lifestyles, Lifehacks
 
@@ -186,4 +196,5 @@
 - https://www.weshelterpeople.com (RVs super cool / mobile homes)
 - https://www.youtube.com/watch?v=y7bPYXocmsA Dr. Robert Cywes - 'Carbohydrate Addiction: returning to my roots'
 - https://nav.al/failure Groups Never Admit Failure
+- https://louzhu.info/p/105394/1.html 《神雕侠侣》杨过的抉择——浪子回头金不换
 
