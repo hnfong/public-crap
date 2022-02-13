@@ -17,6 +17,9 @@
 - https://www.kaggle.com/rtatman/english-word-frequency
 - https://tartarus.org/martin/PorterStemmer/
 - https://github.com/lmorgadodacosta/CantoneseWN/ ( https://raw.githubusercontent.com/lmorgadodacosta/CantoneseWN/master/cantown.tsv )
+- https://www.linguee.com/chinese-english/translation/%E4%B8%AD%E8%8B%B1%E5%B0%8D%E7%85%A7.html
+- https://ccl.hkust.edu.hk/useful_resources Useful resources (early Cantonese)
+- https://github.com/kiking0501/Cantonese-Chinese-Translation
 
 
 ## Games
@@ -24,6 +27,7 @@
 - https://www.youtube.com/playlist?list=PL7qFBOhneFnTAZmv35MTlWKC3YBmR7T7L  - Starcraft II 廣東話教學
 - https://pathofexile.gamepedia.com/Occultist%27s_Dominion - Interesting RPG (diablo-like) game
 - https://www.youtube.com/watch?v=hw0thrWVaKQ&t=4975s (Ultimate Beginner Survival Guide (ALL Seasons) Don't Starve Together)
+- http://magickeyboard.io/ FUN
 
 ## Finance and Business
 
