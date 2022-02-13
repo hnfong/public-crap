@@ -19,6 +19,9 @@ Computer technology related.
 - https://www.gwern.net/Startup-ideas
 - https://twitter.com/TechEmails
 - https://lemire.me/
+- https://www.quora.com/profile/Terry-Lambert
+- https://github.com/papers-we-love/papers-we-love
+- https://klinger.io/posts
 
 
 ## Reference, Academic Stuff, etc.
@@ -65,6 +68,9 @@ Computer technology related.
 - https://data.research.cornell.edu/content/readme - Guide to writing "readme" style metadata
 - https://www.daemonology.net/blog/2018-01-17-some-thoughts-on-spectre-and-meltdown.html#disqus_thread - Best Summary of Spectre and Meltdown I've read so far.
 - https://blog.frankmtaylor.com/2021/10/21/a-small-guide-for-naming-stuff-in-front-end-code/
+- https://www.quora.com/Why-do-some-developers-at-strong-companies-like-Google-consider-Agile-development-to-be-nonsense
+- https://www.quora.com/What-goes-into-making-an-OS-to-be-Unix-compliant-certified
+- https://github.com/Bakhtiyar-Garashov/flexbox-101 A guide contains everything you need to know about CSS flexbox
 
 
 ## Open Source Tools
@@ -135,6 +141,9 @@ Computer technology related.
 - https://en.wikipedia.org/wiki/SipHash SipHash is an add–rotate–xor (ARX) based family of pseudorandom functions created by Jean-Philippe Aumasson and Daniel J. Bernstein in 2012,[1]: 165 [2] in response to a spate of "hash flooding" denial-of-service attacks (HashDoS) in late 2011.[3]
 - https://browsix.org/ UNIX IN YOUR BROWSER TAB (implement POSIX in the browser)
 - https://godotengine.org/ - Open Source Game Engine - Godot provides a huge set of common tools, so you can just focus on making your game without reinventing the wheel.
+- https://jodd.org/ The Unbearable Lightness of Java - Jodd is a set of micro-frameworks and developer-friendly tools and utilities.
+- https://nn-512.com/ Generate Neural Nets in C
+
 
 ## Business Tools
 
@@ -198,6 +207,7 @@ Computer technology related.
 - https://www.youtube.com/watch?v=ImLFlLjSveM How C++20 Changes the Way We Write Code - Timur Doumler - CppCon 2020
 - https://www.pagetable.com/?p=764 Using the OS X 10.10 Hypervisor Framework: A Simple DOS Emulator
 - https://caffeinedev.medium.com/how-to-install-tensorflow-on-m1-mac-8e9b91d93706
+- https://p403n1x87.github.io/running-c-unit-tests-with-pytest.html https://news.ycombinator.com/item?id=30301880
 
 ## Crypto
 
@@ -241,6 +251,8 @@ Computer technology related.
 - https://blog.immersed.team/working-from-orbit-39bf95a6d385 (VR/AR workspace)
 - https://graphite.dev/blog/post/DThX8ffP1gmxWJChEv0y Stacked changes: how Facebook and Google engineers stay unblocked and ship faster
 - https://www.npr.org/2010/10/09/130451369/the-zombie-network-beware-free-public-wifi
+- https://www.youtube.com/watch?v=jmTwlEh8L7g DEF CON 26 - Christopher Domas - GOD MODE UNLOCKED Hardware Backdoors in redacted x86
+- https://www.ibiblio.org/harris/500milemail.html
 
 
 ## Python tools
@@ -263,11 +275,14 @@ Here are some projects I found when researching python speed:
 
 - https://blog.sanctum.geek.nz/vim-koans/
 - https://stevelosh.com/blog/2013/04/git-koans/
+- https://www.destroyallsoftware.com/talks/wat Roasting ruby and js!
 
 ## Unsorted
 
 - https://open.kattis.com/ - not leetcode
 - https://adventofcode.com/
+- https://invidious.snopyta.org (alternative Youtube frontend)
+- https://klinger.io/posts/fyi-how-founders-can-avoid-drive-by-management
 
 Hello, world!
 
