@@ -229,6 +229,7 @@
 - [蘿蔔糕 take 2](recipes/蘿蔔糕_take_2.md)
 - [薯仔鳩炒咸肉](recipes/薯仔鳩炒咸肉.md)
 - [益力多 Gin](recipes/益力多_Gin.md)
+- [生酮生活](recipes/生酮生活.md)
 - [炒紅米飯](recipes/炒紅米飯.md)
 - [油](recipes/油.md)
 - [東洋咖喱意粉](recipes/東洋咖喱意粉.md)
