@@ -71,6 +71,9 @@ Computer technology related.
 - https://www.quora.com/Why-do-some-developers-at-strong-companies-like-Google-consider-Agile-development-to-be-nonsense
 - https://www.quora.com/What-goes-into-making-an-OS-to-be-Unix-compliant-certified
 - https://github.com/Bakhtiyar-Garashov/flexbox-101 A guide contains everything you need to know about CSS flexbox
+- https://gankra.github.io/blah/text-hates-you/ (All the edge cases of rendering text)
+- https://lord.io/text-editing-hates-you-too/ Even more problems with editing text
+- https://portswigger.net/research/http2 Security problems with HTTP/2
 
 
 ## Open Source Tools
@@ -171,6 +174,7 @@ Computer technology related.
 - https://beebom.com/best-alexa-com-alternatives/
 - https://tuple.app/ The best remote pair programming app on macOS
 - https://www.re3data.org/ Search for data repositories
+- https://sqliteviewer.app/ https://github.com/qwtel/sqlite-viewer-vscode
 
 
 ## Graphics, Design, etc.

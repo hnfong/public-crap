@@ -39,6 +39,7 @@
 - https://warrants-hk.credit-suisse.com/cbbc_tutorial_3r_c.html
 - https://milan.cvitkovic.net/writing/things_youre_allowed_to_do/
 - https://en.wikipedia.org/wiki/The_Innovator%27s_Dilemma
+- tradingview.com
 
 # Misc History
 

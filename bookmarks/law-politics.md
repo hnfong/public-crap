@@ -1,3 +1,7 @@
+# Perodic check
+
+- https://www.hklii.org/chi/hk/other/hklrc/reports/
+
 # Law
 
 - https://asialawportal.com/2020/10/22/hong-kong-legal-salary-survey-2020-2021/
@@ -11,6 +15,7 @@
 - https://researchbriefings.files.parliament.uk/documents/LLN-2009-010/LLN-2009-010.pdf -  The Appellate Jurisdiction of the House of Lords (Updated November 2009)
 - http://www.jstor.org/stable/653464 - Plans for Constitutional Reform in Hong Kong, 1946-52
 - https://www.legco.gov.hk/yr02-03/english/bc/bc55/papers/bc55-113-e.pdf  - Note for the Bills Committee on National Security (Legislative Provisions) Bill Background information on the Societies Ordinance
+- https://cunderwood.dev/2022/02/13/consent-gdpr-and-google-analytics/
 
 # Big-Tech
 

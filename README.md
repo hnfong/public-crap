@@ -5,7 +5,12 @@
 
 ### 2022
 
+- [05-偽科幻小說：DNA 創造論](writings/2022/05-偽科幻小說：DNA 創造論.md)
+- [04-人人平等](writings/2022/04-人人平等.md)
+- [03-AlphaCode](writings/2022/03-AlphaCode.md)
+- [02-貴族之必然性](writings/2022/02-貴族之必然性.md)
 - [01-Driven by License](writings/2022/01-Driven_by_License.md)
+- [00-Ranbmlings](writings/2022/00-Ranbmlings.md)
 
 ### 2021
 
