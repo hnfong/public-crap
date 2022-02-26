@@ -20,6 +20,7 @@
 - https://www.linguee.com/chinese-english/translation/%E4%B8%AD%E8%8B%B1%E5%B0%8D%E7%85%A7.html
 - https://ccl.hkust.edu.hk/useful_resources Useful resources (early Cantonese)
 - https://github.com/kiking0501/Cantonese-Chinese-Translation
+- https://www.judyrecords.com/  Full text search on 630M US court cases
 
 
 ## Games
@@ -108,6 +109,7 @@
 - https://www.youtube.com/watch?v=bh5eTi9jTPw Ep82 Chris Knobbe MD The Scientific Truth behind Vegetable Oils Vs Real Food Fats
 - https://www.youtube.com/watch?v=xAWReEm4l0w - Lipivore
 - https://www.youtube.com/watch?v=fdr2JPLWNvY 20+ No Carb Foods With No Sugar (80+ Low Carb Foods) Your Ultimate Keto Food Guide
+- https://www.ema.europa.eu/en/documents/chmp-annex/annex-vaxzevria-art53-visual-risk-contextualisation_en.pdf (comparison of relative risk of serious COVID and vaccine complications)
 
 
 ## Jokes

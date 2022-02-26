@@ -7,6 +7,7 @@
 - https://asialawportal.com/2020/10/22/hong-kong-legal-salary-survey-2020-2021/
 - https://en.wikipedia.org/wiki/Gold_Reserve_Act - A year earlier, in 1933, Executive Order 6102 had made it a criminal offense for U.S. citizens to own or trade gold anywhere in the world, with exceptions for some jewelry and collector's coins. These prohibitions were relaxed starting in 1964 – gold certificates were again allowed for private investors on April 24, 1964, although the obligation to pay the certificate holder on demand in gold specie would not be honored. By 1975 Americans could again freely own and trade gold.
 - https://www.jsscs.gov.hk/reports/en/jscs_20.pdf Caseloads in Different Levels of Court between 2017 and 2019
+- https://lore.kernel.org/lkml/20031206211900.GA9034@thunk.org/ GPL API Copyrightability Linux Kernel Modules
 
 
 # Politics
