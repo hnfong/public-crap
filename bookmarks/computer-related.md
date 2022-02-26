@@ -74,6 +74,10 @@ Computer technology related.
 - https://gankra.github.io/blah/text-hates-you/ (All the edge cases of rendering text)
 - https://lord.io/text-editing-hates-you-too/ Even more problems with editing text
 - https://portswigger.net/research/http2 Security problems with HTTP/2
+- https://github.com/dylanaraps/pure-bash-bible
+- https://twitter.com/marcan42/status/1494213855387734019 turns out Apple's custom NVMe drives are amazingly fast - if you don't care about data integrity.
+- http://mywiki.wooledge.org/BashPitfalls
+
 
 
 ## Open Source Tools
@@ -146,6 +150,8 @@ Computer technology related.
 - https://godotengine.org/ - Open Source Game Engine - Godot provides a huge set of common tools, so you can just focus on making your game without reinventing the wheel.
 - https://jodd.org/ The Unbearable Lightness of Java - Jodd is a set of micro-frameworks and developer-friendly tools and utilities.
 - https://nn-512.com/ Generate Neural Nets in C
+- https://github.com/trickest/cve Almost every publicly available CVE PoC.
+- https://sqlite-utils.datasette.io/en/stable/index.html https://github.com/simonw/sqlite-utils/
 
 
 ## Business Tools
@@ -175,6 +181,7 @@ Computer technology related.
 - https://tuple.app/ The best remote pair programming app on macOS
 - https://www.re3data.org/ Search for data repositories
 - https://sqliteviewer.app/ https://github.com/qwtel/sqlite-viewer-vscode
+- http://www.fmwconcepts.com/imagemagick/index.php  - A collection of image utilities that uses imagemagick
 
 
 ## Graphics, Design, etc.
@@ -257,6 +264,7 @@ Computer technology related.
 - https://www.npr.org/2010/10/09/130451369/the-zombie-network-beware-free-public-wifi
 - https://www.youtube.com/watch?v=jmTwlEh8L7g DEF CON 26 - Christopher Domas - GOD MODE UNLOCKED Hardware Backdoors in redacted x86
 - https://www.ibiblio.org/harris/500milemail.html
+- https://www.slideshare.net/reed2001/culture-1798664/ Netflix Culture Document (and lots of management philosophies)
 
 
 ## Python tools
