@@ -77,6 +77,7 @@ Computer technology related.
 - https://github.com/dylanaraps/pure-bash-bible
 - https://twitter.com/marcan42/status/1494213855387734019 turns out Apple's custom NVMe drives are amazingly fast - if you don't care about data integrity.
 - http://mywiki.wooledge.org/BashPitfalls
+- https://web.archive.org/web/20220303141223/https://pastebin.com/n6AGB62L An ex-Microsoft employee's overview of Win32, WinForms, WPF, and UI toolkits in general
 
 
 
@@ -152,6 +153,7 @@ Computer technology related.
 - https://nn-512.com/ Generate Neural Nets in C
 - https://github.com/trickest/cve Almost every publicly available CVE PoC.
 - https://sqlite-utils.datasette.io/en/stable/index.html https://github.com/simonw/sqlite-utils/
+- https://htmx.org/ htmx gives you access to AJAX, CSS Transitions, WebSockets and Server Sent Events directly in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext htmx is small (~10k min.gz'd), dependency-free, extendable & IE11 compatible
 
 
 ## Business Tools
@@ -182,6 +184,7 @@ Computer technology related.
 - https://www.re3data.org/ Search for data repositories
 - https://sqliteviewer.app/ https://github.com/qwtel/sqlite-viewer-vscode
 - http://www.fmwconcepts.com/imagemagick/index.php  - A collection of image utilities that uses imagemagick
+- https://panelbear.com/ Alternative to Google Analytics
 
 
 ## Graphics, Design, etc.
