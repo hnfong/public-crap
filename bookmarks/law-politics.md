@@ -8,7 +8,7 @@
 - https://en.wikipedia.org/wiki/Gold_Reserve_Act - A year earlier, in 1933, Executive Order 6102 had made it a criminal offense for U.S. citizens to own or trade gold anywhere in the world, with exceptions for some jewelry and collector's coins. These prohibitions were relaxed starting in 1964 – gold certificates were again allowed for private investors on April 24, 1964, although the obligation to pay the certificate holder on demand in gold specie would not be honored. By 1975 Americans could again freely own and trade gold.
 - https://www.jsscs.gov.hk/reports/en/jscs_20.pdf Caseloads in Different Levels of Court between 2017 and 2019
 - https://lore.kernel.org/lkml/20031206211900.GA9034@thunk.org/ GPL API Copyrightability Linux Kernel Modules
-
+- HKSAR v. ZHOU LIMEI [2017] HKCFA 10 - Cantonese case in CFA, quoting [43] Ester Leung and John Gibbons, “Interpreting  Cantonese  utterance-final particles in bilingual courtroom discourse” in “Interpreting Chinese, Interpreting China”, Ed Robin Setton (John Benjamins Publishing company) at p 97.
 
 # Politics
 
@@ -56,4 +56,5 @@
 - https://www.washingtonpost.com/technology/2021/09/03/facebook-misinformation-nyu-study/
 - https://www.wired.co.uk/article/whatsapp-encryption-child-abuse
 - https://www.wsj.com/articles/facebook-twitter-google-warn-planned-hong-kong-tech-law-could-drive-them-out-11625483036
+- https://news.ycombinator.com/item?id=30632695 https://www.reuters.com/world/europe/exclusive-facebook-instagram-temporarily-allow-calls-violence-against-russians-2022-03-10/
 

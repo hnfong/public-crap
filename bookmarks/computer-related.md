@@ -78,7 +78,12 @@ Computer technology related.
 - https://twitter.com/marcan42/status/1494213855387734019 turns out Apple's custom NVMe drives are amazingly fast - if you don't care about data integrity.
 - http://mywiki.wooledge.org/BashPitfalls
 - https://web.archive.org/web/20220303141223/https://pastebin.com/n6AGB62L An ex-Microsoft employee's overview of Win32, WinForms, WPF, and UI toolkits in general
-
+- https://sethmlarson.dev/blog/utf-8 UTF8 reference
+- https://hackingcpp.com/cpp/cheat_sheets.html
+- https://news.ycombinator.com/item?id=30596699 What Is IO Monad? (2018) [video] (youtube.com)
+- https://en.algorithmica.org/hpc/ This is an upcoming high performance computing book titled “Algorithms for Modern Hardware” by Sergey Slotin.
+- https://github.com/kdeldycke/awesome-falsehood A curated list of falsehoods programmers believe in.
+- https://github.com/openai/gpt-2/blob/master/src/model.py
 
 
 ## Open Source Tools
@@ -154,6 +159,7 @@ Computer technology related.
 - https://github.com/trickest/cve Almost every publicly available CVE PoC.
 - https://sqlite-utils.datasette.io/en/stable/index.html https://github.com/simonw/sqlite-utils/
 - https://htmx.org/ htmx gives you access to AJAX, CSS Transitions, WebSockets and Server Sent Events directly in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext htmx is small (~10k min.gz'd), dependency-free, extendable & IE11 compatible
+- https://github.com/confluentinc/ksql
 
 
 ## Business Tools
