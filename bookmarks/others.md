@@ -29,6 +29,7 @@
 - https://pathofexile.gamepedia.com/Occultist%27s_Dominion - Interesting RPG (diablo-like) game
 - https://www.youtube.com/watch?v=hw0thrWVaKQ&t=4975s (Ultimate Beginner Survival Guide (ALL Seasons) Don't Starve Together)
 - http://magickeyboard.io/ FUN
+- https://github.com/mgerdes/Open-Golf - Nice and simple game!
 
 ## Finance and Business
 

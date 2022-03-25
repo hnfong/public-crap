@@ -2,6 +2,11 @@
 
 - https://www.hklii.org/chi/hk/other/hklrc/reports/
 
+# Law Basic References
+
+- http://www.cityu.edu.hk/lib/collect/law/guides/hk_guide.pdf Students’ Guide to Legal Materials of Hong Kong 
+- http://www.cityu.edu.hk/lib/collect/law/guides/prc_guide.pdf Students’ Guide to Legal Materials of the People’s Republic of China 
+
 # Law
 
 - https://asialawportal.com/2020/10/22/hong-kong-legal-salary-survey-2020-2021/
