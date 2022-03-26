@@ -160,7 +160,7 @@ Computer technology related.
 - https://sqlite-utils.datasette.io/en/stable/index.html https://github.com/simonw/sqlite-utils/
 - https://htmx.org/ htmx gives you access to AJAX, CSS Transitions, WebSockets and Server Sent Events directly in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext htmx is small (~10k min.gz'd), dependency-free, extendable & IE11 compatible
 - https://github.com/confluentinc/ksql
-
+- https://github.com/cotowali/cotowali A statically typed scripting language that transpile into POSIX sh
 
 ## Business Tools
 

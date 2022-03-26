@@ -245,6 +245,7 @@
 ## Outline
 
 - [tech](outline/tech.md)
+- [software-engineering](outline/software-engineering.md)
 - [law](outline/law.md)
 
 ## Bookmarks
