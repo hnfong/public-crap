@@ -161,6 +161,8 @@ Computer technology related.
 - https://htmx.org/ htmx gives you access to AJAX, CSS Transitions, WebSockets and Server Sent Events directly in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext htmx is small (~10k min.gz'd), dependency-free, extendable & IE11 compatible
 - https://github.com/confluentinc/ksql
 - https://github.com/cotowali/cotowali A statically typed scripting language that transpile into POSIX sh
+- https://roadmap.sh/
+- https://github.com/geohot/tinygrad
 
 ## Business Tools
 
@@ -274,6 +276,7 @@ Computer technology related.
 - https://www.youtube.com/watch?v=jmTwlEh8L7g DEF CON 26 - Christopher Domas - GOD MODE UNLOCKED Hardware Backdoors in redacted x86
 - https://www.ibiblio.org/harris/500milemail.html
 - https://www.slideshare.net/reed2001/culture-1798664/ Netflix Culture Document (and lots of management philosophies)
+- https://github.com/danluu/post-mortems
 
 
 ## Python tools

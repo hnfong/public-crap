@@ -232,6 +232,7 @@
 - [雙色炒蛋](recipes/雙色炒蛋.md)
 - [醃辣椒](recipes/醃辣椒.md)
 - [蝦膏](recipes/蝦膏.md)
+- [蝦米豬油闊條麵](recipes/蝦米豬油闊條麵.md)
 - [蛋黃撈蛋白炒飯](recipes/蛋黃撈蛋白炒飯.md)
 - [蘿蔔糕 take 2](recipes/蘿蔔糕_take_2.md)
 - [薯仔鳩炒咸肉](recipes/薯仔鳩炒咸肉.md)
