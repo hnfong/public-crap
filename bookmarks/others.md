@@ -30,6 +30,8 @@
 - https://www.youtube.com/watch?v=hw0thrWVaKQ&t=4975s (Ultimate Beginner Survival Guide (ALL Seasons) Don't Starve Together)
 - http://magickeyboard.io/ FUN
 - https://github.com/mgerdes/Open-Golf - Nice and simple game!
+- https://eightcolors.net/ - Nice HTML puzzle game
+- https://0xf00ff00f.github.io/zettawatt/ - Moliu click click get more resource game
 
 ## Finance and Business
 
@@ -71,6 +73,7 @@
 
 - https://en.wikisource.org/wiki/Arcana_Coelestia_(Potts)/Genesis_1
 - https://en.wikipedia.org/wiki/Zenneck_wave - https://youtu.be/PS1azzN0b-I?t=978 (500,000 volts through megalithic stone? An investigation into the possible with UnchartedX...)
+- https://www.youtube.com/watch?v=Rxmw9eizOAo Joe Rogan Experience #1284 - Graham Hancock - 2:45 hour interview with Graham Hancock
 
 # Deconstruction of English
 
