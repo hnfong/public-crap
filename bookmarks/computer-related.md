@@ -22,6 +22,7 @@ Computer technology related.
 - https://www.quora.com/profile/Terry-Lambert
 - https://github.com/papers-we-love/papers-we-love
 - https://klinger.io/posts
+- https://amyunger.com/
 
 
 ## Reference, Academic Stuff, etc.
@@ -163,6 +164,11 @@ Computer technology related.
 - https://github.com/cotowali/cotowali A statically typed scripting language that transpile into POSIX sh
 - https://roadmap.sh/
 - https://github.com/geohot/tinygrad
+- https://haxe.org/ Haxe is an open source high-level strictly-typed programming language with a fast optimizing cross-compiler. Haxe can build cross-platform applications targeting JavaScript, C++, C#, Java, JVM, Python, Lua, PHP, Flash, and allows access to each platform's native capabilities. Haxe has its own VMs (HashLink and NekoVM) but can also run in interpreted mode.
+- https://heaps.io/ Heaps.io is a mature cross platform graphics engine designed for high performance games.It is designed to leverage modern GPUs that are commonly available on both desktop and mobile devices. (Based on Haxe)
+- https://github.com/facebookexperimental/eden EdenSCM is a cross-platform, highly scalable source control management system.
+
+
 
 ## Business Tools
 

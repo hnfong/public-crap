@@ -22,6 +22,7 @@
 - http://www.jstor.org/stable/653464 - Plans for Constitutional Reform in Hong Kong, 1946-52
 - https://www.legco.gov.hk/yr02-03/english/bc/bc55/papers/bc55-113-e.pdf  - Note for the Bills Committee on National Security (Legislative Provisions) Bill Background information on the Societies Ordinance
 - https://cunderwood.dev/2022/02/13/consent-gdpr-and-google-analytics/
+- https://www.youtube.com/watch?v=-1iaJWSwUZs almost 2 hour Harry Potter Critique
 
 # Big-Tech
 

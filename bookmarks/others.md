@@ -44,6 +44,7 @@
 - https://milan.cvitkovic.net/writing/things_youre_allowed_to_do/
 - https://en.wikipedia.org/wiki/The_Innovator%27s_Dilemma
 - tradingview.com
+- https://www.lifecontingencies.com/ "I'm an Actuary, and as a way to learn React I put together a website that teaches you the basic concepts and math behind these actuarial table."
 
 # Misc History
 
@@ -68,12 +69,14 @@
 - https://www.youtube.com/watch?v=otiO_wKCwEc - How to Cut and Shape Stones | Ask This Old House
   - Rebuttal: https://www.youtube.com/watch?v=KFuf-gBuuno The Story of the Enigmatic and Mysterious Tube Drills of Ancient Egypt - UnchartedX full documentary
 - https://www.youtube.com/watch?v=qfBrPKS9aU0 BACK TO BUILDERS OF THE ANCIENT MYSTERIES (BAM) - Full Movie, Documentary (Civilization, Archeology)
+- https://www.youtube.com/watch?v=VV0MntUNp3E Scientists are Now Correcting Their Stupidity! | Gulf Of Cambay | Shiva | Aliens| Sadhguru|Adiyogi
 
 # Arcane
 
 - https://en.wikisource.org/wiki/Arcana_Coelestia_(Potts)/Genesis_1
 - https://en.wikipedia.org/wiki/Zenneck_wave - https://youtu.be/PS1azzN0b-I?t=978 (500,000 volts through megalithic stone? An investigation into the possible with UnchartedX...)
 - https://www.youtube.com/watch?v=Rxmw9eizOAo Joe Rogan Experience #1284 - Graham Hancock - 2:45 hour interview with Graham Hancock
+- https://en.wikipedia.org/wiki/Solomon%27s_shamir (Lost Egyptian technology to cut hard stones???? - Moses was an Egyptian Priest)
 
 # Deconstruction of English
 
@@ -114,6 +117,7 @@
 - https://www.youtube.com/watch?v=xAWReEm4l0w - Lipivore
 - https://www.youtube.com/watch?v=fdr2JPLWNvY 20+ No Carb Foods With No Sugar (80+ Low Carb Foods) Your Ultimate Keto Food Guide
 - https://www.ema.europa.eu/en/documents/chmp-annex/annex-vaxzevria-art53-visual-risk-contextualisation_en.pdf (comparison of relative risk of serious COVID and vaccine complications)
+- https://www.youtube.com/watch?v=5jBsWbDGtWU The Dangers of Fructose & Uric Acid - with Dr. Richard Johnson | The Empowering Neurologist EP. 142 (also Salt, Glutamines, etc.)
 
 
 ## Jokes
