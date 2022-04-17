@@ -70,6 +70,8 @@
   - Rebuttal: https://www.youtube.com/watch?v=KFuf-gBuuno The Story of the Enigmatic and Mysterious Tube Drills of Ancient Egypt - UnchartedX full documentary
 - https://www.youtube.com/watch?v=qfBrPKS9aU0 BACK TO BUILDERS OF THE ANCIENT MYSTERIES (BAM) - Full Movie, Documentary (Civilization, Archeology)
 - https://www.youtube.com/watch?v=VV0MntUNp3E Scientists are Now Correcting Their Stupidity! | Gulf Of Cambay | Shiva | Aliens| Sadhguru|Adiyogi
+- https://www.youtube.com/watch?v=bRGjMpRZpCg 《“字”从遇见你》为什么甲骨文的“天”字比“人”字更像一个小人？【CCTV纪录】 (CCTV programme speculates the character for "sky" is a pictogram of a extraterritorial (or human in spacesuit)
+
 
 # Arcane
 

@@ -18,6 +18,7 @@
 
 - [點解 Donald Trump 衰收尾?](writings/2021/點解_Donald_Trump_衰收尾_qm_.md)
 - [香港嘅政棍咁多年都冇進步過](writings/2021/香港嘅政棍咁多年都冇進步過.md)
+- [食油](writings/2021/食油.md)
 - [見人寫余英時訃文，我又寫下嘢](writings/2021/見人寫余英時訃文_CM_我又寫下嘢.md)
 - [西王母 = 埃及法老王?！](writings/2021/西王母_=_埃及法老王_qm__EX_.md)
 - [西方醫學vs所謂巫醫](writings/2021/西方醫學vs所謂巫醫.md)
