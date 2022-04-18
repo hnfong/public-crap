@@ -1,5 +1,28 @@
 # Other bookmarks
 
+## Interesting blogs
+
+- https://danluu.com/
+- https://www.scottaaronson.com/blog/
+- https://aphyr.com/
+- https://eli.thegreenplace.net/archives/all
+- https://preshing.com/
+- http://jvns.ca/
+- https://brooker.co.za/blog/
+- http://pvk.ca/Blog/archives/
+- https://staffeng.com/
+- https://www.machow.ski/
+- https://hn.lindylearn.io/ (Best of HN)
+- https://blog.wesleyac.com/
+- https://www.gwern.net/Startup-ideas
+- https://twitter.com/TechEmails
+- https://lemire.me/
+- https://www.quora.com/profile/Terry-Lambert
+- https://github.com/papers-we-love/papers-we-love
+- https://klinger.io/posts
+- https://amyunger.com/
+- https://siderea.dreamwidth.org/
+
 ## Language tools and references
 
 - https://www.jeraldinephneah.com/importance-of-dialects-in-singapore/ - Why We Should Reintroduce Chinese Dialects On Singapore’s Free-To-Air Television
@@ -71,6 +94,8 @@
 - https://www.youtube.com/watch?v=qfBrPKS9aU0 BACK TO BUILDERS OF THE ANCIENT MYSTERIES (BAM) - Full Movie, Documentary (Civilization, Archeology)
 - https://www.youtube.com/watch?v=VV0MntUNp3E Scientists are Now Correcting Their Stupidity! | Gulf Of Cambay | Shiva | Aliens| Sadhguru|Adiyogi
 - https://www.youtube.com/watch?v=bRGjMpRZpCg 《“字”从遇见你》为什么甲骨文的“天”字比“人”字更像一个小人？【CCTV纪录】 (CCTV programme speculates the character for "sky" is a pictogram of a extraterritorial (or human in spacesuit)
+- https://www.youtube.com/watch?v=8tnrkahCLHw The 1100 ton Unfinished Obelisk - Carved with Pounding Stones? An UnchartedX Investigation!
+
 
 
 # Arcane
@@ -185,6 +210,7 @@
 - The new law miscellany - Recommended Book by Evil
 - Parrondo's Paradox - two losing games will make a win
 - https://thestatsgeek.com/2020/11/21/interpretation-of-frequentist-confidence-intervals-and-bayesian-credible-intervals/
+- https://siderea.dreamwidth.org/1747990.html Fwd: How to prepare for the invasion of your country [domesticity]
 
 ## Hong Kong Housing
 

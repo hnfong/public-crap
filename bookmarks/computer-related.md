@@ -2,29 +2,6 @@
 
 Computer technology related.
 
-## Interesting blogs
-
-- https://danluu.com/
-- https://www.scottaaronson.com/blog/
-- https://aphyr.com/
-- https://eli.thegreenplace.net/archives/all
-- https://preshing.com/
-- http://jvns.ca/
-- https://brooker.co.za/blog/
-- http://pvk.ca/Blog/archives/
-- https://staffeng.com/
-- https://www.machow.ski/
-- https://hn.lindylearn.io/ (Best of HN)
-- https://blog.wesleyac.com/
-- https://www.gwern.net/Startup-ideas
-- https://twitter.com/TechEmails
-- https://lemire.me/
-- https://www.quora.com/profile/Terry-Lambert
-- https://github.com/papers-we-love/papers-we-love
-- https://klinger.io/posts
-- https://amyunger.com/
-
-
 ## Reference, Academic Stuff, etc.
 
 - http://pubs.opengroup.org/onlinepubs/000095399/ - POSIX Specification
@@ -313,9 +290,3 @@ Here are some projects I found when researching python speed:
 - https://adventofcode.com/
 - https://invidious.snopyta.org (alternative Youtube frontend)
 - https://klinger.io/posts/fyi-how-founders-can-avoid-drive-by-management
-
-Hello, world!
-
-
-
-
