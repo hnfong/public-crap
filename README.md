@@ -256,6 +256,6 @@
 ## Bookmarks
 
 - [wishes](bookmarks/wishes.md)
-- [others](bookmarks/others.md)
 - [law-politics](bookmarks/law-politics.md)
+- [general](bookmarks/general.md)
 - [computer-related](bookmarks/computer-related.md)
