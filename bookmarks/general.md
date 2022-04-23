@@ -22,6 +22,7 @@
 - https://klinger.io/posts
 - https://amyunger.com/
 - https://siderea.dreamwidth.org/
+- https://restofworld.org/newsletters/world/
 
 ## Language tools and references
 
@@ -55,6 +56,7 @@
 - https://github.com/mgerdes/Open-Golf - Nice and simple game!
 - https://eightcolors.net/ - Nice HTML puzzle game
 - https://0xf00ff00f.github.io/zettawatt/ - Moliu click click get more resource game
+- https://www.pounce.sh/ - Stealth and hunting game
 
 ## Finance and Business
 
