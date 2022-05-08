@@ -5,6 +5,7 @@
 
 ### 2022
 
+- [09-Subjective Truth](writings/2022/09-Subjective_Truth.md)
 - [08-Free Will](writings/2022/08-Free_Will.md)
 - [07-英國法官唔再做終審法院非常任法官](writings/2022/07-英國法官唔再做終審法院非常任法官.md)
 - [06-耶穌、魔鬼、幻覺](writings/2022/06-耶穌、魔鬼、幻覺.md)
