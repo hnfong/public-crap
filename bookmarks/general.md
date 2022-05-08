@@ -106,6 +106,12 @@
 - https://en.wikipedia.org/wiki/Zenneck_wave - https://youtu.be/PS1azzN0b-I?t=978 (500,000 volts through megalithic stone? An investigation into the possible with UnchartedX...)
 - https://www.youtube.com/watch?v=Rxmw9eizOAo Joe Rogan Experience #1284 - Graham Hancock - 2:45 hour interview with Graham Hancock
 - https://en.wikipedia.org/wiki/Solomon%27s_shamir (Lost Egyptian technology to cut hard stones???? - Moses was an Egyptian Priest)
+- https://www.youtube.com/watch?v=pNUH5Ji9hDs https://www.youtube.com/watch?v=B1c8k8JFyu8 【首届觉性科学论坛】李嗣涔：科学的疆界 儿童潜能现象
+- https://www.youtube.com/watch?v=qhgrgPXfx9U 人體身心靈科學(上)：台大校長_李嗣涔科學實驗證明 佛 、 神 、靈界的存在
+- https://www.youtube.com/watch?v=tgBxhpaTQWA 人體身心靈科學(下)：台大校長_李嗣涔科學實驗證明 佛 、 神 、靈界的存在
+- https://www.youtube.com/watch?v=F1bj6VmQZa8 The Five Principles of Self Mastery for a Happy Life with Darryl Anka (Bashar)| Next Level Soul
+- https://www.youtube.com/watch?v=0zMDMtv5XwY Darryl Anka (Bashar) - Buddha at the Gas Pump Interview
+- https://www.youtube.com/watch?v=DyNwxRMgJbY Interview s Darryl Anka & Bashar
 
 # Deconstruction of English
 
@@ -147,6 +153,7 @@
 - https://www.youtube.com/watch?v=fdr2JPLWNvY 20+ No Carb Foods With No Sugar (80+ Low Carb Foods) Your Ultimate Keto Food Guide
 - https://www.ema.europa.eu/en/documents/chmp-annex/annex-vaxzevria-art53-visual-risk-contextualisation_en.pdf (comparison of relative risk of serious COVID and vaccine complications)
 - https://www.youtube.com/watch?v=5jBsWbDGtWU The Dangers of Fructose & Uric Acid - with Dr. Richard Johnson | The Empowering Neurologist EP. 142 (also Salt, Glutamines, etc.)
+- https://www.hardtowrite.com/pathogens/ Endemic Pathogens Are Making You Crazy And Then Killing You: Toxoplasmosis Spotlight
 
 
 ## Jokes
@@ -243,3 +250,6 @@
 - https://nav.al/failure Groups Never Admit Failure
 - https://louzhu.info/p/105394/1.html 《神雕侠侣》杨过的抉择——浪子回头金不换
 
+## My image links
+
+- https://imgur.com/a/urcePZq Emacs vs VSCode
