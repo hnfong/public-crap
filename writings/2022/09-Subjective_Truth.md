@@ -41,18 +41,17 @@ Can one really affect the likelihood of receiving a book instead of a pair of sh
 In fact, if we postulate:
 
 1. objective laws of physics be maintained, and
-2. in a subjective interpretation of reality, belief and knowledge are indistinguishable until the objective truth is revealed to the subject,
+2. in a subjective interpretation of reality, honest belief and knowledge are indistinguishable until the objective truth is revealed to the subject,
 
 then we can deduce as a corollary that, as a matter of subjective experience, the mind *can* affect the "probability wave" of the universes being presented to you, and it is not only consistent with objective natural laws, but that it is the *only* rational conclusion if objective natural laws are to be maintained.
 
-It may be useful to explain with an example. If I know, as a matter of fact, that I am going to get a book as a gift from my classmate, *because I installed spy cameras in his apartment and saw him putting a book in the gift box*, then of course I will get a book (*with high probability* -- it is not 100%, "surprises", "accidents" or "mistakes" still happen). Because, otherwise, objective observations will be inconsistent (i.e. there's no way for you to indirectly "observe" a book being put in the box, and then pulling out a shoe from it, as it violates objective causality)
+It may be useful to explain with an example. If I know, as a matter of fact, that I am going to get a book as a gift from my classmate, *because I installed spy cameras in his apartment and saw him putting a book in the gift box*, then of course I will get a book (*with high probability* -- it is not 100%, "surprises", "accidents" or "mistakes" still happen). Because, otherwise, objective observations will be inconsistent (i.e. there's no way for you to indirectly "observe" a book being put in the box, and then pulling out a shoe from it, as it violates objective causality).
 
-Now that we established that knowledge (of the somewhat-"objective" truth) can "affect" the probability wave function of the contents in the box, then, by applying assumption #2 above, "mere" belief can substitute for "knowledge". So, as long as I somehow strongly (and honestly) believe there is a book in the gift box, then there is an equally high probability that it contains a shoe. In fact, here in the subjective interpretation, knowledge and belief are qualitatively the same thing (however, indoctrination of objective interpretations of reality may mislead people into believing otherwise -- and since it degrades their "belief in their beliefs", it may actually affect their ability to mentally affect what they receive in gifts...)
+Now that we established that knowledge (of the somewhat-"objective" truth) can affect the "probability wave function" of the contents in the box, then, by applying assumption #2 above, "mere" belief can substitute for "knowledge". So, as long as I somehow strongly (and honestly) *believe* there is a book in the gift box, then there is an equally high probability that it contains a book as in the prior example (*knowledge* of a book). In fact, here in the subjective interpretation, knowledge and honest belief are qualitatively the same thing, so although I described the two as though they were different scenarios, it is the same thing only described twice for the purposes of illustration.
 
-So, it seems that, by taking an extreme subjective interpretation of reality, together with some rather axiomatic assumptions, we can deduce that one's subjective mental state, through some mysterious means, not only *can* affect the outcome of an event, but it is *inevitable* that it does.
+In conclusion, it seems that, by taking an extreme subjective interpretation of reality, together with some rather axiomatic assumptions, we can deduce that one's subjective mental state, through some mysterious means, not only *can* affect the outcome of an event, but it is *inevitable* that it does.
 
 But is this "real"? If you understood the arguments above and applied the concepts into this meta-thought-experiment, you will understand that there will probably be no way to objectively measure this phenomenon. It may even be the case that, if you tried to do the experiment, it will just confirm what you believed... (since the results of the experiment is another gift box!)
-
 
 ## Aftershocks (free speculations, consume with a grain of salt)
 
@@ -63,6 +62,10 @@ But is this "real"? If you understood the arguments above and applied the concep
 - The alleged phenomena of relatively potent psychic powers of children (remembering a past life, premonition, etc.) might have a basis in their ignorance of how the objective world works. Of course, this doesn't explain why Santa Claus hasn't manifested itself yet...
 
 - Those who actually understand the power of subjective reality but not trained in leveraging its power will be grateful that objective laws of the universe are much much much more stable than they could otherwise be...
+
+- (however, indoctrination of objective interpretations of reality might have the side effect of making people believe otherwise -- and since it degrades their "belief in their beliefs", it may actually affect their ability to mentally affect what they receive in gifts...)
+
+- Indoctrination by classical science of objective interpretations (as the only true interpretation) of reality may mislead people doubting the validity of "beliefs" (as opposed to "knowledge") -- and since it degrades their "belief in their beliefs", it may actually affect their ability to mentally affect what they receive in gifts...
 
 ## Epilogue
 
