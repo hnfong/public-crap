@@ -112,6 +112,8 @@
 - https://www.youtube.com/watch?v=F1bj6VmQZa8 The Five Principles of Self Mastery for a Happy Life with Darryl Anka (Bashar)| Next Level Soul
 - https://www.youtube.com/watch?v=0zMDMtv5XwY Darryl Anka (Bashar) - Buddha at the Gas Pump Interview
 - https://www.youtube.com/watch?v=DyNwxRMgJbY Interview s Darryl Anka & Bashar
+- https://www.youtube.com/watch?v=nH61dPXDqNU BASHAR A MULTIDIMENSIONAL BEING FROM THE FUTURE | EPISODE 60 THEY CALL US CHANNELERS
+
 
 # Deconstruction of English
 
