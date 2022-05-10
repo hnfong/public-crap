@@ -1,5 +1,7 @@
 # 散彈一號公廁 (shotgun1 public crap)
 
+Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.io/public-crap/)
+
 ## Writings
 
 

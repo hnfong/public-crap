@@ -80,5 +80,9 @@ for root, directories, files in os.walk("."):
             insert(root_node, root.lstrip("./").split("/"), fn)
 
 print("# 散彈一號公廁 (shotgun1 public crap)")
+print("")
+print("Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.io/public-crap/)")
+
+
 
 preorder_dfs(root_node, p)
