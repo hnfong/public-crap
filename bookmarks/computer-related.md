@@ -145,7 +145,12 @@ Computer technology related.
 - https://heaps.io/ Heaps.io is a mature cross platform graphics engine designed for high performance games.It is designed to leverage modern GPUs that are commonly available on both desktop and mobile devices. (Based on Haxe)
 - https://github.com/facebookexperimental/eden EdenSCM is a cross-platform, highly scalable source control management system.
 - https://github.com/racket/zuo Zuo: A Tiny Racket for Scripting
+- https://mitmproxy.org/ mitmproxy is a free and open source interactive HTTPS proxy.
+- https://fly.io/blog/all-in-on-sqlite-litestream/ https://github.com/benbjohnson/litestream
 
+## Software Engineering
+
+- https://thorstenball.com/blog/2022/05/17/professional-programming-the-first-10-years/
 
 ## Business Tools
 
@@ -178,12 +183,14 @@ Computer technology related.
 - https://panelbear.com/ Alternative to Google Analytics
 
 
+
 ## Graphics, Design, etc.
 
 - http://my-free-vector-art.com/ - Free vector art
 - http://www.makeuseof.com/tag/free-fonts-sites-where-find-them/
 - https://www.mattcrampton.com/blog/mega_list_of_free_image_sites_for_blogging/
 - https://iconduck.com/ 118,894 free open source icons & illustrations
+- https://tailwindcomponents.com/ A free repository for community components using Tailwind CSS Open source Tailwind UI components and templates to bootstrap your new apps, projects or landing sites!
 
 
 ## HOWTOs, Beginners instructions, Learn stuff

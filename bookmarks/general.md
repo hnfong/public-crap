@@ -71,7 +71,7 @@
 - tradingview.com
 - https://www.lifecontingencies.com/ "I'm an Actuary, and as a way to learn React I put together a website that teaches you the basic concepts and math behind these actuarial table."
 
-# Misc History
+## Misc History
 
 - https://www.youtube.com/watch?v=VXGfGwKQDWw - 香港街巷心理戰 Part 2 解碼
 - http://www.ap.org/content/press-release/2015/ap-makes-one-million-minutes-of-history-available-on-youtube
@@ -85,7 +85,7 @@
 - https://www.youtube.com/watch?v=Rp8Pw_rGwpM 长平之战！中国古代最大的围歼战！3D沙盘推演【信息素战史】
 - https://www.youtube.com/watch?v=rN9Ur_NiXXk 中国史上最繁荣强盛的王朝：“父辞子笑，兄有弟攻”的大唐王朝
 
-# Pre-history
+## Pre-history
 
 - https://www.pnas.org/content/104/41/16016 - Evidence for an extraterrestrial impact 12,900 years ago that contributed to the megafaunal extinctions and the Younger Dryas cooling
 - https://www.youtube.com/watch?v=quUtlWTB_dc - First Time Exploring The Astonishing Osiris Shaft On The Giza Plateau
@@ -98,9 +98,7 @@
 - https://www.youtube.com/watch?v=bRGjMpRZpCg 《“字”从遇见你》为什么甲骨文的“天”字比“人”字更像一个小人？【CCTV纪录】 (CCTV programme speculates the character for "sky" is a pictogram of a extraterritorial (or human in spacesuit)
 - https://www.youtube.com/watch?v=8tnrkahCLHw The 1100 ton Unfinished Obelisk - Carved with Pounding Stones? An UnchartedX Investigation!
 
-
-
-# Arcane
+## Arcane
 
 - https://en.wikisource.org/wiki/Arcana_Coelestia_(Potts)/Genesis_1
 - https://en.wikipedia.org/wiki/Zenneck_wave - https://youtu.be/PS1azzN0b-I?t=978 (500,000 volts through megalithic stone? An investigation into the possible with UnchartedX...)
@@ -115,7 +113,7 @@
 - https://www.youtube.com/watch?v=nH61dPXDqNU BASHAR A MULTIDIMENSIONAL BEING FROM THE FUTURE | EPISODE 60 THEY CALL US CHANNELERS
 
 
-# Deconstruction of English
+## Deconstruction of English
 
 - https://www.dailyscandinavian.com/language-of-the-vikings/
 
@@ -222,6 +220,7 @@
 - Parrondo's Paradox - two losing games will make a win
 - https://thestatsgeek.com/2020/11/21/interpretation-of-frequentist-confidence-intervals-and-bayesian-credible-intervals/
 - https://siderea.dreamwidth.org/1747990.html Fwd: How to prepare for the invasion of your country [domesticity]
+- https://www.quantamagazine.org/puzzling-quantum-scenario-appears-not-to-conserve-energy-20220516/ - Possible energy coming from parallel worlds?
 
 ## Hong Kong Housing
 
@@ -234,6 +233,13 @@
 - https://www.censtatd.gov.hk/hkstat/sub/sp200.jsp?tableID=006&ID=0&productType=8 - HISTORICAL UNEMPLOYMENT RATE
 - https://www.censtatd.gov.hk/hkstat/sub/sp200.jsp - LIST OF USEFUL STATS FROM CENSUS
 
+## Others - Fascinating stuff
+
+- https://news.ycombinator.com/item?id=31204611 - Ask HN: Teach me something new
+- https://halfasianpeopledotcom.wordpress.com/2015/06/23/asian-women-and-white-men-the-truth-from-a-eurasian-male-3/
+- https://louzhu.info/p/105394/1.html 《神雕侠侣》杨过的抉择——浪子回头金不换
+
+
 ## Others
 
 - http://www.cram.com/flashcards/riot-landlord-meetings-prep-3568372  - No idea what this is
@@ -241,7 +247,6 @@
 - http://thepocketshot.com https://www.youtube.com/watch?v=6_OnK1_GkTY
 - https://www.facebook.com/eatandtravel/videos/10156526429215701/ - 【本地靚茄】29歲𡃁仔萬呎溫室種番茄 「想畀人知香港都種得出好嘢」
 - https://www.youtube.com/watch?v=facDr2lTAUM - Hours of footage travelling on a train
-- https://halfasianpeopledotcom.wordpress.com/2015/06/23/asian-women-and-white-men-the-truth-from-a-eurasian-male-3/
 - https://www.youtube.com/watch?v=Pzvlvu8SNfg How to Make the Southern Classic Boudin Sausage
 - https://artvee.com/ - Classical Art
 - http://www.huffingtonpost.com/2014/02/26/email-successful-people_n_4854701.html
@@ -250,7 +255,6 @@
 - https://www.weshelterpeople.com (RVs super cool / mobile homes)
 - https://www.youtube.com/watch?v=y7bPYXocmsA Dr. Robert Cywes - 'Carbohydrate Addiction: returning to my roots'
 - https://nav.al/failure Groups Never Admit Failure
-- https://louzhu.info/p/105394/1.html 《神雕侠侣》杨过的抉择——浪子回头金不换
 
 ## My image links
 
