@@ -7,6 +7,11 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2022
 
+- [14-世界嘅全貌](writings/2022/14-世界嘅全貌.md)
+- [13-Sentience](writings/2022/13-Sentience.md)
+- [12-跟風講下痾屎單案](writings/2022/12-跟風講下痾屎單案.md)
+- [11-Paranorma](writings/2022/11-Paranorma.md)
+- [10-「俾人呃」](writings/2022/10-「俾人呃」.md)
 - [09-Subjective Truth](writings/2022/09-Subjective_Truth.md)
 - [08-Free Will](writings/2022/08-Free_Will.md)
 - [07-英國法官唔再做終審法院非常任法官](writings/2022/07-英國法官唔再做終審法院非常任法官.md)
