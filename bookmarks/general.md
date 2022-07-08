@@ -84,6 +84,8 @@
 - https://arstechnica.com/science/2018/11/meet-the-father-of-the-fda-a-fearless-crusader-for-food-safety/
 - https://www.youtube.com/watch?v=Rp8Pw_rGwpM 长平之战！中国古代最大的围歼战！3D沙盘推演【信息素战史】
 - https://www.youtube.com/watch?v=rN9Ur_NiXXk 中国史上最繁荣强盛的王朝：“父辞子笑，兄有弟攻”的大唐王朝
+- https://web.archive.org/web/20051031023837/http://www.prestongates.com/firmProfile/history.asp Bill Gate's father doing tech law practice
+- https://en.wikipedia.org/wiki/Open_Letter_to_Hobbyists 1976 open letter written by Bill Gates, the co-founder of Microsoft, to early personal computer hobbyists, in which Gates expresses dismay at the rampant software piracy taking place in the hobbyist community
 
 ## Pre-history
 
