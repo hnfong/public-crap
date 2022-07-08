@@ -62,6 +62,12 @@ Computer technology related.
 - https://en.algorithmica.org/hpc/ This is an upcoming high performance computing book titled “Algorithms for Modern Hardware” by Sergey Slotin.
 - https://github.com/kdeldycke/awesome-falsehood A curated list of falsehoods programmers believe in.
 - https://github.com/openai/gpt-2/blob/master/src/model.py
+- https://github.com/satwikkansal/wtfpython
+- https://news.ycombinator.com/item?id=31557809&utm_term=comment ffmpeg parameters and incantations
+- https://mariadb.com/bsl11/ Business Source License 1.1
+- https://github.com/jwilk/python-syntax-errors The idea is to put such a statement near the top of your file. If a user inadvertently ran the code against an older version, they would get a fairly helpful error message:
+
+
 
 
 ## Open Source Tools
@@ -147,6 +153,8 @@ Computer technology related.
 - https://github.com/racket/zuo Zuo: A Tiny Racket for Scripting
 - https://mitmproxy.org/ mitmproxy is a free and open source interactive HTTPS proxy.
 - https://fly.io/blog/all-in-on-sqlite-litestream/ https://github.com/benbjohnson/litestream
+- https://lav.io/notes/videogrep-tutorial/
+- https://github.com/codemix/deprank Deprank uses the PageRank algorithm to find the most important files in your JavaScript or TypeScript codebase.
 
 ## Software Engineering
 
@@ -220,6 +228,7 @@ Computer technology related.
 - https://www.pagetable.com/?p=764 Using the OS X 10.10 Hypervisor Framework: A Simple DOS Emulator
 - https://caffeinedev.medium.com/how-to-install-tensorflow-on-m1-mac-8e9b91d93706
 - https://p403n1x87.github.io/running-c-unit-tests-with-pytest.html https://news.ycombinator.com/item?id=30301880
+- https://posthog.com/blog/what-to-ask-in-interviews
 
 ## Crypto
 
