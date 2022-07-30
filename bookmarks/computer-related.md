@@ -66,8 +66,11 @@ Computer technology related.
 - https://news.ycombinator.com/item?id=31557809&utm_term=comment ffmpeg parameters and incantations
 - https://mariadb.com/bsl11/ Business Source License 1.1
 - https://github.com/jwilk/python-syntax-errors The idea is to put such a statement near the top of your file. If a user inadvertently ran the code against an older version, they would get a fairly helpful error message:
-
-
+- https://www.youtube.com/watch?v=Kv1Hiv3ox8I How are Images Compressed? [46MB ↘↘ 4.07MB] - Jpeg compression
+- https://www.youtube.com/watch?v=7aONIVSXiJ8 Introduction to memory management in Linux
+- https://github.com/satwikkansal/wtfpython Exploring and understanding Python through surprising snippets. (weird language quirks etc.)
+- https://til.simonwillison.net/sqlite/one-line-csv-operations One-liner for running queries against CSV files with SQLite
+- https://chriskiehl.com/article/thoughts-after-6-years Software development topics I've changed my mind on after 6 years in the industry
 
 
 ## Open Source Tools
@@ -189,6 +192,9 @@ Computer technology related.
 - https://sqliteviewer.app/ https://github.com/qwtel/sqlite-viewer-vscode
 - http://www.fmwconcepts.com/imagemagick/index.php  - A collection of image utilities that uses imagemagick
 - https://panelbear.com/ Alternative to Google Analytics
+- https://www.rescuetime.com/ - Track time used on Computer
+- http://ankisrs.net/ - Flash cards for remembering things
+
 
 
 

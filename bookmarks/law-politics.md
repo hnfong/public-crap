@@ -23,6 +23,7 @@
 - https://www.legco.gov.hk/yr02-03/english/bc/bc55/papers/bc55-113-e.pdf  - Note for the Bills Committee on National Security (Legislative Provisions) Bill Background information on the Societies Ordinance
 - https://cunderwood.dev/2022/02/13/consent-gdpr-and-google-analytics/
 - https://www.youtube.com/watch?v=-1iaJWSwUZs almost 2 hour Harry Potter Critique
+- https://imprimis.hillsdale.edu/islam-facts-or-dreams/
 
 # Big-Tech
 
@@ -63,4 +64,11 @@
 - https://www.wired.co.uk/article/whatsapp-encryption-child-abuse
 - https://www.wsj.com/articles/facebook-twitter-google-warn-planned-hong-kong-tech-law-could-drive-them-out-11625483036
 - https://news.ycombinator.com/item?id=30632695 https://www.reuters.com/world/europe/exclusive-facebook-instagram-temporarily-allow-calls-violence-against-russians-2022-03-10/
+- https://www.theguardian.com/technology/2017/may/07/the-great-british-brexit-robbery-hijacked-democracy Cambridge Analytica, Brexit, Trump elections, Russian influence
+- https://www.youtube.com/watch?v=yFB6TdrGB7s - (Canada) Bill C11 wants to destroy YouTube as we know it...
+- https://noyb.eu/en/austrian-dsb-eu-us-data-transfers-google-analytics-illegal
+- https://arstechnica.com/tech-policy/2021/09/leaked-documents-reveal-the-special-rules-facebook-uses-for-5-8m-vips/
+- https://en.wikipedia.org/wiki/Foreign\_Interference\_(Countermeasures)\_Act\_2021
+- https://www.macrumors.com/2022/07/05/eu-approves-landmark-legislation-to-regulate-apple/
+
 
