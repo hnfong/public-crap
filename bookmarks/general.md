@@ -45,6 +45,7 @@
 - https://ccl.hkust.edu.hk/useful_resources Useful resources (early Cantonese)
 - https://github.com/kiking0501/Cantonese-Chinese-Translation
 - https://www.judyrecords.com/  Full text search on 630M US court cases
+- https://github.com/awong-dev/cantodict-archive/releases/tag/v1.0
 
 
 ## Games
@@ -99,6 +100,8 @@
 - https://www.youtube.com/watch?v=VV0MntUNp3E Scientists are Now Correcting Their Stupidity! | Gulf Of Cambay | Shiva | Aliens| Sadhguru|Adiyogi
 - https://www.youtube.com/watch?v=bRGjMpRZpCg 《“字”从遇见你》为什么甲骨文的“天”字比“人”字更像一个小人？【CCTV纪录】 (CCTV programme speculates the character for "sky" is a pictogram of a extraterritorial (or human in spacesuit)
 - https://www.youtube.com/watch?v=8tnrkahCLHw The 1100 ton Unfinished Obelisk - Carved with Pounding Stones? An UnchartedX Investigation!
+- https://www.youtube.com/watch?v=VV0MntUNp3E Scientists are Now Correcting Their Stupidity! | Gulf Of Cambay | Shiva | Aliens| Sadhguru|Adiyogi
+
 
 ## Arcane
 
