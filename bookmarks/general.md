@@ -10,7 +10,6 @@
 - http://jvns.ca/
 - https://brooker.co.za/blog/
 - http://pvk.ca/Blog/archives/
-- https://staffeng.com/
 - https://www.machow.ski/
 - https://hn.lindylearn.io/ (Best of HN)
 - https://blog.wesleyac.com/
