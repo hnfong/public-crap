@@ -16,6 +16,7 @@ Computer technology related.
 - ☆ https://web.archive.org/web/20220303141223/https://pastebin.com/n6AGB62L An ex-Microsoft employee's overview of Win32, WinForms, WPF, and UI toolkits in general
 - ☆ https://github.com/kdeldycke/awesome-falsehood A curated list of falsehoods programmers believe in.
 - ☆ https://www.youtube.com/watch?v=Kv1Hiv3ox8I How are Images Compressed? [46MB ↘↘ 4.07MB] - Jpeg compression
+- ☆ https://betterdev.blog/minimal-safe-bash-script-template/
 - http://www.unicode.org/cgi-bin/UnihanRSIndex.pl?radical=159&minstrokes=4&maxstrokes=6&useutf8=true
 - http://research.microsoft.com/apps/pubs/default.aspx?id=144888 - Cycles, Cells and Platters: An Empirical Analysis of Hardware Failures on a Million Consumer PCs
 - https://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/
@@ -67,11 +68,14 @@ Computer technology related.
 - https://www.youtube.com/watch?v=7aONIVSXiJ8 Introduction to memory management in Linux
 - https://github.com/satwikkansal/wtfpython Exploring and understanding Python through surprising snippets. (weird language quirks etc.)
 - https://til.simonwillison.net/sqlite/one-line-csv-operations One-liner for running queries against CSV files with SQLite
-- https://chriskiehl.com/article/thoughts-after-6-years Software development topics I've changed my mind on after 6 years in the industry
+- http://www.ioccc.org/2019/mills/hint.html - RNN Machine Learning in C
 
 
 ## Open Source Tools
 
+- ☆ http://sourcehut.org - sth like github but created by OSS maniacs
+- ☆ https://datasette.io/ An open source multi-tool for exploring and publishing data
+- ☆ https://github.com/geohot/tinygrad - Small neural network tool
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
 - https://github.com/yt-dlp/yt-dlp (youtube-download - fork)
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
@@ -87,7 +91,6 @@ Computer technology related.
 - http://stackoverflow.com/questions/1777060/what-linux-full-text-indexing-tool-has-a-good-c-api
 - https://github.com/thoth-station/thoth - Python recommendation engine for python (ML) packages (so meta..)
 - http://arcade.academy/ - Python beginners library to create a game
-- http://sourcehut.org - sth like github but created by OSS maniacs
 - http://avidemux.sourceforge.net/ - Video editing programs
 - https://github.com/mifi/lossless-cut - Video editing programs
 - https://github.com/SpaceVim/SpaceVim
@@ -111,7 +114,6 @@ Computer technology related.
 - https://colab.research.google.com/github/philzook58/z3_tutorial/blob/master/Z3%20Tutorial.ipynb - z3 very nice python lib for theorem proving and solving algebra stuff
 - https://www.matuzo.at/blog/html-boilerplate/
 - https://news.ycombinator.com/item?id=26523212   ZPL: (Almost) C99 Powerkit (github.com/zpl-c) - Nice basic C library
-- https://betterdev.blog/minimal-safe-bash-script-template/
 - https://github.com/szhorvat/ConnectedGraphSampler Really Random Connected Graphs
 - https://www.falstad.com/circuit/ electronic circuit simulator
 - https://bonsaibrowser.com/
@@ -128,14 +130,13 @@ Computer technology related.
 - https://github.com/BurntSushi/ripgrep/issues/1497
 - https://httptoolkit.tech/ HTTP Toolkit is a beautiful & open-source tool for debugging, testing and building with HTTP(S) on Windows, Linux & Mac.
 - https://ed25519.cr.yp.to/python/ed25519.py Python implementation of ED25519
-- https://datasette.io/ An open source multi-tool for exploring and publishing data
 - https://github.com/babysor/MockingBird    Mocking Bird – Realtime Voice Clone for Chinese
 - https://github.com/PollRobots/scheme An R7RS Scheme implemented in WebAssembly
 - https://github.com/JeffBezanson/femtolisp Small LISP used as base of Julia parser
 - https://boardgame.io/ Open Source Game Engine for Turn-Based Games
 - https://formulae.brew.sh/formula/tcpflow https://linux.die.net/man/1/tcpflow tcpflow is a program that captures data transmitted as part of TCP connections (flows), and stores the data in a way that is convenient for protocol analysis or debugging. A program like tcpdump(4) shows a summary of packets seen on the wire, but usually doesn't store the data that's actually being transmitted. In contrast, tcpflow reconstructs the actual data streams and stores each flow in a separate file for later analysis. tcpflow understands TCP sequence numbers and will correctly reconstruct data streams regardless of retransmissions or out-of-order delivery.
 - https://typesense.org/about/ Typesense is an open source, typo tolerant search engine that is optimized for instant sub-50ms searches, while providing an intuitive developer experience.
-- https://github.com/akkartik/teliva “Enable all people to modify the software they use in the course of using it.”
+- https://github.com/akkartik/teliva an environment for end-user programming “Enable all people to modify the software they use in the course of using it.”
 - https://github.com/robmsmt/SpeechLoop toolkit to evaluate many different speech recognition engines.
 - https://en.wikipedia.org/wiki/SipHash SipHash is an add–rotate–xor (ARX) based family of pseudorandom functions created by Jean-Philippe Aumasson and Daniel J. Bernstein in 2012,[1]: 165 [2] in response to a spate of "hash flooding" denial-of-service attacks (HashDoS) in late 2011.[3]
 - https://browsix.org/ UNIX IN YOUR BROWSER TAB (implement POSIX in the browser)
@@ -147,8 +148,7 @@ Computer technology related.
 - https://htmx.org/ htmx gives you access to AJAX, CSS Transitions, WebSockets and Server Sent Events directly in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext htmx is small (~10k min.gz'd), dependency-free, extendable & IE11 compatible
 - https://github.com/confluentinc/ksql
 - https://github.com/cotowali/cotowali A statically typed scripting language that transpile into POSIX sh
-- https://roadmap.sh/
-- https://github.com/geohot/tinygrad
+- https://roadmap.sh/ - educational content to help guide the developers in picking up the path and guide their learnings
 - https://haxe.org/ Haxe is an open source high-level strictly-typed programming language with a fast optimizing cross-compiler. Haxe can build cross-platform applications targeting JavaScript, C++, C#, Java, JVM, Python, Lua, PHP, Flash, and allows access to each platform's native capabilities. Haxe has its own VMs (HashLink and NekoVM) but can also run in interpreted mode.
 - https://heaps.io/ Heaps.io is a mature cross platform graphics engine designed for high performance games.It is designed to leverage modern GPUs that are commonly available on both desktop and mobile devices. (Based on Haxe)
 - https://github.com/facebookexperimental/eden EdenSCM is a cross-platform, highly scalable source control management system.
@@ -158,16 +158,18 @@ Computer technology related.
 - https://lav.io/notes/videogrep-tutorial/
 - https://github.com/codemix/deprank Deprank uses the PageRank algorithm to find the most important files in your JavaScript or TypeScript codebase.
 - https://github.com/eudoxia0/cmacro cmacro: Lisp macros for C
-
+- https://github.com/fivethirtyeight - small datasets that might be useful (mostly US-centric social/politics/sports stuff)
 
 ## Software Engineering
 
 - https://thorstenball.com/blog/2022/05/17/professional-programming-the-first-10-years/
+- https://staffeng.com/
+- https://chriskiehl.com/article/thoughts-after-6-years Software development topics I've changed my mind on after 6 years in the industry
 
 ## Business Tools
 
 - https://github.com/public-apis/public-apis
-- http://sumome.com/ - Sumo. Free tools to automate your site growth.
+- http://sumome.com/ - Sumo. FREE email capture tool (Newsletter)
 - https://hootsuite.com/ - Social Media Management startup company
 - https://projectshield.withgoogle.com/en/ - DDoS/security help from Google
 - https://www.pythonanywhere.com/ - Python Anywhere
@@ -183,7 +185,6 @@ Computer technology related.
 - TransferWise (or Wise) - fintech easy wire transfer and currency exchange. local bank accounts for receiving moneys.
 - Payoneer - multiple ways to get paid online by international clients. making international payments, receiving funds, managing your digital business, or accessing capital
 - https://www.snigel.com/blog/top-5-adsense-alternatives-that-can-increase-website-revenue/ - Review of Adsense alternatives by an adsense competitor
-- https://dribbble.com - Discover the world’s top designers & creatives Dribbble is the leading destination to find & showcase creative work and home to the world's best design professionals.
 - https://browserflow.app/ Automate your work on any website
 - https://www.pullrequest.com/pricing/ Code Review as a Service
   - HN discussion: https://news.ycombinator.com/item?id=29623505
@@ -196,11 +197,9 @@ Computer technology related.
 - https://www.rescuetime.com/ - Track time used on Computer
 - http://ankisrs.net/ - Flash cards for remembering things
 
-
-
-
 ## Graphics, Design, etc.
 
+- https://dribbble.com - Discover the world’s top designers & creatives Dribbble is the leading destination to find & showcase creative work and home to the world's best design professionals.
 - http://my-free-vector-art.com/ - Free vector art
 - http://www.makeuseof.com/tag/free-fonts-sites-where-find-them/
 - https://www.mattcrampton.com/blog/mega_list_of_free_image_sites_for_blogging/
@@ -218,7 +217,6 @@ Computer technology related.
 - https://www.youtube.com/watch?v=pTr1uLQTJNE - Simon Willison - Instant serverless APIs, powered by SQLite (comment: "Little data" using datasette (and other sqlite-focused tools))
 - https://www.youtube.com/watch?v=w2nKIGhXPAM - PyCon 2019 Jess Shapiro - Everything at Once: Python's Many Concurrency Models - PyCon 2019
 - https://towardsdatascience.com/python-tools-for-a-beginner-data-scientist-39b3b9a4303a
-- http://www.ioccc.org/2019/mills/hint.html - RNN Machine Learning in C
 - http://karpathy.github.io/neuralnets/ - Hacker's guide to Neural Networks
 - https://www.youtube.com/watch?v=h7apO7q16V0 -- FFT tutorial
 - https://www.youtube.com/watch?v=1AwG0T4gaO0 - numba tutorial
