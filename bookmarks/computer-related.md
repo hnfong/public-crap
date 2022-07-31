@@ -4,13 +4,23 @@ Computer technology related.
 
 ## Reference, Academic Stuff, etc.
 
-- http://pubs.opengroup.org/onlinepubs/000095399/ - POSIX Specification
+- ☆ http://pubs.opengroup.org/onlinepubs/000095399/ - POSIX Specification
+- ☆ https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html - Undefined behavior in C
+- ☆ http://karpathy.github.io/2015/05/21/rnn-effectiveness/ - The Unreasonable Effectiveness of Recurrent Neural Networks
+- ☆ https://github.com/daturkel/learning-papers landmark papers in machine learning
+- ☆ https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
+- ☆ https://github.com/AnthonyCalandra/modern-cpp-features
+- ☆ https://blog.llvm.org/2011/05/what-every-c-programmer-should-know.html
+- ☆ https://jepsen.io/analyses - Jepsen has analyzed over two dozen databases, coordination services, and queues—and we’ve found replica divergence, data loss, stale reads, read skew, lock conflicts, and much more
+- ☆ https://www.quora.com/What-goes-into-making-an-OS-to-be-Unix-compliant-certified
+- ☆ https://web.archive.org/web/20220303141223/https://pastebin.com/n6AGB62L An ex-Microsoft employee's overview of Win32, WinForms, WPF, and UI toolkits in general
+- ☆ https://github.com/kdeldycke/awesome-falsehood A curated list of falsehoods programmers believe in.
+- ☆ https://www.youtube.com/watch?v=Kv1Hiv3ox8I How are Images Compressed? [46MB ↘↘ 4.07MB] - Jpeg compression
 - http://www.unicode.org/cgi-bin/UnihanRSIndex.pl?radical=159&minstrokes=4&maxstrokes=6&useutf8=true
 - http://research.microsoft.com/apps/pubs/default.aspx?id=144888 - Cycles, Cells and Platters: An Empirical Analysis of Hardware Failures on a Million Consumer PCs
 - https://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/
-- http://www.cs.cornell.edu/home/sam/FDpapers.html - Failure Detectors (No longer available. Can be found on archive.org)
+- http://www.cs.cornell.edu/home/sam/FDpapers.html - Unreliable Failure Detectors for Reliable Distributed Systems. (No longer available. Can be found on archive.org)
 - http://blog.foundationdb.com/databases-at-14.4mhz - Optimizing transaction time
-- https://www.youtube.com/watch?v=SacogDL_4JU - Computer evolves to generate baroque music!
 - http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=422994DDDEE5D01D4B4340533A5034CF?doi=10.1.1.680.2097&rep=rep1&type=pdf - On the Euclidean Distance of Images
 - http://www.math.uwaterloo.ca/~bico/papers/match_ijoc.pdf - Minimum weighted matching
 - https://courses.engr.illinois.edu/cs598csc/sp2010/lectures/lecture10.pdf - Minimum weighted matching
@@ -19,19 +29,10 @@ Computer technology related.
 - http://kvfrans.com/coloring-and-shading-line-art-automatically-through-conditional-gans/ - Machine Learning how to fill in manga art
 - https://arxiv.org/pdf/1801.00173.pdf - Theory of Deep Learning III: explaining the non-overfitting puzzle
 - http://www.wildml.com/deep-learning-glossary/
-- https://www.brow.sh/ - Browsh is a fully-modern text-based browser
-- https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html - Undefined behavior in C
-- http://karpathy.github.io/2015/05/21/rnn-effectiveness/ - The Unreasonable Effectiveness of Recurrent Neural Networks
-- https://exploringjs.com/deep-js/toc.html - Book
+- https://exploringjs.com/deep-js/toc.html - Deep Javascript (Book)
 - https://talawah.io/blog/extreme-http-performance-tuning-one-point-two-million/
 - http://infolab.stanford.edu/~ullman/mmds/book.pdf - Book: Mining of Massive Datasets
-- https://github.com/daturkel/learning-papers landmark papers in machine learning
 - http://www.complexity-explorables.org/ models/simulations for chaotic systems 
-- https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
-- https://github.com/AnthonyCalandra/modern-cpp-features
-- https://github.com/yt-dlp/yt-dlp (youtube-download - fork)
-- https://blog.llvm.org/2011/05/what-every-c-programmer-should-know.html
-- https://jepsen.io/analyses - Jepsen has analyzed over two dozen databases, coordination services, and queues—and we’ve found replica divergence, data loss, stale reads, read skew, lock conflicts, and much more
 - https://danluu.com/new-cpu-features/ - What's new in CPUs since the 80s?
 - https://danluu.com/file-consistency/ - File consistency and crash/power outage resilience
 - https://isocpp.org/faq
@@ -47,7 +48,6 @@ Computer technology related.
 - https://www.daemonology.net/blog/2018-01-17-some-thoughts-on-spectre-and-meltdown.html#disqus_thread - Best Summary of Spectre and Meltdown I've read so far.
 - https://blog.frankmtaylor.com/2021/10/21/a-small-guide-for-naming-stuff-in-front-end-code/
 - https://www.quora.com/Why-do-some-developers-at-strong-companies-like-Google-consider-Agile-development-to-be-nonsense
-- https://www.quora.com/What-goes-into-making-an-OS-to-be-Unix-compliant-certified
 - https://github.com/Bakhtiyar-Garashov/flexbox-101 A guide contains everything you need to know about CSS flexbox
 - https://gankra.github.io/blah/text-hates-you/ (All the edge cases of rendering text)
 - https://lord.io/text-editing-hates-you-too/ Even more problems with editing text
@@ -55,18 +55,15 @@ Computer technology related.
 - https://github.com/dylanaraps/pure-bash-bible
 - https://twitter.com/marcan42/status/1494213855387734019 turns out Apple's custom NVMe drives are amazingly fast - if you don't care about data integrity.
 - http://mywiki.wooledge.org/BashPitfalls
-- https://web.archive.org/web/20220303141223/https://pastebin.com/n6AGB62L An ex-Microsoft employee's overview of Win32, WinForms, WPF, and UI toolkits in general
 - https://sethmlarson.dev/blog/utf-8 UTF8 reference
 - https://hackingcpp.com/cpp/cheat_sheets.html
 - https://news.ycombinator.com/item?id=30596699 What Is IO Monad? (2018) [video] (youtube.com)
 - https://en.algorithmica.org/hpc/ This is an upcoming high performance computing book titled “Algorithms for Modern Hardware” by Sergey Slotin.
-- https://github.com/kdeldycke/awesome-falsehood A curated list of falsehoods programmers believe in.
 - https://github.com/openai/gpt-2/blob/master/src/model.py
 - https://github.com/satwikkansal/wtfpython
 - https://news.ycombinator.com/item?id=31557809&utm_term=comment ffmpeg parameters and incantations
 - https://mariadb.com/bsl11/ Business Source License 1.1
 - https://github.com/jwilk/python-syntax-errors The idea is to put such a statement near the top of your file. If a user inadvertently ran the code against an older version, they would get a fairly helpful error message:
-- https://www.youtube.com/watch?v=Kv1Hiv3ox8I How are Images Compressed? [46MB ↘↘ 4.07MB] - Jpeg compression
 - https://www.youtube.com/watch?v=7aONIVSXiJ8 Introduction to memory management in Linux
 - https://github.com/satwikkansal/wtfpython Exploring and understanding Python through surprising snippets. (weird language quirks etc.)
 - https://til.simonwillison.net/sqlite/one-line-csv-operations One-liner for running queries against CSV files with SQLite
@@ -75,6 +72,8 @@ Computer technology related.
 
 ## Open Source Tools
 
+- https://www.brow.sh/ - Browsh is a fully-modern text-based browser
+- https://github.com/yt-dlp/yt-dlp (youtube-download - fork)
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
 - http://openrefine.org/ - Data analyzing and cleansing tool
 - http://ankisrs.net/ - Make remembering things easy
@@ -158,6 +157,8 @@ Computer technology related.
 - https://fly.io/blog/all-in-on-sqlite-litestream/ https://github.com/benbjohnson/litestream
 - https://lav.io/notes/videogrep-tutorial/
 - https://github.com/codemix/deprank Deprank uses the PageRank algorithm to find the most important files in your JavaScript or TypeScript codebase.
+- https://github.com/eudoxia0/cmacro cmacro: Lisp macros for C
+
 
 ## Software Engineering
 
