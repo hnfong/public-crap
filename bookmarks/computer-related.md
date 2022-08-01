@@ -69,6 +69,7 @@ Computer technology related.
 - https://github.com/satwikkansal/wtfpython Exploring and understanding Python through surprising snippets. (weird language quirks etc.)
 - https://til.simonwillison.net/sqlite/one-line-csv-operations One-liner for running queries against CSV files with SQLite
 - http://www.ioccc.org/2019/mills/hint.html - RNN Machine Learning in C
+- https://scottaaronson.blog/?p=208 	Shor, I’ll do it: explaining Shor’s algorithm without using a single ket sign
 
 
 ## Open Source Tools

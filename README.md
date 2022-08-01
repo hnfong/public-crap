@@ -7,6 +7,8 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2022
 
+- [16-「發奮圖強」係啱定錯？](writings/2022/16-「發奮圖強」係啱定錯？.md)
+- [15-科學方法嘅限制](writings/2022/15-科學方法嘅限制.md)
 - [14-世界嘅全貌](writings/2022/14-世界嘅全貌.md)
 - [13-Sentience](writings/2022/13-Sentience.md)
 - [12-跟風講下痾屎單案](writings/2022/12-跟風講下痾屎單案.md)
@@ -267,4 +269,5 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [wishes](bookmarks/wishes.md)
 - [law-politics](bookmarks/law-politics.md)
 - [general](bookmarks/general.md)
+- [contents](bookmarks/contents.md)
 - [computer-related](bookmarks/computer-related.md)
