@@ -225,6 +225,7 @@
 - https://thestatsgeek.com/2020/11/21/interpretation-of-frequentist-confidence-intervals-and-bayesian-credible-intervals/
 - https://siderea.dreamwidth.org/1747990.html Fwd: How to prepare for the invasion of your country [domesticity]
 - https://www.quantamagazine.org/puzzling-quantum-scenario-appears-not-to-conserve-energy-20220516/ - Possible energy coming from parallel worlds?
+- https://twitter.com/Foone/status/1014267515696922624 You want to know something about how bullshit insane our brains are? OK, so there's a physical problem with our eyes
 
 ## Hong Kong Housing
 

@@ -166,6 +166,7 @@ Computer technology related.
 - https://thorstenball.com/blog/2022/05/17/professional-programming-the-first-10-years/
 - https://staffeng.com/
 - https://chriskiehl.com/article/thoughts-after-6-years Software development topics I've changed my mind on after 6 years in the industry
+- https://github.com/jorgef/engineeringladders/blob/master/TechLead-EngineeringManager.md
 
 ## Business Tools
 
@@ -197,6 +198,7 @@ Computer technology related.
 - https://panelbear.com/ Alternative to Google Analytics
 - https://www.rescuetime.com/ - Track time used on Computer
 - http://ankisrs.net/ - Flash cards for remembering things
+- https://retool.com/ Build internal tools, remarkably fast (seems like a modern VB6)
 
 ## Graphics, Design, etc.
 

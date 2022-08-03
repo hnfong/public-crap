@@ -16,5 +16,6 @@
 
 - https://www.youtube.com/watch?v=Byn6PdLxN6E 秦始皇的武器：考古學家挖出8尊從未見過的兵馬俑，發現了他們手中的武器，原來，這才是秦始皇統一中國的秘密……|自說自話的總裁
 - https://www.youtube.com/watch?v=SacogDL_4JU - Computer evolves to generate baroque music!
+- https://www.youtube.com/watch?v=AsNTP8Kwu80 - Recurrent Neural Networks (RNNs), Clearly Explained!!!
 
 
