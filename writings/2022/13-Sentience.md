@@ -1,5 +1,7 @@
 # Sentience
 
+![image](./images/artificial_sentience.jpg)
+
 1. The fact that transformer based models generated convincingly human-looking text is nothing new. It's unfortunate that it took a borderline unhinged (from perspective of the social norm) person to blow the whistle.
 
 2. But it's almost expected. Blake Lemoine's alleged background as a Christian "mystic" with interests in the occult makes him the expected type of person to recognize a soul when he sees one.

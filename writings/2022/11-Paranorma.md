@@ -1,5 +1,7 @@
 # Paranorma
 
+![image](./images/paranormal.jpg)
+
 It's a shame that paranormal phenomena are most likely under-reported, because, really, there is no point.
 
 I don't think it is really because of ignorance, dogma or rigid beliefs, but probably due to the structure of our industrial society.   Essentially, any phenomena that doesn't "scale" might as well not exist. The ideas of science, especially the requirement that phenomena is objectively reproducible, were not merely adopted because they tended to find agreeable truths, but also because they facilitated industrial growth.
