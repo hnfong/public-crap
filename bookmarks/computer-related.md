@@ -199,6 +199,8 @@ Computer technology related.
 - https://www.rescuetime.com/ - Track time used on Computer
 - http://ankisrs.net/ - Flash cards for remembering things
 - https://retool.com/ Build internal tools, remarkably fast (seems like a modern VB6)
+- https://www.craiyon.com/ DALLE-alike model free for use supported by ads
+- https://www.midjourney.com/ image generation model use in discord subscription based
 
 ## Graphics, Design, etc.
 
