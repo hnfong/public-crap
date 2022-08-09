@@ -1,5 +1,8 @@
 # 偽科幻小說：DNA 創造論
 
+
+![image](./images/funny_alien_doing_experiments.jpg)
+
 (irrelevant context https://www.youtube.com/watch?v=5Sq89AJI19c&t=70s )
 
 【12000年前... 絕種生物... DNA 重新接種...】
