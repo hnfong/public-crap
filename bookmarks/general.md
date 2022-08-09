@@ -116,6 +116,7 @@
 - https://www.youtube.com/watch?v=0zMDMtv5XwY Darryl Anka (Bashar) - Buddha at the Gas Pump Interview
 - https://www.youtube.com/watch?v=DyNwxRMgJbY Interview s Darryl Anka & Bashar
 - https://www.youtube.com/watch?v=nH61dPXDqNU BASHAR A MULTIDIMENSIONAL BEING FROM THE FUTURE | EPISODE 60 THEY CALL US CHANNELERS
+- http://erikvikersveen.blogspot.com/2013/06/theories-about-sacred-circuits-tm.html
 
 
 ## Deconstruction of English
@@ -135,6 +136,7 @@
 - https://www.facebook.com/twlazyworker/videos/2290698921042490/ rope a jar 
 - http://robdunnlab.com/projects/wildsourdough/
 - https://www.facebook.com/myschoolbus.com.hk/videos/938079079618755/ - Magnetic Plastic Pieces
+- https://www.youtube.com/watch?v=1G72936Y3xA Top 10 Knots To Know
 
 
 ## Health and Food
