@@ -1,5 +1,7 @@
 # Free Will
 
+![image](./images/translucent_body_on_landscape.jpg)
+
 Many people mistakenly believe that free will is  incompatible with determinism, and that with advanced understanding of human systems (brain, etc.), the illusion of free will will be shattered. That is only true with dualistic assumptions, assuming that the "self" is a non-physical being exerting influence on the human mind. While I personally have seen evidence of non-physical entities that people call "spirits", the normal day-to-day experience of "free will" is generally not a result of such "spiritual" influence. (In fact, such influences are often called "possession" and traditionally requires exorcism... or perhaps contemporarily, lead to a medical professional diagnosing some form of psychosis and declaring the person devoid of free will...)
 
 Anyway, the more practical approach to look at "free will" in a non-metaphysical sense is to consider what actually is the subject, i.e. the "self". Who am I? If we thought "I" was a non-physical mind, a ghost or a spirit, then advances in neuroscience might indeed leave little room for those theories. If "I" was proven to not exist at all, then there's no subject to experience the freedom, which is the true reason why determinism threatens dualistic free will -- it attacks not the freedom, but the "self".
