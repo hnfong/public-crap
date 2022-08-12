@@ -160,6 +160,7 @@ Computer technology related.
 - https://github.com/codemix/deprank Deprank uses the PageRank algorithm to find the most important files in your JavaScript or TypeScript codebase.
 - https://github.com/eudoxia0/cmacro cmacro: Lisp macros for C
 - https://github.com/fivethirtyeight - small datasets that might be useful (mostly US-centric social/politics/sports stuff)
+- https://github.com/nerdyrodent/VQGAN-CLIP Just playing with getting VQGAN+CLIP running locally, rather than having to use colab.
 
 ## Software Engineering
 
