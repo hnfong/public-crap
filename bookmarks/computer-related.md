@@ -70,6 +70,8 @@ Computer technology related.
 - https://til.simonwillison.net/sqlite/one-line-csv-operations One-liner for running queries against CSV files with SQLite
 - http://www.ioccc.org/2019/mills/hint.html - RNN Machine Learning in C
 - https://scottaaronson.blog/?p=208 	Shor, I’ll do it: explaining Shor’s algorithm without using a single ket sign
+- https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/install-nvidia-driver.html
+- https://towardsdatascience.com/choosing-the-right-gpu-for-deep-learning-on-aws-d69c157d8c86
 
 
 ## Open Source Tools
@@ -161,6 +163,9 @@ Computer technology related.
 - https://github.com/eudoxia0/cmacro cmacro: Lisp macros for C
 - https://github.com/fivethirtyeight - small datasets that might be useful (mostly US-centric social/politics/sports stuff)
 - https://github.com/nerdyrodent/VQGAN-CLIP Just playing with getting VQGAN+CLIP running locally, rather than having to use colab.
+- https://github.com/nerdyrodent/CLIP-Guided-Diffusion/  Just playing with getting CLIP Guided Diffusion running locally, rather than having to use colab.
+- https://github.com/mehdidc/feed_forward_vqgan_clip Feed forward VQGAN-CLIP model, where the goal is to eliminate the need for optimizing the latent space of VQGAN for each input prompt. 
+- https://github.com/openai/glide-text2im
 
 ## Software Engineering
 
@@ -202,6 +207,8 @@ Computer technology related.
 - https://retool.com/ Build internal tools, remarkably fast (seems like a modern VB6)
 - https://www.craiyon.com/ DALLE-alike model free for use supported by ads
 - https://www.midjourney.com/ image generation model use in discord subscription based
+- https://www.reddit.com/user/Wiskkey/comments/p2j673/list_part_created_on_august_11_2021/ This list is a part of master post List of sites/programs/projects that use OpenAI's CLIP neural network for steering image/video creation to match a text description. All of the items in this post use VQGAN as an image generator; some items may also use another image generator
+- https://neuralblender.com/ (Another VQGAN+CLIP image generator - quite fast!)
 
 ## Graphics, Design, etc.
 
