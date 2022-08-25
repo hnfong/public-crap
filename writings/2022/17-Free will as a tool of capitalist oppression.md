@@ -1,4 +1,4 @@
-# Free will as a tool for capitalism oppression
+# Free will as a tool of capitalism oppression
 
 ![image](./images/forbidden_tree.jpg)
 
