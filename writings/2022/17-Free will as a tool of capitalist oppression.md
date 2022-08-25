@@ -1,5 +1,7 @@
 # Free will as a tool for capitalism oppression
 
+![image](./images/forbidden_tree.jpg)
+
 I recently realized that there is really no conflict between "free will" and determinism. The logic that "you don't have free will because XXX determines your choices" is flawed in the sense that, if XXX is actually a part of you, then there's no conflict. The problem is that it is very hard to define who oneself is, and as such we have culturally been indoctrinated to believe that our "will" is not our brains, not our physical bodies, not the society that influences us, but some sort of abstract thing that totally lies beyond the reach of the physical world.
 
 The word "free" implies a certain kind of detachment, as if our "will" is supposed to be detached from the physical world. But we know for a fact that this is not true. Our mental state is heavily dependent on the state of our brains. Our decisions are influenced by physical desires and fears. Our beliefs are heavily informed by our cultural environment. Our "will", for the most part (the parts that are observable by other people), are mostly physical.
