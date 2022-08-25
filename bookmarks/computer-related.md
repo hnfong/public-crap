@@ -166,6 +166,7 @@ Computer technology related.
 - https://github.com/nerdyrodent/CLIP-Guided-Diffusion/  Just playing with getting CLIP Guided Diffusion running locally, rather than having to use colab.
 - https://github.com/mehdidc/feed_forward_vqgan_clip Feed forward VQGAN-CLIP model, where the goal is to eliminate the need for optimizing the latent space of VQGAN for each input prompt. 
 - https://github.com/openai/glide-text2im
+- https://github.com/alembics/disco-diffusion
 
 ## Software Engineering
 
