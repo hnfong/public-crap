@@ -72,6 +72,11 @@ Computer technology related.
 - https://scottaaronson.blog/?p=208 	Shor, I’ll do it: explaining Shor’s algorithm without using a single ket sign
 - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/install-nvidia-driver.html
 - https://towardsdatascience.com/choosing-the-right-gpu-for-deep-learning-on-aws-d69c157d8c86
+- https://www.mediawiki.org/w/index.php?title=Manual:Database_layout/diagram&action=render Wikipedia/Wikimedia database schema layout
+- https://quarry.wmcloud.org/ - Query wikipedia databases (see schema above)
+- https://evchk.fandom.com/zh/wiki/%E7%89%B9%E6%AE%8A:%E5%8C%AF%E5%87%BA
+- https://query.wikidata.org/#%23Cats%0ASELECT%20%3Fitem%20%3FitemLabel%20%0AWHERE%20%0A%7B%0A%20%20%3Fitem%20wdt%3AP31%20wd%3AQ5.%0A%20%20%7B%20%3Fitem%20wdt%3AP19%20wd%3AQ8646.%20%7D%20%0A%20%20UNION%0A%20%20%7B%20%3Fitem%20wdt%3AP19%20wd%3AQ1054923.%20%7D%20%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22zh-hant%2Czh%2Cen%2C%5BAUTO_LANGUAGE%5D%22.%20%7D%20%23%20Helps%20get%20the%20label%20in%20your%20language%2C%20if%20not%2C%20then%20en%20language%0A%7D
+- https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples
 
 
 ## Open Source Tools
@@ -167,6 +172,10 @@ Computer technology related.
 - https://github.com/mehdidc/feed_forward_vqgan_clip Feed forward VQGAN-CLIP model, where the goal is to eliminate the need for optimizing the latent space of VQGAN for each input prompt. 
 - https://github.com/openai/glide-text2im
 - https://github.com/alembics/disco-diffusion
+- https://wavvy.app/ - WASM port of Audacity
+- https://github.com/ahilss/wxWidgets-wasm https://github.com/ahilss/portaudio-wasm https://github.com/ahilss/wavvy
+
+
 
 ## Software Engineering
 
