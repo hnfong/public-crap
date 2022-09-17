@@ -7,7 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2022
 
-- [17-Free will as a tool of capitalist oppression](writings/2022/17-Free will as a tool of capitalist oppression.md)
+- [17-Free will as a tool of capitalist oppression](writings/2022/17-Free_will_as_a_tool_of_capitalist_oppression.md)
 - [16-「發奮圖強」係啱定錯?](writings/2022/16-「發奮圖強」係啱定錯_qm_.md)
 - [15-科學方法嘅限制](writings/2022/15-科學方法嘅限制.md)
 - [14-世界嘅全貌](writings/2022/14-世界嘅全貌.md)
