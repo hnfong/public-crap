@@ -2,12 +2,19 @@
 
 Computer technology related.
 
+## Metalinks
+
+- https://github.com/pfalcon/awesome-python-compilers
+- https://github.com/daturkel/learning-papers landmark papers in machine learning
+- https://github.com/trickest/cve Almost every publicly available CVE PoC.
+- https://github.com/danluu/post-mortems
+- https://github.com/public-apis/public-apis
+
 ## Reference, Academic Stuff, etc.
 
 - ☆ http://pubs.opengroup.org/onlinepubs/000095399/ - POSIX Specification
 - ☆ https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html - Undefined behavior in C
 - ☆ http://karpathy.github.io/2015/05/21/rnn-effectiveness/ - The Unreasonable Effectiveness of Recurrent Neural Networks
-- ☆ https://github.com/daturkel/learning-papers landmark papers in machine learning
 - ☆ https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
 - ☆ https://github.com/AnthonyCalandra/modern-cpp-features
 - ☆ https://blog.llvm.org/2011/05/what-every-c-programmer-should-know.html
@@ -61,7 +68,6 @@ Computer technology related.
 - https://news.ycombinator.com/item?id=30596699 What Is IO Monad? (2018) [video] (youtube.com)
 - https://en.algorithmica.org/hpc/ This is an upcoming high performance computing book titled “Algorithms for Modern Hardware” by Sergey Slotin.
 - https://github.com/openai/gpt-2/blob/master/src/model.py
-- https://github.com/satwikkansal/wtfpython
 - https://news.ycombinator.com/item?id=31557809&utm_term=comment ffmpeg parameters and incantations
 - https://mariadb.com/bsl11/ Business Source License 1.1
 - https://github.com/jwilk/python-syntax-errors The idea is to put such a statement near the top of your file. If a user inadvertently ran the code against an older version, they would get a fairly helpful error message:
@@ -151,7 +157,6 @@ Computer technology related.
 - https://godotengine.org/ - Open Source Game Engine - Godot provides a huge set of common tools, so you can just focus on making your game without reinventing the wheel.
 - https://jodd.org/ The Unbearable Lightness of Java - Jodd is a set of micro-frameworks and developer-friendly tools and utilities.
 - https://nn-512.com/ Generate Neural Nets in C
-- https://github.com/trickest/cve Almost every publicly available CVE PoC.
 - https://sqlite-utils.datasette.io/en/stable/index.html https://github.com/simonw/sqlite-utils/
 - https://htmx.org/ htmx gives you access to AJAX, CSS Transitions, WebSockets and Server Sent Events directly in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext htmx is small (~10k min.gz'd), dependency-free, extendable & IE11 compatible
 - https://github.com/confluentinc/ksql
@@ -186,7 +191,6 @@ Computer technology related.
 
 ## Business Tools
 
-- https://github.com/public-apis/public-apis
 - http://sumome.com/ - Sumo. FREE email capture tool (Newsletter)
 - https://hootsuite.com/ - Social Media Management startup company
 - https://projectshield.withgoogle.com/en/ - DDoS/security help from Google
@@ -303,7 +307,6 @@ Computer technology related.
 - https://www.youtube.com/watch?v=jmTwlEh8L7g DEF CON 26 - Christopher Domas - GOD MODE UNLOCKED Hardware Backdoors in redacted x86
 - https://www.ibiblio.org/harris/500milemail.html
 - https://www.slideshare.net/reed2001/culture-1798664/ Netflix Culture Document (and lots of management philosophies)
-- https://github.com/danluu/post-mortems
 
 
 ## Python tools
