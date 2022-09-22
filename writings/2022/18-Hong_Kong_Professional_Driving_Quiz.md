@@ -1,5 +1,7 @@
 # Hong Kong Professional Driving Quiz
 
+![image](./images/car_on_highway.jpg)
+
 Choose the most appropriate answer.
 
 (Disclaimer: author does not have a Hong Kong driver's license)
@@ -42,6 +44,8 @@ Choose the most appropriate answer.
 - B. Explain that if you take them there, you will not be able to hand the taxi to the next driver in time
 - C. Explain that it requires crossing the harbour, and it is cheaper to take other taxis in a special taxi stand for this purpose
 - D. All of the above
+
+![image](./images/busstop.jpg)
 
 *Q: You are a mini-bus driver. Your bus is 90%+ full and you cannot see whether there are vacant seats in the rear. The bus stop is approaching and 3 people are there, busy looking at their smart phones.*
 
