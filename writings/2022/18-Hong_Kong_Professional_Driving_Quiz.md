@@ -50,14 +50,14 @@ Choose the most appropriate answer.
 *Q5: You are a mini-bus driver. Your bus is 90%+ full and you cannot see whether there are vacant seats in the rear. The bus stop is approaching and 3 people are there, busy looking at their smart phones.*
 
 - A. Ask the existing passengers whether there are vacant seats before stopping.
-- B. Stop at the bus stop regardless, because you could be subject to complaint if you skip a stop if the bus is not full
+- B. Stop at the bus stop regardless, because you could be subject to complaint if you skip a stop when the bus is not full
 - C. Stop at the bus stop regardless, and remind the onboarding people to check for vacant seats before paying.
 - D. Skip the stop, because they were looking at their phones and didn't signal the bus to stop.
 
 *Q6: You are a bus driver. Your bus is 90%+ full and you cannot see whether there are vacant seats in the rear. The bus stop is approaching and 3 people are there, busy looking at their smart phones.*
 
 - A. Ask the existing passengers whether there are vacant seats before stopping.
-- B. Stop at the bus stop regardless, because you could be subject to complaint if you skip a stop if the bus is not full
+- B. Stop at the bus stop regardless, because you could be subject to complaint if you skip a stop when the bus is not full
 - C. Stop at the bus stop regardless, and remind the onboarding people to check for vacant seats before paying.
 - D. Skip the stop, because they were looking at their phones and didn't signal the bus to stop.
 
