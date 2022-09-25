@@ -46,6 +46,11 @@
 - https://github.com/kiking0501/Cantonese-Chinese-Translation
 - https://www.judyrecords.com/  Full text search on 630M US court cases
 - https://github.com/awong-dev/cantodict-archive/releases/tag/v1.0
+- https://www.mediawiki.org/w/index.php?title=Manual:Database_layout/diagram&action=render Wikipedia/Wikimedia database schema layout
+- https://quarry.wmcloud.org/ - Query wikipedia databases (see schema above)
+- https://evchk.fandom.com/zh/wiki/%E7%89%B9%E6%AE%8A:%E5%8C%AF%E5%87%BA
+- https://query.wikidata.org/#%23Cats%0ASELECT%20%3Fitem%20%3FitemLabel%20%0AWHERE%20%0A%7B%0A%20%20%3Fitem%20wdt%3AP31%20wd%3AQ5.%0A%20%20%7B%20%3Fitem%20wdt%3AP19%20wd%3AQ8646.%20%7D%20%0A%20%20UNION%0A%20%20%7B%20%3Fitem%20wdt%3AP19%20wd%3AQ1054923.%20%7D%20%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22zh-hant%2Czh%2Cen%2C%5BAUTO_LANGUAGE%5D%22.%20%7D%20%23%20Helps%20get%20the%20label%20in%20your%20language%2C%20if%20not%2C%20then%20en%20language%0A%7D
+- https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples
 
 
 ## Games
@@ -101,6 +106,7 @@
 - https://www.youtube.com/watch?v=bRGjMpRZpCg 《“字”从遇见你》为什么甲骨文的“天”字比“人”字更像一个小人？【CCTV纪录】 (CCTV programme speculates the character for "sky" is a pictogram of a extraterritorial (or human in spacesuit)
 - https://www.youtube.com/watch?v=8tnrkahCLHw The 1100 ton Unfinished Obelisk - Carved with Pounding Stones? An UnchartedX Investigation!
 - https://www.youtube.com/watch?v=VV0MntUNp3E Scientists are Now Correcting Their Stupidity! | Gulf Of Cambay | Shiva | Aliens| Sadhguru|Adiyogi
+- https://www.youtube.com/watch?v=ZlFpq49Ri8Y The Big Bang Never Happened--The Science of the Censored Papers
 
 
 ## Arcane
