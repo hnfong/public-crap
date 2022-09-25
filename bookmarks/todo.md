@@ -7,3 +7,4 @@
 - https://mitmproxy.org/ mitmproxy is a free and open source interactive HTTPS proxy.
 - https://fly.io/blog/all-in-on-sqlite-litestream/ https://github.com/benbjohnson/litestream
 - https://www.visidata.org/credits/
+- https://openai.com/blog/whisper/
