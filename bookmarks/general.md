@@ -24,6 +24,15 @@
 - https://restofworld.org/newsletters/world/
 - https://skylikesun.blogspot.com/
 
+## Small funs
+
+- http://www.dogbunnypuzzle.com/
+- https://github.com/mgerdes/Open-Golf - Nice and simple game!
+- http://magickeyboard.io/ FUN (might be worth making Space_Invaders thing from this!)
+- https://eightcolors.net/ - Nice HTML puzzle game
+- https://0xf00ff00f.github.io/zettawatt/ - Moliu click click get more resource game
+- https://www.pounce.sh/ - Stealth and hunting game
+
 ## Language tools and references
 
 - https://www.jeraldinephneah.com/importance-of-dialects-in-singapore/ - Why We Should Reintroduce Chinese Dialects On Singapore’s Free-To-Air Television
@@ -58,11 +67,6 @@
 - https://www.youtube.com/playlist?list=PL7qFBOhneFnTAZmv35MTlWKC3YBmR7T7L  - Starcraft II 廣東話教學
 - https://pathofexile.gamepedia.com/Occultist%27s_Dominion - Interesting RPG (diablo-like) game
 - https://www.youtube.com/watch?v=hw0thrWVaKQ&t=4975s (Ultimate Beginner Survival Guide (ALL Seasons) Don't Starve Together)
-- http://magickeyboard.io/ FUN
-- https://github.com/mgerdes/Open-Golf - Nice and simple game!
-- https://eightcolors.net/ - Nice HTML puzzle game
-- https://0xf00ff00f.github.io/zettawatt/ - Moliu click click get more resource game
-- https://www.pounce.sh/ - Stealth and hunting game
 
 ## Finance and Business
 
