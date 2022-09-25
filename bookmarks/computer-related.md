@@ -9,10 +9,10 @@ Computer technology related.
 - https://github.com/trickest/cve Almost every publicly available CVE PoC.
 - https://github.com/danluu/post-mortems
 - https://github.com/public-apis/public-apis
+- https://github.com/sw-yx/spark-joy Easy ways to add design flair, user delight, and whimsy to your product!
 
 ## Reference, Academic Stuff, etc.
 
-- ☆ http://pubs.opengroup.org/onlinepubs/000095399/ - POSIX Specification
 - ☆ https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html - Undefined behavior in C
 - ☆ http://karpathy.github.io/2015/05/21/rnn-effectiveness/ - The Unreasonable Effectiveness of Recurrent Neural Networks
 - ☆ https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
@@ -24,6 +24,9 @@ Computer technology related.
 - ☆ https://github.com/kdeldycke/awesome-falsehood A curated list of falsehoods programmers believe in.
 - ☆ https://www.youtube.com/watch?v=Kv1Hiv3ox8I How are Images Compressed? [46MB ↘↘ 4.07MB] - Jpeg compression
 - ☆ https://betterdev.blog/minimal-safe-bash-script-template/
+- ☆ https://www.matuzo.at/blog/html-boilerplate/
+
+- http://pubs.opengroup.org/onlinepubs/000095399/ - POSIX Specification
 - http://www.unicode.org/cgi-bin/UnihanRSIndex.pl?radical=159&minstrokes=4&maxstrokes=6&useutf8=true
 - http://research.microsoft.com/apps/pubs/default.aspx?id=144888 - Cycles, Cells and Platters: An Empirical Analysis of Hardware Failures on a Million Consumer PCs
 - https://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/
@@ -34,19 +37,14 @@ Computer technology related.
 - https://courses.engr.illinois.edu/cs598csc/sp2010/lectures/lecture10.pdf - Minimum weighted matching
 - http://math.mit.edu/~goemans/18433S09/matching-notes.pdf  Lecture notes on bipartite matching
 - https://www.princeton.edu/~chiangm/optimization.pdf - Convex Optimization and Lagrange Duality
-- http://kvfrans.com/coloring-and-shading-line-art-automatically-through-conditional-gans/ - Machine Learning how to fill in manga art
 - https://arxiv.org/pdf/1801.00173.pdf - Theory of Deep Learning III: explaining the non-overfitting puzzle
-- http://www.wildml.com/deep-learning-glossary/
 - https://exploringjs.com/deep-js/toc.html - Deep Javascript (Book)
 - https://talawah.io/blog/extreme-http-performance-tuning-one-point-two-million/
-- http://infolab.stanford.edu/~ullman/mmds/book.pdf - Book: Mining of Massive Datasets
-- http://www.complexity-explorables.org/ models/simulations for chaotic systems 
 - https://danluu.com/new-cpu-features/ - What's new in CPUs since the 80s?
 - https://danluu.com/file-consistency/ - File consistency and crash/power outage resilience
 - https://isocpp.org/faq
 - http://yosefk.com/c++fqa/
 - https://blog.ffwll.ch/2017/08/github-why-cant-host-the-kernel.html Why Github can't host the Linux Kernel Community (A very informative critique of what's missing in GitHub for massively distributed OSS projects)
-- http://colah.github.io/posts/2015-08-Understanding-LSTMs/
 - https://www.youtube.com/watch?v=ncHmEUmJZf4 CppCon 2017: Matt Kulukundis “Designing a Fast, Efficient, Cache-friendly Hash Table, Step by Step”
 - https://sadh.life/post/builtins/ - Python "Builtins"
 - https://swtch.com/~rsc/regexp/regexp4.html Regular Expression Matching with a Trigram Index or How Google Code Search Worked Russ Cox
@@ -67,36 +65,33 @@ Computer technology related.
 - https://hackingcpp.com/cpp/cheat_sheets.html
 - https://news.ycombinator.com/item?id=30596699 What Is IO Monad? (2018) [video] (youtube.com)
 - https://en.algorithmica.org/hpc/ This is an upcoming high performance computing book titled “Algorithms for Modern Hardware” by Sergey Slotin.
-- https://github.com/openai/gpt-2/blob/master/src/model.py
 - https://news.ycombinator.com/item?id=31557809&utm_term=comment ffmpeg parameters and incantations
 - https://mariadb.com/bsl11/ Business Source License 1.1
-- https://github.com/jwilk/python-syntax-errors The idea is to put such a statement near the top of your file. If a user inadvertently ran the code against an older version, they would get a fairly helpful error message:
 - https://www.youtube.com/watch?v=7aONIVSXiJ8 Introduction to memory management in Linux
-- https://github.com/satwikkansal/wtfpython Exploring and understanding Python through surprising snippets. (weird language quirks etc.)
 - https://til.simonwillison.net/sqlite/one-line-csv-operations One-liner for running queries against CSV files with SQLite
-- http://www.ioccc.org/2019/mills/hint.html - RNN Machine Learning in C
 - https://scottaaronson.blog/?p=208 	Shor, I’ll do it: explaining Shor’s algorithm without using a single ket sign
-- https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/install-nvidia-driver.html
-- https://towardsdatascience.com/choosing-the-right-gpu-for-deep-learning-on-aws-d69c157d8c86
-- https://www.mediawiki.org/w/index.php?title=Manual:Database_layout/diagram&action=render Wikipedia/Wikimedia database schema layout
-- https://quarry.wmcloud.org/ - Query wikipedia databases (see schema above)
-- https://evchk.fandom.com/zh/wiki/%E7%89%B9%E6%AE%8A:%E5%8C%AF%E5%87%BA
-- https://query.wikidata.org/#%23Cats%0ASELECT%20%3Fitem%20%3FitemLabel%20%0AWHERE%20%0A%7B%0A%20%20%3Fitem%20wdt%3AP31%20wd%3AQ5.%0A%20%20%7B%20%3Fitem%20wdt%3AP19%20wd%3AQ8646.%20%7D%20%0A%20%20UNION%0A%20%20%7B%20%3Fitem%20wdt%3AP19%20wd%3AQ1054923.%20%7D%20%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22zh-hant%2Czh%2Cen%2C%5BAUTO_LANGUAGE%5D%22.%20%7D%20%23%20Helps%20get%20the%20label%20in%20your%20language%2C%20if%20not%2C%20then%20en%20language%0A%7D
-- https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples
-
 
 ## Open Source Tools
 
 - ☆ http://sourcehut.org - sth like github but created by OSS maniacs
 - ☆ https://datasette.io/ An open source multi-tool for exploring and publishing data
 - ☆ https://github.com/geohot/tinygrad - Small neural network tool
+- ☆ https://github.com/yt-dlp/yt-dlp (youtube-download - fork)
+- ☆ https://www.raylib.com/index.html - raylib is a simple and easy-to-use library to enjoy videogames programming.
+- ☆ https://love2d.org/ - LÖVE is an *awesome* framework you can use to make 2D games in Lua
+- ☆ https://github.com/susam/texme - TeXMe is a lightweight JavaScript utility to create self-rendering Markdown + LaTeX documents.
+- ☆ https://news.ycombinator.com/item?id=26523212   ZPL: (Almost) C99 Powerkit (github.com/zpl-c) - Nice basic C library
+- ☆ https://js13kgames.github.io/resources/
+- ☆ https://boardgame.io/ Open Source Game Engine for Turn-Based Games
+- ☆ https://jodd.org/ The Unbearable Lightness of Java - Jodd is a set of micro-frameworks and developer-friendly tools and utilities.
+- ☆ https://github.com/eudoxia0/cmacro cmacro: Lisp macros for C
+
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
-- https://github.com/yt-dlp/yt-dlp (youtube-download - fork)
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
 - http://openrefine.org/ - Data analyzing and cleansing tool
 - http://ankisrs.net/ - Make remembering things easy
 - HazelCast - Distributed in memory data grid
-- http://qira.me/ QIRA is a timeless debugger - All state is tracked while a program is running, so you can debug in the past.
+- http://qira.me/ QIRA is a timeless debugger - All state is tracked while a program is running, so you can debug in the past. - Linux required, 64-bit Ubuntu recommended.
 - https://github.com/codelucas/newspaper - newspaper scraping framework
 - https://github.com/octol/vim-cpp-enhanced-highlight
 - https://teuder.github.io/rcpp4everyone_en/index.html - Rcpp is a package that enables you to implement R functions in C++.
@@ -104,84 +99,74 @@ Computer technology related.
 - https://github.com/asd5510/word2vec-chinese-demo
 - http://stackoverflow.com/questions/1777060/what-linux-full-text-indexing-tool-has-a-good-c-api
 - https://github.com/thoth-station/thoth - Python recommendation engine for python (ML) packages (so meta..)
-- http://arcade.academy/ - Python beginners library to create a game
-- http://avidemux.sourceforge.net/ - Video editing programs
-- https://github.com/mifi/lossless-cut - Video editing programs
-- https://github.com/SpaceVim/SpaceVim
 - https://github.com/beurtschipper/Depix - Depix is a tool for recovering passwords from pixelized screenshots.
-- https://vlang.io/ - simple Go-like language that compiles down to C
-- https://github.com/coqui-ai/TTS - text to speech (see https://news.ycombinator.com/item?id=26790951 )
-- https://www.raylib.com/index.html - raylib is a simple and easy-to-use library to enjoy videogames programming.
 - https://www.luart.org/ - Comprehensive Windows framework to develop in Lua
-- https://starship.rs/ command prompt
 - https://seb.jambor.dev/posts/improving-shell-workflows-with-fzf/
-- https://love2d.org/ - LÖVE is an *awesome* framework you can use to make 2D games in Lua
 - https://ptsjs.org/ - A really impressive and simple Javascript visualization library
-- https://news.ycombinator.com/item?id=27569146 Zsync: Differential file downloading over HTTP using the rsync algorithm (2010)
+- http://zsync.moria.org.uk/ zsync is a file transfer program. It allows you to download a file from a remote server, where you have a copy of an older version of the file on your computer already. zsync downloads only the new parts of the file.
 - https://github.com/google/fully-homomorphic-encryption
-- https://github.com/google/python-fire - Python Fire is a library for automatically generating command line interfaces (CLIs) from absolutely any Python object.
-- https://github.com/chriskiehl  Gooey: Turn almost any Python command line program into a GUI application https://news.ycombinator.com/item?id=27490291  
-- https://github.com/susam/texme - TeXMe is a lightweight JavaScript utility to create self-rendering Markdown + LaTeX documents.
-- https://github.com/schappim/macOCR mac app OCR screenshots
-- https://github.com/sw-yx/spark-joy#stock-photos-and-videos Easy ways to add design flair, user delight, and whimsy to your product!
-- https://github.com/google/sentencepiece SentencePiece is an unsupervised text tokenizer and detokenizer mainly for Neural Network-based text generation systems where the vocabulary size is predetermined prior to the neural model training.
-- https://colab.research.google.com/github/philzook58/z3_tutorial/blob/master/Z3%20Tutorial.ipynb - z3 very nice python lib for theorem proving and solving algebra stuff
-- https://www.matuzo.at/blog/html-boilerplate/
-- https://news.ycombinator.com/item?id=26523212   ZPL: (Almost) C99 Powerkit (github.com/zpl-c) - Nice basic C library
 - https://github.com/szhorvat/ConnectedGraphSampler Really Random Connected Graphs
 - https://www.falstad.com/circuit/ electronic circuit simulator
-- https://bonsaibrowser.com/
-- https://github.com/rui314/minilisp
-- https://js13kgames.github.io/resources/
-- https://github.com/cesanta/v7 (Small Javascript engine)
-- https://github.com/cesanta/mjs (Small Javascript engine)
-- https://github.com/cesanta/elk (Embeded Javascript engine)
-- http://commoncrawl.org/
-- https://www.thisworddoesnotexist.com/ (probably a very good tool to find real-sounding words)
-- https://github.com/blobcity/autoai https://news.ycombinator.com/item?id=29198819
 - https://catala-lang.org/ Catala Lang: DSL designed for deriving implementations from legislative texts
-- https://github.com/zanellia/prometeo – a Python-to-C transpiler for high-performance computing
 - https://github.com/BurntSushi/ripgrep/issues/1497
-- https://httptoolkit.tech/ HTTP Toolkit is a beautiful & open-source tool for debugging, testing and building with HTTP(S) on Windows, Linux & Mac.
-- https://ed25519.cr.yp.to/python/ed25519.py Python implementation of ED25519
 - https://github.com/babysor/MockingBird    Mocking Bird – Realtime Voice Clone for Chinese
 - https://github.com/PollRobots/scheme An R7RS Scheme implemented in WebAssembly
-- https://github.com/JeffBezanson/femtolisp Small LISP used as base of Julia parser
-- https://boardgame.io/ Open Source Game Engine for Turn-Based Games
 - https://formulae.brew.sh/formula/tcpflow https://linux.die.net/man/1/tcpflow tcpflow is a program that captures data transmitted as part of TCP connections (flows), and stores the data in a way that is convenient for protocol analysis or debugging. A program like tcpdump(4) shows a summary of packets seen on the wire, but usually doesn't store the data that's actually being transmitted. In contrast, tcpflow reconstructs the actual data streams and stores each flow in a separate file for later analysis. tcpflow understands TCP sequence numbers and will correctly reconstruct data streams regardless of retransmissions or out-of-order delivery.
 - https://typesense.org/about/ Typesense is an open source, typo tolerant search engine that is optimized for instant sub-50ms searches, while providing an intuitive developer experience.
 - https://github.com/akkartik/teliva an environment for end-user programming “Enable all people to modify the software they use in the course of using it.”
 - https://github.com/robmsmt/SpeechLoop toolkit to evaluate many different speech recognition engines.
 - https://en.wikipedia.org/wiki/SipHash SipHash is an add–rotate–xor (ARX) based family of pseudorandom functions created by Jean-Philippe Aumasson and Daniel J. Bernstein in 2012,[1]: 165 [2] in response to a spate of "hash flooding" denial-of-service attacks (HashDoS) in late 2011.[3]
-- https://browsix.org/ UNIX IN YOUR BROWSER TAB (implement POSIX in the browser)
-- https://godotengine.org/ - Open Source Game Engine - Godot provides a huge set of common tools, so you can just focus on making your game without reinventing the wheel.
-- https://jodd.org/ The Unbearable Lightness of Java - Jodd is a set of micro-frameworks and developer-friendly tools and utilities.
-- https://nn-512.com/ Generate Neural Nets in C
+- https://godotengine.org/ - Open Source Game Engine - Godot provides a huge set of common tools, so you can just focus on making your game without reinventing the wheel. (Engine for big games)
 - https://sqlite-utils.datasette.io/en/stable/index.html https://github.com/simonw/sqlite-utils/
 - https://htmx.org/ htmx gives you access to AJAX, CSS Transitions, WebSockets and Server Sent Events directly in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext htmx is small (~10k min.gz'd), dependency-free, extendable & IE11 compatible
-- https://github.com/confluentinc/ksql
-- https://github.com/cotowali/cotowali A statically typed scripting language that transpile into POSIX sh
-- https://roadmap.sh/ - educational content to help guide the developers in picking up the path and guide their learnings
-- https://haxe.org/ Haxe is an open source high-level strictly-typed programming language with a fast optimizing cross-compiler. Haxe can build cross-platform applications targeting JavaScript, C++, C#, Java, JVM, Python, Lua, PHP, Flash, and allows access to each platform's native capabilities. Haxe has its own VMs (HashLink and NekoVM) but can also run in interpreted mode.
+- https://github.com/confluentinc/ksql - ksqlDB is a database for building stream processing applications on top of Apache Kafka
 - https://heaps.io/ Heaps.io is a mature cross platform graphics engine designed for high performance games.It is designed to leverage modern GPUs that are commonly available on both desktop and mobile devices. (Based on Haxe)
 - https://github.com/facebookexperimental/eden EdenSCM is a cross-platform, highly scalable source control management system.
-- https://github.com/racket/zuo Zuo: A Tiny Racket for Scripting
-- https://mitmproxy.org/ mitmproxy is a free and open source interactive HTTPS proxy.
-- https://fly.io/blog/all-in-on-sqlite-litestream/ https://github.com/benbjohnson/litestream
-- https://lav.io/notes/videogrep-tutorial/
 - https://github.com/codemix/deprank Deprank uses the PageRank algorithm to find the most important files in your JavaScript or TypeScript codebase.
-- https://github.com/eudoxia0/cmacro cmacro: Lisp macros for C
 - https://github.com/fivethirtyeight - small datasets that might be useful (mostly US-centric social/politics/sports stuff)
+- https://github.com/ahilss/wxWidgets-wasm https://github.com/ahilss/portaudio-wasm https://github.com/ahilss/wavvy
+- https://github.com/corkami/collisions
+- https://tsoding.org/olive.c/ Olive.c is a simple graphics library that does not have any dependencies and renders everything into the given memory pixel by pixel.
+
+## Machine Learning
+
+- https://github.com/openai/gpt-2/blob/master/src/model.py
+- http://www.ioccc.org/2019/mills/hint.html - RNN Machine Learning in C
+- https://bellard.org/libnc/ LibNC is a C library for tensor manipulation. It supports automatic differentiation and can be used to implement machine learning models such as LSTM and Transformers. It has the following features:
+- https://towardsdatascience.com/choosing-the-right-gpu-for-deep-learning-on-aws-d69c157d8c86
+- https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/install-nvidia-driver.html
+- https://github.com/coqui-ai/TTS - text to speech (see https://news.ycombinator.com/item?id=26790951 )
+- https://github.com/google/sentencepiece SentencePiece is an unsupervised text tokenizer and detokenizer mainly for Neural Network-based text generation systems where the vocabulary size is predetermined prior to the neural model training.
+- https://github.com/blobcity/autoai https://news.ycombinator.com/item?id=29198819 - A framework to find the best performing AI/ML model for any AI problem. 
+- https://nn-512.com/ Generate Neural Nets in C
 - https://github.com/nerdyrodent/VQGAN-CLIP Just playing with getting VQGAN+CLIP running locally, rather than having to use colab.
 - https://github.com/nerdyrodent/CLIP-Guided-Diffusion/  Just playing with getting CLIP Guided Diffusion running locally, rather than having to use colab.
 - https://github.com/mehdidc/feed_forward_vqgan_clip Feed forward VQGAN-CLIP model, where the goal is to eliminate the need for optimizing the latent space of VQGAN for each input prompt. 
 - https://github.com/openai/glide-text2im
 - https://github.com/alembics/disco-diffusion
+- http://www.nervanasys.com/demystifying-deep-reinforcement-learning/
+- https://www.youtube.com/watch?v=aircAruvnKk Good intro to neural network
+- http://kvfrans.com/coloring-and-shading-line-art-automatically-through-conditional-gans/ - Machine Learning how to fill in manga art
+- http://karpathy.github.io/neuralnets/ - Hacker's guide to Neural Networks
+
+## Crazy Flexes
+
+- https://bellard.org/
+- https://twitter.com/David3141593/status/1573218394358386688 The image in this tweet displays its own MD5 hash. You can download and hash it yourself, and it should still match - 1337e2ef42b9bee8de06a4d223a51337 I think this is the first PNG/MD5 hashquine.
+- https://browsix.org/ UNIX IN YOUR BROWSER TAB (implement POSIX in the browser)
 - https://wavvy.app/ - WASM port of Audacity
-- https://github.com/ahilss/wxWidgets-wasm https://github.com/ahilss/portaudio-wasm https://github.com/ahilss/wavvy
-- https://github.com/corkami/collisions
 
 
+## Experimental Languages
+
+- ☆ https://github.com/rui314/minilisp
+- https://vlang.io/ - simple Go-like language that compiles down to C
+- https://haxe.org/ Haxe is an open source high-level strictly-typed programming language with a fast optimizing cross-compiler. Haxe can build cross-platform applications targeting JavaScript, C++, C#, Java, JVM, Python, Lua, PHP, Flash, and allows access to each platform's native capabilities. Haxe has its own VMs (HashLink and NekoVM) but can also run in interpreted mode.
+- https://github.com/racket/zuo Zuo: A Tiny Racket for Scripting
+- https://github.com/JeffBezanson/femtolisp Small LISP used as base of Julia parser
+- https://github.com/cesanta/v7 (Small Javascript engine)
+- https://github.com/cesanta/mjs (Small Javascript engine)
+- https://github.com/cesanta/elk (Embeded Javascript engine)
 
 ## Software Engineering
 
@@ -189,13 +174,26 @@ Computer technology related.
 - https://staffeng.com/
 - https://chriskiehl.com/article/thoughts-after-6-years Software development topics I've changed my mind on after 6 years in the industry
 - https://github.com/jorgef/engineeringladders/blob/master/TechLead-EngineeringManager.md
+- https://www.slideshare.net/reed2001/culture-1798664/ Netflix Culture Document (and lots of management philosophies)
+
+## Potentially Useful Apps
+
+- http://avidemux.sourceforge.net/ - Video editing programs
+- https://github.com/mifi/lossless-cut - Video editing programs
+- https://github.com/SpaceVim/SpaceVim
+- https://github.com/schappim/macOCR mac app OCR screenshots
+- https://bonsaibrowser.com/
+- https://httptoolkit.tech/ HTTP Toolkit is a beautiful & open-source tool for debugging, testing and building with HTTP(S) on Windows, Linux & Mac.
+- https://lav.io/notes/videogrep-tutorial/
+- https://tuple.app/ The best remote pair programming app on macOS
+- https://sqliteviewer.app/ https://github.com/qwtel/sqlite-viewer-vscode
 
 ## Business Tools
 
 - http://sumome.com/ - Sumo. FREE email capture tool (Newsletter)
 - https://hootsuite.com/ - Social Media Management startup company
 - https://projectshield.withgoogle.com/en/ - DDoS/security help from Google
-- https://www.pythonanywhere.com/ - Python Anywhere
+- https://www.pythonanywhere.com/ - Python Anywhere - Host, run, and code Python in the cloud!
 - https://www.digitalocean.com/pricing/ - Hosting
 - https://www.peer5.com/ - Serverless CDN
 - https://www.tarsnap.com/ - Cheap and efficient (paid) backup system (by a single developer... author of bsdiff)
@@ -203,18 +201,16 @@ Computer technology related.
 - https://protonmail.com/pricing - Secure mail
 - https://render.com - Cheap and seems robust hosting service
 - https://pdfreal.com/ The Internet's fastest PDF tools. Secure and anonymous. Free of charge.
-- https://playingcards.io/
+- https://playingcards.io/ - Meet and play online from anywhere in the world
 - https://www.media.net/ - English country based Advertising network alternative to Adsense.
-- TransferWise (or Wise) - fintech easy wire transfer and currency exchange. local bank accounts for receiving moneys.
+- TransferWise (or Wise) - Fintech easy wire transfer and currency exchange. local bank accounts for receiving moneys.
 - Payoneer - multiple ways to get paid online by international clients. making international payments, receiving funds, managing your digital business, or accessing capital
 - https://www.snigel.com/blog/top-5-adsense-alternatives-that-can-increase-website-revenue/ - Review of Adsense alternatives by an adsense competitor
 - https://browserflow.app/ Automate your work on any website
 - https://www.pullrequest.com/pricing/ Code Review as a Service
   - HN discussion: https://news.ycombinator.com/item?id=29623505
 - https://beebom.com/best-alexa-com-alternatives/
-- https://tuple.app/ The best remote pair programming app on macOS
 - https://www.re3data.org/ Search for data repositories
-- https://sqliteviewer.app/ https://github.com/qwtel/sqlite-viewer-vscode
 - http://www.fmwconcepts.com/imagemagick/index.php  - A collection of image utilities that uses imagemagick
 - https://panelbear.com/ Alternative to Google Analytics
 - https://www.rescuetime.com/ - Track time used on Computer
@@ -224,6 +220,10 @@ Computer technology related.
 - https://www.midjourney.com/ image generation model use in discord subscription based
 - https://www.reddit.com/user/Wiskkey/comments/p2j673/list_part_created_on_august_11_2021/ This list is a part of master post List of sites/programs/projects that use OpenAI's CLIP neural network for steering image/video creation to match a text description. All of the items in this post use VQGAN as an image generator; some items may also use another image generator
 - https://neuralblender.com/ (Another VQGAN+CLIP image generator - quite fast!)
+- http://commoncrawl.org/ - We build and maintain an open repository of web crawl data that can be accessed and analyzed by anyone.
+- https://www.thisworddoesnotexist.com/ (probably a very good tool to find real-sounding words)
+- https://roadmap.sh/ - educational content to help guide the developers in picking up the path and guide their learnings
+- https://invidious.snopyta.org (alternative Youtube frontend)
 
 ## Graphics, Design, etc.
 
@@ -237,31 +237,23 @@ Computer technology related.
 
 ## HOWTOs, Beginners instructions, Learn stuff
 
-- http://joyofandroid.com/how-to-downgrade-samsung-galaxy-s3-easily/
+- ☆ https://p403n1x87.github.io/running-c-unit-tests-with-pytest.html https://news.ycombinator.com/item?id=30301880
 - http://gitready.com/ - Git learning site
 - http://learnvimscriptthehardway.stevelosh.com/
-- http://www.nervanasys.com/demystifying-deep-reinforcement-learning/
-- https://www.youtube.com/watch?v=aircAruvnKk Good intro to neural network
 - https://www.youtube.com/watch?v=pTr1uLQTJNE - Simon Willison - Instant serverless APIs, powered by SQLite (comment: "Little data" using datasette (and other sqlite-focused tools))
 - https://www.youtube.com/watch?v=w2nKIGhXPAM - PyCon 2019 Jess Shapiro - Everything at Once: Python's Many Concurrency Models - PyCon 2019
 - https://towardsdatascience.com/python-tools-for-a-beginner-data-scientist-39b3b9a4303a
-- http://karpathy.github.io/neuralnets/ - Hacker's guide to Neural Networks
-- https://www.youtube.com/watch?v=h7apO7q16V0 -- FFT tutorial
-- https://www.youtube.com/watch?v=1AwG0T4gaO0 - numba tutorial
-- https://www.youtube.com/watch?v=wf-BqAjZb8M Raymond Hettinger - Beyond PEP 8 -- Best practices for beautiful intelligible code - PyCon 2015
-- https://news.ycombinator.com/item?id=27136539 very interesting discussion on the implications of the CAP theorem...
 - https://github.com/a327ex/blog/issues/30 - This tutorial series will cover the creation of a complete game with Lua and LÖVE
 - https://www.youtube.com/c/PrimerLearning/videos - Simulating evolution
 - https://www.pagetable.com/?p=764 Using the OS X 10.10 Hypervisor Framework: A Simple DOS Emulator
 - https://www.youtube.com/watch?v=7aONIVSXiJ8 Introduction to Memory Management in Linux (Very informative quite useful info for systems programming)
-- https://beautifulracket.com/appendix/why-lop-why-racket.html 
+- https://beautifulracket.com/appendix/why-lop-why-racket.html
 - https://github.com/fastai/course-nlp
 - https://aphyr.com/posts/265-getting-started-in-software
 - https://www.youtube.com/watch?v=ImLFlLjSveM How C++20 Changes the Way We Write Code - Timur Doumler - CppCon 2020
-- https://www.pagetable.com/?p=764 Using the OS X 10.10 Hypervisor Framework: A Simple DOS Emulator
-- https://caffeinedev.medium.com/how-to-install-tensorflow-on-m1-mac-8e9b91d93706
-- https://p403n1x87.github.io/running-c-unit-tests-with-pytest.html https://news.ycombinator.com/item?id=30301880
 - https://posthog.com/blog/what-to-ask-in-interviews
+- https://web.mit.edu/6.001/6.037/sicp.pdf Structure and Interpretation of Computer Programs
+- http://infolab.stanford.edu/~ullman/mmds/book.pdf - Book: Mining of Massive Datasets
 
 ## Crypto
 
@@ -269,12 +261,18 @@ Computer technology related.
 - https://news.ycombinator.com/item?id=29264374 Ask HN: What are you using for public documentation these days?
 - https://www.psl.com/feed-posts/web3-engineer-take
 
+## ProblemSets
 
+- https://projectlovelace.net/problems/
+- https://open.kattis.com/
+- https://adventofcode.com/
 
 ## Archive, Stories, etc.
 
+- ☆ http://www.bloomberg.com/graphics/2015-paul-ford-what-is-code/ - A super long, informative and (useless for software professionals) article on everything about code and software. Good intro to outsiders if they are willing to read.
+- ☆ https://killedbygoogle.com/
+- http://joyofandroid.com/how-to-downgrade-samsung-galaxy-s3-easily/
 - https://lists.debian.org/debian-ctte/2013/12/msg00234.html - init system other points, and conclusion
-- http://www.bloomberg.com/graphics/2015-paul-ford-what-is-code/ - A super long, informative and useless article on everything about code and software
 - http://veertu.com - OSX app store native virtualization
 - https://github.com/mist64/xhyve - The xhyve hypervisor is a port of bhyve to macOS. It is built on top of Hypervisor.framework in OS X 10.10 Yosemite and higher, runs entirely in userspace, and has no other dependencies
 - http://arstechnica.com/information-technology/2016/03/to-sql-or-nosql-thats-the-database-question/
@@ -289,7 +287,6 @@ Computer technology related.
 - http://mattmahoney.net/dc/text.html Large Text Decompression Benchmark
 - https://www.youtube.com/watch?v=kW6ZLB9-PLw - I Built a HUGE 336TB Server Without Linus Tech Tips!
 - https://www.youtube.com/watch?v=5J2yoKmJUQE The best coding apps for kids
-- https://killedbygoogle.com/
 - https://www.youtube.com/watch?v=kkt_BtR9Kzk - rpython - subset of python used by pypy and C-level fast.
 - https://news.ycombinator.com/item?id=25113482 - Ok Google: please publish your DKIM secret keys
 - http://www.arewewebyet.org/ - Rust for Web.
@@ -297,7 +294,6 @@ Computer technology related.
 - https://www.cna.com.tw/news/firstnews/201903200282.aspx - AI 中文造字
 - https://degoogle.jmoore.dev/#browser-extensions - Cutting Google out of your life
 - https://github.com/mikelxc/Workarounds-for-ARM-mac
-- https://projectlovelace.net/problems/
 - https://www.youtube.com/watch?v=UHV-oNKK9vs How to make a USB to DC Cable from an old Mouse or Keyboard USB Cable | Recycle & Hack
 - https://alexkrupp.typepad.com/sensemaking/2021/06/django-for-startup-founders-a-better-software-architecture-for-saas-startups-and-consumer-apps.html
 - https://play.elevatorsaga.com/?utm_source=hackernewsletter&utm_medium=email&utm_term=fun - Elevator programming game.
@@ -306,13 +302,16 @@ Computer technology related.
 - https://graphite.dev/blog/post/DThX8ffP1gmxWJChEv0y Stacked changes: how Facebook and Google engineers stay unblocked and ship faster
 - https://www.npr.org/2010/10/09/130451369/the-zombie-network-beware-free-public-wifi
 - https://www.youtube.com/watch?v=jmTwlEh8L7g DEF CON 26 - Christopher Domas - GOD MODE UNLOCKED Hardware Backdoors in redacted x86
-- https://www.ibiblio.org/harris/500milemail.html
-- https://www.slideshare.net/reed2001/culture-1798664/ Netflix Culture Document (and lots of management philosophies)
+- https://www.ibiblio.org/harris/500milemail.html (Funny)
+- https://blog.sanctum.geek.nz/vim-koans/ (Funny)
+- https://stevelosh.com/blog/2013/04/git-koans/ (Funny)
+- https://www.destroyallsoftware.com/talks/wat Roasting ruby and js! (Funny)
+- https://klinger.io/posts/fyi-how-founders-can-avoid-drive-by-management
+- https://news.ycombinator.com/item?id=27136539 very interesting discussion on the implications of the CAP theorem...
+- https://caffeinedev.medium.com/how-to-install-tensorflow-on-m1-mac-8e9b91d93706
 
 
-## Python tools
-
-Here are some projects I found when researching python speed:
+## Python
 
 - https://github.com/facebookincubator/cinder - Cinder is Instagram's internal performance-oriented production version of CPython 3.8
 - numba - A High Performance Python Compiler
@@ -325,16 +324,14 @@ Here are some projects I found when researching python speed:
 - https://blog.kevmod.com/2017/02/personal-thoughts-about-pystons-outcome/
 - https://github.com/tonybaloney/Pyjion - Pyjion, a JIT extension for CPython that compiles your Python code into native CIL and executes it using the .NET CLR.
 - https://pyre-check.org/ - type checker
+- https://github.com/jwilk/python-syntax-errors The idea is to put such a statement near the top of your file. If a user inadvertently ran the code against an older version, they would get a fairly helpful error message:
+- https://github.com/satwikkansal/wtfpython Exploring and understanding Python through surprising snippets. (weird language quirks etc.)
+- https://github.com/google/python-fire - Python Fire is a library for automatically generating command line interfaces (CLIs) from absolutely any Python object.
+- https://github.com/chriskiehl  Gooey: Turn almost any Python command line program into a GUI application https://news.ycombinator.com/item?id=27490291  
+- https://colab.research.google.com/github/philzook58/z3_tutorial/blob/master/Z3%20Tutorial.ipynb - z3 very nice python lib for theorem proving and solving algebra stuff
+- https://github.com/zanellia/prometeo – a Python-to-C transpiler for high-performance computing
+- https://ed25519.cr.yp.to/python/ed25519.py Python implementation of ED25519
 
-## Funny
-
-- https://blog.sanctum.geek.nz/vim-koans/
-- https://stevelosh.com/blog/2013/04/git-koans/
-- https://www.destroyallsoftware.com/talks/wat Roasting ruby and js!
 
 ## Unsorted
 
-- https://open.kattis.com/ - not leetcode
-- https://adventofcode.com/
-- https://invidious.snopyta.org (alternative Youtube frontend)
-- https://klinger.io/posts/fyi-how-founders-can-avoid-drive-by-management
