@@ -8,3 +8,5 @@
 - https://fly.io/blog/all-in-on-sqlite-litestream/ https://github.com/benbjohnson/litestream
 - https://www.visidata.org/credits/
 - https://openai.com/blog/whisper/
+- https://github.com/mypyc/mypyc
+- https://github.com/byronknoll/tensorflow-compress/blob/master/tensorflow-compress.ipynb - Might be a good example of how a LSTM model is constructed.

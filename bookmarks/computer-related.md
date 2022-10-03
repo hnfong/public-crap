@@ -132,13 +132,13 @@ Computer technology related.
 
 - https://github.com/openai/gpt-2/blob/master/src/model.py
 - http://www.ioccc.org/2019/mills/hint.html - RNN Machine Learning in C
-- https://bellard.org/libnc/ LibNC is a C library for tensor manipulation. It supports automatic differentiation and can be used to implement machine learning models such as LSTM and Transformers. It has the following features:
+- https://bellard.org/libnc/ LibNC is a C library for tensor manipulation. It supports automatic differentiation and can be used to implement machine learning models such as LSTM and Transformers. (Intel+Linux/Win only, not open source)
 - https://towardsdatascience.com/choosing-the-right-gpu-for-deep-learning-on-aws-d69c157d8c86
 - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/install-nvidia-driver.html
 - https://github.com/coqui-ai/TTS - text to speech (see https://news.ycombinator.com/item?id=26790951 )
 - https://github.com/google/sentencepiece SentencePiece is an unsupervised text tokenizer and detokenizer mainly for Neural Network-based text generation systems where the vocabulary size is predetermined prior to the neural model training.
 - https://github.com/blobcity/autoai https://news.ycombinator.com/item?id=29198819 - A framework to find the best performing AI/ML model for any AI problem. 
-- https://nn-512.com/ Generate Neural Nets in C
+- https://nn-512.com/ Generate Neural Nets in C (compiler is in Go)
 - https://github.com/nerdyrodent/VQGAN-CLIP Just playing with getting VQGAN+CLIP running locally, rather than having to use colab.
 - https://github.com/nerdyrodent/CLIP-Guided-Diffusion/  Just playing with getting CLIP Guided Diffusion running locally, rather than having to use colab.
 - https://github.com/mehdidc/feed_forward_vqgan_clip Feed forward VQGAN-CLIP model, where the goal is to eliminate the need for optimizing the latent space of VQGAN for each input prompt. 
@@ -148,6 +148,7 @@ Computer technology related.
 - https://www.youtube.com/watch?v=aircAruvnKk Good intro to neural network
 - http://kvfrans.com/coloring-and-shading-line-art-automatically-through-conditional-gans/ - Machine Learning how to fill in manga art
 - http://karpathy.github.io/neuralnets/ - Hacker's guide to Neural Networks
+- http://colah.github.io/posts/2015-08-Understanding-LSTMs/
 
 ## Crazy Flexes
 
