@@ -14,6 +14,7 @@
 - https://www.jsscs.gov.hk/reports/en/jscs_20.pdf Caseloads in Different Levels of Court between 2017 and 2019
 - https://lore.kernel.org/lkml/20031206211900.GA9034@thunk.org/ GPL API Copyrightability Linux Kernel Modules
 - HKSAR v. ZHOU LIMEI [2017] HKCFA 10 - Cantonese case in CFA, quoting [43] Ester Leung and John Gibbons, “Interpreting  Cantonese  utterance-final particles in bilingual courtroom discourse” in “Interpreting Chinese, Interpreting China”, Ed Robin Setton (John Benjamins Publishing company) at p 97.
+- https://www.cuhk.edu.hk/ics/21c/media/articles/c055-199908034.pdf 主權和人權的歷史和法理學反思 (Albert Chen)
 
 # Politics
 

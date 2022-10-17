@@ -13,6 +13,7 @@ Computer technology related.
 
 ## Reference, Academic Stuff, etc.
 
+- ☆☆ https://web.stanford.edu/class/cs168/index.html - Extremely useful computer science for the out-of-date practitioner (backed up locally)
 - ☆ https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html - Undefined behavior in C
 - ☆ http://karpathy.github.io/2015/05/21/rnn-effectiveness/ - The Unreasonable Effectiveness of Recurrent Neural Networks
 - ☆ https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
@@ -70,6 +71,7 @@ Computer technology related.
 - https://www.youtube.com/watch?v=7aONIVSXiJ8 Introduction to memory management in Linux
 - https://til.simonwillison.net/sqlite/one-line-csv-operations One-liner for running queries against CSV files with SQLite
 - https://scottaaronson.blog/?p=208 	Shor, I’ll do it: explaining Shor’s algorithm without using a single ket sign
+- https://github.com/nepx/halfix Halfix is a portable x86 emulator written in C99. (May be a good reference for x86 cpu/devices)
 
 ## Open Source Tools
 
@@ -168,6 +170,7 @@ Computer technology related.
 - https://github.com/cesanta/v7 (Small Javascript engine)
 - https://github.com/cesanta/mjs (Small Javascript engine)
 - https://github.com/cesanta/elk (Embeded Javascript engine)
+- https://github.com/rochacbruno/py2rs - From Python into Rust
 
 ## Software Engineering
 
@@ -176,6 +179,7 @@ Computer technology related.
 - https://chriskiehl.com/article/thoughts-after-6-years Software development topics I've changed my mind on after 6 years in the industry
 - https://github.com/jorgef/engineeringladders/blob/master/TechLead-EngineeringManager.md
 - https://www.slideshare.net/reed2001/culture-1798664/ Netflix Culture Document (and lots of management philosophies)
+- https://www.hillelwayne.com/post/are-we-really-engineers/
 
 ## Potentially Useful Apps
 
@@ -188,6 +192,7 @@ Computer technology related.
 - https://lav.io/notes/videogrep-tutorial/
 - https://tuple.app/ The best remote pair programming app on macOS
 - https://sqliteviewer.app/ https://github.com/qwtel/sqlite-viewer-vscode
+- https://shortcat.app/ - Manipulate macOS masterfully, minus the mouse.
 
 ## Business Tools
 
