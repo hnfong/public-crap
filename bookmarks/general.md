@@ -66,7 +66,8 @@
 
 - https://www.youtube.com/playlist?list=PL7qFBOhneFnTAZmv35MTlWKC3YBmR7T7L  - Starcraft II 廣東話教學
 - https://pathofexile.gamepedia.com/Occultist%27s_Dominion - Interesting RPG (diablo-like) game
-- https://www.youtube.com/watch?v=hw0thrWVaKQ&t=4975s (Ultimate Beginner Survival Guide (ALL Seasons) Don't Starve Together)
+- https://www.klei.com/games/dont-starve
+  - https://www.youtube.com/watch?v=hw0thrWVaKQ&t=4975s (Ultimate Beginner Survival Guide (ALL Seasons) Don't Starve Together)
 
 ## Finance and Business
 
@@ -277,3 +278,10 @@
 ## My image links
 
 - https://imgur.com/a/urcePZq Emacs vs VSCode
+
+## Misc Shared
+
+- https://chaaak.medium.com/%E5%A6%82%E6%9E%9C%E4%BD%A0%E6%88%90%E6%97%A5%E8%A6%BA%E5%BE%97%E7%84%A1%E5%8A%9B-%E8%AB%8B%E4%BD%A0%E8%87%AA%E6%88%91%E5%8F%8D%E7%9C%81-d5fbadd68343 如果你成日覺得無力，請你自我反省
+- https://germano.dev/whatsapp-vs-telegram/ On the security of WhatsApp and Telegram
+- https://www.youtube.com/watch?v=wOg0TY1jG3w - The Real Story of Paris Hilton | This Is Paris Official Documentary
+- https://signal.org/blog/cellebrite-vulnerabilities/ Exploiting vulnerabilities in Cellebrite UFED and Physical Analyzer from an app's perspective
