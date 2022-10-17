@@ -65,6 +65,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [Google LLC v. Oracle America, Inc](writings/2021/Google_LLC_v._Oracle_America_cm__Inc.md)
 - [Formal Verification for Software](writings/2021/Formal_Verification_for_Software.md)
 - [Consciousness as a social construct](writings/2021/Consciousness_as_a_social_construct.md)
+- [A rant on the celebration of "Abstract Thinking" as intelligence](writings/2021/A_rant_on_the_celebration_of_"Abstract_Thinking"_as_intelligence.md)
 
 ### 2020
 
