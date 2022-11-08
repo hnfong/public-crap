@@ -20,7 +20,7 @@ I was told that the universe actually does bend to our will. This is definitely 
 
 I asked, why are human beings so relatively powerless? And my answer was, we must do "work" for a change to take effect, because most of us do not have sufficient control over our thoughts and emotions. We are used to the situation that, as long as we don't act upon our thoughts, they have no real consequences (allegedly). In a sense, we *know* that our thoughts can sometimes be dangerous, so, as humans we must reject any versions of omnipotence even if offered to us. Complicated rituals might be a heritage from the times when magic(k) was real, yet was thought to be dangerous enough (in the sense just described) that it required a lot of "paperwork" to take effect.
 
-Further reading - [耶穌、魔鬼、幻覺](06-%E8%80%B6%E7%A9%8C%E3%80%81%E9%AD%94%E9%AC%BC%E3%80%81%E5%B9%BB%E8%A6%BA.html)
+Further reading - [耶穌、魔鬼、幻覺](06-耶穌、魔鬼、幻覺.md)
 
 (\* the uncontroversial part is that your mind instructs the body, the body does the work of changing the universe via physical actions. You can move mountains, at the very least by using a shovel and digging the dirt yourself.)
 
@@ -32,5 +32,5 @@ Note that a sharp, focused and self-consistent mind is somewhat magical in itsel
 
 But how does one know the right thing to do without carefully weighing the contradicting options? Sufficiently good intuition is indistinguishable from some forms of magic(k).
 
-Further reading - [矛盾唔係錯：點解我哋需要一致性?](2016/%E7%9F%9B%E7%9B%BE%E5%94%94%E4%BF%82%E9%8C%AF_CL_%E9%BB%9E%E8%A7%A3%E6%88%91%E5%93%8B%E9%9C%80%E8%A6%81%E4%B8%80%E8%87%B4%E6%80%A7_qm_.html)
+Further reading - [矛盾唔係錯：點解我哋需要一致性?](../2016/矛盾唔係錯_CL_點解我哋需要一致性_qm_.md)
 
