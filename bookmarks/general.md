@@ -68,6 +68,8 @@
 - https://pathofexile.gamepedia.com/Occultist%27s_Dominion - Interesting RPG (diablo-like) game
 - https://www.klei.com/games/dont-starve
   - https://www.youtube.com/watch?v=hw0thrWVaKQ&t=4975s (Ultimate Beginner Survival Guide (ALL Seasons) Don't Starve Together)
+- https://www.youtube.com/watch?v=TrR6puARRlA My Year-24 Stardew Valley Farm Tour (100% Perfection, No Mods)
+
 
 ## Finance and Business
 
@@ -128,6 +130,7 @@
 - https://www.youtube.com/watch?v=DyNwxRMgJbY Interview s Darryl Anka & Bashar
 - https://www.youtube.com/watch?v=nH61dPXDqNU BASHAR A MULTIDIMENSIONAL BEING FROM THE FUTURE | EPISODE 60 THEY CALL US CHANNELERS
 - http://erikvikersveen.blogspot.com/2013/06/theories-about-sacred-circuits-tm.html
+- https://www.latimes.com/archives/la-xpm-1988-02-07-me-41061-story.html Cypress Psychic Tells Court of Helping to Solve Murder
 
 
 ## Deconstruction of English
@@ -240,6 +243,8 @@
 - https://siderea.dreamwidth.org/1747990.html Fwd: How to prepare for the invasion of your country [domesticity]
 - https://www.quantamagazine.org/puzzling-quantum-scenario-appears-not-to-conserve-energy-20220516/ - Possible energy coming from parallel worlds?
 - https://twitter.com/Foone/status/1014267515696922624 You want to know something about how bullshit insane our brains are? OK, so there's a physical problem with our eyes
+- https://www.quantamagazine.org/inside-the-proton-the-most-complicated-thing-imaginable-20221019/
+- https://masteranza.wordpress.com/2022/10/22/there-is-no-measurement-problem-in-quantum-mechanics/
 
 ## Hong Kong Housing
 
@@ -274,6 +279,8 @@
 - https://www.weshelterpeople.com (RVs super cool / mobile homes)
 - https://www.youtube.com/watch?v=y7bPYXocmsA Dr. Robert Cywes - 'Carbohydrate Addiction: returning to my roots'
 - https://nav.al/failure Groups Never Admit Failure
+- https://www.themarshallproject.org/2022/09/30/how-i-survived-a-year-in-the-hole-without-losing-my-mind
+- https://www.youtube.com/watch?v=pdmf4fu6fMY Become a Civilized Beast - Jordan Peterson Interview (Talks about various topics)
 
 ## My image links
 
@@ -285,3 +292,4 @@
 - https://germano.dev/whatsapp-vs-telegram/ On the security of WhatsApp and Telegram
 - https://www.youtube.com/watch?v=wOg0TY1jG3w - The Real Story of Paris Hilton | This Is Paris Official Documentary
 - https://signal.org/blog/cellebrite-vulnerabilities/ Exploiting vulnerabilities in Cellebrite UFED and Physical Analyzer from an app's perspective
+- https://www.youtube.com/watch?v=WbNDrcoRi8g -  Georgia Ede: Brainwashed — The Mainstreaming of Nutritional Mythology
