@@ -315,6 +315,7 @@ Computer technology related.
 - https://klinger.io/posts/fyi-how-founders-can-avoid-drive-by-management
 - https://news.ycombinator.com/item?id=27136539 very interesting discussion on the implications of the CAP theorem...
 - https://caffeinedev.medium.com/how-to-install-tensorflow-on-m1-mac-8e9b91d93706
+- https://news.ycombinator.com/item?id=33257455 Try disabling slide to type. I don't use it, so if it's on, it introduces inaccuracies.
 
 
 ## Python
