@@ -7,6 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2022
 
+- [20-Superpowers](writings/2022/20-Superpowers.md)
 - [19-愛就係](writings/2022/19-愛就係.md)
 - [18-Hong Kong Professional Driving Quiz](writings/2022/18-Hong_Kong_Professional_Driving_Quiz.md)
 - [17-Free will as a tool of capitalist oppression](writings/2022/17-Free_will_as_a_tool_of_capitalist_oppression.md)
