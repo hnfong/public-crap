@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+
+"""
+Wrapper around cryptography.fernet with a couple niceties (worseties?)
+"""
+
+import base64
+import getopt
+import getpass
+import os
+import sys
+from cryptography import fernet
+
+def key_from_passphrase(passphrase, iterations=390000, salt=None):
+    from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+    salt = salt or os.urandom(16)
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=iterations,
+    )
+    key = base64.urlsafe_b64encode(kdf.derive(passphrase))
+    return (key, salt, iterations)
+
+optlist, args = getopt.getopt(sys.argv[1:], 'edafHi:s:V:1')
+
+USAGE = """
+Usage: fnz [-e|-d] [options] path [paths...]
+
+-a : TODO
+-f : force overwrite of existing file
+-H : write shabang headers, which contains the parameters of PBKDF2HMAC (recommended)
+-i : iterations, used for decryption (for now)
+-s : salt, used for decryption (for now)
+-V : version number, set to 1 for now
+-1 : whether the first line is a shabang (used "internally" as output for the -H option)
+"""
+
+# TODO:
+# - define format/regex on input file to encrypt/not-encrypt
+# - better handling with stdin/stdout pipes (as opposed to files)
+# - test cases
+# - don't create an empty file on error (eg. malformed ciphertext)
+# - split the cipher text base64 into chunks (eg. 78 on each line?) or insert some word-like spaces
+# - given both plain text and cipher text file, don't re-encrypt if same, or re-use salt
+# - option to toggle ascii/binary output
+
+opts = dict(optlist)
+
+if '-e' in opts:
+    passphrase = getpass.getpass("Enter encryption passphrase: ")
+    key, salt, iterations = key_from_passphrase(passphrase.encode("utf-8"))
+    encryptor = fernet.Fernet(key)
+    for path in args:
+        enc_path = path + ".fnz"
+        if os.path.exists(enc_path) and ('-f' not in opts):
+            sys.stderr.write(f"Error: {enc_path} already exists\n")
+            exit(1)
+        with open(enc_path, "wb") as enc_f:
+            if '-H' in opts:
+                enc_f.write(f"""#!/usr/bin/env fnz -d -1 -V 1 -s "{base64.urlsafe_b64encode(salt).decode("utf-8")}" -i {iterations}\n""".encode("utf-8"))
+            enc_f.write(encryptor.encrypt(open(path, "rb").read()))
+elif '-d' in opts:
+    passphrase = getpass.getpass("Enter decryption passphrase: ")
+    in_salt=base64.urlsafe_b64decode(opts['-s'])
+    key, salt, iterations = key_from_passphrase(passphrase.encode("utf-8"), iterations=int(opts['-i']), salt=in_salt)
+    assert iterations == int(opts['-i'])
+    assert salt == in_salt
+    decryptor = fernet.Fernet(key)
+    for path in args:
+        if path.endswith(".fnz"):
+            dec_path = path[:-4]
+            assert dec_path != ""
+        else:
+            dec_path = None
+
+        if dec_path is not None and os.path.exists(dec_path) and ('-f' not in opts):
+            sys.stderr.write(f"Error: {dec_path} already exists")
+            exit(1)
+
+        if dec_path is None:
+            sys.stderr.write("Warning: output to terminal stdout\n")
+            dec_path = "/dev/stdout" # Not cross platform
+
+        with open(dec_path, "wb") as dec_f:
+            with open(path, "rb") as cip_f:
+                if '-1' in opts:
+                    shabang = cip_f.readline() # shabang line
+                    assert shabang.startswith(b"#!")
+                dec_f.write(decryptor.decrypt(cip_f.read()))
+else:
+    print(USAGE.strip())
