@@ -175,6 +175,7 @@
 - https://www.ema.europa.eu/en/documents/chmp-annex/annex-vaxzevria-art53-visual-risk-contextualisation_en.pdf (comparison of relative risk of serious COVID and vaccine complications)
 - https://www.youtube.com/watch?v=5jBsWbDGtWU The Dangers of Fructose & Uric Acid - with Dr. Richard Johnson | The Empowering Neurologist EP. 142 (also Salt, Glutamines, etc.)
 - https://www.hardtowrite.com/pathogens/ Endemic Pathogens Are Making You Crazy And Then Killing You: Toxoplasmosis Spotlight
+- https://foodb.ca/ (comprehensive database of what are in foods - FooDB is the world’s largest and most comprehensive resource on food constituents, chemistry and biology. It provides information on both macronutrients and micronutrients, including many of the constituents that give foods their flavor, color, taste, texture and aroma.)
 
 
 ## Jokes
