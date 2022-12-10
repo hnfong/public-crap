@@ -129,6 +129,8 @@ Computer technology related.
 - https://github.com/ahilss/wxWidgets-wasm https://github.com/ahilss/portaudio-wasm https://github.com/ahilss/wavvy
 - https://github.com/corkami/collisions
 - https://tsoding.org/olive.c/ Olive.c is a simple graphics library that does not have any dependencies and renders everything into the given memory pixel by pixel.
+- https://github.com/MichaelMure/git-bug Bug Tracker implemented with git
+- https://github.com/charmbracelet/glow terminal based markdown reader
 
 ## Machine Learning
 
@@ -180,6 +182,7 @@ Computer technology related.
 - https://github.com/jorgef/engineeringladders/blob/master/TechLead-EngineeringManager.md
 - https://www.slideshare.net/reed2001/culture-1798664/ Netflix Culture Document (and lots of management philosophies)
 - https://www.hillelwayne.com/post/are-we-really-engineers/
+- https://www.remotemobprogramming.org/
 
 ## Potentially Useful Apps
 
