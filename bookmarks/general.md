@@ -83,6 +83,7 @@
 - https://en.wikipedia.org/wiki/The_Innovator%27s_Dilemma
 - tradingview.com
 - https://www.lifecontingencies.com/ "I'm an Actuary, and as a way to learn React I put together a website that teaches you the basic concepts and math behind these actuarial table."
+- https://youtu.be/4oDZyOf6CW4?t=2966 (Tony Fadell on Marketing - Start at beginning, Fictional, etc.)
 
 ## Misc History
 
@@ -151,6 +152,8 @@
 - http://robdunnlab.com/projects/wildsourdough/
 - https://www.facebook.com/myschoolbus.com.hk/videos/938079079618755/ - Magnetic Plastic Pieces
 - https://www.youtube.com/watch?v=1G72936Y3xA Top 10 Knots To Know
+- https://www.youtube.com/watch?v=5lLPAHK_k6I 10 knots you NEED to know in life. [Save this Video]
+
 
 
 ## Health and Food
