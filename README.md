@@ -7,6 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2022
 
+- [23-耶穌老師](writings/2022/23-耶穌老師.md)
 - [22-Elaboration on Subjective Truths](writings/2022/22-Elaboration_on_Subjective_Truths.md)
 - [21-The World Is Much More Malleable Than You Think](writings/2022/21-The_World_Is_Much_More_Malleable_Than_You_Think.md)
 - [20-Superpowers](writings/2022/20-Superpowers.md)
