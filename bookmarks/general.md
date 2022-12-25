@@ -132,6 +132,7 @@
 - https://www.youtube.com/watch?v=nH61dPXDqNU BASHAR A MULTIDIMENSIONAL BEING FROM THE FUTURE | EPISODE 60 THEY CALL US CHANNELERS
 - http://erikvikersveen.blogspot.com/2013/06/theories-about-sacred-circuits-tm.html
 - https://www.latimes.com/archives/la-xpm-1988-02-07-me-41061-story.html Cypress Psychic Tells Court of Helping to Solve Murder
+- https://www.youtube.com/watch?v=XTSvCHbd3_E Our 9 Dimensional Existence EXPLAINED FROM MEMORY w/ Matías De Stefano | Aubrey Marcus Podcast
 
 
 ## Deconstruction of English
