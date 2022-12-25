@@ -131,6 +131,7 @@ Computer technology related.
 - https://tsoding.org/olive.c/ Olive.c is a simple graphics library that does not have any dependencies and renders everything into the given memory pixel by pixel.
 - https://github.com/MichaelMure/git-bug Bug Tracker implemented with git
 - https://github.com/charmbracelet/glow terminal based markdown reader
+- https://github.com/Immediate-Mode-UI/Nuklear – A single-header ANSI C immediate mode cross-platform GUI library
 
 ## Machine Learning
 
