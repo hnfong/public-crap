@@ -133,6 +133,11 @@
 - http://erikvikersveen.blogspot.com/2013/06/theories-about-sacred-circuits-tm.html
 - https://www.latimes.com/archives/la-xpm-1988-02-07-me-41061-story.html Cypress Psychic Tells Court of Helping to Solve Murder
 - https://www.youtube.com/watch?v=XTSvCHbd3_E Our 9 Dimensional Existence EXPLAINED FROM MEMORY w/ Matías De Stefano | Aubrey Marcus Podcast
+- https://youtu.be/3oZarAm__hk?t=3071 Matías De Stefano: Magic, Miracles & Extraterrestrials | Aubrey Marcus Podcast
+  - Scorpion rain: 51:00
+    - https://www.bbc.com/news/world-middle-east-59274686 Egypt: Hundreds stung by scorpions after deadly floods in Aswan
+- https://www.youtube.com/watch?v=tMdmpBOm3kc Remembering Our Past To SAVE OUR FUTURE | Matías De Stefano | Aubrey Marcus Podcast
+- https://www.youtube.com/watch?v=lBJeibzhyT4 What Happens After Death? Explained From MEMORY - with Matías De Stefano | Deja Blu EP 84
 
 
 ## Deconstruction of English
