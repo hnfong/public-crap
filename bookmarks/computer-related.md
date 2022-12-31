@@ -132,6 +132,7 @@ Computer technology related.
 - https://github.com/MichaelMure/git-bug Bug Tracker implemented with git
 - https://github.com/charmbracelet/glow terminal based markdown reader
 - https://github.com/Immediate-Mode-UI/Nuklear – A single-header ANSI C immediate mode cross-platform GUI library
+- https://github.com/justjake/Gauss A Stable Diffusion app for macOS built with SwiftUI and Apple's ml-stable-diffusion CoreML models.
 
 ## Machine Learning
 
