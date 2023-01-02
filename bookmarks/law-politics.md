@@ -72,5 +72,6 @@
 - https://arstechnica.com/tech-policy/2021/09/leaked-documents-reveal-the-special-rules-facebook-uses-for-5-8m-vips/
 - https://en.wikipedia.org/wiki/Foreign\_Interference\_(Countermeasures)\_Act\_2021
 - https://www.macrumors.com/2022/07/05/eu-approves-landmark-legislation-to-regulate-apple/
+- https://apnews.com/article/technology-indiana-state-government-business-tod-rokita-3fc0f24cd0ca72cc9c4de14204abda01
 
 
