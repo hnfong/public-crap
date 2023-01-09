@@ -26,7 +26,7 @@ Computer technology related.
 - ☆ https://www.youtube.com/watch?v=Kv1Hiv3ox8I How are Images Compressed? [46MB ↘↘ 4.07MB] - Jpeg compression
 - ☆ https://betterdev.blog/minimal-safe-bash-script-template/
 - ☆ https://www.matuzo.at/blog/html-boilerplate/
-
+- ☆ https://soatok.blog/2022/12/29/what-we-do-in-the-etc-shadow-cryptography-with-passwords/
 - http://pubs.opengroup.org/onlinepubs/000095399/ - POSIX Specification
 - http://www.unicode.org/cgi-bin/UnihanRSIndex.pl?radical=159&minstrokes=4&maxstrokes=6&useutf8=true
 - http://research.microsoft.com/apps/pubs/default.aspx?id=144888 - Cycles, Cells and Platters: An Empirical Analysis of Hardware Failures on a Million Consumer PCs
