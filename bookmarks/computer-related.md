@@ -60,7 +60,6 @@ Computer technology related.
 - https://lord.io/text-editing-hates-you-too/ Even more problems with editing text
 - https://portswigger.net/research/http2 Security problems with HTTP/2
 - https://github.com/dylanaraps/pure-bash-bible
-- https://twitter.com/marcan42/status/1494213855387734019 turns out Apple's custom NVMe drives are amazingly fast - if you don't care about data integrity.
 - http://mywiki.wooledge.org/BashPitfalls
 - https://sethmlarson.dev/blog/utf-8 UTF8 reference
 - https://hackingcpp.com/cpp/cheat_sheets.html
@@ -72,6 +71,11 @@ Computer technology related.
 - https://til.simonwillison.net/sqlite/one-line-csv-operations One-liner for running queries against CSV files with SQLite
 - https://scottaaronson.blog/?p=208 	Shor, I’ll do it: explaining Shor’s algorithm without using a single ket sign
 - https://github.com/nepx/halfix Halfix is a portable x86 emulator written in C99. (May be a good reference for x86 cpu/devices)
+- https://github.com/SuperDisk/tar.pl A tar creator and extractor in ~100 lines of Prolog
+- https://en.wikipedia.org/wiki/HyperLogLog HyperLogLog is an algorithm for the count-distinct problem, approximating the number of distinct elements in a multiset.
+- https://sigpipe.macromates.com/2020/macos-catalina-slow-by-design/ executable checksums sent for checking
+- https://support.google.com/faqs/answer/7625886 - Retpoline
+
 
 ## Open Source Tools
 
@@ -133,6 +137,8 @@ Computer technology related.
 - https://github.com/charmbracelet/glow terminal based markdown reader
 - https://github.com/Immediate-Mode-UI/Nuklear – A single-header ANSI C immediate mode cross-platform GUI library
 - https://github.com/justjake/Gauss A Stable Diffusion app for macOS built with SwiftUI and Apple's ml-stable-diffusion CoreML models.
+- https://duckdb.org/ DuckDB is an in-process SQL OLAP database management system (SELECT * FROM 'myfile.csv')
+- https://github.com/google/j2objc
 
 ## Machine Learning
 
@@ -155,6 +161,12 @@ Computer technology related.
 - http://kvfrans.com/coloring-and-shading-line-art-automatically-through-conditional-gans/ - Machine Learning how to fill in manga art
 - http://karpathy.github.io/neuralnets/ - Hacker's guide to Neural Networks
 - http://colah.github.io/posts/2015-08-Understanding-LSTMs/
+- https://en.wikipedia.org/wiki/Cosine_similarity In data analysis, cosine similarity is a measure of similarity between two sequences of numbers.
+- https://beergameai.github.io/
+
+## Data and Datasets
+
+- https://analytics.usa.gov/ provide a window into how people are interacting with the government online
 
 ## Crazy Flexes
 
@@ -235,6 +247,10 @@ Computer technology related.
 - https://www.thisworddoesnotexist.com/ (probably a very good tool to find real-sounding words)
 - https://roadmap.sh/ - educational content to help guide the developers in picking up the path and guide their learnings
 - https://invidious.snopyta.org (alternative Youtube frontend)
+- https://flippa.com/ #1 marketplace to buy and sell (websites)
+- https://exercism.org/ Develop fluency in 66 programming languages with our unique blend of learning, practice and mentoring.
+- https://www.prowebtips.com/best-adsense-alternatives-for-maximize-earnings/#Why_should_you_use_Adsense_alternative
+
 
 ## Graphics, Design, etc.
 
@@ -244,6 +260,7 @@ Computer technology related.
 - https://www.mattcrampton.com/blog/mega_list_of_free_image_sites_for_blogging/
 - https://iconduck.com/ 118,894 free open source icons & illustrations
 - https://tailwindcomponents.com/ A free repository for community components using Tailwind CSS Open source Tailwind UI components and templates to bootstrap your new apps, projects or landing sites!
+- https://blog.roastmylandingpage.com/landing-page-roasts/
 
 
 ## HOWTOs, Beginners instructions, Learn stuff
@@ -278,7 +295,7 @@ Computer technology related.
 - https://open.kattis.com/
 - https://adventofcode.com/
 
-## Archive, Stories, etc.
+## Archive, Stories, Articles, Reports, etc.
 
 - ☆ http://www.bloomberg.com/graphics/2015-paul-ford-what-is-code/ - A super long, informative and (useless for software professionals) article on everything about code and software. Good intro to outsiders if they are willing to read.
 - ☆ https://killedbygoogle.com/
@@ -321,6 +338,13 @@ Computer technology related.
 - https://news.ycombinator.com/item?id=27136539 very interesting discussion on the implications of the CAP theorem...
 - https://caffeinedev.medium.com/how-to-install-tensorflow-on-m1-mac-8e9b91d93706
 - https://news.ycombinator.com/item?id=33257455 Try disabling slide to type. I don't use it, so if it's on, it introduces inaccuracies.
+- https://beautifulracket.com/appendix/why-racket-why-lisp.html
+- https://twitter.com/marcan42/status/1494213855387734019 turns out Apple's custom NVMe drives are amazingly fast - if you don't care about data integrity.
+- https://amyunger.com/blog/2020/09/10/staff-engineer-at-heroku.html
+- https://tinyprojects.dev/posts/i_spent_two_years_launching_tiny_projects
+- https://www.stiftung-nv.de/en/publication/understanding-global-chip-shortages
+- https://github.com/shiraeeshi/hstetr-first - How a Java Programmer Wrote Console Tetris In Haskell And What The Learning Curve Was Like
+
 
 
 ## Python

@@ -16,6 +16,8 @@
 - HKSAR v. ZHOU LIMEI [2017] HKCFA 10 - Cantonese case in CFA, quoting [43] Ester Leung and John Gibbons, “Interpreting  Cantonese  utterance-final particles in bilingual courtroom discourse” in “Interpreting Chinese, Interpreting China”, Ed Robin Setton (John Benjamins Publishing company) at p 97.
 - https://www.cuhk.edu.hk/ics/21c/media/articles/c055-199908034.pdf 主權和人權的歷史和法理學反思 (Albert Chen)
 - https://www.law.cuhk.edu.hk/app/people/prof-eliza-mik/ (Might have authored interesting papers to read [or leads to such])
+- https://en.wikipedia.org/wiki/Foley_v_Hill The case decided that a banker does not hold the sums in a bank account on trust for its customer. Instead the relationship between them is that of debtor and creditor.
+- https://onenda.org/ - Open Source NDA agreement
 
 # Politics
 
@@ -74,5 +76,12 @@
 - https://www.macrumors.com/2022/07/05/eu-approves-landmark-legislation-to-regulate-apple/
 - https://apnews.com/article/technology-indiana-state-government-business-tod-rokita-3fc0f24cd0ca72cc9c4de14204abda01
 - https://www.wsj.com/articles/meta-fined-more-than-400-million-for-sending-ads-based-on-online-activity-11672844441
-
+- https://news.ycombinator.com/item?id=34298969
+- https://gizmodo.com/apple-iphone-france-ads-fine-illegal-data-1849950163
+- https://www.youtube.com/watch?v=GEektxw8Ucc The Online Safety Bill
+- https://arstechnica.com/tech-policy/2022/02/australias-standoff-against-google-and-facebook-worked-sort-of/
+- https://royalsociety.org/news/2022/01/scientific-misinformation-report/ https://royalsociety.org/topics-policy/projects/online-information-environment/ 
+  * Governments and social media platforms should not rely on content removal for combatting harmful scientific misinformation online, a report by the Royal Society, the UK’s national academy of science, has said.
+  * The Online Information Environment report also warns that the UK Government’s upcoming Online Safety Bill focuses on harms to individuals while failing to recognise the wider ‘societal harms’ that misinformation can cause. Misinformation about scientific issues, from vaccine safety to climate change, can cause harm to individuals and society at large.
+  * The report says there is little evidence that calls for major platforms to remove offending content will limit scientific misinformation’s harms and warns such measures could even drive it to harder-to-address corners of the internet and exacerbate feelings of distrust in authorities.
 
