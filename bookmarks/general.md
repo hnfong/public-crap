@@ -69,6 +69,7 @@
 - https://www.klei.com/games/dont-starve
   - https://www.youtube.com/watch?v=hw0thrWVaKQ&t=4975s (Ultimate Beginner Survival Guide (ALL Seasons) Don't Starve Together)
 - https://www.youtube.com/watch?v=TrR6puARRlA My Year-24 Stardew Valley Farm Tour (100% Perfection, No Mods)
+- https://www.youtube.com/watch?v=gvECQlxrhbw Gris Game
 
 
 ## Finance and Business
@@ -84,6 +85,7 @@
 - tradingview.com
 - https://www.lifecontingencies.com/ "I'm an Actuary, and as a way to learn React I put together a website that teaches you the basic concepts and math behind these actuarial table."
 - https://youtu.be/4oDZyOf6CW4?t=2966 (Tony Fadell on Marketing - Start at beginning, Fictional, etc.)
+- https://store.steampowered.com/app/1557960/Master_of_Magic_Caster_of_Magic_for_Windows/
 
 ## Misc History
 
@@ -128,7 +130,7 @@
 - https://www.youtube.com/watch?v=tgBxhpaTQWA 人體身心靈科學(下)：台大校長_李嗣涔科學實驗證明 佛 、 神 、靈界的存在
 - https://www.youtube.com/watch?v=F1bj6VmQZa8 The Five Principles of Self Mastery for a Happy Life with Darryl Anka (Bashar)| Next Level Soul
 - https://www.youtube.com/watch?v=0zMDMtv5XwY Darryl Anka (Bashar) - Buddha at the Gas Pump Interview
-- https://www.youtube.com/watch?v=DyNwxRMgJbY Interview s Darryl Anka & Bashar
+- https://www.youtube.com/watch?v=DyNwxRMgJbY https://www.youtube.com/watch?v=wUEIabIunMo Interview s Darryl Anka & Bashar
 - https://www.youtube.com/watch?v=nH61dPXDqNU BASHAR A MULTIDIMENSIONAL BEING FROM THE FUTURE | EPISODE 60 THEY CALL US CHANNELERS
 - http://erikvikersveen.blogspot.com/2013/06/theories-about-sacred-circuits-tm.html
 - https://www.latimes.com/archives/la-xpm-1988-02-07-me-41061-story.html Cypress Psychic Tells Court of Helping to Solve Murder
@@ -139,6 +141,12 @@
 - https://www.youtube.com/watch?v=tMdmpBOm3kc Remembering Our Past To SAVE OUR FUTURE | Matías De Stefano | Aubrey Marcus Podcast
 - https://www.youtube.com/watch?v=lBJeibzhyT4 What Happens After Death? Explained From MEMORY - with Matías De Stefano | Deja Blu EP 84
 
+## Physics
+
+- https://aeon.co/essays/shut-up-and-calculate-does-a-disservice-to-quantum-mechanics
+- https://en.wikipedia.org/wiki/Born_rule
+- https://www.feynmanlectures.caltech.edu/I_toc.html
+- http://theoreticalminimum.com/courses/quantum-mechanics/2012/winter
 
 ## Deconstruction of English
 
@@ -185,7 +193,7 @@
 - https://www.youtube.com/watch?v=5jBsWbDGtWU The Dangers of Fructose & Uric Acid - with Dr. Richard Johnson | The Empowering Neurologist EP. 142 (also Salt, Glutamines, etc.)
 - https://www.hardtowrite.com/pathogens/ Endemic Pathogens Are Making You Crazy And Then Killing You: Toxoplasmosis Spotlight
 - https://foodb.ca/ (comprehensive database of what are in foods - FooDB is the world’s largest and most comprehensive resource on food constituents, chemistry and biology. It provides information on both macronutrients and micronutrients, including many of the constituents that give foods their flavor, color, taste, texture and aroma.)
-
+- https://www.youtube.com/watch?v=26jHlrk55XA 家居製臘肉
 
 ## Jokes
 

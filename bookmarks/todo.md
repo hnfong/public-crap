@@ -10,3 +10,5 @@
 - https://openai.com/blog/whisper/
 - https://github.com/mypyc/mypyc
 - https://github.com/byronknoll/tensorflow-compress/blob/master/tensorflow-compress.ipynb - Might be a good example of how a LSTM model is constructed.
+- http://cryptopals.com/ - Play this as exercise
+- redmine, trello, asana - Project Management Tools
