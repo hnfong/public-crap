@@ -187,6 +187,7 @@ Computer technology related.
 - https://github.com/cesanta/mjs (Small Javascript engine)
 - https://github.com/cesanta/elk (Embeded Javascript engine)
 - https://github.com/rochacbruno/py2rs - From Python into Rust
+- https://roc-lang.org
 
 ## Software Engineering
 
@@ -294,6 +295,8 @@ Computer technology related.
 - https://projectlovelace.net/problems/
 - https://open.kattis.com/
 - https://adventofcode.com/
+- https://protohackers.com/ - Implementing network protocols
+- https://cryptopals.com/ - cryptography fundamentals
 
 ## Archive, Stories, Articles, Reports, etc.
 
