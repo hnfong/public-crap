@@ -91,6 +91,7 @@ Computer technology related.
 - ☆ https://boardgame.io/ Open Source Game Engine for Turn-Based Games
 - ☆ https://jodd.org/ The Unbearable Lightness of Java - Jodd is a set of micro-frameworks and developer-friendly tools and utilities.
 - ☆ https://github.com/eudoxia0/cmacro cmacro: Lisp macros for C
+- ☆ https://kindavim.app/ - VIM accessibility bindings for macOS
 
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
@@ -162,6 +163,7 @@ Computer technology related.
 - http://karpathy.github.io/neuralnets/ - Hacker's guide to Neural Networks
 - http://colah.github.io/posts/2015-08-Understanding-LSTMs/
 - https://en.wikipedia.org/wiki/Cosine_similarity In data analysis, cosine similarity is a measure of similarity between two sequences of numbers.
+  - https://www.youtube.com/watch?v=e9U0QAFbfLI Youtube explanation of Cosine Similarity by StatQuest
 - https://beergameai.github.io/
 
 ## Data and Datasets
