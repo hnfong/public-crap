@@ -5,6 +5,11 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 ## Writings
 
 
+### 2023
+
+- [02-Life is not a prerequisite for intelligence](writings/2023/02-Life is not a prerequisite for intelligence.md)
+- [01-網絡怪物](writings/2023/01-網絡怪物.md)
+
 ### 2022
 
 - [24-A Magician's Choice](writings/2022/24-A_Magician's_Choice.md)
@@ -276,6 +281,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ## Bookmarks
 
+- [world](bookmarks/world.md)
 - [wishes](bookmarks/wishes.md)
 - [todo](bookmarks/todo.md)
 - [law-politics](bookmarks/law-politics.md)
