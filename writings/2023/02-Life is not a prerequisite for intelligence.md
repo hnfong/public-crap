@@ -6,7 +6,7 @@ GPT can be implemented in less than 100 lines of code.
 
 I'm not sure anyone actually understands the implications of this.
 
-We have, through empirical experiments, shown that there exist relatively simple systems where if you feed them sufficient amounts of data, they will become as intelligent the data allows. The threshold is at most a couple billion repeating "units", possibly less, organized in a way that follows a gradient and settles on local optimum state (which many physical processes do naturally).
+We have, through empirical experiments, shown that there exist relatively simple systems where if you feed them sufficient amounts of data, they will become as intelligent the data allows. The threshold is at most threshold is at most some tens of billions of repeating "units", possibly less, organized in a way that follows a gradient and settles on local optimum state (which many physical processes do naturally).
 
 This is obviously less complicated than the simplest lifeforms we know on Earth!!
 
