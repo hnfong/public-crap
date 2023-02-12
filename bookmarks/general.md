@@ -299,6 +299,8 @@
 - https://nav.al/failure Groups Never Admit Failure
 - https://www.themarshallproject.org/2022/09/30/how-i-survived-a-year-in-the-hole-without-losing-my-mind
 - https://www.youtube.com/watch?v=pdmf4fu6fMY Become a Civilized Beast - Jordan Peterson Interview (Talks about various topics)
+- https://www.youtube.com/watch?v=EwgeZd15SVU - Akiane Kramarik Self Portrait
+  - https://akiane.com/product/self-portrait/
 
 ## My image links
 
