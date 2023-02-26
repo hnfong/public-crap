@@ -147,6 +147,9 @@
 - https://en.wikipedia.org/wiki/Born_rule
 - https://www.feynmanlectures.caltech.edu/I_toc.html
 - http://theoreticalminimum.com/courses/quantum-mechanics/2012/winter
+- https://www.youtube.com/watch?v=iNqqOLscOBY Lex Fridman Podcast - Sean Carrol 
+- https://www.youtube.com/watch?v=F6FR08VylO4 Something Deeply Hidden | Sean Carroll | Talks at Google
+- https://www.journals.uchicago.edu/doi/10.1093/bjps/axw004 Self-locating Uncertainty and the Origin of Probability in Everettian Quantum Mechanics Charles T. Sebens and Sean M. Carroll
 
 ## Deconstruction of English
 
@@ -167,7 +170,7 @@
 - https://www.facebook.com/myschoolbus.com.hk/videos/938079079618755/ - Magnetic Plastic Pieces
 - https://www.youtube.com/watch?v=1G72936Y3xA Top 10 Knots To Know
 - https://www.youtube.com/watch?v=5lLPAHK_k6I 10 knots you NEED to know in life. [Save this Video]
-
+- https://www.youtube.com/watch?v=xLORsLlcT48 DOPAMINE DETOX: Take Back CONTROL Of Your Life & STOP LAZINESS! | Dr. Andrew Huberman
 
 
 ## Health and Food

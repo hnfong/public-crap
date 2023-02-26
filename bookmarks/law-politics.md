@@ -87,3 +87,8 @@
   * The Online Information Environment report also warns that the UK Government’s upcoming Online Safety Bill focuses on harms to individuals while failing to recognise the wider ‘societal harms’ that misinformation can cause. Misinformation about scientific issues, from vaccine safety to climate change, can cause harm to individuals and society at large.
   * The report says there is little evidence that calls for major platforms to remove offending content will limit scientific misinformation’s harms and warns such measures could even drive it to harder-to-address corners of the internet and exacerbate feelings of distrust in authorities.
 - https://andzwa.medium.com/why-the-google-layoffs-are-about-personal-ambition-and-poor-leadership-817236947368
+- https://www.bbc.com/news/technology-64584001 Signal would 'walk' from UK if Online Safety Bill undermined encryption
+- https://www.wired.com/story/the-supreme-court-section-230-the-internet/
+- https://www.youtube.com/watch?v=hzNo5lZCq5M The Supreme Court Could Destroy the Internet Next Week
+
+
