@@ -165,6 +165,9 @@ Computer technology related.
 - https://en.wikipedia.org/wiki/Cosine_similarity In data analysis, cosine similarity is a measure of similarity between two sequences of numbers.
   - https://www.youtube.com/watch?v=e9U0QAFbfLI Youtube explanation of Cosine Similarity by StatQuest
 - https://beergameai.github.io/
+- https://github.com/dair-ai/Prompt-Engineering-Guide
+- https://www.youtube.com/watch?v=YCzL96nL7j0 LSTM Explained
+- https://www.youtube.com/watch?v=kCc8FmEb1nY Let's build GPT: from scratch, in code, spelled out. Andrej Karpathy
 
 ## Data and Datasets
 
