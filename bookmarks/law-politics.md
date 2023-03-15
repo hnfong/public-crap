@@ -30,6 +30,7 @@
 - https://cunderwood.dev/2022/02/13/consent-gdpr-and-google-analytics/
 - https://www.youtube.com/watch?v=-1iaJWSwUZs almost 2 hour Harry Potter Critique
 - https://imprimis.hillsdale.edu/islam-facts-or-dreams/
+- https://fortune.com/2023/03/11/silicon-valley-bank-svb-ceo-greg-becker-dodd-frank-trump-rollback-systemically-important-fdic/
 
 # Big-Tech
 
@@ -88,7 +89,11 @@
   * The report says there is little evidence that calls for major platforms to remove offending content will limit scientific misinformation’s harms and warns such measures could even drive it to harder-to-address corners of the internet and exacerbate feelings of distrust in authorities.
 - https://andzwa.medium.com/why-the-google-layoffs-are-about-personal-ambition-and-poor-leadership-817236947368
 - https://www.bbc.com/news/technology-64584001 Signal would 'walk' from UK if Online Safety Bill undermined encryption
+- https://www.theregister.com/2023/02/25/signal_uk_online_safety_bill/
 - https://www.wired.com/story/the-supreme-court-section-230-the-internet/
 - https://www.youtube.com/watch?v=hzNo5lZCq5M The Supreme Court Could Destroy the Internet Next Week
+- https://arstechnica.com/information-technology/2023/03/biden-administration-wants-to-hold-companies-liable-for-bad-cybersecurity/
+- https://www.politico.eu/article/eu-plan-regulate-chatgpt-openai-artificial-intelligence-act/
+- https://www.theguardian.com/technology/2023/mar/09/whatsapp-end-to-end-encryption-online-safety-bill
 
 

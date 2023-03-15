@@ -168,6 +168,13 @@ Computer technology related.
 - https://github.com/dair-ai/Prompt-Engineering-Guide
 - https://www.youtube.com/watch?v=YCzL96nL7j0 LSTM Explained
 - https://www.youtube.com/watch?v=kCc8FmEb1nY Let's build GPT: from scratch, in code, spelled out. Andrej Karpathy
+- https://sumplete.com/about/ - ChatGPT written game
+- https://huggingface.co/togethercomputer/GPT-NeoXT-Chat-Base-20B
+- https://github.com/facebookresearch/llama
+  - https://ai.facebook.com/blog/large-language-model-llama-meta-ai/
+  - https://github.com/ggerganov/llama.cpp
+  - https://github.com/remixer-dec/llama-mps
+
 
 ## Data and Datasets
 
@@ -179,6 +186,7 @@ Computer technology related.
 - https://twitter.com/David3141593/status/1573218394358386688 The image in this tweet displays its own MD5 hash. You can download and hash it yourself, and it should still match - 1337e2ef42b9bee8de06a4d223a51337 I think this is the first PNG/MD5 hashquine.
 - https://browsix.org/ UNIX IN YOUR BROWSER TAB (implement POSIX in the browser)
 - https://wavvy.app/ - WASM port of Audacity
+- https://fathy.fr/carbonyl Forking Chrome to render in a terminal
 
 
 ## Experimental Languages
@@ -352,6 +360,10 @@ Computer technology related.
 - https://tinyprojects.dev/posts/i_spent_two_years_launching_tiny_projects
 - https://www.stiftung-nv.de/en/publication/understanding-global-chip-shortages
 - https://github.com/shiraeeshi/hstetr-first - How a Java Programmer Wrote Console Tetris In Haskell And What The Learning Curve Was Like
+- https://dallasinnovates.com/exclusive-qa-john-carmacks-different-path-to-artificial-general-intelligence/
+- https://interviewing.io/guides/system-design-interview
+  - It says it's a guide to system design interview, but the actual content seems to be much more than that...
+
 
 
 

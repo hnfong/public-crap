@@ -33,6 +33,12 @@
 - https://0xf00ff00f.github.io/zettawatt/ - Moliu click click get more resource game
 - https://www.pounce.sh/ - Stealth and hunting game
 
+## Services
+
+- https://butlerasia.com/about/ - Personalised Home Concierge
+- https://ai.baidu.com/tech/imagerecognition/plant - plant recognition
+  - See also https://www.163.com/dy/article/HKMQNRAK0553THN1.html 植物识别APP哪个好？这5款识别率很高！花草树木通通搞定
+
 ## Language tools and references
 
 - https://www.jeraldinephneah.com/importance-of-dialects-in-singapore/ - Why We Should Reintroduce Chinese Dialects On Singapore’s Free-To-Air Television
@@ -74,6 +80,8 @@
 
 ## Finance and Business
 
+- ☆ https://www.youtube.com/watch?v=16qy12WDxcY Fed Chair Powell Speaks to David Rubenstein (full interview)
+  - Very interesting inside look at what the Fed Chairman does
 - http://www.berkshirehathaway.com/letters/1985.html
 - http://www.nytimes.com/interactive/2014/upshot/buy-rent-calculator.html?smid=fb-share
 - http://www.businessweek.com/articles/2013-10-10/jeff-bezos-and-the-age-of-amazon-excerpt-from-the-everything-store-by-brad-stone
@@ -86,6 +94,17 @@
 - https://www.lifecontingencies.com/ "I'm an Actuary, and as a way to learn React I put together a website that teaches you the basic concepts and math behind these actuarial table."
 - https://youtu.be/4oDZyOf6CW4?t=2966 (Tony Fadell on Marketing - Start at beginning, Fictional, etc.)
 - https://store.steampowered.com/app/1557960/Master_of_Magic_Caster_of_Magic_for_Windows/
+- https://www.vanityfair.com/news/2010/04/wall-street-excerpt-201004 Michael Burry Bio
+- https://www.youtube.com/watch?v=jlieOSX3GyM Day in the life of a VC | How to become one? | How much do you earn?
+- https://www.bondsupermart.com/bsm/bond-selector
+- https://www.federalreserve.gov/monetarypolicy/reservereq.htm - As announced on March 15, 2020, the Board reduced reserve requirement ratios to zero percent effective March 26, 2020.  This action eliminated reserve requirements for all depository institutions.
+- https://www.federalreserve.gov/newsevents/pressreleases/monetary20230312a.htm - Federal Reserve Board announces it will make available additional funding to eligible depository institutions to help assure banks have the ability to meet the needs of all their depositors
+
+
+## Prediction Markets
+
+- https://www.youtube.com/watch?v=xA27x7GRMZQ Prediction markets: can betting be good for the world?
+- https://longbets.org/ - Long Bets is a public arena for enjoyably competitive predictions, of interest to society, with philanthropic money at stake.
 
 ## Misc History
 
@@ -140,6 +159,7 @@
     - https://www.bbc.com/news/world-middle-east-59274686 Egypt: Hundreds stung by scorpions after deadly floods in Aswan
 - https://www.youtube.com/watch?v=tMdmpBOm3kc Remembering Our Past To SAVE OUR FUTURE | Matías De Stefano | Aubrey Marcus Podcast
 - https://www.youtube.com/watch?v=lBJeibzhyT4 What Happens After Death? Explained From MEMORY - with Matías De Stefano | Deja Blu EP 84
+- https://www.instagram.com/kali_insight_art/ Korean Shaman
 
 ## Physics
 
@@ -150,6 +170,7 @@
 - https://www.youtube.com/watch?v=iNqqOLscOBY Lex Fridman Podcast - Sean Carrol 
 - https://www.youtube.com/watch?v=F6FR08VylO4 Something Deeply Hidden | Sean Carroll | Talks at Google
 - https://www.journals.uchicago.edu/doi/10.1093/bjps/axw004 Self-locating Uncertainty and the Origin of Probability in Everettian Quantum Mechanics Charles T. Sebens and Sean M. Carroll
+- https://www.quantamagazine.org/how-our-reality-may-be-a-sum-of-all-possible-realities-20230206/
 
 ## Deconstruction of English
 
@@ -287,6 +308,7 @@
 
 ## Others
 
+- https://herbarium.gov.hk/en/about-us/index.html - Look up stuff
 - http://www.cram.com/flashcards/riot-landlord-meetings-prep-3568372  - No idea what this is
 - http://www.hotelquickly.com/ - Hotel Booking
 - http://thepocketshot.com https://www.youtube.com/watch?v=6_OnK1_GkTY
