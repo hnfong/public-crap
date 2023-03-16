@@ -99,6 +99,7 @@
 - https://www.bondsupermart.com/bsm/bond-selector
 - https://www.federalreserve.gov/monetarypolicy/reservereq.htm - As announced on March 15, 2020, the Board reduced reserve requirement ratios to zero percent effective March 26, 2020.  This action eliminated reserve requirements for all depository institutions.
 - https://www.federalreserve.gov/newsevents/pressreleases/monetary20230312a.htm - Federal Reserve Board announces it will make available additional funding to eligible depository institutions to help assure banks have the ability to meet the needs of all their depositors
+- https://www.fdic.gov/analysis/quarterly-banking-profile/index.html The Quarterly Banking Profile is a quarterly publication that provides the earliest comprehensive summary of financial results for all FDIC-insured institutions.
 
 
 ## Prediction Markets
