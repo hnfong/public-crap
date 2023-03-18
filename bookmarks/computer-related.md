@@ -174,6 +174,8 @@ Computer technology related.
   - https://ai.facebook.com/blog/large-language-model-llama-meta-ai/
   - https://github.com/ggerganov/llama.cpp
   - https://github.com/remixer-dec/llama-mps
+- https://twitter.com/alexalbert__/status/1636488551817965568 the first jailbreak for ChatGPT-4
+  - HN discussion https://news.ycombinator.com/item?id=35190383
 
 
 ## Data and Datasets

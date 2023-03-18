@@ -9,6 +9,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 - [02-Life is not a prerequisite for intelligence](writings/2023/02-Life_is_not_a_prerequisite_for_intelligence.md)
 - [01-網絡怪物](writings/2023/01-網絡怪物.md)
+- [00-Knowledge vs Belief](writings/2023/00-Knowledge_vs_Belief.md)
 
 ### 2022
 

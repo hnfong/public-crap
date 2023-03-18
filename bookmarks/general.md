@@ -82,6 +82,7 @@
 
 - ☆ https://www.youtube.com/watch?v=16qy12WDxcY Fed Chair Powell Speaks to David Rubenstein (full interview)
   - Very interesting inside look at what the Fed Chairman does
+- ☆ https://www.bankofengland.co.uk/-/media/boe/files/quarterly-bulletin/2014/money-creation-in-the-modern-economy.pdf
 - http://www.berkshirehathaway.com/letters/1985.html
 - http://www.nytimes.com/interactive/2014/upshot/buy-rent-calculator.html?smid=fb-share
 - http://www.businessweek.com/articles/2013-10-10/jeff-bezos-and-the-age-of-amazon-excerpt-from-the-everything-store-by-brad-stone
@@ -100,6 +101,9 @@
 - https://www.federalreserve.gov/monetarypolicy/reservereq.htm - As announced on March 15, 2020, the Board reduced reserve requirement ratios to zero percent effective March 26, 2020.  This action eliminated reserve requirements for all depository institutions.
 - https://www.federalreserve.gov/newsevents/pressreleases/monetary20230312a.htm - Federal Reserve Board announces it will make available additional funding to eligible depository institutions to help assure banks have the ability to meet the needs of all their depositors
 - https://www.fdic.gov/analysis/quarterly-banking-profile/index.html The Quarterly Banking Profile is a quarterly publication that provides the earliest comprehensive summary of financial results for all FDIC-insured institutions.
+- https://www.federalreserve.gov/monetarypolicy/bst_fedsbalancesheet.htm
+- https://www.federalreserve.gov/releases/h41/ Factors Affecting Reserve Balances - H.4.1 (Detailed data on Federal Reserve Balance Sheet)
+- https://www.spglobal.com/marketintelligence/en/news-insights/latest-news-headlines/hg-bonds-apple-prints-14b-offering-as-debt-matures-buybacks-continue-terms-62422134 - Details (yield, maturity, etc.) of Apple debt issue in 2021
 
 
 ## Prediction Markets
@@ -122,6 +126,7 @@
 - https://www.youtube.com/watch?v=rN9Ur_NiXXk 中国史上最繁荣强盛的王朝：“父辞子笑，兄有弟攻”的大唐王朝
 - https://web.archive.org/web/20051031023837/http://www.prestongates.com/firmProfile/history.asp Bill Gate's father doing tech law practice
 - https://en.wikipedia.org/wiki/Open_Letter_to_Hobbyists 1976 open letter written by Bill Gates, the co-founder of Microsoft, to early personal computer hobbyists, in which Gates expresses dismay at the rampant software piracy taking place in the hobbyist community
+- https://www.youtube.com/watch?v=4Nr1AgIfajI How an 18th Century Sailing Battleship Works
 
 ## Pre-history
 
