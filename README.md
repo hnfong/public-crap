@@ -278,6 +278,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [subjective-reality](outline/subjective-reality.md)
 - [software-engineering](outline/software-engineering.md)
 - [law](outline/law.md)
+- [curious-coincidences](outline/curious-coincidences.md)
 - [commentary-of-hong-kong-criminal-laws](outline/commentary-of-hong-kong-criminal-laws.md)
 
 ## Bookmarks

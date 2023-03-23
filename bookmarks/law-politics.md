@@ -95,5 +95,6 @@
 - https://arstechnica.com/information-technology/2023/03/biden-administration-wants-to-hold-companies-liable-for-bad-cybersecurity/
 - https://www.politico.eu/article/eu-plan-regulate-chatgpt-openai-artificial-intelligence-act/
 - https://www.theguardian.com/technology/2023/mar/09/whatsapp-end-to-end-encryption-online-safety-bill
+- https://news.now.com/home/local/player?newsId=511319 議員稱就國歌搜尋排名引特權法召見Google代表
 
 
