@@ -250,6 +250,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ## Stream
 
+- [AI](stream/AI.md)
 - [2022-04](stream/2022-04.md)
 - [2022-03](stream/2022-03.md)
 
@@ -278,6 +279,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [tech](outline/tech.md)
 - [subjective-reality](outline/subjective-reality.md)
 - [software-engineering](outline/software-engineering.md)
+- [portals](outline/portals.md)
 - [law](outline/law.md)
 - [curious-coincidences](outline/curious-coincidences.md)
 - [commentary-of-hong-kong-criminal-laws](outline/commentary-of-hong-kong-criminal-laws.md)
