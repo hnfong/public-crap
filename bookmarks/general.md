@@ -105,6 +105,15 @@
 - https://www.federalreserve.gov/releases/h41/ Factors Affecting Reserve Balances - H.4.1 (Detailed data on Federal Reserve Balance Sheet)
 - https://www.spglobal.com/marketintelligence/en/news-insights/latest-news-headlines/hg-bonds-apple-prints-14b-offering-as-debt-matures-buybacks-continue-terms-62422134 - Details (yield, maturity, etc.) of Apple debt issue in 2021
 - https://www.bitsaboutmoney.com/archive/banking-in-very-uncertain-times/ - A rather interesting take and some semi-insider info on the 2023 Banking Crisis. (Mar 2023)
+- https://www.quora.com/How-can-one-invest-in-Nassim-Talebs-Universa-fund
+  - I’m looking at Cambria Tail Risk ETF (TAIL) Stock Price, Quote, History & News - Yahoo Finance. and similar instruments that are available to all. Check out the 5-yr chart. It clearly shows protection during the Dec 2018 mini-crash too. Also, see Tail Risk Hedge Funds | FactorResearch The huge returns of Universa are a misinterpretation of leaked company data, i.e., clickbait. They’re the returns of just the hedges that Universa uses. Only a small portion of Universa’s assets under management goes into the hedges. Most of the money goes for low-risk investments. Almost all of their hedges expire worthlessly. Universa then sells some of the remaining assets to buy new hedges. (CALPERS sold much of their Universa shortly before the crash because they couldn’t stomach the nearly continual small losses. They probably cancelled their fire insurance policies too.) The actual returns on AUM are closer to 200–300%. More detail at Tail-risk funds: When a 4000% hedge fund return is a mirage - ValueWalk.
+    - https://finance.yahoo.com/quote/TAIL/
+    - https://www.valuewalk.com/tail-risk-funds-universa/
+    - https://finominal.com/
+- https://www.youtube.com/watch?v=EpMLAQbSYAw - Age of Easy Money (full documentary) | FRONTLINE
+- https://www.youtube.com/watch?v=C8EIhZXHyTk - The Ultimate Guide to Venture Capital Explained by a VC
+- https://johnhcochrane.blogspot.com/2018/09/fed-nixes-narrow-bank.html https://johnhcochrane.blogspot.com/2019/03/fed-vs-narrow-banks.html
+
 
 
 ## Prediction Markets
@@ -225,11 +234,17 @@
 - https://www.hardtowrite.com/pathogens/ Endemic Pathogens Are Making You Crazy And Then Killing You: Toxoplasmosis Spotlight
 - https://foodb.ca/ (comprehensive database of what are in foods - FooDB is the world’s largest and most comprehensive resource on food constituents, chemistry and biology. It provides information on both macronutrients and micronutrients, including many of the constituents that give foods their flavor, color, taste, texture and aroma.)
 - https://www.youtube.com/watch?v=26jHlrk55XA 家居製臘肉
+- https://www.youtube.com/watch?v=3J0Ff-8Voyk Keto Diet Secrets | Cracking The Keto Code W/ Dr. Steven Gundry - a very interesting take on Keto
+- https://www.youtube.com/watch?v=xJBVy_sIfxg How to Enter Ketosis without Restrictive Diets - with Dr. Gundry | The Empowering Neurologist EP.148
+  - Ketones a signal to protect and multiply mitochrondria
+  - MCT oil can do the same job without restrictive diets
+  - Polyphenols also signalling something and carnivore diets will starve gut biome and cause artery stiffness
+  - post-biotics, viral-sth, bacteria communicating with mitochrondria (since the latter is a ingested bacteria)
+  - fermented foods - mitochondria uncouplers, wormwood also uncouplers??!
 
 ## Jokes
 
 - http://giphy.com/gifs/unit-test-integration-3o7rbPDRHIHwbmcOBy
-
 
 ## Music
 
@@ -306,11 +321,15 @@
 - https://www.censtatd.gov.hk/hkstat/sub/sp200.jsp?tableID=006&ID=0&productType=8 - HISTORICAL UNEMPLOYMENT RATE
 - https://www.censtatd.gov.hk/hkstat/sub/sp200.jsp - LIST OF USEFUL STATS FROM CENSUS
 
-## Others - Fascinating stuff
+## Others - Fascinating stuff / interesting stuff
 
 - https://news.ycombinator.com/item?id=31204611 - Ask HN: Teach me something new
 - https://halfasianpeopledotcom.wordpress.com/2015/06/23/asian-women-and-white-men-the-truth-from-a-eurasian-male-3/
 - https://louzhu.info/p/105394/1.html 《神雕侠侣》杨过的抉择——浪子回头金不换
+- https://www.youtube.com/watch?v=DOWDNBu9DkU - Amazing Invention- This Drone Will Change Everything 
+  - Zipline https://www.flyzipline.com/
+  - Also, the slice of rwanda life is interesting too
+
 
 
 ## Others
