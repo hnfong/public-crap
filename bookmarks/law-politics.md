@@ -31,6 +31,7 @@
 - https://www.youtube.com/watch?v=-1iaJWSwUZs almost 2 hour Harry Potter Critique
 - https://imprimis.hillsdale.edu/islam-facts-or-dreams/
 - https://fortune.com/2023/03/11/silicon-valley-bank-svb-ceo-greg-becker-dodd-frank-trump-rollback-systemically-important-fdic/
+- https://en.wikipedia.org/wiki/Operation_Choke_Point
 
 # Big-Tech
 
@@ -96,5 +97,6 @@
 - https://www.politico.eu/article/eu-plan-regulate-chatgpt-openai-artificial-intelligence-act/
 - https://www.theguardian.com/technology/2023/mar/09/whatsapp-end-to-end-encryption-online-safety-bill
 - https://news.now.com/home/local/player?newsId=511319 議員稱就國歌搜尋排名引特權法召見Google代表
-
+- https://www.bbc.com/news/technology-65057011 Clearview AI used nearly 1m times by US police, it tells the BBC
+- https://futureoflife.org/open-letter/pause-giant-ai-experiments/
 

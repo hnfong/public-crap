@@ -176,6 +176,25 @@ Computer technology related.
   - https://github.com/remixer-dec/llama-mps
 - https://twitter.com/alexalbert__/status/1636488551817965568 the first jailbreak for ChatGPT-4
   - HN discussion https://news.ycombinator.com/item?id=35190383
+- https://www.youtube.com/watch?v=nctqc8FBJ2U - geohotz live programming - George Hotz | Programming | ChatLLaMA: get in losers we're building a chatbot
+- https://github.com/facebookresearch/metaseq https://huggingface.co/facebook - Some other lesser-known Facebook models pre-lamma
+- https://huggingface.co/bigscience/bloom BLOOM is an autoregressive Large Language Model (LLM), trained to continue text from a prompt on vast amounts of text data using industrial-scale computational resources. As such, it is able to output coherent text in 46 languages and 13 programming languages that is hardly distinguishable from text written by humans. BLOOM can also be instructed to perform text tasks it hasn't been explicitly trained for, by casting them as text generation tasks.
+- https://github.com/nomic-ai/gpt4all
+- https://medium.com/@imicknl/how-to-create-a-private-chatgpt-with-your-own-data-15754e6378a1
+- https://www.cerebras.net/blog/cerebras-gpt-a-family-of-open-compute-efficient-large-language-models/
+- https://github.com/NouamaneTazi/bloomz.cpp
+- https://simonwillison.net/2023/Mar/17/beat-chatgpt-in-a-browser/
+- https://react-lm.github.io/
+- https://arxiv.org/abs/2303.17564 - BloombergGPT
+- https://vicuna.lmsys.org/ - Another claimed better model based on LLaMA - model not available yet but presumably might be if they figure out licensing?
+- https://github.com/NouamaneTazi/bloomz.cpp - proof of concept iOS app with a small model
+- https://github.com/xenova/transformers.js - Run 🤗 Transformers in your browser!
+- https://simonwillison.net/2023/Mar/17/beat-chatgpt-in-a-browser/ - some useful info on the state of the art (note that the author did admit in https://news.ycombinator.com/item?id=35391717 that the comparison to GPT-3 was a bit of an exaggeration)
+- https://react-lm.github.io/ - Some prompt techniques - In this paper, we explore the use of LLMs to generate both reasoning traces and task-specific actions in an interleaved manner, allowing for greater synergy between the two: reasoning traces help the model induce, track, and update action plans as well as handle exceptions, while actions allow it to interface with external sources, such as knowledge bases or environments, to gather additional information
+  - https://til.simonwillison.net/llms/python-react-pattern - Some actual illustration of how to implement react prompting
+- https://sharegpt.com/ Share your wildest ChatGPT conversations with one click. 120,245 conversations shared so far.
+- https://github.com/karpathy/nanoGPT
+- https://jaykmody.com/blog/gpt-from-scratch/ - GPT in 60 Lines of NumPy
 
 
 ## Data and Datasets
@@ -189,7 +208,9 @@ Computer technology related.
 - https://browsix.org/ UNIX IN YOUR BROWSER TAB (implement POSIX in the browser)
 - https://wavvy.app/ - WASM port of Audacity
 - https://fathy.fr/carbonyl Forking Chrome to render in a terminal
-
+- https://obie.medium.com/my-kids-and-i-just-played-d-d-with-chatgpt4-as-the-dm-43258e72b2c6
+- https://old.reddit.com/r/MachineLearning/comments/11vfbo9/p_we_gave_gpt35_tools_that_developers_use_and_let/
+- https://thume.ca/2020/04/18/telefork-forking-a-process-onto-a-different-computer/
 
 ## Experimental Languages
 
