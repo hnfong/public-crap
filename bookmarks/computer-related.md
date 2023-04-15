@@ -140,6 +140,7 @@ Computer technology related.
 - https://github.com/justjake/Gauss A Stable Diffusion app for macOS built with SwiftUI and Apple's ml-stable-diffusion CoreML models.
 - https://duckdb.org/ DuckDB is an in-process SQL OLAP database management system (SELECT * FROM 'myfile.csv')
 - https://github.com/google/j2objc
+- https://github.com/red-data-tools/YouPlot - YouPlot is a command line tool that draws plots on the terminal.
 
 ## Machine Learning
 
@@ -195,7 +196,24 @@ Computer technology related.
 - https://sharegpt.com/ Share your wildest ChatGPT conversations with one click. 120,245 conversations shared so far.
 - https://github.com/karpathy/nanoGPT
 - https://jaykmody.com/blog/gpt-from-scratch/ - GPT in 60 Lines of NumPy
-
+- https://gptforwork.com/ - Use ChatGPT in Google Sheets and Docs
+- https://github.com/manyoso/haltt4llm
+- https://llamahub.ai/
+- https://sites.research.google/usm/
+- https://www.theverge.com/2023/4/6/23672862/microsoft-image-creator-edge-sidebar-dall-e-ai-generator
+- https://github.com/nat/openplayground
+- https://www.ermine.ai/
+- https://github.com/Crataco/ai-guide/blob/main/guide/frontends.md
+- https://github.com/Crataco/ai-guide/blob/main/guide/models.md
+- https://en.wikipedia.org/wiki/Hugging_Face
+- https://github.com/huggingface/transformers
+- https://www.youtube.com/watch?v=ySEx_Bqxvvo - MIT 6.S191: Recurrent Neural Networks, Transformers, and Attention
+- https://github.com/lm-sys/FastChat/#vicuna-weights
+- https://www.youtube.com/watch?v=Fjh1kwOzr7c OpenAI’s GPT-4 Just Got Supercharged!
+- https://arxiv.org/abs/2211.09066  Prompting - Teaching Algorithmic Reasoning via In-context Learning
+- https://www.make-safe-ai.com/is-bing-chat-safe/
+- https://arxiv.org/abs/2201.11903 https://arxiv.org/abs/2205.11916 - Chain of thought Prompting
+- https://aws.amazon.com/blogs/aws/amazon-codewhisperer-free-for-individual-use-is-now-generally-available/
 
 ## Data and Datasets
 
@@ -211,6 +229,8 @@ Computer technology related.
 - https://obie.medium.com/my-kids-and-i-just-played-d-d-with-chatgpt4-as-the-dm-43258e72b2c6
 - https://old.reddit.com/r/MachineLearning/comments/11vfbo9/p_we_gave_gpt35_tools_that_developers_use_and_let/
 - https://thume.ca/2020/04/18/telefork-forking-a-process-onto-a-different-computer/
+- https://szopa.medium.com/teaching-chatgpt-to-speak-my-sons-invented-language-9d109c0a0f05
+
 
 ## Experimental Languages
 
@@ -234,6 +254,7 @@ Computer technology related.
 - https://www.slideshare.net/reed2001/culture-1798664/ Netflix Culture Document (and lots of management philosophies)
 - https://www.hillelwayne.com/post/are-we-really-engineers/
 - https://www.remotemobprogramming.org/
+- https://medium.com/@pravse/the-maze-is-in-the-mouse-980c57cfd61a - An interesting critique of Google's internal culture
 
 ## Potentially Useful Apps
 
@@ -386,8 +407,8 @@ Computer technology related.
 - https://dallasinnovates.com/exclusive-qa-john-carmacks-different-path-to-artificial-general-intelligence/
 - https://interviewing.io/guides/system-design-interview
   - It says it's a guide to system design interview, but the actual content seems to be much more than that...
-
-
+- https://nymag.com/intelligencer/2023/02/the-silicon-valley-loop-malcolm-harriss-palo-alto.html
+- https://mitchellh.com/writing/my-startup-banking-story
 
 
 ## Python

@@ -187,6 +187,7 @@
 - https://www.youtube.com/watch?v=F6FR08VylO4 Something Deeply Hidden | Sean Carroll | Talks at Google
 - https://www.journals.uchicago.edu/doi/10.1093/bjps/axw004 Self-locating Uncertainty and the Origin of Probability in Everettian Quantum Mechanics Charles T. Sebens and Sean M. Carroll
 - https://www.quantamagazine.org/how-our-reality-may-be-a-sum-of-all-possible-realities-20230206/
+- https://www.youtube.com/watch?v=9-jIplX6Wjw
 
 ## Deconstruction of English
 
@@ -241,6 +242,7 @@
   - Polyphenols also signalling something and carnivore diets will starve gut biome and cause artery stiffness
   - post-biotics, viral-sth, bacteria communicating with mitochrondria (since the latter is a ingested bacteria)
   - fermented foods - mitochondria uncouplers, wormwood also uncouplers??!
+- https://en.wikipedia.org/wiki/Minnesota_Multiphasic_Personality_Inventory - MMPI-2 test - standardized psychometric test of adult personality and psychopathology
 
 ## Jokes
 
