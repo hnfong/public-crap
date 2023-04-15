@@ -7,6 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2023
 
+- [04-無題](writings/2023/04-無題.md)
 - [03-點樣搵男女朋友](writings/2023/03-點樣搵男女朋友.md)
 - [02-Life is not a prerequisite for intelligence](writings/2023/02-Life_is_not_a_prerequisite_for_intelligence.md)
 - [01-網絡怪物](writings/2023/01-網絡怪物.md)
@@ -283,6 +284,10 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [law](outline/law.md)
 - [curious-coincidences](outline/curious-coincidences.md)
 - [commentary-of-hong-kong-criminal-laws](outline/commentary-of-hong-kong-criminal-laws.md)
+
+## Other
+
+- [chatgpt-prompts](other/chatgpt-prompts.md)
 
 ## Bookmarks
 
