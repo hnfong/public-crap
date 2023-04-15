@@ -2,6 +2,22 @@
 
 It must have been a coincidence.
 
+## 忌廉
+
+有一日同蝶主席食雲吞麵。佢同伙記講要罐雪碧。伙記拎咗罐忌廉嚟。
+
+我見狀就出聲話：咦唔係喎，佢叫咗雪碧。
+
+蝶主席即刻修正：唔係，其實我係要忌廉。
+
+我：你頭先唔係嗌雪碧咩？
+
+蝶：我係嗌咗雪碧，但其實我係想叫忌廉。所以嚟咗忌廉就啱喇！
+
+我：⋯⋯⋯
+
+(唔排除兩者倒轉，我唔記得exact7ly係邊個打邊個)
+
 ## Lawrence Anthony - elephants arrive at his house to mourn his death
 
 - https://www.psychologytoday.com/intl/blog/animal-emotions/201203/elephants-mourn-loss-elephant-whisperer-lawrence-anthony
