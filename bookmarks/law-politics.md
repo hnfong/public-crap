@@ -99,4 +99,5 @@
 - https://news.now.com/home/local/player?newsId=511319 議員稱就國歌搜尋排名引特權法召見Google代表
 - https://www.bbc.com/news/technology-65057011 Clearview AI used nearly 1m times by US police, it tells the BBC
 - https://futureoflife.org/open-letter/pause-giant-ai-experiments/
+- https://www.engadget.com/google-found-to-have-violated-order-to-save-chat-evidence-in-epic-antitrust-case-052711779.html
 
