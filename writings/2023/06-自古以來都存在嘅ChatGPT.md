@@ -1,4 +1,6 @@
-# 自古存在嘅ChatGPT
+# 自古以來都存在嘅ChatGPT
+
+![](images/ancient_chatgpt.jpg)
 
 最近睇太多 AI 毀滅人類嘅警告，心情麻麻。
 
