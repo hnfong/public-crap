@@ -7,6 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2023
 
+- [06-自古以來都存在嘅ChatGPT](writings/2023/06-自古以來都存在嘅ChatGPT.md)
 - [05-死亡](writings/2023/05-死亡.md)
 - [04-無題](writings/2023/04-無題.md)
 - [03-點樣搵男女朋友](writings/2023/03-點樣搵男女朋友.md)
