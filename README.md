@@ -7,6 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2023
 
+- [07-A story](writings/2023/07-A_story.md)
 - [06-自古以來都存在嘅ChatGPT](writings/2023/06-自古以來都存在嘅ChatGPT.md)
 - [05-死亡](writings/2023/05-死亡.md)
 - [04-無題](writings/2023/04-無題.md)
@@ -285,6 +286,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [portals](outline/portals.md)
 - [law](outline/law.md)
 - [curious-coincidences](outline/curious-coincidences.md)
+- [computer-test](outline/computer-test.md)
 - [commentary-of-hong-kong-criminal-laws](outline/commentary-of-hong-kong-criminal-laws.md)
 
 ## Other
