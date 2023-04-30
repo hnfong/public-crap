@@ -15,7 +15,7 @@ Knowledge bound them and made them pledge.
 The wisest ones diligently taught  
 students of knowledge so very sure  
 What was truth and what was not.  
-So their divine powers became no more.
+So their potent powers became no more.
 
 This is how our story starts,  
 Mortal men and kindred hearts,  
