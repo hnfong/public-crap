@@ -332,7 +332,110 @@
   - Zipline https://www.flyzipline.com/
   - Also, the slice of rwanda life is interesting too
 
+## Interesting but distracting channels
 
+- https://www.youtube.com/@T90Official
+- https://www.youtube.com/@cattrumpet
+- https://www.youtube.com/@lindybeige
+- https://www.youtube.com/@Ancient_Sanctum/
+- https://www.youtube.com/@FelifromGermany
+- https://www.youtube.com/@MoriCalliope/
+- https://www.youtube.com/@KingsandGenerals
+- https://www.youtube.com/@zefrank
+- https://www.youtube.com/@withmoney
+- https://www.youtube.com/@williamcfox
+- https://www.youtube.com/@DavidBennettPiano
+- https://www.youtube.com/@sadhguru - Indian mystic, yoga teacher, etc.
+- https://www.youtube.com/@First_Class_Amateur KNOTS knots Knots...
+- https://www.youtube.com/@MuseHK Anime - Anime
+- https://www.youtube.com/@AniOneAsia - Anime
+- https://www.youtube.com/@animalogic - Animals and biology
+- https://www.youtube.com/@Ancient_Sanctum
+- https://www.youtube.com/@Jakez123 - Re-zero content
+- https://www.youtube.com/@FilmTheory - Fun channel about film stuff
+- https://www.youtube.com/@Simplehistory - self-explanatory
+- https://www.youtube.com/@WATOP_VIDEO - Reporting weird things, catchy titles
+- https://www.youtube.com/@EconomicsExplained - self-explanatory
+- https://www.youtube.com/@FonziMGM - Good music
+- https://www.youtube.com/@Einzelganger - philosophical topics
+- https://www.youtube.com/@eons - What discovery channel and national geographic should have been like
+- https://www.youtube.com/@ArchitectofGames - Excellent critical commentary of games
+- https://www.youtube.com/@MossyEarth - European eco-reclamation efforts
+- https://www.youtube.com/@Herostory - Chinese history channel
+- https://www.youtube.com/@Linfamy - Japanese culture with a dose of humor and kink
+- https://www.youtube.com/@journeytomicro - Videos taken on microscopes so you don't have to do it yourself
+- https://www.youtube.com/@sheephoho - Chinese youtuber making videos of exquisite and delicate foods
+- https://www.youtube.com/@AltrusianGraceMedia - All sorts of fringe mystical topics
+- https://www.youtube.com/@AbroadinJapan - The white guy in Japan
+- https://www.youtube.com/@SabineHossenfelder - Spicy takes on physics
+- https://www.youtube.com/@MoneyMacroTalks - Economics
+- https://www.youtube.com/@SuperCarlinBrothers - Harry Potter, and other popular stories theories
+- https://www.youtube.com/@R-Talk-Show - Random somewhat-interesting stuff
+- https://www.youtube.com/@Shoe0nHead - Feminism and making fun of various sides of SJW
+- https://www.youtube.com/@MinuteFood - Food and science
+- https://www.youtube.com/@drekberg - Keto youtuber
+- https://www.youtube.com/@LowkoTV - Starcraft
+- https://www.youtube.com/@brienfoerster - Tours of ancient sites of Egypt and Peru
+- https://www.youtube.com/@TheKiwiGrower - Gardening
+- ★ https://www.youtube.com/@AChickCalledAlbert - Hatching and raising small birds. With love.
+- https://www.youtube.com/@nogatekeepers - Silicon Valley stuff
+- https://www.youtube.com/@tibees - Popular math/physics stuff. Very soothing ASMR-like voice
+- https://www.youtube.com/@ChrisTheBrain - Channel that puts forward new physics interpretations of dimensions and stuff
+- https://www.youtube.com/@TomScottGo - Various interesting engineering/infrastructure stuff
+- ★ https://www.youtube.com/@MarkRober - Crazy projects
+- https://www.youtube.com/@recode - Interviews by Vox
+- https://www.youtube.com/@jomaoppa - Life in SV and big tech
+- https://www.youtube.com/@mathemaniac - Interesting math stuff
+- https://www.youtube.com/@BranchEducation - How does *$hardware* work?
+- https://www.youtube.com/@Shaun_vids - Probably some interesting stuff - personal views about various things. Useful for listening stuff while doing boring stuff
+- https://www.youtube.com/@tom7 - Seems to have some fun stuff on computer stuff
+- https://www.youtube.com/@WhatIveLearned - Keto-ish stuff
+- https://www.youtube.com/@Lord_Vinheteiro - Musician that stares intently at you while playing fun stuff
+- https://www.youtube.com/@Hujikoman - Good music
+- https://www.youtube.com/@FearNoSteel - Crazy knife sharpening skills
+- https://www.youtube.com/@user-eh2zn3nq3g - 圆眼君 空姐
+- https://www.youtube.com/@cheddar - Interesting journalism stuff
+- https://www.youtube.com/@FallofCivilizations - Documenting the fall of Civilizations
+- https://www.youtube.com/@FreeHighQualityDocumentaries
+- https://www.youtube.com/@PeterSantenello - Journalist in California
+- https://www.youtube.com/@ModernMBA
+- https://www.youtube.com/@JackChappleShow - My name is Jack Chapple. I make videos on Economics, Business, Science, and a lot more!
+- https://www.youtube.com/@user-lz7hq4yv6c - 中村千尋 - Music
+- https://www.youtube.com/@HistoryoftheEarth/
+- https://www.youtube.com/@DorianWilson - Alt-med/health
+- https://www.youtube.com/@Brew - journal-entertainment of how people can be hurt, get sick, and get killed.
+- https://www.youtube.com/@mothlightmedia1936 - Evolution of animals and pre-historic earth
+- https://www.youtube.com/@beanpandacook - Cooking channel
+- https://www.youtube.com/@pbsspacetime - Physics channel
+- https://www.youtube.com/@smartereveryday - Pop sci
+- https://www.youtube.com/@besmart - Pop sci
+- https://www.youtube.com/@SciShowPsych - Pop psych?
+- https://www.youtube.com/@MinuteEarth - Pop sci/geography
+- https://www.youtube.com/@Nighthawkinlight/ - Fun and dangerous experiments
+- https://www.youtube.com/@domainofscience - Pop sci
+- https://www.youtube.com/@MinutePhysics - Pop sci
+- https://www.youtube.com/@RealLifeLore - Pop sci
+- https://www.youtube.com/@smartereveryday - Pop sci/engineering
+- https://www.youtube.com/@NileRed - Hard core chemistry
+- https://www.youtube.com/@NileBlue - Hard core chemistry
+- https://www.youtube.com/@RealEngineering - Pop engineering
+- https://www.youtube.com/@scishowspace - Pop sci: space
+- https://www.youtube.com/@EarthTitan - Biology, introduction to lesser-known fruits, plants and animals
+- https://www.youtube.com/@SLSMusic - Good acoustic(?) music
+- https://www.youtube.com/@HelloFutureMe - Various stuff
+- https://www.youtube.com/@NeverKnowsBest - Critical gaming commentary
+- https://www.youtube.com/@mothersbasement - Anime reviews
+- https://www.youtube.com/@PhysicsExplainedVideos - Pop sci (probably more in-depth than the rest)
+- https://www.youtube.com/@parallaxnick637 - science, history and the multiverse
+- https://www.youtube.com/@CogitoEdu - Pop history
+- https://www.youtube.com/@BenGThomas - Prehistoric animals
+- https://www.youtube.com/@Echidnut - Anime and re-zero
+- https://www.youtube.com/@carolineruby - Random American girl blogging her life
+- https://www.youtube.com/@TradingSense - HK stocks commentary
+- https://www.youtube.com/@user-nj6tj6uo8u - 波斯秘语
+- https://www.youtube.com/@gigguk - Anime commentary
+- https://www.youtube.com/@MUSICPLANETcoverchannel - Japanese music cover channel
+- https://www.youtube.com/@HistoriaCivilis - History
 
 ## Others
 
