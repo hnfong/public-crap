@@ -215,6 +215,8 @@ Computer technology related.
 - https://arxiv.org/abs/2201.11903 https://arxiv.org/abs/2205.11916 - Chain of thought Prompting
 - https://aws.amazon.com/blogs/aws/amazon-codewhisperer-free-for-individual-use-is-now-generally-available/
 - https://www.youtube.com/watch?v=VcVfceTsD0A - Max Tegmark: The Case for Halting AI Development | Lex Fridman Podcast #371
+- https://www.youtube.com/watch?v=X7c0T7uwtkM - MARI Grand Seminar - Large Language Models and Low Resource Languages
+- https://gluebenchmark.com/tasks
 
 ## Data and Datasets
 
