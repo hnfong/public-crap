@@ -436,6 +436,7 @@
 - https://www.youtube.com/@gigguk - Anime commentary
 - https://www.youtube.com/@MUSICPLANETcoverchannel - Japanese music cover channel
 - https://www.youtube.com/@HistoriaCivilis - History
+- https://www.youtube.com/@cateen_hayatosumino - Japanese Pianist. Spectacular
 
 ## Others
 
