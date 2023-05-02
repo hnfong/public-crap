@@ -77,7 +77,6 @@
 - https://www.youtube.com/watch?v=TrR6puARRlA My Year-24 Stardew Valley Farm Tour (100% Perfection, No Mods)
 - https://www.youtube.com/watch?v=gvECQlxrhbw Gris Game
 
-
 ## Finance and Business
 
 - ☆ https://www.youtube.com/watch?v=16qy12WDxcY Fed Chair Powell Speaks to David Rubenstein (full interview)
@@ -113,7 +112,6 @@
 - https://www.youtube.com/watch?v=EpMLAQbSYAw - Age of Easy Money (full documentary) | FRONTLINE
 - https://www.youtube.com/watch?v=C8EIhZXHyTk - The Ultimate Guide to Venture Capital Explained by a VC
 - https://johnhcochrane.blogspot.com/2018/09/fed-nixes-narrow-bank.html https://johnhcochrane.blogspot.com/2019/03/fed-vs-narrow-banks.html
-
 
 
 ## Prediction Markets
@@ -158,24 +156,8 @@
 
 - https://en.wikisource.org/wiki/Arcana_Coelestia_(Potts)/Genesis_1
 - https://en.wikipedia.org/wiki/Zenneck_wave - https://youtu.be/PS1azzN0b-I?t=978 (500,000 volts through megalithic stone? An investigation into the possible with UnchartedX...)
-- https://www.youtube.com/watch?v=Rxmw9eizOAo Joe Rogan Experience #1284 - Graham Hancock - 2:45 hour interview with Graham Hancock
 - https://en.wikipedia.org/wiki/Solomon%27s_shamir (Lost Egyptian technology to cut hard stones???? - Moses was an Egyptian Priest)
-- https://www.youtube.com/watch?v=pNUH5Ji9hDs https://www.youtube.com/watch?v=B1c8k8JFyu8 【首届觉性科学论坛】李嗣涔：科学的疆界 儿童潜能现象
-- https://www.youtube.com/watch?v=qhgrgPXfx9U 人體身心靈科學(上)：台大校長_李嗣涔科學實驗證明 佛 、 神 、靈界的存在
-- https://www.youtube.com/watch?v=tgBxhpaTQWA 人體身心靈科學(下)：台大校長_李嗣涔科學實驗證明 佛 、 神 、靈界的存在
-- https://www.youtube.com/watch?v=F1bj6VmQZa8 The Five Principles of Self Mastery for a Happy Life with Darryl Anka (Bashar)| Next Level Soul
-- https://www.youtube.com/watch?v=0zMDMtv5XwY Darryl Anka (Bashar) - Buddha at the Gas Pump Interview
-- https://www.youtube.com/watch?v=DyNwxRMgJbY https://www.youtube.com/watch?v=wUEIabIunMo Interview s Darryl Anka & Bashar
-- https://www.youtube.com/watch?v=nH61dPXDqNU BASHAR A MULTIDIMENSIONAL BEING FROM THE FUTURE | EPISODE 60 THEY CALL US CHANNELERS
 - http://erikvikersveen.blogspot.com/2013/06/theories-about-sacred-circuits-tm.html
-- https://www.latimes.com/archives/la-xpm-1988-02-07-me-41061-story.html Cypress Psychic Tells Court of Helping to Solve Murder
-- https://www.youtube.com/watch?v=XTSvCHbd3_E Our 9 Dimensional Existence EXPLAINED FROM MEMORY w/ Matías De Stefano | Aubrey Marcus Podcast
-- https://youtu.be/3oZarAm__hk?t=3071 Matías De Stefano: Magic, Miracles & Extraterrestrials | Aubrey Marcus Podcast
-  - Scorpion rain: 51:00
-    - https://www.bbc.com/news/world-middle-east-59274686 Egypt: Hundreds stung by scorpions after deadly floods in Aswan
-- https://www.youtube.com/watch?v=tMdmpBOm3kc Remembering Our Past To SAVE OUR FUTURE | Matías De Stefano | Aubrey Marcus Podcast
-- https://www.youtube.com/watch?v=lBJeibzhyT4 What Happens After Death? Explained From MEMORY - with Matías De Stefano | Deja Blu EP 84
-- https://www.instagram.com/kali_insight_art/ Korean Shaman
 
 ## Physics
 
@@ -187,7 +169,8 @@
 - https://www.youtube.com/watch?v=F6FR08VylO4 Something Deeply Hidden | Sean Carroll | Talks at Google
 - https://www.journals.uchicago.edu/doi/10.1093/bjps/axw004 Self-locating Uncertainty and the Origin of Probability in Everettian Quantum Mechanics Charles T. Sebens and Sean M. Carroll
 - https://www.quantamagazine.org/how-our-reality-may-be-a-sum-of-all-possible-realities-20230206/
-- https://www.youtube.com/watch?v=9-jIplX6Wjw
+- https://www.youtube.com/watch?v=9-jIplX6Wjw - Sabine Hossenfelder - I Think Faster Than Light Travel is Possible. Here's Why.
+
 
 ## Deconstruction of English
 
@@ -454,10 +437,7 @@
 - https://www.weshelterpeople.com (RVs super cool / mobile homes)
 - https://www.youtube.com/watch?v=y7bPYXocmsA Dr. Robert Cywes - 'Carbohydrate Addiction: returning to my roots'
 - https://nav.al/failure Groups Never Admit Failure
-- https://www.themarshallproject.org/2022/09/30/how-i-survived-a-year-in-the-hole-without-losing-my-mind
 - https://www.youtube.com/watch?v=pdmf4fu6fMY Become a Civilized Beast - Jordan Peterson Interview (Talks about various topics)
-- https://www.youtube.com/watch?v=EwgeZd15SVU - Akiane Kramarik Self Portrait
-  - https://akiane.com/product/self-portrait/
 
 ## My image links
 
