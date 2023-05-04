@@ -217,6 +217,10 @@ Computer technology related.
 - https://www.youtube.com/watch?v=VcVfceTsD0A - Max Tegmark: The Case for Halting AI Development | Lex Fridman Podcast #371
 - https://www.youtube.com/watch?v=X7c0T7uwtkM - MARI Grand Seminar - Large Language Models and Low Resource Languages
 - https://gluebenchmark.com/tasks
+- https://github.com/mlc-ai/mlc-llm - Our mission is to enable everyone to develop, optimize and deploy AI models natively on everyone's devices.
+- https://www.newsminimalist.com/about
+
+
 
 ## Data and Datasets
 
@@ -258,6 +262,7 @@ Computer technology related.
 - https://www.hillelwayne.com/post/are-we-really-engineers/
 - https://www.remotemobprogramming.org/
 - https://medium.com/@pravse/the-maze-is-in-the-mouse-980c57cfd61a - An interesting critique of Google's internal culture
+- https://www.qword.net/2023/04/30/maybe-you-should-store-passwords-in-plaintext
 
 ## Potentially Useful Apps
 
