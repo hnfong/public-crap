@@ -250,7 +250,15 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 0000-2013
 
+- [跑圈圈](writings/0000-2013/跑圈圈.md)
+- [人間道](writings/0000-2013/人間道.md)
+- [Vocational Training](writings/0000-2013/Vocational_Training.md)
+- [Programming and Writing](writings/0000-2013/Programming_and_Writing.md)
+- [Homework Considered Harmful](writings/0000-2013/Homework_Considered_Harmful.md)
 - [Free will?](writings/0000-2013/Free_will_qm_.md)
+- [Efficiency of the Overworked](writings/0000-2013/Efficiency_of_the_Overworked.md)
+- [A layman's rant on infinity](writings/0000-2013/A_layman's_rant_on_infinity.md)
+- [A Meditation on Cups](writings/0000-2013/A_Meditation_on_Cups.md)
 
 ## Stream
 
@@ -298,6 +306,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [world](bookmarks/world.md)
 - [wishes](bookmarks/wishes.md)
 - [todo](bookmarks/todo.md)
+- [stories](bookmarks/stories.md)
 - [law-politics](bookmarks/law-politics.md)
 - [general](bookmarks/general.md)
 - [contents](bookmarks/contents.md)
