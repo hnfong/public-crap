@@ -370,7 +370,6 @@
 - https://www.youtube.com/@jomaoppa - Life in SV and big tech
 - https://www.youtube.com/@mathemaniac - Interesting math stuff
 - https://www.youtube.com/@BranchEducation - How does *$hardware* work?
-- https://www.youtube.com/@Shaun_vids - Probably some interesting stuff - personal views about various things. Useful for listening stuff while doing boring stuff
 - https://www.youtube.com/@tom7 - Seems to have some fun stuff on computer stuff
 - https://www.youtube.com/@WhatIveLearned - Keto-ish stuff
 - https://www.youtube.com/@Lord_Vinheteiro - Musician that stares intently at you while playing fun stuff
