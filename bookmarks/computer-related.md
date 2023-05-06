@@ -219,6 +219,7 @@ Computer technology related.
 - https://gluebenchmark.com/tasks
 - https://github.com/mlc-ai/mlc-llm - Our mission is to enable everyone to develop, optimize and deploy AI models natively on everyone's devices.
 - https://www.newsminimalist.com/about
+- https://www.mosaicml.com/blog/mpt-7b
 
 
 

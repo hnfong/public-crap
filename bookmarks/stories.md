@@ -23,6 +23,7 @@
 - https://www.youtube.com/watch?v=EwgeZd15SVU - Akiane Kramarik Self Portrait
   - https://akiane.com/product/self-portrait/
 - https://www.themarshallproject.org/2022/09/30/how-i-survived-a-year-in-the-hole-without-losing-my-mind
+- https://www.youtube.com/watch?v=1ezbq2z6ca8 Are Humans The AI Of The Mineral Realm? w/ Matías De Stefano / Listening to the Universe for Guidance
 
 ## TODO
 
