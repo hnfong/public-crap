@@ -18,8 +18,8 @@
 - https://www.law.cuhk.edu.hk/app/people/prof-eliza-mik/ (Might have authored interesting papers to read [or leads to such])
 - https://en.wikipedia.org/wiki/Foley_v_Hill The case decided that a banker does not hold the sums in a bank account on trust for its customer. Instead the relationship between them is that of debtor and creditor.
 - https://onenda.org/ - Open Source NDA agreement
-- https://research.hktdc.com/en/article/NDMwNTA4MTYw US Tax Reform and Its Likely Impacts on HK-US Trade and Investment
- (Explanation of Tax Cuts and Jobs Act of 2017)
+- https://research.hktdc.com/en/article/NDMwNTA4MTYw US Tax Reform and Its Likely Impacts on HK-US Trade and Investment (Explanation of Tax Cuts and Jobs Act of 2017)
+ - https://asialawportal.com/why-2022-will-be-a-defining-year-in-lawyer-remuneration-in-hong-kong/
 
 # Politics
 
