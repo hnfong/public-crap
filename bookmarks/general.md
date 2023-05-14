@@ -314,6 +314,7 @@
 - https://www.youtube.com/watch?v=DOWDNBu9DkU - Amazing Invention- This Drone Will Change Everything 
   - Zipline https://www.flyzipline.com/
   - Also, the slice of rwanda life is interesting too
+- https://www.youtube.com/watch?v=XDBWjfUgaR8 Former CIA Chief of Disguise Answers Spy Questions From Twitter | Tech Support | WIRED
 
 ## Interesting but distracting channels
 
