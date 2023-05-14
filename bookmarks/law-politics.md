@@ -32,6 +32,7 @@
 - https://imprimis.hillsdale.edu/islam-facts-or-dreams/
 - https://fortune.com/2023/03/11/silicon-valley-bank-svb-ceo-greg-becker-dodd-frank-trump-rollback-systemically-important-fdic/
 - https://en.wikipedia.org/wiki/Operation_Choke_Point
+- https://www.youtube.com/watch?v=wJuRx1wARUk Clarence and Ginni Thomas: Politics, Power and the Supreme Court (full documentary) | FRONTLINE
 
 # Big-Tech
 

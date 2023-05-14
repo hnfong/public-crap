@@ -32,4 +32,6 @@
 ## Breadcrumbs
 
 - https://en.wikipedia.org/wiki/Automatic_writing
+- https://en.wikipedia.org/wiki/Eleusinian_Mysteries
+- https://en.wikipedia.org/wiki/Plato%27s_unwritten_doctrines
 
