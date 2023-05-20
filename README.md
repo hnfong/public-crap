@@ -7,6 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2023
 
+- [10-無我](writings/2023/10-無我.md)
 - [09-點解中國人住嘅地方樓價咁貴](writings/2023/09-點解中國人住嘅地方樓價咁貴.md)
 - [08-Another story](writings/2023/08-Another_story.md)
 - [07-A story](writings/2023/07-A_story.md)
