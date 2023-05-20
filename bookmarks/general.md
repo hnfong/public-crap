@@ -32,6 +32,7 @@
 - https://eightcolors.net/ - Nice HTML puzzle game
 - https://0xf00ff00f.github.io/zettawatt/ - Moliu click click get more resource game
 - https://www.pounce.sh/ - Stealth and hunting game
+- https://orb.farm/ - Fish bowl
 
 ## Services
 
@@ -315,6 +316,7 @@
   - Zipline https://www.flyzipline.com/
   - Also, the slice of rwanda life is interesting too
 - https://www.youtube.com/watch?v=XDBWjfUgaR8 Former CIA Chief of Disguise Answers Spy Questions From Twitter | Tech Support | WIRED
+- https://en.wikipedia.org/wiki/Michael_Shen_Fu-Tsung Shen Fu-Tsung also met with King James II.[9] It is the first recorded instance of a Chinese man visiting Britain.
 
 ## Interesting but distracting channels
 

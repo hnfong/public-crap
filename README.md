@@ -7,6 +7,8 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2023
 
+- [09-點解中國人住嘅地方樓價咁貴](writings/2023/09-點解中國人住嘅地方樓價咁貴.md)
+- [08-Another story](writings/2023/08-Another_story.md)
 - [07-A story](writings/2023/07-A_story.md)
 - [06-自古以來都存在嘅ChatGPT](writings/2023/06-自古以來都存在嘅ChatGPT.md)
 - [05-死亡](writings/2023/05-死亡.md)
@@ -293,6 +295,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [software-engineering](outline/software-engineering.md)
 - [portals](outline/portals.md)
 - [law](outline/law.md)
+- [decline of magic](outline/decline_of_magic.md)
 - [curious-coincidences](outline/curious-coincidences.md)
 - [computer-test](outline/computer-test.md)
 - [commentary-of-hong-kong-criminal-laws](outline/commentary-of-hong-kong-criminal-laws.md)
