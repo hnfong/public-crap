@@ -220,6 +220,11 @@ Computer technology related.
 - https://github.com/mlc-ai/mlc-llm - Our mission is to enable everyone to develop, optimize and deploy AI models natively on everyone's devices.
 - https://www.newsminimalist.com/about
 - https://www.mosaicml.com/blog/mpt-7b
+- https://www.lesswrong.com/posts/D7PumeYTDPfBTp3i7/the-waluigi-effect-mega-post - A very dense essay on why RLHF might not work
+- https://a16z.com/2023/05/25/ai-canon/ - Some useful links on various AI topics
+- https://huggingface.co/tiiuae/falcon-40b-instruct - Apache Licensed Model
+- https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard
+
 
 
 
@@ -238,6 +243,7 @@ Computer technology related.
 - https://old.reddit.com/r/MachineLearning/comments/11vfbo9/p_we_gave_gpt35_tools_that_developers_use_and_let/
 - https://thume.ca/2020/04/18/telefork-forking-a-process-onto-a-different-computer/
 - https://szopa.medium.com/teaching-chatgpt-to-speak-my-sons-invented-language-9d109c0a0f05
+- https://twitter.com/LinusEkenstam/status/1663566567311900672 - Generative Fill of memes
 
 
 ## Experimental Languages

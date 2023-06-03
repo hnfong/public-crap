@@ -24,6 +24,20 @@
   - https://akiane.com/product/self-portrait/
 - https://www.themarshallproject.org/2022/09/30/how-i-survived-a-year-in-the-hole-without-losing-my-mind
 - https://www.youtube.com/watch?v=1ezbq2z6ca8 Are Humans The AI Of The Mineral Realm? w/ Matías De Stefano / Listening to the Universe for Guidance
+- https://youtu.be/t2k5HDyGzYc?t=3777 GROUNDBREAKING DMT research that could change EVERYTHING w/ Dr. Jon Dean and John Chavez | AMP
+  - Multiple personality disorder, different personalities have different allergies
+  - Hypnosis increases breast size
+  - Imagining bicep size => increase in size and can lift greater weights
+
+### Post-Concert Amnesia
+
+- https://thewellesleynews.com/2023/03/22/we-need-to-normalize-post-concert-amnesia/
+- https://www.reddit.com/r/TaylorSwift/comments/13en74u/concert_amnesia/
+- https://www.bbc.com/news/entertainment-arts-65765368
+  - Taylor Swift fans report 'amnesia' following Eras show
+- https://time.com/6282468/taylor-swift-concert-memory/
+
+
 
 ## TODO
 

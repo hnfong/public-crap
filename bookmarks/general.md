@@ -136,6 +136,7 @@
 - https://web.archive.org/web/20051031023837/http://www.prestongates.com/firmProfile/history.asp Bill Gate's father doing tech law practice
 - https://en.wikipedia.org/wiki/Open_Letter_to_Hobbyists 1976 open letter written by Bill Gates, the co-founder of Microsoft, to early personal computer hobbyists, in which Gates expresses dismay at the rampant software piracy taking place in the hobbyist community
 - https://www.youtube.com/watch?v=4Nr1AgIfajI How an 18th Century Sailing Battleship Works
+- https://www.youtube.com/watch?v=ReqV53mY6w8 谁是周携王？聊聊烽火戏诸侯的背后究竟还隐藏了哪些故事
 
 ## Pre-history
 

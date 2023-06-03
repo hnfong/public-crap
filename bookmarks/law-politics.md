@@ -102,4 +102,10 @@
 - https://www.bbc.com/news/technology-65057011 Clearview AI used nearly 1m times by US police, it tells the BBC
 - https://futureoflife.org/open-letter/pause-giant-ai-experiments/
 - https://www.engadget.com/google-found-to-have-violated-order-to-save-chat-evidence-in-epic-antitrust-case-052711779.html
+- https://www.npr.org/2023/05/31/1179184256/news-facebook-california-journalism-preservation-act - Facebook, Instagram to block news stories in California if bill passes
+- https://www.ft.com/content/65ae7aef-7dce-4e61-bf6d-f498bd298527 Facebook to block news for some users in Canada
+
+# AI Law
+
+- https://technomancers.ai/japan-goes-all-in-copyright-doesnt-apply-to-ai-training/
 
