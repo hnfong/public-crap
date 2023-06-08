@@ -141,23 +141,15 @@ Computer technology related.
 - https://duckdb.org/ DuckDB is an in-process SQL OLAP database management system (SELECT * FROM 'myfile.csv')
 - https://github.com/google/j2objc
 - https://github.com/red-data-tools/YouPlot - YouPlot is a command line tool that draws plots on the terminal.
+- https://github.com/oobabooga/text-generation-webui - web UI for running Large Language Models like LLaMA, llama.cpp, GPT-J, Pythia, OPT, and GALACTICA - goal is to become the AUTOMATIC1111/stable-diffusion-webui of text generation
 
 ## Machine Learning
 
-- https://github.com/openai/gpt-2/blob/master/src/model.py
-- http://www.ioccc.org/2019/mills/hint.html - RNN Machine Learning in C
-- https://bellard.org/libnc/ LibNC is a C library for tensor manipulation. It supports automatic differentiation and can be used to implement machine learning models such as LSTM and Transformers. (Intel+Linux/Win only, not open source)
+### Theory, Fundamentals, Documentation, Tutorials, Guides
+
 - https://towardsdatascience.com/choosing-the-right-gpu-for-deep-learning-on-aws-d69c157d8c86
 - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/install-nvidia-driver.html
-- https://github.com/coqui-ai/TTS - text to speech (see https://news.ycombinator.com/item?id=26790951 )
-- https://github.com/google/sentencepiece SentencePiece is an unsupervised text tokenizer and detokenizer mainly for Neural Network-based text generation systems where the vocabulary size is predetermined prior to the neural model training.
-- https://github.com/blobcity/autoai https://news.ycombinator.com/item?id=29198819 - A framework to find the best performing AI/ML model for any AI problem. 
-- https://nn-512.com/ Generate Neural Nets in C (compiler is in Go)
-- https://github.com/nerdyrodent/VQGAN-CLIP Just playing with getting VQGAN+CLIP running locally, rather than having to use colab.
-- https://github.com/nerdyrodent/CLIP-Guided-Diffusion/  Just playing with getting CLIP Guided Diffusion running locally, rather than having to use colab.
-- https://github.com/mehdidc/feed_forward_vqgan_clip Feed forward VQGAN-CLIP model, where the goal is to eliminate the need for optimizing the latent space of VQGAN for each input prompt. 
-- https://github.com/openai/glide-text2im
-- https://github.com/alembics/disco-diffusion
+- https://github.com/openai/gpt-2/blob/master/src/model.py
 - http://www.nervanasys.com/demystifying-deep-reinforcement-learning/
 - https://www.youtube.com/watch?v=aircAruvnKk Good intro to neural network
 - http://kvfrans.com/coloring-and-shading-line-art-automatically-through-conditional-gans/ - Machine Learning how to fill in manga art
@@ -169,67 +161,90 @@ Computer technology related.
 - https://github.com/dair-ai/Prompt-Engineering-Guide
 - https://www.youtube.com/watch?v=YCzL96nL7j0 LSTM Explained
 - https://www.youtube.com/watch?v=kCc8FmEb1nY Let's build GPT: from scratch, in code, spelled out. Andrej Karpathy
-- https://sumplete.com/about/ - ChatGPT written game
-- https://huggingface.co/togethercomputer/GPT-NeoXT-Chat-Base-20B
-- https://github.com/facebookresearch/llama
-  - https://ai.facebook.com/blog/large-language-model-llama-meta-ai/
-  - https://github.com/ggerganov/llama.cpp
-  - https://github.com/remixer-dec/llama-mps
 - https://twitter.com/alexalbert__/status/1636488551817965568 the first jailbreak for ChatGPT-4
   - HN discussion https://news.ycombinator.com/item?id=35190383
 - https://www.youtube.com/watch?v=nctqc8FBJ2U - geohotz live programming - George Hotz | Programming | ChatLLaMA: get in losers we're building a chatbot
-- https://github.com/facebookresearch/metaseq https://huggingface.co/facebook - Some other lesser-known Facebook models pre-lamma
-- https://huggingface.co/bigscience/bloom BLOOM is an autoregressive Large Language Model (LLM), trained to continue text from a prompt on vast amounts of text data using industrial-scale computational resources. As such, it is able to output coherent text in 46 languages and 13 programming languages that is hardly distinguishable from text written by humans. BLOOM can also be instructed to perform text tasks it hasn't been explicitly trained for, by casting them as text generation tasks.
-- https://github.com/nomic-ai/gpt4all
 - https://medium.com/@imicknl/how-to-create-a-private-chatgpt-with-your-own-data-15754e6378a1
-- https://www.cerebras.net/blog/cerebras-gpt-a-family-of-open-compute-efficient-large-language-models/
-- https://github.com/NouamaneTazi/bloomz.cpp
-- https://simonwillison.net/2023/Mar/17/beat-chatgpt-in-a-browser/
-- https://react-lm.github.io/
-- https://arxiv.org/abs/2303.17564 - BloombergGPT
-- https://vicuna.lmsys.org/ - Another claimed better model based on LLaMA - model not available yet but presumably might be if they figure out licensing?
-- https://github.com/NouamaneTazi/bloomz.cpp - proof of concept iOS app with a small model
-- https://github.com/xenova/transformers.js - Run 🤗 Transformers in your browser!
 - https://simonwillison.net/2023/Mar/17/beat-chatgpt-in-a-browser/ - some useful info on the state of the art (note that the author did admit in https://news.ycombinator.com/item?id=35391717 that the comparison to GPT-3 was a bit of an exaggeration)
 - https://react-lm.github.io/ - Some prompt techniques - In this paper, we explore the use of LLMs to generate both reasoning traces and task-specific actions in an interleaved manner, allowing for greater synergy between the two: reasoning traces help the model induce, track, and update action plans as well as handle exceptions, while actions allow it to interface with external sources, such as knowledge bases or environments, to gather additional information
   - https://til.simonwillison.net/llms/python-react-pattern - Some actual illustration of how to implement react prompting
 - https://sharegpt.com/ Share your wildest ChatGPT conversations with one click. 120,245 conversations shared so far.
-- https://github.com/karpathy/nanoGPT
+  - This thing is basically abandoned by now - but the conversations data might be available somewhere else
 - https://jaykmody.com/blog/gpt-from-scratch/ - GPT in 60 Lines of NumPy
-- https://gptforwork.com/ - Use ChatGPT in Google Sheets and Docs
-- https://github.com/manyoso/haltt4llm
-- https://llamahub.ai/
-- https://sites.research.google/usm/
-- https://www.theverge.com/2023/4/6/23672862/microsoft-image-creator-edge-sidebar-dall-e-ai-generator
-- https://github.com/nat/openplayground
-- https://www.ermine.ai/
-- https://github.com/Crataco/ai-guide/blob/main/guide/frontends.md
-- https://github.com/Crataco/ai-guide/blob/main/guide/models.md
-- https://en.wikipedia.org/wiki/Hugging_Face
-- https://github.com/huggingface/transformers
+- https://github.com/Crataco/ai-guide - Guide for LLMs
+- https://github.com/underlines/awesome-marketing-datascience/blob/master/README.md
 - https://www.youtube.com/watch?v=ySEx_Bqxvvo - MIT 6.S191: Recurrent Neural Networks, Transformers, and Attention
-- https://github.com/lm-sys/FastChat/#vicuna-weights
+- https://www.youtube.com/watch?v=kIiO4VSrivU - MIT 6.S191: Trustworthy Deep Learning
 - https://www.youtube.com/watch?v=Fjh1kwOzr7c OpenAI’s GPT-4 Just Got Supercharged!
 - https://arxiv.org/abs/2211.09066  Prompting - Teaching Algorithmic Reasoning via In-context Learning
 - https://www.make-safe-ai.com/is-bing-chat-safe/
 - https://arxiv.org/abs/2201.11903 https://arxiv.org/abs/2205.11916 - Chain of thought Prompting
-- https://aws.amazon.com/blogs/aws/amazon-codewhisperer-free-for-individual-use-is-now-generally-available/
+- https://www.youtube.com/watch?v=g2BRIuln4uc - Intuition Behind Self-Attention Mechanism in Transformer Networks
+- https://www.youtube.com/watch?v=S27pHKBEp30 - LSTM is dead. Long Live Transformers!
+- https://arxiv.org/abs/2305.20010 Human or Not? A Gamified Approach to the Turing Test
 - https://www.youtube.com/watch?v=VcVfceTsD0A - Max Tegmark: The Case for Halting AI Development | Lex Fridman Podcast #371
 - https://www.youtube.com/watch?v=X7c0T7uwtkM - MARI Grand Seminar - Large Language Models and Low Resource Languages
-- https://gluebenchmark.com/tasks
-- https://github.com/mlc-ai/mlc-llm - Our mission is to enable everyone to develop, optimize and deploy AI models natively on everyone's devices.
-- https://www.newsminimalist.com/about
-- https://www.mosaicml.com/blog/mpt-7b
-- https://www.lesswrong.com/posts/D7PumeYTDPfBTp3i7/the-waluigi-effect-mega-post - A very dense essay on why RLHF might not work
 - https://a16z.com/2023/05/25/ai-canon/ - Some useful links on various AI topics
+- https://www.lesswrong.com/posts/D7PumeYTDPfBTp3i7/the-waluigi-effect-mega-post - A very dense essay on why RLHF might not work
+
+### Products, Libraries, frameworks, Tools
+
+#### Libraries
+- https://bellard.org/libnc/ LibNC is a C library for tensor manipulation. It supports automatic differentiation and can be used to implement machine learning models such as LSTM and Transformers. (Intel+Linux/Win only, not open source)
+- https://github.com/google/sentencepiece SentencePiece is an unsupervised text tokenizer and detokenizer mainly for Neural Network-based text generation systems where the vocabulary size is predetermined prior to the neural model training.
+- https://nn-512.com/ Generate Neural Nets in C (compiler is in Go)
+
+#### Audio / Speech
+- https://github.com/coqui-ai/TTS - text to speech (see https://news.ycombinator.com/item?id=26790951 )
+- https://sites.research.google/usm/ - Universal Speech Model -  Towards Automatic Speech Recognition for All
+
+
+#### Images
+- https://github.com/nerdyrodent/VQGAN-CLIP Just playing with getting VQGAN+CLIP running locally, rather than having to use colab.
+- https://github.com/nerdyrodent/CLIP-Guided-Diffusion/  Just playing with getting CLIP Guided Diffusion running locally, rather than having to use colab.
+- https://github.com/mehdidc/feed_forward_vqgan_clip Feed forward VQGAN-CLIP model, where the goal is to eliminate the need for optimizing the latent space of VQGAN for each input prompt. 
+- https://github.com/openai/glide-text2im
+- https://github.com/alembics/disco-diffusion
+- https://www.theverge.com/2023/4/6/23672862/microsoft-image-creator-edge-sidebar-dall-e-ai-generator
+
+#### Text, LLM, etc.
+
+- https://github.com/facebookresearch/llama
+  - https://ai.facebook.com/blog/large-language-model-llama-meta-ai/
+  - https://github.com/ggerganov/llama.cpp
+  - https://github.com/remixer-dec/llama-mps
+- https://open-assistant.io/ - Apparently developing a foundation model and training data
+- https://huggingface.co/togethercomputer/GPT-NeoXT-Chat-Base-20B
+- https://github.com/facebookresearch/metaseq https://huggingface.co/facebook - Some other lesser-known Facebook models pre-lamma
+- https://huggingface.co/bigscience/bloom BLOOM is an autoregressive Large Language Model (LLM), trained to continue text from a prompt on vast amounts of text data using industrial-scale computational resources. As such, it is able to output coherent text in 46 languages and 13 programming languages that is hardly distinguishable from text written by humans. BLOOM can also be instructed to perform text tasks it hasn't been explicitly trained for, by casting them as text generation tasks.
+- https://github.com/nomic-ai/gpt4all
+- https://www.cerebras.net/blog/cerebras-gpt-a-family-of-open-compute-efficient-large-language-models/
+- https://github.com/NouamaneTazi/bloomz.cpp - proof of concept iOS app with a small model
+- https://arxiv.org/abs/2303.17564 - BloombergGPT
+- https://vicuna.lmsys.org/ - Another claimed better model based on LLaMA - model not available yet but presumably might be if they figure out licensing?
+- https://github.com/manyoso/haltt4llm - Hallucination Trivia Test for Large Language Models
+- https://llamahub.ai/ - Connect custom data sources to your LLM with one or more of these loaders (via LlamaIndex or LangChain)
+- https://github.com/huggingface/transformers
+- https://github.com/lm-sys/FastChat/#vicuna-weights
+- https://aws.amazon.com/blogs/aws/amazon-codewhisperer-free-for-individual-use-is-now-generally-available/
+- https://www.mosaicml.com/blog/mpt-7b
 - https://huggingface.co/tiiuae/falcon-40b-instruct - Apache Licensed Model
 - https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard
+- https://github.com/mlc-ai/mlc-llm - Our mission is to enable everyone to develop, optimize and deploy AI models natively on everyone's devices.
 
+### Toys
 
-
+- http://www.ioccc.org/2019/mills/hint.html - RNN Machine Learning in C
+- https://github.com/blobcity/autoai https://news.ycombinator.com/item?id=29198819 - A framework to find the best performing AI/ML model for any AI problem. 
+- https://sumplete.com/about/ - ChatGPT written game
+- https://github.com/xenova/transformers.js - Run 🤗 Transformers in your browser!
+- https://github.com/karpathy/nanoGPT
+- https://github.com/nat/openplayground - An LLM playground you can run on your laptop.
+- https://www.ermine.ai/ - Speech recognition in browser
 
 ## Data and Datasets
 
+- https://gluebenchmark.com/tasks - Language ability tests for LLMs
 - https://analytics.usa.gov/ provide a window into how people are interacting with the government online
 
 ## Crazy Flexes
@@ -323,6 +338,8 @@ Computer technology related.
 - https://flippa.com/ #1 marketplace to buy and sell (websites)
 - https://exercism.org/ Develop fluency in 66 programming languages with our unique blend of learning, practice and mentoring.
 - https://www.prowebtips.com/best-adsense-alternatives-for-maximize-earnings/#Why_should_you_use_Adsense_alternative
+- https://www.newsminimalist.com/about
+- https://gptforwork.com/ - Use ChatGPT in Google Sheets and Docs
 
 
 ## Graphics, Design, etc.
@@ -446,7 +463,4 @@ Computer technology related.
 - https://colab.research.google.com/github/philzook58/z3_tutorial/blob/master/Z3%20Tutorial.ipynb - z3 very nice python lib for theorem proving and solving algebra stuff
 - https://github.com/zanellia/prometeo – a Python-to-C transpiler for high-performance computing
 - https://ed25519.cr.yp.to/python/ed25519.py Python implementation of ED25519
-
-
-## Unsorted
 
