@@ -142,6 +142,7 @@ Computer technology related.
 - https://github.com/google/j2objc
 - https://github.com/red-data-tools/YouPlot - YouPlot is a command line tool that draws plots on the terminal.
 - https://github.com/oobabooga/text-generation-webui - web UI for running Large Language Models like LLaMA, llama.cpp, GPT-J, Pythia, OPT, and GALACTICA - goal is to become the AUTOMATIC1111/stable-diffusion-webui of text generation
+- https://github.com/PyO3/pyo3 - Rust bindings for Python
 
 ## Machine Learning
 
@@ -186,13 +187,20 @@ Computer technology related.
 - https://www.youtube.com/watch?v=X7c0T7uwtkM - MARI Grand Seminar - Large Language Models and Low Resource Languages
 - https://a16z.com/2023/05/25/ai-canon/ - Some useful links on various AI topics
 - https://www.lesswrong.com/posts/D7PumeYTDPfBTp3i7/the-waluigi-effect-mega-post - A very dense essay on why RLHF might not work
+- https://www.youtube.com/watch?v=wVzuvf9D9BU - GPT 4 is Smarter than You Think: Introducing SmartGPT
+  - Contains some interesting bits about prompting and how to best utilize GPT-4
+- https://huggingface.co/blog/stackllama - StackLLaMA: A hands-on guide to train LLaMA with RLHF
+- https://szopa.medium.com/teaching-chatgpt-to-speak-my-sons-invented-language-9d109c0a0f05
+- https://github.com/huggingface/peft https://arxiv.org/abs/2106.09685 - State-of-the-art Parameter-Efficient Fine-Tuning (PEFT) methods
+- https://www.technologyreview.com/2020/10/16/1010566/ai-machine-learning-with-tiny-data/
 
 ### Products, Libraries, frameworks, Tools
 
-#### Libraries
+#### Libraries / Tools
 - https://bellard.org/libnc/ LibNC is a C library for tensor manipulation. It supports automatic differentiation and can be used to implement machine learning models such as LSTM and Transformers. (Intel+Linux/Win only, not open source)
 - https://github.com/google/sentencepiece SentencePiece is an unsupervised text tokenizer and detokenizer mainly for Neural Network-based text generation systems where the vocabulary size is predetermined prior to the neural model training.
 - https://nn-512.com/ Generate Neural Nets in C (compiler is in Go)
+- https://github.com/Unstructured-IO Open-Source Pre-Processing Tools for Unstructured Data
 
 #### Audio / Speech
 - https://github.com/coqui-ai/TTS - text to speech (see https://news.ycombinator.com/item?id=26790951 )
@@ -219,6 +227,9 @@ Computer technology related.
 - https://huggingface.co/bigscience/bloom BLOOM is an autoregressive Large Language Model (LLM), trained to continue text from a prompt on vast amounts of text data using industrial-scale computational resources. As such, it is able to output coherent text in 46 languages and 13 programming languages that is hardly distinguishable from text written by humans. BLOOM can also be instructed to perform text tasks it hasn't been explicitly trained for, by casting them as text generation tasks.
 - https://github.com/nomic-ai/gpt4all
 - https://www.cerebras.net/blog/cerebras-gpt-a-family-of-open-compute-efficient-large-language-models/
+  - https://arxiv.org/abs/2304.03208 Cerebras-GPT: Open Compute-Optimal Language Models Trained on the Cerebras Wafer-Scale Cluster
+  - https://huggingface.co/cerebras
+
 - https://github.com/NouamaneTazi/bloomz.cpp - proof of concept iOS app with a small model
 - https://arxiv.org/abs/2303.17564 - BloombergGPT
 - https://vicuna.lmsys.org/ - Another claimed better model based on LLaMA - model not available yet but presumably might be if they figure out licensing?
@@ -231,6 +242,18 @@ Computer technology related.
 - https://huggingface.co/tiiuae/falcon-40b-instruct - Apache Licensed Model
 - https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard
 - https://github.com/mlc-ai/mlc-llm - Our mission is to enable everyone to develop, optimize and deploy AI models natively on everyone's devices.
+- https://www.reddit.com/r/LocalLLaMA/
+- https://arstechnica.com/information-technology/2023/03/anthropic-introduces-claude-a-more-steerable-ai-competitor-to-chatgpt/
+- https://github.com/imaurer/awesome-decentralized-llm
+- https://bair.berkeley.edu/blog/2023/04/03/koala/ - Koala: A Dialogue Model for Academic Research
+- https://github.com/microsoft/DeepSpeed - DeepSpeed Chat: Easy, Fast and Affordable RLHF Training of ChatGPT-like Models at All Scales
+- https://github.com/ayaka14732/TransCan - English-to-Cantonese translation model
+- https://github.com/facebookresearch/StarSpace (2019) StarSpace is a general-purpose neural model for efficient learning of entity embeddings for solving a wide variety of problems
+- https://www.reddit.com/r/bing/comments/11bd91j/release_of_the_whole_initial_prompt_of_bing_chat/
+- https://old.reddit.com/r/ChatGPT/comments/12o29gl/gpt4_week_4_the_rise_of_agents_and_the_beginning/
+- https://github.com/togethercomputer/RedPajama-Data RedPajama, a project to create leading open-source models, starts by reproducing LLaMA training dataset of over 1.2 trillion tokens
+- https://github.com/ymcui/Chinese-LLaMA-Alpaca
+
 
 ### Toys
 
@@ -241,6 +264,9 @@ Computer technology related.
 - https://github.com/karpathy/nanoGPT
 - https://github.com/nat/openplayground - An LLM playground you can run on your laptop.
 - https://www.ermine.ai/ - Speech recognition in browser
+- https://github.com/Torantulino/Auto-GPT
+- https://github.com/jjuliano/aifiles
+
 
 ## Data and Datasets
 
@@ -372,6 +398,9 @@ Computer technology related.
 - https://posthog.com/blog/what-to-ask-in-interviews
 - https://web.mit.edu/6.001/6.037/sicp.pdf Structure and Interpretation of Computer Programs
 - http://infolab.stanford.edu/~ullman/mmds/book.pdf - Book: Mining of Massive Datasets
+- https://www.clientside.dev/explore - Practice with projects & problems taken from real interviews. Each with a set of unit tests so you never miss an edge case and solution explanations written by senior engineers to guide you.
+
+
 
 ## Crypto
 

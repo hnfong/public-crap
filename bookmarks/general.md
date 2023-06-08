@@ -113,6 +113,14 @@
 - https://www.youtube.com/watch?v=EpMLAQbSYAw - Age of Easy Money (full documentary) | FRONTLINE
 - https://www.youtube.com/watch?v=C8EIhZXHyTk - The Ultimate Guide to Venture Capital Explained by a VC
 - https://johnhcochrane.blogspot.com/2018/09/fed-nixes-narrow-bank.html https://johnhcochrane.blogspot.com/2019/03/fed-vs-narrow-banks.html
+- https://www.pwccn.com/en/services/audit-and-assurance/capabilities/publications/illustrative-hkfrs-consolidated-financial-statements-dec2022.html
+  - "This publication presents the sample annual financial reports of a fictional listed company, VALUE HKFRS Limited. It illustrates the financial reporting requirements that would apply to such a company under Hong Kong Financial Reporting Standards as issued at 31 October 2022."
+- https://www.frbdiscountwindow.org/
+- https://www.institutionalinvestor.com/article/b1nhg4w9k5hjp0/Nassim-Taleb-and-Universa-Versus-the-World
+- https://www.firstrepublic.com/insights-education/sipc-vs-fdic-insurance-protection-differences
+- https://www.ecb.europa.eu/pub/pdf/scpops/ecb.op189.en.pdf The Eurosystem collateral framework explained - EU Central Bank policies, basically
+
+
 
 
 ## Prediction Markets
@@ -137,6 +145,7 @@
 - https://en.wikipedia.org/wiki/Open_Letter_to_Hobbyists 1976 open letter written by Bill Gates, the co-founder of Microsoft, to early personal computer hobbyists, in which Gates expresses dismay at the rampant software piracy taking place in the hobbyist community
 - https://www.youtube.com/watch?v=4Nr1AgIfajI How an 18th Century Sailing Battleship Works
 - https://www.youtube.com/watch?v=ReqV53mY6w8 谁是周携王？聊聊烽火戏诸侯的背后究竟还隐藏了哪些故事
+- https://stevejobsarchive.com/book
 
 ## Pre-history
 
@@ -152,6 +161,8 @@
 - https://www.youtube.com/watch?v=8tnrkahCLHw The 1100 ton Unfinished Obelisk - Carved with Pounding Stones? An UnchartedX Investigation!
 - https://www.youtube.com/watch?v=VV0MntUNp3E Scientists are Now Correcting Their Stupidity! | Gulf Of Cambay | Shiva | Aliens| Sadhguru|Adiyogi
 - https://www.youtube.com/watch?v=ZlFpq49Ri8Y The Big Bang Never Happened--The Science of the Censored Papers
+- https://woodfromeden.substack.com/p/violent-enough-to-stand-still - Violent enough to stand still Why human societies developed so little during 300 000 years
+
 
 
 ## Arcane
@@ -172,7 +183,17 @@
 - https://www.journals.uchicago.edu/doi/10.1093/bjps/axw004 Self-locating Uncertainty and the Origin of Probability in Everettian Quantum Mechanics Charles T. Sebens and Sean M. Carroll
 - https://www.quantamagazine.org/how-our-reality-may-be-a-sum-of-all-possible-realities-20230206/
 - https://www.youtube.com/watch?v=9-jIplX6Wjw - Sabine Hossenfelder - I Think Faster Than Light Travel is Possible. Here's Why.
-
+- https://lukesalamone.github.io/posts/what-is-temperature/
+- https://en.m.wikipedia.org/wiki/Quantum_pseudo-telepathy
+- http://gamelab.mit.edu/games/a-slower-speed-of-light/
+- https://www.sciencealert.com/time-reflections-finally-observed-by-physicists-after-decades-of-searching
+- https://www.scottaaronson.com/democritus/lec9.html
+- https://philphys.net/study-philosophy-of-physics/
+- https://phys.org/news/2023-04-compatibility-fundamental-principles-quantum-theory.html
+- https://arxiv.org/pdf/1405.1548.pdf cellular automata theory
+  - basically a classical physics take on QM experiments. Predicts that Quantum computers can never be built. While that claim is surprising, I probably need to figure out more about how quantum computing actually works...
+- https://en.wikipedia.org/wiki/Superdeterminism
+  - Note: Don't follow the free will trail, but do follow the trail about subject/observer/measurement problem, and see whether better intuition about things can be obtained.
 
 ## Deconstruction of English
 
@@ -441,6 +462,8 @@
 - https://www.youtube.com/watch?v=y7bPYXocmsA Dr. Robert Cywes - 'Carbohydrate Addiction: returning to my roots'
 - https://nav.al/failure Groups Never Admit Failure
 - https://www.youtube.com/watch?v=pdmf4fu6fMY Become a Civilized Beast - Jordan Peterson Interview (Talks about various topics)
+- https://www.pnas.org/doi/10.1073/pnas.2208661120 - Income and emotional well-being: A conflict resolved
+  - Measures of well-being have often been found to rise with log (income). Kahneman and Deaton [Proc. Natl. Acad. Sci. U.S.A. 107, 16489–93 (2010)] reported an exception; a measure of emotional well-being (happiness) increased but then flattened somewhere between $60,000 and $90,000. In contrast, Killingsworth [Proc. Natl. Acad. Sci. U.S.A. 118, e2016976118 (2021)] observed a linear relation between happiness and log(income) in an experience-sampling study. We discovered in a joint reanalysis of the experience sampling data that the flattening pattern exists but is restricted to the least happy 20% of the population, and that complementary nonlinearities contribute to the overall linear-log relationship between happiness and income. We trace the discrepant results to the authors’ reliance on standard practices and assumptions of data analysis that should be questioned more often, although they are standard in social science.
 
 ## My image links
 

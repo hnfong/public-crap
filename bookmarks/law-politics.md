@@ -104,8 +104,18 @@
 - https://www.engadget.com/google-found-to-have-violated-order-to-save-chat-evidence-in-epic-antitrust-case-052711779.html
 - https://www.npr.org/2023/05/31/1179184256/news-facebook-california-journalism-preservation-act - Facebook, Instagram to block news stories in California if bill passes
 - https://www.ft.com/content/65ae7aef-7dce-4e61-bf6d-f498bd298527 Facebook to block news for some users in Canada
+- https://montrealgazette.com/news/local-news/google-ordered-to-pay-500000-to-montrealer-over-links-to-post-calling-him-pedophile
+- https://arstechnica.com/tech-policy/2023/02/scotus-confused-after-hearing-arguments-for-weakening-section-230-immunity/
+- https://www.washingtonpost.com/technology/2023/01/24/doj-google-lawsuit-ads/
+
+
 
 # AI Law
 
 - https://technomancers.ai/japan-goes-all-in-copyright-doesnt-apply-to-ai-training/
+- https://www.ft.com/content/755cc5dd-e6ce-4139-9110-0877f2b90072 - China slaps security reviews on AI products as Alibaba unveils ChatGPT challenger
+- https://www.bloomberg.com/news/articles/2023-04-11/china-to-mandate-security-reviews-for-new-chatgpt-like-services
 
+# Hegemony
+
+- https://en.wikipedia.org/wiki/Operation_Choke_Point

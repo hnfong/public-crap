@@ -28,6 +28,12 @@
   - Multiple personality disorder, different personalities have different allergies
   - Hypnosis increases breast size
   - Imagining bicep size => increase in size and can lift greater weights
+- https://www.youtube.com/watch?v=V3MjsfuLGYw - The Abduction of Betty & Barney Hill - The Full Story | Documentary
+- https://en.wikipedia.org/wiki/Feral_child - Do they acquire language naturally?
+- https://en.wikipedia.org/wiki/Witch_trials_in_the_early_modern_period
+- https://superbowl.substack.com/p/church-of-reality-barbara-mcclintock
+- https://www.bbc.com/future/article/20230213-how-people-dream-in-foreign-languages
+
 
 ### Post-Concert Amnesia
 
@@ -36,8 +42,6 @@
 - https://www.bbc.com/news/entertainment-arts-65765368
   - Taylor Swift fans report 'amnesia' following Eras show
 - https://time.com/6282468/taylor-swift-concert-memory/
-
-
 
 ## TODO
 
