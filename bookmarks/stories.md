@@ -54,4 +54,6 @@
 - https://en.wikipedia.org/wiki/Plato%27s_unwritten_doctrines
 - https://www.youtube.com/watch?v=DWHJvJ4d7QQ Prehistoric Religion: Robert Graves & the White Goddess Thesis
 - https://en.wikipedia.org/wiki/The_White_Goddess
+- https://en.wikipedia.org/wiki/Gnosticism
+
 

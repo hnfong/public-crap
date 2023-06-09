@@ -14,3 +14,5 @@
 
 - https://www.quora.com/Why-does-Singapore-require-so-much-“foreign-talent”-when-Singaporeans-are-so-educated-and-smart-Why-does-Singapore-keep-“importing”-foreigners-to-do-their-work-when-they-can-get-locals-to-do-it
 - https://www.theguardian.com/technology/2017/may/07/the-great-british-brexit-robbery-hijacked-democracy
+- https://en.wikipedia.org/wiki/Operation_Choke_Point
+- https://seymourhersh.substack.com/p/how-america-took-out-the-nord-stream
