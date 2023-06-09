@@ -75,7 +75,7 @@ Computer technology related.
 - https://en.wikipedia.org/wiki/HyperLogLog HyperLogLog is an algorithm for the count-distinct problem, approximating the number of distinct elements in a multiset.
 - https://sigpipe.macromates.com/2020/macos-catalina-slow-by-design/ executable checksums sent for checking
 - https://support.google.com/faqs/answer/7625886 - Retpoline
-
+- https://en.wikipedia.org/wiki/Flajolet%E2%80%93Martin_algorithm - The Flajolet–Martin algorithm is an algorithm for approximating the number of distinct elements in a stream with a single pass and space-consumption logarithmic in the maximal number of possible distinct elements in the stream (the count-distinct problem).
 
 ## Open Source Tools
 
@@ -92,6 +92,7 @@ Computer technology related.
 - ☆ https://jodd.org/ The Unbearable Lightness of Java - Jodd is a set of micro-frameworks and developer-friendly tools and utilities.
 - ☆ https://github.com/eudoxia0/cmacro cmacro: Lisp macros for C
 - ☆ https://kindavim.app/ - VIM accessibility bindings for macOS
+- ☆ https://litestream.io/alternatives/cron/ / https://github.com/benbjohnson/litestream
 
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
@@ -143,6 +144,7 @@ Computer technology related.
 - https://github.com/red-data-tools/YouPlot - YouPlot is a command line tool that draws plots on the terminal.
 - https://github.com/oobabooga/text-generation-webui - web UI for running Large Language Models like LLaMA, llama.cpp, GPT-J, Pythia, OPT, and GALACTICA - goal is to become the AUTOMATIC1111/stable-diffusion-webui of text generation
 - https://github.com/PyO3/pyo3 - Rust bindings for Python
+- https://github.com/nidhaloff/deep-translator - integrate support for multiple famous translators in this tool
 
 ## Machine Learning
 
@@ -193,6 +195,11 @@ Computer technology related.
 - https://szopa.medium.com/teaching-chatgpt-to-speak-my-sons-invented-language-9d109c0a0f05
 - https://github.com/huggingface/peft https://arxiv.org/abs/2106.09685 - State-of-the-art Parameter-Efficient Fine-Tuning (PEFT) methods
 - https://www.technologyreview.com/2020/10/16/1010566/ai-machine-learning-with-tiny-data/
+- https://huggingface.co/blog/4bit-transformers-bitsandbytes
+- https://crfm.stanford.edu/2023/05/22/alpaca-farm.html
+- https://www.youtube.com/watch?v=\_njf22xx8BQ - 12 New Code Interpreter Uses
+- https://www.paepper.com/blog/posts/how-and-why-stable-diffusion-works-for-text-to-image-generation/
+
 
 ### Products, Libraries, frameworks, Tools
 
@@ -208,6 +215,7 @@ Computer technology related.
 
 
 #### Images
+
 - https://github.com/nerdyrodent/VQGAN-CLIP Just playing with getting VQGAN+CLIP running locally, rather than having to use colab.
 - https://github.com/nerdyrodent/CLIP-Guided-Diffusion/  Just playing with getting CLIP Guided Diffusion running locally, rather than having to use colab.
 - https://github.com/mehdidc/feed_forward_vqgan_clip Feed forward VQGAN-CLIP model, where the goal is to eliminate the need for optimizing the latent space of VQGAN for each input prompt. 
@@ -253,6 +261,7 @@ Computer technology related.
 - https://old.reddit.com/r/ChatGPT/comments/12o29gl/gpt4_week_4_the_rise_of_agents_and_the_beginning/
 - https://github.com/togethercomputer/RedPajama-Data RedPajama, a project to create leading open-source models, starts by reproducing LLaMA training dataset of over 1.2 trillion tokens
 - https://github.com/ymcui/Chinese-LLaMA-Alpaca
+- https://github.com/FranxYao/chain-of-thought-hub - Measuring LLMs' Reasoning Performance
 
 
 ### Toys
@@ -299,6 +308,7 @@ Computer technology related.
 - https://github.com/cesanta/elk (Embeded Javascript engine)
 - https://github.com/rochacbruno/py2rs - From Python into Rust
 - https://roc-lang.org
+- https://wingolog.org/archives/2013/01/07/an-opinionated-guide-to-scheme-implementations
 
 ## Software Engineering
 
@@ -311,6 +321,8 @@ Computer technology related.
 - https://www.remotemobprogramming.org/
 - https://medium.com/@pravse/the-maze-is-in-the-mouse-980c57cfd61a - An interesting critique of Google's internal culture
 - https://www.qword.net/2023/04/30/maybe-you-should-store-passwords-in-plaintext
+- https://github.com/kuchin/awesome-cto
+
 
 ## Potentially Useful Apps
 
@@ -399,6 +411,7 @@ Computer technology related.
 - https://web.mit.edu/6.001/6.037/sicp.pdf Structure and Interpretation of Computer Programs
 - http://infolab.stanford.edu/~ullman/mmds/book.pdf - Book: Mining of Massive Datasets
 - https://www.clientside.dev/explore - Practice with projects & problems taken from real interviews. Each with a set of unit tests so you never miss an edge case and solution explanations written by senior engineers to guide you.
+- https://github.com/google/comprehensive-rust - a multi-day Rust course / covers all aspects of Rust, from basic syntax to generics and error handling
 
 
 

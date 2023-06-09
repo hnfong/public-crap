@@ -194,6 +194,8 @@
   - basically a classical physics take on QM experiments. Predicts that Quantum computers can never be built. While that claim is surprising, I probably need to figure out more about how quantum computing actually works...
 - https://en.wikipedia.org/wiki/Superdeterminism
   - Note: Don't follow the free will trail, but do follow the trail about subject/observer/measurement problem, and see whether better intuition about things can be obtained.
+- https://www.scientificamerican.com/article/the-universe-is-not-locally-real-and-the-physics-nobel-prize-winners-proved-it/
+
 
 ## Deconstruction of English
 
