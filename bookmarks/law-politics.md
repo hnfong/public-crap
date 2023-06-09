@@ -115,7 +115,4 @@
 - https://technomancers.ai/japan-goes-all-in-copyright-doesnt-apply-to-ai-training/
 - https://www.ft.com/content/755cc5dd-e6ce-4139-9110-0877f2b90072 - China slaps security reviews on AI products as Alibaba unveils ChatGPT challenger
 - https://www.bloomberg.com/news/articles/2023-04-11/china-to-mandate-security-reviews-for-new-chatgpt-like-services
-
-# Hegemony
-
-- https://en.wikipedia.org/wiki/Operation_Choke_Point
+- https://wolfhf.medium.com/the-eu-ai-act-is-coming-this-time-for-real-probably-df31ad8c451f

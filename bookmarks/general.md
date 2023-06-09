@@ -119,6 +119,10 @@
 - https://www.institutionalinvestor.com/article/b1nhg4w9k5hjp0/Nassim-Taleb-and-Universa-Versus-the-World
 - https://www.firstrepublic.com/insights-education/sipc-vs-fdic-insurance-protection-differences
 - https://www.ecb.europa.eu/pub/pdf/scpops/ecb.op189.en.pdf The Eurosystem collateral framework explained - EU Central Bank policies, basically
+- https://blog.startupstash.com/everything-i-wish-i-had-known-about-raising-a-seed-round-a615f8f7740b
+- https://plaintextaccounting.org/
+
+
 
 
 
@@ -130,6 +134,7 @@
 
 ## Misc History
 
+- ☆ https://www.strangeloopcanon.com/p/some-things-to-learn-from-the-british - Unreasonable Efficiency of the British East India Company
 - https://www.youtube.com/watch?v=VXGfGwKQDWw - 香港街巷心理戰 Part 2 解碼
 - http://www.ap.org/content/press-release/2015/ap-makes-one-million-minutes-of-history-available-on-youtube
 - https://www.youtube.com/watch?v=BNeXlJW70KQ - Steve Jobs brainstorming NEXT 1985
@@ -146,6 +151,9 @@
 - https://www.youtube.com/watch?v=4Nr1AgIfajI How an 18th Century Sailing Battleship Works
 - https://www.youtube.com/watch?v=ReqV53mY6w8 谁是周携王？聊聊烽火戏诸侯的背后究竟还隐藏了哪些故事
 - https://stevejobsarchive.com/book
+- https://www.books.com.tw/products/CN11442885 秦迷：重新發現秦始皇 作者： 李開元 出版社：中信出版社
+- https://www.zhonghuadiancang.com/lishizhuanji/13014/ - 奏谳书 - Appeal judgements of Qin and Han
+
 
 ## Pre-history
 
@@ -195,6 +203,7 @@
 - https://en.wikipedia.org/wiki/Superdeterminism
   - Note: Don't follow the free will trail, but do follow the trail about subject/observer/measurement problem, and see whether better intuition about things can be obtained.
 - https://www.scientificamerican.com/article/the-universe-is-not-locally-real-and-the-physics-nobel-prize-winners-proved-it/
+- https://en.wikipedia.org/wiki/Orchestrated_objective_reduction
 
 
 ## Deconstruction of English
