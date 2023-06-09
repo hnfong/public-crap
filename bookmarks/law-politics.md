@@ -107,7 +107,7 @@
 - https://montrealgazette.com/news/local-news/google-ordered-to-pay-500000-to-montrealer-over-links-to-post-calling-him-pedophile
 - https://arstechnica.com/tech-policy/2023/02/scotus-confused-after-hearing-arguments-for-weakening-section-230-immunity/
 - https://www.washingtonpost.com/technology/2023/01/24/doj-google-lawsuit-ads/
-
+- https://www.wsj.com/articles/meta-fined-1-3-billion-over-data-transfers-to-u-s-b53dbb04
 
 
 # AI Law
