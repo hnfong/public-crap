@@ -77,6 +77,7 @@
   - https://www.youtube.com/watch?v=hw0thrWVaKQ&t=4975s (Ultimate Beginner Survival Guide (ALL Seasons) Don't Starve Together)
 - https://www.youtube.com/watch?v=TrR6puARRlA My Year-24 Stardew Valley Farm Tour (100% Perfection, No Mods)
 - https://www.youtube.com/watch?v=gvECQlxrhbw Gris Game
+- https://www.reddit.com/r/macgaming/comments/1446hj6/all_working_games_list_game_porting_toolkit/
 
 ## Finance and Business
 
@@ -204,6 +205,8 @@
   - Note: Don't follow the free will trail, but do follow the trail about subject/observer/measurement problem, and see whether better intuition about things can be obtained.
 - https://www.scientificamerican.com/article/the-universe-is-not-locally-real-and-the-physics-nobel-prize-winners-proved-it/
 - https://en.wikipedia.org/wiki/Orchestrated_objective_reduction
+- https://youtu.be/PdE-waSx-d8?t=13871 - Stephen Wolfram: ChatGPT and the Nature of Truth, Reality & Computation | Lex Fridman Podcast #376
+  - 3:51:18 Why can't you do that kind of very detailed, precise course screening? The answer is because if you are a computationally bounded observer and the underlying dynamics is computationally irreducible, that's, that's what defines possible core screenings is what a computationally, bounded observer can do. And it's the, it's the fact that a computation bounded observer is, is forced to look only at this kind of coarse grained version of what the system is doing. That's why, and, and because the, what what's what's going on underneath is it's kind of filling out this, this, the, the different possible. You're ending up with something where the sort of underlying computational irreducibility is your, if, if all you can see is what the course grained result is with comp, with a sort of computationally bounded observation, then inevitably there are many possible underlying configurations that are consistent with that.
 
 
 ## Deconstruction of English

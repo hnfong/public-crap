@@ -204,6 +204,7 @@ Computer technology related.
 - https://github.com/huggingface/peft https://arxiv.org/abs/2106.09685 - State-of-the-art Parameter-Efficient Fine-Tuning (PEFT) methods
 - https://www.technologyreview.com/2020/10/16/1010566/ai-machine-learning-with-tiny-data/
 - https://huggingface.co/blog/4bit-transformers-bitsandbytes
+- https://crfm.stanford.edu/2023/03/13/alpaca.html
 - https://crfm.stanford.edu/2023/05/22/alpaca-farm.html
 - https://www.youtube.com/watch?v=\_njf22xx8BQ - 12 New Code Interpreter Uses
 - https://www.paepper.com/blog/posts/how-and-why-stable-diffusion-works-for-text-to-image-generation/
@@ -211,7 +212,10 @@ Computer technology related.
 - https://www.semianalysis.com/p/google-we-have-no-moat-and-neither
 - https://hazyresearch.stanford.edu/blog/2023-03-27-long-learning - From Deep to Long Learning? (context length)
 - https://arxiv.org/abs/2212.07677 https://arxiv.org/abs/2208.01066 - Learning in context
-
+- https://www.youtube.com/watch?v=AsNTP8Kwu80 - Recurrent Neural Networks (RNNs), Clearly Explained!!! StatQuest
+- https://developer.apple.com/videos/play/wwdc2023/10042/ - Explore Natural Language multilingual models Learn how to create custom Natural Language models for text classification and word tagging using multilingual, transformer-based embeddings. We'll show you how to train with less data and support up to 27 different languages across three scripts. Find out how to use these embeddings to fine-tune complex models trained in PyTorch and TensorFlow. For more on Natural Language, check out "Make apps smarter with Natural Language” from WWDC20.
+- https://www.youtube.com/watch?v=L_Guz73e6fw - Sam Altman Lex Fridman Interview
+- https://twitter.com/emollick - posts very good commentary and news on AI especially LLMs
 
 
 ### Products, Libraries, frameworks, Tools
@@ -280,6 +284,13 @@ Computer technology related.
 - https://github.com/facebookresearch/fairseq - Fairseq(-py) is a sequence modeling toolkit that allows researchers and developers to train custom models for translation, summarization, language modeling and other text generation tasks. We provide reference implementations of various sequence modeling papers
 - https://github.com/openlm-research/open_llama - Open Reproduction of LLaMA
 - https://github.com/FMInference/FlexGen - FlexGen: High-throughput Generative Inference of Large Language Models with a Single GPU
+- https://github.com/tloen/alpaca-lora - Fine Tuning LLAMA (Alpaca reproduction)
+- https://arxiv.org/abs/2303.12712 - Sparks of Artificial General Intelligence: Early experiments with GPT-4
+- https://old.reddit.com/r/MachineLearning/comments/11vfbo9/p_we_gave_gpt35_tools_that_developers_use_and_let/
+- https://old.reddit.com/r/LocalLLaMA/wiki/models
+- https://godmode.space/ - Godmode is a web platform to access the powers of autoGPT and babyAGI.
+- https://www.cognosys.ai/ - Another AutoGPT interface
+- https://agentgpt.reworkd.ai/ - Another AutoGPT interface
 
 
 ### Toys
@@ -529,4 +540,5 @@ Computer technology related.
 - https://colab.research.google.com/github/philzook58/z3_tutorial/blob/master/Z3%20Tutorial.ipynb - z3 very nice python lib for theorem proving and solving algebra stuff
 - https://github.com/zanellia/prometeo – a Python-to-C transpiler for high-performance computing
 - https://ed25519.cr.yp.to/python/ed25519.py Python implementation of ED25519
+- https://github.com/tandav/pipe21
 

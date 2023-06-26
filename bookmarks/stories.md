@@ -33,6 +33,7 @@
 - https://en.wikipedia.org/wiki/Witch_trials_in_the_early_modern_period
 - https://superbowl.substack.com/p/church-of-reality-barbara-mcclintock
 - https://www.bbc.com/future/article/20230213-how-people-dream-in-foreign-languages
+- https://www.bbc.com/news/world-latin-america-65864158 - Colombia plane crash: Four children found alive in Amazon after 40 days
 
 
 ### Post-Concert Amnesia
@@ -55,5 +56,10 @@
 - https://www.youtube.com/watch?v=DWHJvJ4d7QQ Prehistoric Religion: Robert Graves & the White Goddess Thesis
 - https://en.wikipedia.org/wiki/The_White_Goddess
 - https://en.wikipedia.org/wiki/Gnosticism
+- https://zh.wikipedia.org/zh-hk/%E6%95%91%E5%88%A6%E8%AD%89%E9%81%93%E7%B6%93%E5%92%92
 
+
+## Theories
+
+- https://www.youtube.com/watch?v=iFxBq5NBopA - 深度解析《大只佬》全部細節佐證和疑問排解，足以讓人大徹大悟！！
 

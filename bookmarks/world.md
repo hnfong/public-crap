@@ -16,3 +16,5 @@
 - https://www.theguardian.com/technology/2017/may/07/the-great-british-brexit-robbery-hijacked-democracy
 - https://en.wikipedia.org/wiki/Operation_Choke_Point
 - https://seymourhersh.substack.com/p/how-america-took-out-the-nord-stream
+- https://arstechnica.com/tech-policy/2023/06/megaupload-coders-get-light-sentences-will-testify-against-kim-dotcom/
+
