@@ -108,6 +108,10 @@
 - https://arstechnica.com/tech-policy/2023/02/scotus-confused-after-hearing-arguments-for-weakening-section-230-immunity/
 - https://www.washingtonpost.com/technology/2023/01/24/doj-google-lawsuit-ads/
 - https://www.wsj.com/articles/meta-fined-1-3-billion-over-data-transfers-to-u-s-b53dbb04
+- https://www.usatoday.com/story/opinion/2023/06/20/gannett-ceo-why-we-are-suing-google-for-its-business-practices/70336910007/
+- https://www.theregister.com/2023/06/23/telesign_gdpr_complaint/
+
+
 
 
 # AI Law
