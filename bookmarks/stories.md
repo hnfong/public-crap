@@ -34,7 +34,17 @@
 - https://superbowl.substack.com/p/church-of-reality-barbara-mcclintock
 - https://www.bbc.com/future/article/20230213-how-people-dream-in-foreign-languages
 - https://www.bbc.com/news/world-latin-america-65864158 - Colombia plane crash: Four children found alive in Amazon after 40 days
-
+- https://www.facebook.com/msyuhk/posts/pfbid0oBfQcZmHdFyNXfgyPk17GqK9Nj6Z8tbWiPBRikx52EgE8K48LyfRKbiDK7qkoircl?__cft__[0]=AZWdrbiXzNRNAxjkd4J0NKUp42oY_JY-JjK-Nm4Xm3CHsdp2rQERoUIpi6pCJzJuKH0R8vBm209DsY88gKVATumtbPcbF1b-i351s7vhWQ_LhtI6pQ2jh3pZGaZMKjPc9291MFYOzHD9kaOXtvbHf5PVletwJJ8J80rox6yPsk0z7w&__tn__=%2CO%2CP-R
+  - 問題 7/36：你點知自己而家係咪發緊夢？
+  - 7歲答：
+  - A：點會唔知？我發夢嗰陣，出面呢對眼係合埋嘅，淨係腦裡面對眼先會開住。
+  - M：乜腦裡面都有眼嘅咩？即係發夢嗰陣，腦裡面對眼就打開啊？
+  - A：唔係啊，你都唔明！等我解俾你聽⋯⋯瞓覺嗰陣就係你而家呢對眼合埋、腦裡面對眼打開，無瞓覺嗰陣，就係出面同入面對眼都係開住，全部眼都睇到嘢。
+- https://www.youtube.com/watch?v=k8hmvkMtwDg - Charles Eisenstein talking about politics and UFOs, but mainly interesting is his interpretation of subjective reality and inter-subjective reality.
+  - His website is pretty interesting as well https://charleseisenstein.org/about/
+- https://www.hellenicaworld.com/Greece/Person/en/StylianosAtteshlis.html
+  - Dr. Stylianos Atteshlis (Στυλιανός Αττεσλής, known as Daskalos) (1912–1995) was a Christian mystic and healer who was born on December 12, 1912 in Cyprus where he spent most of his life.
+  - https://youtu.be/3JWNr0SvIVM?t=3810 - Described in this conversation 1:0X
 
 ### Post-Concert Amnesia
 
@@ -57,9 +67,16 @@
 - https://en.wikipedia.org/wiki/The_White_Goddess
 - https://en.wikipedia.org/wiki/Gnosticism
 - https://zh.wikipedia.org/zh-hk/%E6%95%91%E5%88%A6%E8%AD%89%E9%81%93%E7%B6%93%E5%92%92
+- https://en.wikipedia.org/wiki/Ajna
+- https://www.amazon.com/Silva-Control-Method-Getting-Other/dp/B08MGR747W/ref=tmm_pap_swatch_0?_encoding=UTF8&qid=1688229166&sr=8-3
+- https://en.wikipedia.org/wiki/Bon
+- https://zh.wikipedia.org/wiki/%E8%8B%AF%E6%95%99
+- www.vesica.org
 
 
 ## Theories
 
 - https://www.youtube.com/watch?v=iFxBq5NBopA - 深度解析《大只佬》全部細節佐證和疑問排解，足以讓人大徹大悟！！
+- https://zhuanlan.zhihu.com/p/382937390 - 打坐中的生理反应-南怀瑾
+- https://skylikesun.blogspot.com/2023/05/blog-post_35.html - 創意、聯想、幻想、走火入魔
 
