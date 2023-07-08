@@ -216,6 +216,7 @@ Computer technology related.
 - https://developer.apple.com/videos/play/wwdc2023/10042/ - Explore Natural Language multilingual models Learn how to create custom Natural Language models for text classification and word tagging using multilingual, transformer-based embeddings. We'll show you how to train with less data and support up to 27 different languages across three scripts. Find out how to use these embeddings to fine-tune complex models trained in PyTorch and TensorFlow. For more on Natural Language, check out "Make apps smarter with Natural Language” from WWDC20.
 - https://www.youtube.com/watch?v=L_Guz73e6fw - Sam Altman Lex Fridman Interview
 - https://twitter.com/emollick - posts very good commentary and news on AI especially LLMs
+- https://www.youtube.com/watch?v=tkqD9W5U9F4 - AlphaGo-style Tree Search on Thought Trees in GPT models
 
 
 ### Products, Libraries, frameworks, Tools
