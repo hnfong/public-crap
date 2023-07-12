@@ -207,6 +207,7 @@
 - https://en.wikipedia.org/wiki/Orchestrated_objective_reduction
 - https://youtu.be/PdE-waSx-d8?t=13871 - Stephen Wolfram: ChatGPT and the Nature of Truth, Reality & Computation | Lex Fridman Podcast #376
   - 3:51:18 Why can't you do that kind of very detailed, precise course screening? The answer is because if you are a computationally bounded observer and the underlying dynamics is computationally irreducible, that's, that's what defines possible core screenings is what a computationally, bounded observer can do. And it's the, it's the fact that a computation bounded observer is, is forced to look only at this kind of coarse grained version of what the system is doing. That's why, and, and because the, what what's what's going on underneath is it's kind of filling out this, this, the, the different possible. You're ending up with something where the sort of underlying computational irreducibility is your, if, if all you can see is what the course grained result is with comp, with a sort of computationally bounded observation, then inevitably there are many possible underlying configurations that are consistent with that.
+- https://www.quantamagazine.org/the-physicist-who-bets-that-gravity-cant-be-quantized-20230710/
 
 
 ## Deconstruction of English
