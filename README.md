@@ -7,6 +7,11 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2023
 
+- [15-How to break the Laws of Nature without getting caught](writings/2023/15-How_to_break_the_Laws_of_Nature_without_getting_caught.md)
+- [14-God is not a badly compressed JPEG](writings/2023/14-God_is_not_a_badly_compressed_JPEG.md)
+- [13-Alicization](writings/2023/13-Alicization.md)
+- [12-因果](writings/2023/12-因果.md)
+- [11-唐代有邊個皇帝冇發動過兵變?](writings/2023/11-唐代有邊個皇帝冇發動過兵變_qm_.md)
 - [10-無我](writings/2023/10-無我.md)
 - [09-點解中國人住嘅地方樓價咁貴](writings/2023/09-點解中國人住嘅地方樓價咁貴.md)
 - [08-Another story](writings/2023/08-Another_story.md)
@@ -266,6 +271,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 ## Stream
 
 - [AI](stream/AI.md)
+- [2023-06](stream/2023-06.md)
 - [2022-04](stream/2022-04.md)
 - [2022-03](stream/2022-03.md)
 
@@ -296,6 +302,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [software-engineering](outline/software-engineering.md)
 - [portals](outline/portals.md)
 - [law](outline/law.md)
+- [incantations](outline/incantations.md)
 - [decline of magic](outline/decline_of_magic.md)
 - [curious-coincidences](outline/curious-coincidences.md)
 - [computer-test](outline/computer-test.md)
@@ -309,7 +316,6 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 - [world](bookmarks/world.md)
 - [wishes](bookmarks/wishes.md)
-- [todo](bookmarks/todo.md)
 - [stories](bookmarks/stories.md)
 - [law-politics](bookmarks/law-politics.md)
 - [general](bookmarks/general.md)
