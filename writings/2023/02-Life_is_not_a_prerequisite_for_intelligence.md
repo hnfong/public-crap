@@ -1,6 +1,6 @@
 # Life is not a prerequisite for intelligence
 
-![](images/simple_gpt.jpg)
+![image](./images/simple_gpt.jpg)
 
 
 GPT can be implemented in less than 100 lines of code.

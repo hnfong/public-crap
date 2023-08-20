@@ -8,7 +8,7 @@ In the quest to explain the alleged violations of the Laws, I have encountered t
 
 In this article, I will describe the loopholes of the Laws, and how they may be broken, and how the evidence is hidden.
 
-[](./images/matrix-ninja.jpg)
+![image](./images/matrix-ninja.jpg)
 
 ----
 
