@@ -47,6 +47,7 @@
   - https://youtu.be/3JWNr0SvIVM?t=3810 - Described in this conversation 1:0X
 - https://zh.wikipedia.org/zh-hk/%E5%BC%B5%E8%A3%95_(%E4%B8%89%E5%9C%8B)
 
+
 ### Post-Concert Amnesia
 
 - https://thewellesleynews.com/2023/03/22/we-need-to-normalize-post-concert-amnesia/
@@ -74,6 +75,22 @@
 - https://zh.wikipedia.org/wiki/%E8%8B%AF%E6%95%99
 - www.vesica.org
 - https://zh.wikipedia.org/wiki/%E7%A5%9E%E9%81%93
+- https://www.youtube.com/watch?v=hLVIs1epPGo
+  - 【梦华录】之正史中记载的贯穿中国两千年历史的妖异之物，并非虚构。宋神宗，宋哲宗两人死前都见到的黑色妖物----黑眚：朱见深因此物组建西厂。北宋王朝亡国之兆
+- https://www.youtube.com/watch?v=s2CcbWUoR8Q
+  - 苏东坡目击UFO，有诗为证/帽妖吃人案”是一次与UFO的邂逅，还是一场政治图谋？赵祯（仁宗）登基前得到的“神”助攻/
+- https://www.youtube.com/watch?v=N9jVxmZ9Mxc
+  - 杜光庭
+  - 歷世真仙體道通鑑
+
+- ☆ https://www.youtube.com/watch?v=e8qJsk1j2zE
+  - Joscha Bach: Life, Intelligence, Consciousness, AI & the Future of Humans | Lex Fridman Podcast #392
+
+- ☆☆ https://www.youtube.com/watch?v=PkkN4bJN2pg - Is There Really a Hard Problem of Consciousness? - Joscha Bach, Artificial Intelligence Researcher
+  - Lots of very interesting discussions. One topic was about where "ideas" come from, where the host describes artistic inspirations as being sudden (eg. songs suddenly form in their mind, without prompting). I suppose Joscha is not as aware of these experiences as artists would be, since they might be a form of channelling (and is very hard to explain with materialistic theories).
+
+- https://www.youtube.com/watch?v=PkkN4bJN2pg
+  - Joscha Bach and DemystifySci Podcast generally good interactions. Super long podcast. Topics were very broad.
 
 
 ## Theories

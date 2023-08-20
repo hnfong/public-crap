@@ -158,6 +158,7 @@ Computer technology related.
 
 ### Theory, Fundamentals, Documentation, Tutorials, Guides
 
+- ☆ https://evjang.com/2021/10/23/generalization.html
 - https://towardsdatascience.com/choosing-the-right-gpu-for-deep-learning-on-aws-d69c157d8c86
 - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/install-nvidia-driver.html
 - https://github.com/openai/gpt-2/blob/master/src/model.py
@@ -305,6 +306,8 @@ Computer technology related.
 - https://www.ermine.ai/ - Speech recognition in browser
 - https://github.com/Torantulino/Auto-GPT
 - https://github.com/jjuliano/aifiles
+- https://github.com/eliasdorneles/upiano
+
 
 
 ## Data and Datasets
@@ -519,6 +522,8 @@ Computer technology related.
   - It says it's a guide to system design interview, but the actual content seems to be much more than that...
 - https://nymag.com/intelligencer/2023/02/the-silicon-valley-loop-malcolm-harriss-palo-alto.html
 - https://mitchellh.com/writing/my-startup-banking-story
+- ☆ https://www.joelonsoftware.com/2004/06/13/how-microsoft-lost-the-api-war/
+- https://www.vanityfair.com/news/business/2014/11/satya-nadella-bill-gates-steve-ballmer-microsoft
 
 
 ## Python

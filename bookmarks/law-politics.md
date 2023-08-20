@@ -34,6 +34,7 @@
 - https://fortune.com/2023/03/11/silicon-valley-bank-svb-ceo-greg-becker-dodd-frank-trump-rollback-systemically-important-fdic/
 - https://en.wikipedia.org/wiki/Operation_Choke_Point
 - https://www.youtube.com/watch?v=wJuRx1wARUk Clarence and Ginni Thomas: Politics, Power and the Supreme Court (full documentary) | FRONTLINE
+- https://www.bitsaboutmoney.com/archive/the-waste-stream-of-consumer-finance/ - The unspoken industry of credit card debt collecting
 
 # Big-Tech
 
@@ -110,7 +111,14 @@
 - https://www.wsj.com/articles/meta-fined-1-3-billion-over-data-transfers-to-u-s-b53dbb04
 - https://www.usatoday.com/story/opinion/2023/06/20/gannett-ceo-why-we-are-suing-google-for-its-business-practices/70336910007/
 - https://www.theregister.com/2023/06/23/telesign_gdpr_complaint/
+- https://9to5mac.com/2023/07/20/apple-imessage-facetime-remove-security-law/
+  - Apple says it would remove iMessage and FaceTime in the UK rather than break end-to-end encryption
 
+
+- https://en.wikipedia.org/wiki/Sayre%27s_law
+  - Sayre's law states, in a formulation quoted by Charles Philip Issawi: "In any dispute the intensity of feeling is inversely proportional to the value of the issues at stake." By way of corollary, it adds: "That is why academic politics are so bitter."
+- https://en.wikipedia.org/wiki/Law_of_triviality
+  - people within an organization commonly or typically give disproportionate weight to trivial issues
 
 
 
