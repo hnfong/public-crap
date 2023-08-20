@@ -72,7 +72,7 @@ In fact, one other way to look at things is that the "randomness" of quantum mec
 
 
 
-# Complexity
+### Complexity
 
 _If computer scientists had been physicists, we’d simply have declared P  ̸= NP to be an observed law of Nature, analogous to the laws of thermodynamics. A Nobel Prize would even be given for the discovery of that law. (And in the unlikely event that someone later proved P = NP, a second Nobel Prize would be awarded for the law’s overthrow.)_ - Scott Aaronson
 
