@@ -8,7 +8,7 @@ But no, the problem with super-human intelligence is not only the quality of the
 
 Of course, we can always take the simulated game approach -- for example, if we want the best politician, we can create elaborate simulations of the world, and use the same simulated self-play strategies as chess or go to make an AI that is better than what existing human data allows. But to create a simulated world is going to take a unimaginably huge amount of resources. And even worse, we often don't really have an objective "intelligence" function to optimize -- we don't really know what intelligence is.
 
-[](images/alice.jpg)
+![image](./images/alice.jpg)
 
 If we can't tell, for example, whether Shakespeare is more intelligent than Bach, how do we make an AI better than both Shakespeare and Bach? If somebody managed to make one, can we really tell it is better?
 

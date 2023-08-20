@@ -1,6 +1,6 @@
 # A story
 
-![](images/earliest_magic.jpg)
+![image](./images/earliest_magic.jpg)
 
 Long, long ago, in the gods' birthplace,  
 They were young and full of grace.  

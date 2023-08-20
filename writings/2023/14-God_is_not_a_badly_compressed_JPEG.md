@@ -12,7 +12,7 @@ The more we "learn", the more we are able to reproduce imperfect impressions of 
 
 But God is not a badly compressed JPEG.
 
-[](./images/zeus-reading.jpg)
+![image](./images/zeus-reading.jpg)
 
 If we learned anything about computational irreducibility, we know that there's is no "real" shortcut to truth. The truth is out there, as-is, for all to observe and experience.
 
