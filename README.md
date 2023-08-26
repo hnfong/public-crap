@@ -7,6 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2023
 
+- [16-Miraculous Healing and Bayes Rule](writings/2023/16-Miraculous_Healing_and_Bayes_Rule.md)
 - [15-How to break the Laws of Nature without getting caught](writings/2023/15-How_to_break_the_Laws_of_Nature_without_getting_caught.md)
 - [14-God is not a badly compressed JPEG](writings/2023/14-God_is_not_a_badly_compressed_JPEG.md)
 - [13-Alicization](writings/2023/13-Alicization.md)

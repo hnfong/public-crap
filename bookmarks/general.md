@@ -333,6 +333,10 @@
 - https://twitter.com/Foone/status/1014267515696922624 You want to know something about how bullshit insane our brains are? OK, so there's a physical problem with our eyes
 - https://www.quantamagazine.org/inside-the-proton-the-most-complicated-thing-imaginable-20221019/
 - https://masteranza.wordpress.com/2022/10/22/there-is-no-measurement-problem-in-quantum-mechanics/
+- https://en.wikipedia.org/wiki/Sayre%27s_law
+  - Sayre's law states, in a formulation quoted by Charles Philip Issawi: "In any dispute the intensity of feeling is inversely proportional to the value of the issues at stake." By way of corollary, it adds: "That is why academic politics are so bitter."
+- https://en.wikipedia.org/wiki/Law_of_triviality
+  - people within an organization commonly or typically give disproportionate weight to trivial issues
 
 ## Hong Kong Housing
 
