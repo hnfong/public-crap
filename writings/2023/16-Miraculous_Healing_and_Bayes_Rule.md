@@ -66,7 +66,7 @@ So,
 ```
         e * P(A|B)       e
 P(A) = -------------- < --- ~= 0
-           1             1
+           0.99         .99
 ```
 
 Here, the math is straightforward, but the interpretation is funny. On the surface, the rational experimentalist is just tautologically applying the formula, since in order to be able to say "I will believe in miracles if I get cured" given a low P(B) prior, P(A) must have had been very very low (i.e. virtually no possibility of a non-miraculous cure). Then the math is just as expected.
