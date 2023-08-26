@@ -59,7 +59,7 @@ The denialist just pretends B isn't a thing. So,
 "*I'll believe it when I see it*" -- your local Rational Experimentalist
 
 - P(B) is very low (denote it as 'e')
-- P(B|A) is very high, i.e. "I will believe in miracles if I get cured"
+- P(B\|A) is very high, i.e. "I will believe in miracles if I get cured"
 
 So,
 
@@ -71,9 +71,9 @@ P(A) = -------------- < --- ~= 0
 
 Here, the math is straightforward, but the interpretation is funny. On the surface, the rational experimentalist is just tautologically applying the formula, since in order to be able to say "I will believe in miracles if I get cured" given a low P(B) prior, P(A) must have had been very very low (i.e. virtually no possibility of a non-miraculous cure). Then the math is just as expected.
 
-But if we take a subjective reality world view, that whatever we do not know is truly not yet settled, then "discovering" or "deciding" that P(B|A) is high is logically the same act as "discovering" or "deciding" that P(A) is low.
+But if we take a subjective reality world view, that whatever we do not know is truly not yet settled, then "discovering" or "deciding" that P(B\|A) is high is logically the same act as "discovering" or "deciding" that P(A) is low.
 
-i.e. **If** you have a rational choice to decide that P(B|A) is high, in making that choice you have also decided that P(A) is very very low. (It gets even lower if you believe you're not worthy).
+i.e. **If** you have a rational choice to decide that P(B\|A) is high, in making that choice you have also decided that P(A) is very very low. (It gets even lower if you believe you're not worthy).
 
 I wanted to say "that's why frequentist approaches to miracle finding doesn't work", but I suppose that doesn't really follow.
 
