@@ -1,11 +1,15 @@
-# Bayes Rule
+# Miraculous Healing and Bayes Rule
 
 A refresher for the Bayes rule:
 
 ```
+         P(B|A) * P(A)
+P(A|B) = -------------
+             P(B)
+
         P(B) * P(A|B)
 P(A) = --------------
-          P(B|A)
+           P(B|A)
 ```
 
 Now, suppose:
@@ -15,7 +19,7 @@ Now, suppose:
 
 Also, assume that P(A) is mostly low, but empirically not zero. Sometimes people do suddenly get cured without a good reason.
 
-Let us investigate the subjective probabilities of:
+Let us investigate the **subjective probabilities** of:
 
 1. The devout believer,
 2. the denialist, and
@@ -33,7 +37,9 @@ P(A) ~= --------------
           P(B|A) ~= P(B) =~ 1
 ```
 
-Basically the probability of A depends on whether you think you will be saved. "Jesus" helps quite a bit in boosting the probability here.
+Basically the subjective probability of A depends on whether you think you will be saved. "Jesus" helps quite a bit in boosting the probability here. For those who object to the subjective probability here, don't fret -- a subjective probability of 99.999% still doesn't mean anything in the frequentist world. It just means they have messed up priors.
+
+However, for those who believe not only in subjective truth but also in subjective probability, this might ring a bell.
 
 # The Denialist
 
@@ -68,3 +74,7 @@ But if we take a subjective reality world view, that whatever we do not know is 
 i.e. **If** you have a rational choice to decide that P(B|A) is high, in making that choice you have also decided that P(A) is very very low. (It gets even lower if you believe you're not worthy).
 
 I wanted to say "that's why frequentist approaches to miracle finding doesn't work", but I suppose that doesn't really follow.
+
+# Further reading
+
+[Subjective Truth](../2022/09-Subjective_Truth.md)
