@@ -27,7 +27,7 @@ Let us investigate the **subjective probabilities** of:
 
 ![image](./images/healing-the-sick.jpg)
 
-# The Devout Believer
+## The Devout Believer
 
 Obviously, P(B) ~= 1
 
@@ -41,7 +41,7 @@ Basically the subjective probability of A depends on whether you think you will 
 
 However, for those who believe not only in subjective truth (see Further Reading) but also in subjective probability, this might ring a bell.
 
-# The Denialist
+## The Denialist
 
 
 The denialist just pretends B isn't a thing. So,
@@ -53,7 +53,7 @@ The denialist just pretends B isn't a thing. So,
 - P(A) ~= P(A\|B) -- basically, B is not a real thing, P(A\|B) is just P(A) because B is irrelevant.
 
 
-# The Rational Experimentalist
+## The Rational Experimentalist
 
 
 "*I'll believe it when I see it*" -- your local Rational Experimentalist
@@ -75,8 +75,14 @@ But if we take a subjective reality world view (see Further Reading), that whate
 
 i.e. **If** you have a rational choice to decide that P(B\|A) is high, in making that choice you have also decided that P(A) is very very low. (It gets even lower if you believe you're not worthy).
 
-I wanted to say "that's why frequentist approaches to miracle finding doesn't work", but I suppose that doesn't really follow.
+## Conclusions?
 
-# Further reading
+I wanted to say "that's why frequentist approaches to miracle finding doesn't work", but I suppose that doesn't really follow. I guess what really follows is that even if you think you "keep an open mind" and are "willing to change your stance" given extraordinary evidence, the fact that you are willing to change your stance implies you subjectively believe the chance of this extraordinary evidence is slim -- because (duh) it is extraordinary. In a subjective interpretation of reality, you'll probably discover the world being quite ordinary.
+
+In a world with a low rate of miracles, the only way to increase your chances of seeing it is to believe it. Note that I didn't say that if you believe you will see.
+
+Also, suppose we fixate a value to P(A) in a frequentist context, we can actually imply something about the ratio of devout believers and rational experimentalists. There's enough wriggle room to make everything look consistent especially with the "Jesus factor". I suppose we don't want to use this to deduce the number of "Jesus" equivalents we can have... But then, we could hypothetize that the math works out that in order to efficiently map each person's subjective probabilities to the frequentist rates, it seems that the universe could just assign miracles to those whose P(A) is high, and refrain from giving miracles to those whose P(A) is low. Then everybody's observations matches their probabilities.
+
+## Further reading
 
 - [Subjective Truth](../2022/09-Subjective_Truth.md)
