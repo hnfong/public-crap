@@ -39,7 +39,7 @@ P(A) ~= --------------
 
 Basically the subjective probability of A depends on whether you think you will be saved. "Jesus" helps quite a bit in boosting the probability here. For those who object to the subjective probability here, don't fret -- a subjective probability of 99.999% still doesn't mean anything in the frequentist world. It just means they have messed up priors.
 
-However, for those who believe not only in subjective truth but also in subjective probability, this might ring a bell.
+However, for those who believe not only in subjective truth (see Further Reading) but also in subjective probability, this might ring a bell.
 
 # The Denialist
 
@@ -71,7 +71,7 @@ P(A) = -------------- < --- ~= 0
 
 Here, the math is straightforward, but the interpretation is funny. On the surface, the rational experimentalist is just tautologically applying the formula, since in order to be able to say "I will believe in miracles if I get cured" given a low P(B) prior, P(A) must have had been very very low (i.e. virtually no possibility of a non-miraculous cure). Then the math is just as expected.
 
-But if we take a subjective reality world view, that whatever we do not know is truly not yet settled, then "discovering" or "deciding" that P(B\|A) is high is logically the same act as "discovering" or "deciding" that P(A) is low.
+But if we take a subjective reality world view (see Further Reading), that whatever we do not know is truly not yet settled, then "discovering" or "deciding" that P(B\|A) is high is logically the same act as "discovering" or "deciding" that P(A) is low.
 
 i.e. **If** you have a rational choice to decide that P(B\|A) is high, in making that choice you have also decided that P(A) is very very low. (It gets even lower if you believe you're not worthy).
 
@@ -79,4 +79,4 @@ I wanted to say "that's why frequentist approaches to miracle finding doesn't wo
 
 # Further reading
 
-[Subjective Truth](../2022/09-Subjective_Truth.md)
+- [Subjective Truth](../2022/09-Subjective_Truth.md)
