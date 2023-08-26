@@ -47,8 +47,10 @@ However, for those who believe not only in subjective truth but also in subjecti
 The denialist just pretends B isn't a thing. So,
 
 - P(B) is very low
-- P(B|A) is very low (won't believe the evidence even if something apparently miraculous happened)
-- P(A) ~= P(A|B) -- basically, B is not a real thing, P(A|B) is just P(A) because B is irrelevant.
+
+- P(B\|A) is very low (won't believe the evidence even if something apparently miraculous happened)
+
+- P(A) ~= P(A\|B) -- basically, B is not a real thing, P(A\|B) is just P(A) because B is irrelevant.
 
 
 # The Rational Experimentalist
