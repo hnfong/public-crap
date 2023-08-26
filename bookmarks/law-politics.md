@@ -113,13 +113,7 @@
 - https://www.theregister.com/2023/06/23/telesign_gdpr_complaint/
 - https://9to5mac.com/2023/07/20/apple-imessage-facetime-remove-security-law/
   - Apple says it would remove iMessage and FaceTime in the UK rather than break end-to-end encryption
-
-
-- https://en.wikipedia.org/wiki/Sayre%27s_law
-  - Sayre's law states, in a formulation quoted by Charles Philip Issawi: "In any dispute the intensity of feeling is inversely proportional to the value of the issues at stake." By way of corollary, it adds: "That is why academic politics are so bitter."
-- https://en.wikipedia.org/wiki/Law_of_triviality
-  - people within an organization commonly or typically give disproportionate weight to trivial issues
-
+- https://www.washingtonpost.com/technology/2023/08/18/meta-news-ban-canada-wildfires/
 
 
 # AI Law

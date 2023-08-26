@@ -92,6 +92,11 @@
 - https://www.youtube.com/watch?v=PkkN4bJN2pg
   - Joscha Bach and DemystifySci Podcast generally good interactions. Super long podcast. Topics were very broad.
 
+- https://youtu.be/GSKq1vMWMDU?t=8891
+  - Three paths to AGI - PIM (probability-interconnection-memory)
+
+- https://zh.wikisource.org/wiki/%E4%BA%86%E5%87%A1%E5%9B%9B%E8%A8%93
+  - 導讀 https://www.youtube.com/watch?v=V3QZhDp2XSw https://www.youtube.com/watch?v=ELHW9kgWDsg https://www.youtube.com/watch?v=Rucm_TRwUS8
 
 ## Theories
 
