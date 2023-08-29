@@ -57,4 +57,4 @@ Ideological objections settled (hopefully), I'll briefly address the practical o
 
 For people not used to exercising their "free will" (or "agency"), this subjective reality is truly a scary world full of uncertainties. Angel and demons lurk just behind the corner. 
 
-But all one's conscious choices, especially those that seem apparently irrational, are inevitably made from pure love. And that, I think, is of utmost importance.
+But every conscious choice, especially those that seem apparently irrational, are inevitably made from pure love. And that, I think, is of utmost importance.
