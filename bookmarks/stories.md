@@ -98,6 +98,8 @@
 - https://zh.wikisource.org/wiki/%E4%BA%86%E5%87%A1%E5%9B%9B%E8%A8%93
   - 導讀 https://www.youtube.com/watch?v=V3QZhDp2XSw https://www.youtube.com/watch?v=ELHW9kgWDsg https://www.youtube.com/watch?v=Rucm_TRwUS8
 
+- ☆ https://www.youtube.com/watch?v=GqDaZTdNSqY - Former White House advisor Pippa Malmgren
+
 ## Theories
 
 - https://www.youtube.com/watch?v=iFxBq5NBopA - 深度解析《大只佬》全部細節佐證和疑問排解，足以讓人大徹大悟！！
