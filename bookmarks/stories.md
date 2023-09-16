@@ -100,9 +100,18 @@
 
 - ☆ https://www.youtube.com/watch?v=GqDaZTdNSqY - Former White House advisor Pippa Malmgren
 
+- https://en.wikipedia.org/wiki/Billy_Milligan
+- https://en.m.wikipedia.org/wiki/Cryptomnesia
+- https://www.youtube.com/watch?v=eckqwwu07-8
+
 ## Theories
 
 - https://www.youtube.com/watch?v=iFxBq5NBopA - 深度解析《大只佬》全部細節佐證和疑問排解，足以讓人大徹大悟！！
 - https://zhuanlan.zhihu.com/p/382937390 - 打坐中的生理反应-南怀瑾
 - https://skylikesun.blogspot.com/2023/05/blog-post_35.html - 創意、聯想、幻想、走火入魔
 
+## References
+
+- ☆ https://www.johncoulthart.com/feuilleton/2023/09/04/the-most-unusual-magazine-ever-published-man-myth-and-magic/
+  - https://archive.org/details/manmythmagictheillustratedencyclopediaofmythology21volumesin1/page/n5/mode/2up
+- https://www.youtube.com/watch?v=OHz4slbIRyE , https://www.youtube.com/watch?v=yyktccr5apU

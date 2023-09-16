@@ -154,6 +154,12 @@
 - https://stevejobsarchive.com/book
 - https://www.books.com.tw/products/CN11442885 秦迷：重新發現秦始皇 作者： 李開元 出版社：中信出版社
 - https://www.zhonghuadiancang.com/lishizhuanji/13014/ - 奏谳书 - Appeal judgements of Qin and Han
+- ☆ https://www.youtube.com/watch?v=JRh4LK5z41o Intro to Historical Chinese Geography - Good basic intro for beginners
+- ☆ ☆ https://www.youtube.com/watch?v=MdYdg3OJfrI - Industrial Alchemy in Ancient Egypt - Geoffrey Drumm, Land of Chem
+  - Pyramids are vessels for the Haber process
+
+- https://www.youtube.com/watch?v=np_ylvc8Zj8
+
 
 
 ## Pre-history
