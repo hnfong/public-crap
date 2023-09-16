@@ -153,6 +153,7 @@ Computer technology related.
 - https://github.com/vlcn-io/cr-sqlite cr-sqlite adds multi-master replication and partition tolerance to SQLite via conflict free replicated data types (CRDTs) and/or causally ordered event logs. 
 - https://github.com/chathub-dev/chathub/blob/main/README.md - ChatHub is an all-in-one chatbot client
 - https://github.com/cotowali/cotowali A statically typed scripting language that transpile into POSIX sh
+- https://github.com/WebSheets - Javascript implementation of Excel functions
 
 ## Machine Learning
 
