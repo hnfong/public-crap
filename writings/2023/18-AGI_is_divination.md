@@ -2,7 +2,7 @@
 
 ![image](./images/robot_divination.jpg)
 
-A couple notes on recognizing super-human intelligence (aka "AGI") assuming we are able to build one:
+A couple notes on super-human artificial intelligence (aka "AGI") assuming we are able to build one:
 
 - We humans are already Turing Complete. Church-Turing hypothesis already claims that in theory we are able to compute whatever needs computing given sufficient time and paper. Whatever "AGI" means, it will still be as Turing Complete as we humans are.
 
