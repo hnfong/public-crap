@@ -46,6 +46,8 @@
   - Dr. Stylianos Atteshlis (Στυλιανός Αττεσλής, known as Daskalos) (1912–1995) was a Christian mystic and healer who was born on December 12, 1912 in Cyprus where he spent most of his life.
   - https://youtu.be/3JWNr0SvIVM?t=3810 - Described in this conversation 1:0X
 - https://zh.wikipedia.org/zh-hk/%E5%BC%B5%E8%A3%95_(%E4%B8%89%E5%9C%8B)
+- https://www.youtube.com/watch?v=cC6xCyFJ1Ro - How Ancient Apocalyptic Jewish Ascent Esotericism Laid the Foundations of Christianity
+  - Jewish mysticism, Paul's and other's personal experiences
 
 
 ### Post-Concert Amnesia
@@ -104,6 +106,11 @@
 - https://en.m.wikipedia.org/wiki/Cryptomnesia
 - https://www.youtube.com/watch?v=eckqwwu07-8
 
+- 山海經 ?
+- https://www.youtube.com/watch?v=Zu95yxVY93U
+
+- "Intersubjectivity" - Edmund Husserl
+
 ## Theories
 
 - https://www.youtube.com/watch?v=iFxBq5NBopA - 深度解析《大只佬》全部細節佐證和疑問排解，足以讓人大徹大悟！！
@@ -115,3 +122,8 @@
 - ☆ https://www.johncoulthart.com/feuilleton/2023/09/04/the-most-unusual-magazine-ever-published-man-myth-and-magic/
   - https://archive.org/details/manmythmagictheillustratedencyclopediaofmythology21volumesin1/page/n5/mode/2up
 - https://www.youtube.com/watch?v=OHz4slbIRyE , https://www.youtube.com/watch?v=yyktccr5apU
+
+## Esoteric practices
+
+- https://en.wikipedia.org/wiki/Hitobashira
+- https://en.wikipedia.org/wiki/Fuji_(planchette_writing)

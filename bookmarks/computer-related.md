@@ -79,6 +79,7 @@ Computer technology related.
 - https://gist.github.com/kconner/cff08fe3e0bb857ea33b47d965b3e19f https://news.ycombinator.com/item?id=35847715 - MacOS Internals (Historical)
 - https://preshing.com/20201210/flap-hero-code-review/ Flap Hero is a small game written entirely in C++ without using an existing game engine. All of its source code is available on GitHub. I think it can serve as an interesting resource for novice and intermediate game developers to study.
   - https://github.com/arc80/FlapHero
+- ☆ https://www.quantamagazine.org/why-mathematicians-cant-find-the-hay-in-a-haystack-20180917/ - A really good summary of complexity theory
 
 
 
@@ -294,6 +295,7 @@ Computer technology related.
 - https://godmode.space/ - Godmode is a web platform to access the powers of autoGPT and babyAGI.
 - https://www.cognosys.ai/ - Another AutoGPT interface
 - https://agentgpt.reworkd.ai/ - Another AutoGPT interface
+- https://www.youtube.com/watch?v=3VDpguo4R-0 AI in Google Sheets is Here | Get Sample Data and MORE! - Review of Google Sheets Duet
 
 
 ### Toys
@@ -525,6 +527,7 @@ Computer technology related.
 - https://mitchellh.com/writing/my-startup-banking-story
 - ☆ https://www.joelonsoftware.com/2004/06/13/how-microsoft-lost-the-api-war/
 - https://www.vanityfair.com/news/business/2014/11/satya-nadella-bill-gates-steve-ballmer-microsoft
+- https://500mile.email/
 
 
 ## Python
