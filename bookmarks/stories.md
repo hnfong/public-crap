@@ -48,6 +48,7 @@
 - https://zh.wikipedia.org/zh-hk/%E5%BC%B5%E8%A3%95_(%E4%B8%89%E5%9C%8B)
 - https://www.youtube.com/watch?v=cC6xCyFJ1Ro - How Ancient Apocalyptic Jewish Ascent Esotericism Laid the Foundations of Christianity
   - Jewish mysticism, Paul's and other's personal experiences
+- https://pubmed.ncbi.nlm.nih.gov/37423492/ AWAreness during REsuscitation - II: A multi-center study of consciousness and awareness in cardiac arrest - Near Death Experiences survey
 
 
 ### Post-Concert Amnesia
