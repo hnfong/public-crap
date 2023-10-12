@@ -118,6 +118,7 @@
 - https://www.youtube.com/watch?v=iFxBq5NBopA - 深度解析《大只佬》全部細節佐證和疑問排解，足以讓人大徹大悟！！
 - https://zhuanlan.zhihu.com/p/382937390 - 打坐中的生理反应-南怀瑾
 - https://skylikesun.blogspot.com/2023/05/blog-post_35.html - 創意、聯想、幻想、走火入魔
+- https://markxu.com/strong-evidence
 
 ## References
 
