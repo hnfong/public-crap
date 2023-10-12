@@ -104,7 +104,8 @@
 
 - https://en.wikipedia.org/wiki/Billy_Milligan
 - https://en.m.wikipedia.org/wiki/Cryptomnesia
-- https://www.youtube.com/watch?v=eckqwwu07-8
+- https://www.youtube.com/watch?v=eckqwwu07-8 老子不小心泄露天機，被黃石公寫成道家奇書，一本教你成為帝王將相的書|seeker大师兄 (素書)
+- https://www.youtube.com/watch?v=DtiWP-Tpg3M 1984年，一個工程師研究金字塔，卻意外發現了特斯拉的秘密，原來，這是一齣人類的悲劇……|自說自話的總裁
 
 - 山海經 ?
 - https://www.youtube.com/watch?v=Zu95yxVY93U
