@@ -119,6 +119,7 @@
 - https://zhuanlan.zhihu.com/p/382937390 - 打坐中的生理反应-南怀瑾
 - https://skylikesun.blogspot.com/2023/05/blog-post_35.html - 創意、聯想、幻想、走火入魔
 - https://markxu.com/strong-evidence
+- https://news.ycombinator.com/item?id=37740224 - Purpose of the Sabbath as repressed minority.
 
 ## References
 
