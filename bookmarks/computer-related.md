@@ -332,6 +332,7 @@ Computer technology related.
 - https://szopa.medium.com/teaching-chatgpt-to-speak-my-sons-invented-language-9d109c0a0f05
 - https://twitter.com/LinusEkenstam/status/1663566567311900672 - Generative Fill of memes
 - http://kylehalladay.com/blog/2020/05/20/Rendering-With-Notepad.html
+- https://eieio.games/nonsense/game-11-flappy-bird-finder/
 
 
 ## Experimental Languages
