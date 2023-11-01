@@ -155,6 +155,9 @@ Computer technology related.
 - https://github.com/chathub-dev/chathub/blob/main/README.md - ChatHub is an all-in-one chatbot client
 - https://github.com/cotowali/cotowali A statically typed scripting language that transpile into POSIX sh
 - https://github.com/WebSheets - Javascript implementation of Excel functions
+- https://github.com/byronka/minum - Minimum Java Web (HTTP) Framework
+- https://github.com/sickcodes/Docker-OSX - Run macOS VM in a Docker! Run near native OSX-KVM in Docker! X11 Forwarding! CI/CD for OS X Security Research! Docker mac Containers.
+- https://github.com/lmorg/murex - Support for additional type information in pipelines, which can be used for complex data formats like JSON or tables. Meaning all of your existing UNIX tools to work more intelligently and without any additional configuration.
 
 ## Machine Learning
 
@@ -220,6 +223,8 @@ Computer technology related.
 - https://www.youtube.com/watch?v=L_Guz73e6fw - Sam Altman Lex Fridman Interview
 - https://twitter.com/emollick - posts very good commentary and news on AI especially LLMs
 - https://www.youtube.com/watch?v=tkqD9W5U9F4 - AlphaGo-style Tree Search on Thought Trees in GPT models
+- http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf - Efficient BackProp
+- http://www.incompleteideas.net/IncIdeas/BitterLesson.html - highlights that leveraging computation through general methods is the most effective approach in AI research. Relying on human knowledge and understanding of specific domains often hinders progress
 
 
 ### Products, Libraries, frameworks, Tools
@@ -247,6 +252,8 @@ Computer technology related.
 
 #### Text, LLM, etc.
 
+- ☆ https://lightning.ai/pages/community/lora-insights/
+- ☆ https://twitter.com/rasbt/status/1712816975083155496 - I ran hundreds if not thousands of LoRA & QLoRA experiments to finetune open-source LLMs, and here’s what I learned:
 - https://github.com/facebookresearch/llama
   - https://ai.facebook.com/blog/large-language-model-llama-meta-ai/
   - https://github.com/ggerganov/llama.cpp
@@ -296,6 +303,14 @@ Computer technology related.
 - https://www.cognosys.ai/ - Another AutoGPT interface
 - https://agentgpt.reworkd.ai/ - Another AutoGPT interface
 - https://www.youtube.com/watch?v=3VDpguo4R-0 AI in Google Sheets is Here | Get Sample Data and MORE! - Review of Google Sheets Duet
+- https://twitter.com/karpathy/status/1697317416978755881 - Speculative execution for LLMs is an excellent inference-time optimization.
+- https://arxiv.org/abs/2310.10631 - Llemma: An Open Language Model For Mathematics
+- https://news.ycombinator.com/item?id=37879077 - ChatGPT's system prompts
+- https://huggingface.co/datasets/roneneldan/TinyStories
+- https://github.com/OpenBMB/ChatDev - Create Customized Software using Natural Language Idea (through LLM-powered Multi-Agent Collaboration)
+- https://arxiv.org/abs/2310.06694 https://xiamengzhou.github.io/sheared-llama/ - pruning as a constrained optimization problem where we learn pruning masks to search for a subnetwork matching a pre-specified target architecture while maximizing performance
+- https://blog.gopenai.com/how-to-speed-up-llms-and-use-100k-context-window-all-tricks-in-one-place-ffd40577b4c
+
 
 
 ### Toys
@@ -333,6 +348,8 @@ Computer technology related.
 - https://twitter.com/LinusEkenstam/status/1663566567311900672 - Generative Fill of memes
 - http://kylehalladay.com/blog/2020/05/20/Rendering-With-Notepad.html
 - https://eieio.games/nonsense/game-11-flappy-bird-finder/
+- https://ffmpeg.app/ || https://ffmpegwasm.netlify.app/
+- https://www.youtube.com/watch?v=DcYLT37ImBY - Training AI to Play Pokemon with Reinforcement Learning
 
 
 ## Experimental Languages
@@ -362,6 +379,7 @@ Computer technology related.
 - https://www.qword.net/2023/04/30/maybe-you-should-store-passwords-in-plaintext
 - https://github.com/kuchin/awesome-cto
 - https://www.businessinsider.com/middle-managers-great-flattening-organization-meta-tech-layoffs-firing-2023-3
+- https://github.com/ZachGoldberg/Startup-CTO-Handbook/blob/main/StartupCTOHandbook.md
 
 
 ## Potentially Useful Apps

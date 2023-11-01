@@ -122,10 +122,7 @@
 - https://www.ecb.europa.eu/pub/pdf/scpops/ecb.op189.en.pdf The Eurosystem collateral framework explained - EU Central Bank policies, basically
 - https://blog.startupstash.com/everything-i-wish-i-had-known-about-raising-a-seed-round-a615f8f7740b
 - https://plaintextaccounting.org/
-
-
-
-
+- Value of bond price (no risk): `P = C * (1 - (1 + r)**-n) / r + FV / ((1 + r)**n`
 
 
 ## Prediction Markets
@@ -238,6 +235,7 @@
 - https://www.youtube.com/watch?v=1G72936Y3xA Top 10 Knots To Know
 - https://www.youtube.com/watch?v=5lLPAHK_k6I 10 knots you NEED to know in life. [Save this Video]
 - https://www.youtube.com/watch?v=xLORsLlcT48 DOPAMINE DETOX: Take Back CONTROL Of Your Life & STOP LAZINESS! | Dr. Andrew Huberman
+- https://github.com/openfarmcc/OpenFarm - OpenFarm is a free and open database and web application for farming and gardening knowledge. One might think of it as the Wikipedia for growing plants, though it functions more like a cooking recipes site.
 
 
 ## Health and Food
@@ -491,6 +489,8 @@
 - https://www.youtube.com/watch?v=pdmf4fu6fMY Become a Civilized Beast - Jordan Peterson Interview (Talks about various topics)
 - https://www.pnas.org/doi/10.1073/pnas.2208661120 - Income and emotional well-being: A conflict resolved
   - Measures of well-being have often been found to rise with log (income). Kahneman and Deaton [Proc. Natl. Acad. Sci. U.S.A. 107, 16489–93 (2010)] reported an exception; a measure of emotional well-being (happiness) increased but then flattened somewhere between $60,000 and $90,000. In contrast, Killingsworth [Proc. Natl. Acad. Sci. U.S.A. 118, e2016976118 (2021)] observed a linear relation between happiness and log(income) in an experience-sampling study. We discovered in a joint reanalysis of the experience sampling data that the flattening pattern exists but is restricted to the least happy 20% of the population, and that complementary nonlinearities contribute to the overall linear-log relationship between happiness and income. We trace the discrepant results to the authors’ reliance on standard practices and assumptions of data analysis that should be questioned more often, although they are standard in social science.
+- https://www.youtube.com/watch?v=hLmZ2ajcOvc - 10 Ways To Tell A "Normal" Relationship Vs. One With A Narcissist
+
 
 ## My image links
 
