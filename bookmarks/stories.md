@@ -50,7 +50,14 @@
   - Jewish mysticism, Paul's and other's personal experiences
 - https://pubmed.ncbi.nlm.nih.gov/37423492/ AWAreness during REsuscitation - II: A multi-center study of consciousness and awareness in cardiac arrest - Near Death Experiences survey
 - https://www.quora.com/What-is-an-out-of-body-experience/answer/Sebastian-Sastre
-
+- https://www.youtube.com/watch?v=Upz9DD2ZC4o
+  - 劉秀如何打贏新莽四十萬大軍？奇蹟的昆陽之戰【歷史茶館】
+- https://www.quora.com/What-is-an-out-of-body-experience/answer/Sebastian-Sastre
+- https://markxu.com/three-bayes-learnings - Extraordinary claims require extraordinary evidence, but extraordinary evidence might be more common than you think.
+- https://www.facebook.com/SkepticalPsychic 懷疑論者的通靈伴侶觀察筆記
+- https://www.facebook.com/profile.php?id=61550893512996 菩心願行 「菩心願行」來自於觀世音菩薩的智慧教導，三位通訊者（怡伶、乃月、佳珮）在跟菩薩工作的這段時間中，體驗到宇宙廣闊慈悲的愛，並在日常生活體現、實踐並分享。
+- 艽野塵夢 陳渠珍 https://www.youtube.com/watch?v=sJuBAaoDQkg https://www.youtube.com/watch?v=1V45mXik04M
+- https://en.wikipedia.org/wiki/Disappearing_polymorphs
 
 
 ### Post-Concert Amnesia
@@ -114,6 +121,21 @@
 - https://www.youtube.com/watch?v=Zu95yxVY93U
 
 - "Intersubjectivity" - Edmund Husserl
+- https://en.wikipedia.org/wiki/Telling_the_bees
+- https://en.wikipedia.org/wiki/Luminescence_dating - "bleached" crystals? internal state after exposure to light????
+
+- https://en.wikipedia.org/wiki/Pythia
+
+- https://www.atlasobscura.com/articles/ancient-egypt-soul-houses-false-doors
+
+- https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%85%83%E7%AF%80%E8%88%87%E7%9B%82%E8%98%AD%E7%9B%86%E7%AF%80#%E9%A6%99%E6%B8%AF
+  - 海民習俗？
+
+- https://vocus.cc/article/61e95809fd89780001a6730a
+- https://en.wikipedia.org/wiki/Desert_Fathers - People who followed Jesus at least up to the second step of his journey.
+- https://www.youtube.com/watch?v=r4LoXCl7drQ - Christian Mysticism (a lot of introductory concepts that might be worth investigating)
+  - The channel itself is probably very useful too.
+
 
 ## Theories
 
@@ -122,6 +144,10 @@
 - https://skylikesun.blogspot.com/2023/05/blog-post_35.html - 創意、聯想、幻想、走火入魔
 - https://markxu.com/strong-evidence
 - https://news.ycombinator.com/item?id=37740224 - Purpose of the Sabbath as repressed minority.
+- https://skylikesun.blogspot.com/2023/09/blog-post_11.html - 玄關與財庫｜看屋筆記（三）
+-  https://www.facebook.com/permalink.php?story_fbid=pfbid05ktRimp7HxhenF9NWcWDK77xGnNcJwNDmT9bLsHdvMcdNYKZ3oc7uHqdT3iha7xbl&id=61550893512996 所以相信的力量是相當大的，它也是改變宇宙意識的重要關鍵。 如果有很大的一群人相信了A恐怖事件會發生，當這股相信的能量聚集到一定程度的時候，那麼它就會發生；同樣的，當你們相信神跡（奇蹟）的力量——治癒的力量，那它也會發生。 因為每一個相信者都是光體，對光來說沒有不可能的事情，因為光是一個超乎你們腦袋可以理解的現象，它是一個你們還不了解的思想，所以如果沒有透過你的相信，你就無法感知到那個部分，就算你感知到了，因為你用頭腦在思考這件事，所以你仍然會找到任何理由去排除它，那麼治癒就不可能發生。
+  - https://www.facebook.com/permalink.php?story_fbid=pfbid02iSQg6xYZGW24pzh4ReYJMvqfGAwrBwMZbUSU6wFN5tzea1CoNf9h9NCA4G7HqCSal&id=61550893512996
+  - https://www.facebook.com/permalink.php?story_fbid=pfbid02Xhup7kZBZUYGvp8t9imQYTPBH7ggu3DFrRokML27jeSXBDV3YmP8j7nrG6kzxwuhl&id=61550893512996 顯化
 
 ## References
 
