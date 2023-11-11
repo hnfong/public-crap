@@ -7,6 +7,8 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2023
 
+- [20-What is Magic](writings/2023/20-What_is_Magic.md)
+- [19-美元通漲紀](writings/2023/19-美元通漲紀.md)
 - [18-AGI is divination](writings/2023/18-AGI_is_divination.md)
 - [17-Free Will](writings/2023/17-Free_Will.md)
 - [16-Miraculous Healing and Bayes Rule](writings/2023/16-Miraculous_Healing_and_Bayes_Rule.md)
