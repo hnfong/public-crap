@@ -58,6 +58,10 @@
 - https://www.facebook.com/profile.php?id=61550893512996 菩心願行 「菩心願行」來自於觀世音菩薩的智慧教導，三位通訊者（怡伶、乃月、佳珮）在跟菩薩工作的這段時間中，體驗到宇宙廣闊慈悲的愛，並在日常生活體現、實踐並分享。
 - 艽野塵夢 陳渠珍 https://www.youtube.com/watch?v=sJuBAaoDQkg https://www.youtube.com/watch?v=1V45mXik04M
 - https://en.wikipedia.org/wiki/Disappearing_polymorphs
+- ☆ https://www.youtube.com/watch?v=oTHLJinmXnI - Ancient Psychotechnology To AWAKEN The Spiritual Warrior w/ Dr. John Churchill
+- https://www.salon.com/2023/11/05/a-brain-injury-removed-my-ability-to-perceive-time-heres-what-its-like-in-a-world-without-it/
+- https://www.vulture.com/2022/05/teal-swan-documentary-trailer-freeform.html
+- https://www.youtube.com/watch?v=FaQXfHhipAI 56歲農村大爺：38年前被外星人綁架 竊取外星核心科技 張祥前 1967年生
 
 
 ### Post-Concert Amnesia
@@ -97,6 +101,7 @@
 
 - ☆ https://www.youtube.com/watch?v=e8qJsk1j2zE
   - Joscha Bach: Life, Intelligence, Consciousness, AI & the Future of Humans | Lex Fridman Podcast #392
+- https://www.youtube.com/watch?v=szSH59xhZvo - Various ideas here
 
 - ☆☆ https://www.youtube.com/watch?v=PkkN4bJN2pg - Is There Really a Hard Problem of Consciousness? - Joscha Bach, Artificial Intelligence Researcher
   - Lots of very interesting discussions. One topic was about where "ideas" come from, where the host describes artistic inspirations as being sudden (eg. songs suddenly form in their mind, without prompting). I suppose Joscha is not as aware of these experiences as artists would be, since they might be a form of channelling (and is very hard to explain with materialistic theories).
@@ -135,6 +140,7 @@
 - https://en.wikipedia.org/wiki/Desert_Fathers - People who followed Jesus at least up to the second step of his journey.
 - https://www.youtube.com/watch?v=r4LoXCl7drQ - Christian Mysticism (a lot of introductory concepts that might be worth investigating)
   - The channel itself is probably very useful too.
+- https://en.wikipedia.org/wiki/Young%27s_Literal_Translation
 
 
 ## Theories
