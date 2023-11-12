@@ -26,6 +26,7 @@ YU MAN FUNG ALICE (于文鳳) v CHIAU SING CHI STEPHEN (周星馳)	 [2020] HKCFI
 
 女人嘅青春值幾錢？如果係都要將呢段日子加上價錢碼，我希望係⋯⋯
 
+![image](./images/stephenchow.jpg)
 
 ---
 
