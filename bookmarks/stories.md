@@ -2,6 +2,7 @@
 
 ## Actual stories
 
+- ☆ https://www.youtube.com/watch?v=eoC_YA0RB3g - Aubrey Marcus podcast with Matias De Stefano & Robert Grant
 - https://www.youtube.com/watch?v=0zMDMtv5XwY Darryl Anka (Bashar) - Buddha at the Gas Pump Interview
 - https://www.youtube.com/watch?v=DyNwxRMgJbY https://www.youtube.com/watch?v=wUEIabIunMo Interview s Darryl Anka & Bashar
 - https://www.youtube.com/watch?v=F1bj6VmQZa8 The Five Principles of Self Mastery for a Happy Life with Darryl Anka (Bashar)| Next Level Soul
@@ -62,6 +63,9 @@
 - https://www.salon.com/2023/11/05/a-brain-injury-removed-my-ability-to-perceive-time-heres-what-its-like-in-a-world-without-it/
 - https://www.vulture.com/2022/05/teal-swan-documentary-trailer-freeform.html
 - https://www.youtube.com/watch?v=FaQXfHhipAI 56歲農村大爺：38年前被外星人綁架 竊取外星核心科技 張祥前 1967年生
+- https://news.ycombinator.com/item?id=38397294 - Inducing OOB
+- https://www.youtube.com/watch?v=nfs7La-iSw0 Akerke Muratova
+- ☆ https://www.youtube.com/watch?v=Y0ez_HfTG4k - My 14 Years of NDE Research Shows What Is Coming to Mankind | David Suich
 
 
 ### Post-Concert Amnesia

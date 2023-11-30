@@ -156,7 +156,7 @@
   - Pyramids are vessels for the Haber process
 
 - https://www.youtube.com/watch?v=np_ylvc8Zj8
-
+- https://www.youtube.com/watch?v=WSK2F4xgXUU - 【信息素战史】魏武卒，强到离谱的重装步兵，为何会在魏国诞生？
 
 
 ## Pre-history
@@ -270,6 +270,7 @@
   - post-biotics, viral-sth, bacteria communicating with mitochrondria (since the latter is a ingested bacteria)
   - fermented foods - mitochondria uncouplers, wormwood also uncouplers??!
 - https://en.wikipedia.org/wiki/Minnesota_Multiphasic_Personality_Inventory - MMPI-2 test - standardized psychometric test of adult personality and psychopathology
+- https://www.cambridge.org/core/journals/british-journal-of-nutrition/article/quercetin-lowers-plasma-uric-acid-in-prehyperuricaemic-males-a-randomised-doubleblinded-placebocontrolled-crossover-trial/93630E7EE14144BEC5FE9ED2AF9A2190
 
 ## Jokes
 
@@ -286,6 +287,7 @@
 - https://www.youtube.com/watch?v=8C1nfe6KhoA - ZARD medley
 - http://www.nytimes.com/2015/07/21/science/playing-mozart-piano-pieces-as-mozart-did.html
 - https://www.mfiles.co.uk/scores/brahms-intermezzo-op118-no2.pdf
+- https://www.youtube.com/watch?v=ijVGIcVRIbk - Crazy Freestyle Rap
 
 
 ## Gadgets and Fancy stuff
