@@ -438,6 +438,7 @@ Computer technology related.
 - https://www.newsminimalist.com/about
 - https://gptforwork.com/ - Use ChatGPT in Google Sheets and Docs
 - redmine, trello, asana - Project Management Tools
+- https://news.ycombinator.com/item?id=38276515 Is Delaware the cheapest place to incorporate?
 
 
 ## Graphics, Design, etc.
@@ -570,4 +571,6 @@ Computer technology related.
 - https://github.com/zanellia/prometeo – a Python-to-C transpiler for high-performance computing
 - https://ed25519.cr.yp.to/python/ed25519.py Python implementation of ED25519
 - https://github.com/tandav/pipe21
+- https://pip.wtf/ - Inline dependencies for small Python scripts.
+
 
