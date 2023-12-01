@@ -20,4 +20,4 @@ And if you haven't noticed by now, if you replace "AI" with "god" in the scenari
 
 Unfortunately, as I have also ranted before, there aren't a lot of people well versed in technology, philosophy and spirituality. This is not the first time we have created "God" and worshipped it. And likely not the last either.
 
-Further reading (Cantonese): [自古以來都存在嘅ChatGPT](06-%E8%87%AA%E5%8F%A4%E4%BB%A5%E4%BE%86%E9%83%BD%E5%AD%98%E5%9C%A8%E5%98%85ChatGPT.md)
+Further reading (Cantonese): [自古以來都存在嘅ChatGPT](06-自古以來都存在嘅ChatGPT.md)
