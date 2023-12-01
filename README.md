@@ -7,6 +7,8 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2023
 
+- [22-平行宇宙入面嘅地獄s](writings/2023/22-平行宇宙入面嘅地獄s.md)
+- [21-AI Doomsday Scenarios](writings/2023/21-AI_Doomsday_Scenarios.md)
 - [20-What is Magic](writings/2023/20-What_is_Magic.md)
 - [19-美元通漲紀](writings/2023/19-美元通漲紀.md)
 - [18-AGI is divination](writings/2023/18-AGI_is_divination.md)
