@@ -155,14 +155,12 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [評雙學三子非法集結案](writings/2018/評雙學三子非法集結案.md)
 - [網絡有好多種玩法，不過唔係每種都啱小朋友自己採用。](writings/2018/網絡有好多種玩法_CM_不過唔係每種都啱小朋友自己採用。.md)
 - [略評公民廣場集會司法覆核案](writings/2018/略評公民廣場集會司法覆核案.md)
-- [略評一地兩檢司法覆核案](writings/2018/略評一地兩檢司法覆核案.md)
 - [略評《樹大招風》偽製紙幣案（原審）](writings/2018/略評《樹大招風》偽製紙幣案_LP_原審_RP_.md)
 - [淺談中國特色社會主義](writings/2018/淺談中國特色社會主義.md)
 - [泛民之死 II](writings/2018/泛民之死_II.md)
 - [泛民之死](writings/2018/泛民之死.md)
 - [最文明嘅屌票，最聰明地含L](writings/2018/最文明嘅屌票_CM_最聰明地含L.md)
 - [搞世代鬥爭最抵玩](writings/2018/搞世代鬥爭最抵玩.md)
-- [強國崛起，香港何去何從?](writings/2018/強國崛起_CM_香港何去何從_qm_.md)
 - [基本法第20條嘅妙用](writings/2018/基本法第20條嘅妙用.md)
 - [唔好叫我「老師」](writings/2018/唔好叫我「老師」.md)
 - [南丫海難唔夠救生衣祭旗案](writings/2018/南丫海難唔夠救生衣祭旗案.md)
@@ -179,7 +177,6 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [香港從來都冇民主精神，何來民主制度?](writings/2017/香港從來都冇民主精神_CM_何來民主制度_qm_.md)
 - [青少年自殺率因政治氣候而高咗?](writings/2017/青少年自殺率因政治氣候而高咗_qm_.md)
 - [關於Java嘅迷思](writings/2017/關於Java嘅迷思.md)
-- [邊個話《基本法》係憲法嚟?](writings/2017/邊個話《基本法》係憲法嚟_qm_.md)
 - [追討梁游薪津法理基礎薄弱，立法會疑搞政治show](writings/2017/追討梁游薪津法理基礎薄弱_CM_立法會疑搞政治show.md)
 - [論「身體自主」嘅「自主」](writings/2017/論「身體自主」嘅「自主」.md)
 - [自動化機械令大量人口失業，人類何去何從?](writings/2017/自動化機械令大量人口失業_CM_人類何去何從_qm_.md)
@@ -213,7 +210,6 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 ### 2016
 
 - [飄風不終朝，驟雨不終日](writings/2016/飄風不終朝_CM_驟雨不終日.md)
-- [論港獨：「可不可行」和「應唔應該」](writings/2016/論港獨_CL_「可不可行」和「應唔應該」.md)
 - [絕對唔科學嘅念力](writings/2016/絕對唔科學嘅念力.md)
 - [矛盾唔係錯：點解我哋需要一致性?](writings/2016/矛盾唔係錯_CL_點解我哋需要一致性_qm_.md)
 - [用念力叫人買雪糕](writings/2016/用念力叫人買雪糕.md)
@@ -306,6 +302,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 - [tech](outline/tech.md)
 - [subjective-reality](outline/subjective-reality.md)
+- [speculative stories](outline/speculative_stories.md)
 - [software-engineering](outline/software-engineering.md)
 - [portals](outline/portals.md)
 - [law](outline/law.md)
@@ -314,7 +311,6 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [curious-coincidences](outline/curious-coincidences.md)
 - [computer-test](outline/computer-test.md)
 - [common threads](outline/common_threads.md)
-- [commentary-of-hong-kong-criminal-laws](outline/commentary-of-hong-kong-criminal-laws.md)
 
 ## Other
 
