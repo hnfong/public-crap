@@ -123,6 +123,7 @@
 - https://blog.startupstash.com/everything-i-wish-i-had-known-about-raising-a-seed-round-a615f8f7740b
 - https://plaintextaccounting.org/
 - Value of bond price (no risk): `P = C * (1 - (1 + r)**-n) / r + FV / ((1 + r)**n`
+- https://tradingeconomics.com/commodity/lumber
 
 
 ## Prediction Markets
@@ -505,3 +506,9 @@
 - https://www.youtube.com/watch?v=wOg0TY1jG3w - The Real Story of Paris Hilton | This Is Paris Official Documentary
 - https://signal.org/blog/cellebrite-vulnerabilities/ Exploiting vulnerabilities in Cellebrite UFED and Physical Analyzer from an app's perspective
 - https://www.youtube.com/watch?v=WbNDrcoRi8g -  Georgia Ede: Brainwashed — The Mainstreaming of Nutritional Mythology
+
+## Mandelbrot
+
+- https://www.youtube.com/watch?v=LhOSM6uCWxk
+- https://stackoverflow.com/questions/66709289/what-are-the-fastest-algorithms-for-rendering-the-mandelbrot-set
+- https://en.wikipedia.org/wiki/Buddhabrot

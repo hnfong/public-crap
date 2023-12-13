@@ -225,23 +225,33 @@ Computer technology related.
 - https://www.youtube.com/watch?v=tkqD9W5U9F4 - AlphaGo-style Tree Search on Thought Trees in GPT models
 - http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf - Efficient BackProp
 - http://www.incompleteideas.net/IncIdeas/BitterLesson.html - highlights that leveraging computation through general methods is the most effective approach in AI research. Relying on human knowledge and understanding of specific domains often hinders progress
+- https://together.ai/blog/tri-dao-flash-attention
+- https://huggingface.co/blog/4bit-transformers-bitsandbytes
+- https://deci.ai/blog/decilm-15-times-faster-than-llama2-nas-generated-llm-with-variable-gqa/
+- https://microsoft.github.io/generative-ai-for-beginners/#/
+
 
 
 ### Products, Libraries, frameworks, Tools
 
 #### Libraries / Tools
+
+- ☆ https://annas-archive.org/datasets
+  - Chinese books: https://annas-blog.org/duxiu-exclusive.html
 - https://bellard.org/libnc/ LibNC is a C library for tensor manipulation. It supports automatic differentiation and can be used to implement machine learning models such as LSTM and Transformers. (Intel+Linux/Win only, not open source)
 - https://github.com/google/sentencepiece SentencePiece is an unsupervised text tokenizer and detokenizer mainly for Neural Network-based text generation systems where the vocabulary size is predetermined prior to the neural model training.
 - https://nn-512.com/ Generate Neural Nets in C (compiler is in Go)
 - https://github.com/Unstructured-IO Open-Source Pre-Processing Tools for Unstructured Data
+- https://news.ycombinator.com/item?id=38487199 - This is a fascinating read about the optimizability of standard machine learning tooling
 
 #### Audio / Speech
 - https://github.com/coqui-ai/TTS - text to speech (see https://news.ycombinator.com/item?id=26790951 )
 - https://sites.research.google/usm/ - Universal Speech Model -  Towards Automatic Speech Recognition for All
 - https://huggingface.co/alvanlii/whisper-small-cantonese/tree/main
+- https://news.ycombinator.com/item?id=38487359 The Seamless Communication models - SeamlessExpressive: A model that aims to preserve expression and intricacies of speech across languages. SeamlessStreaming: A model that can deliver speech and text translations with around two seconds of latency. SeamlessM4T v2: A foundational multilingual and multitask model that allows people to communicate effortlessly through speech and text. Seamless: A model that merges capabilities from SeamlessExpressive, SeamlessStreaming and SeamlessM4T v2 into one.
 
 
-#### Images
+#### Images / Videos
 
 - https://github.com/nerdyrodent/VQGAN-CLIP Just playing with getting VQGAN+CLIP running locally, rather than having to use colab.
 - https://github.com/nerdyrodent/CLIP-Guided-Diffusion/  Just playing with getting CLIP Guided Diffusion running locally, rather than having to use colab.
@@ -249,6 +259,10 @@ Computer technology related.
 - https://github.com/openai/glide-text2im
 - https://github.com/alembics/disco-diffusion
 - https://www.theverge.com/2023/4/6/23672862/microsoft-image-creator-edge-sidebar-dall-e-ai-generator
+- https://llava-vl.github.io/
+- https://news.ycombinator.com/item?id=38487112 Easy Stable Diffusion XL in your device, offline
+- https://stability.ai/news/stable-video-diffusion-open-ai-video-model
+
 
 #### Text, LLM, etc.
 
@@ -310,8 +324,11 @@ Computer technology related.
 - https://github.com/OpenBMB/ChatDev - Create Customized Software using Natural Language Idea (through LLM-powered Multi-Agent Collaboration)
 - https://arxiv.org/abs/2310.06694 https://xiamengzhou.github.io/sheared-llama/ - pruning as a constrained optimization problem where we learn pruning masks to search for a subnetwork matching a pre-specified target architecture while maximizing performance
 - https://blog.gopenai.com/how-to-speed-up-llms-and-use-100k-context-window-all-tricks-in-one-place-ffd40577b4c
-
-
+- https://arxiv.org/pdf/2307.06435.pdf A Comprehensive Overview of Large Language Models  (5 Oct 2023)
+- https://arxiv.org/abs/2305.07759 TinyStories: How Small Can Language Models Be and Still Speak Coherent English?
+- https://github.com/artidoro/qlora
+- https://news.ycombinator.com/item?id=38338635 Practical Tips for Finetuning LLMs Using LoRA (Low-Rank Adaptation)
+- https://news.ycombinator.com/item?id=38364084 Exponentially faster language modelling
 
 ### Toys
 

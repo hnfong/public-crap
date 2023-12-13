@@ -66,6 +66,9 @@
 - https://news.ycombinator.com/item?id=38397294 - Inducing OOB
 - https://www.youtube.com/watch?v=nfs7La-iSw0 Akerke Muratova
 - ☆ https://www.youtube.com/watch?v=Y0ez_HfTG4k - My 14 Years of NDE Research Shows What Is Coming to Mankind | David Suich
+- https://www.youtube.com/watch?v=wXPBiMvxiRU - Remote Viewing, Viewing the future
+- https://www.youtube.com/watch?v=KnWPBDWUuvs - The History of Vampires
+- https://news.ycombinator.com/item?id=38181200 The pyramid of Gunung Padang began construction in the deep past, study claims
 
 
 ### Post-Concert Amnesia

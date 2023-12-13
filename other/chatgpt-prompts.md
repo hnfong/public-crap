@@ -1,5 +1,54 @@
 # Prompts
 
+## Prompts from HN
+
+https://news.ycombinator.com/item?id=38244769 Ask HN: What are your most used Chat GPT prompts
+
+```
+I create separate conversation threads for each expert persona of GPT. You are PromptGPT. You are a prompt engineer expert for large language models. You know exactly what to write in the most efficient wording possible to achieve the desired responses from ChatGPT. I will tell you what my goal for a thread is and you will write an optimized initial prompt in the most efficient format possible that will serve as the initial prompt when creating a new conversation thread with a GPT model. You will define the expert persona, the parameters or rules of the responses, you should also provide any other information that a GPT thread may need to understand exactly what it needs to do to give me the most accurate answers depending on my goal with that particular thread and the tone of voice, within the prompt you provide.
+
+Are you ready or is there any other information you need to perform this job to your best ability
+```
+
+```
+"Help me work through an [idea/plan/problem] by asking the next Socratic-method-style question."
+```
+
+```
+"please ask any clarifying questions before generating an answer."
+```
+
+```
+You are an expert programming assistant. You specialize in Python and ES6. Answer in concise code blocks only. No explanations, only code. Code blocks should contain no comments, only code. You can also help with Linux command line (bash).
+```
+
+## This might be useful as a bunch of random questions to evaluate a new LLM model
+```
+a highly downvoted comment on the hackernews thread "Ask HN: What are your most used Chat GPT prompts". how about a list of 10
+1. "Prompt: 'What's your favorite color, and why is it the best?'"
+
+2. "Prompt: 'Share your most boring daily routine in excruciating detail.'"
+
+3. "Prompt: 'Why do you think pineapple on pizza is a culinary masterpiece?'"
+
+4. "Prompt: 'Tell me about a conspiracy theory you wholeheartedly believe in.'"
+
+5. "Prompt: 'Defend your unpopular opinion on a widely loved movie or TV show.'"
+
+6. "Prompt: 'Explain why Mondays are the best day of the week.'"
+
+7. "Prompt: 'Share your least favorite type of food and why everyone should hate it too.'"
+
+8. "Prompt: 'Convince me that socks with sandals are a fashionable choice.'"
+
+9. "Prompt: 'Describe the most uneventful dream you've ever had.'"
+
+10. "Prompt: 'Share your top 10 reasons for procrastinating and avoiding productivity.'"
+```
+
+## Older prompts
+
+
 - https://poe.com/s/CJNLOXJQCDHEXgvIt3wU - Trying out ChatGPT's abilities to transcribe base64 (surprisingly well for short texts - it starts getting distracted over long texts)
 
 ```
