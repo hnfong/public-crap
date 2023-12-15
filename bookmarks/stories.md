@@ -69,6 +69,7 @@
 - https://www.youtube.com/watch?v=wXPBiMvxiRU - Remote Viewing, Viewing the future
 - https://www.youtube.com/watch?v=KnWPBDWUuvs - The History of Vampires
 - https://news.ycombinator.com/item?id=38181200 The pyramid of Gunung Padang began construction in the deep past, study claims
+- https://www.youtube.com/watch?v=JL3BVuBTJpg - 天涯十大神貼，教你自己養靈寵&靈草的秘密，擋險、避災、鎮煞、招財|seeker大师兄
 
 
 ### Post-Concert Amnesia
@@ -148,6 +149,8 @@
 - https://www.youtube.com/watch?v=r4LoXCl7drQ - Christian Mysticism (a lot of introductory concepts that might be worth investigating)
   - The channel itself is probably very useful too.
 - https://en.wikipedia.org/wiki/Young%27s_Literal_Translation
+
+- https://baike.baidu.hk/item/%E7%9A%87%E7%94%AB%E8%AC%90/430319 皇甫謐
 
 
 ## Theories

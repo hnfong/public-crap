@@ -158,6 +158,9 @@ Computer technology related.
 - https://github.com/byronka/minum - Minimum Java Web (HTTP) Framework
 - https://github.com/sickcodes/Docker-OSX - Run macOS VM in a Docker! Run near native OSX-KVM in Docker! X11 Forwarding! CI/CD for OS X Security Research! Docker mac Containers.
 - https://github.com/lmorg/murex - Support for additional type information in pipelines, which can be used for complex data formats like JSON or tables. Meaning all of your existing UNIX tools to work more intelligently and without any additional configuration.
+- https://github.com/wireservice/csvkit
+- https://exple.tive.org/blarg/2023/02/17/modern-problems-require-modern-solutions/
+- https://www.visidata.org/
 
 ## Machine Learning
 
@@ -229,6 +232,7 @@ Computer technology related.
 - https://huggingface.co/blog/4bit-transformers-bitsandbytes
 - https://deci.ai/blog/decilm-15-times-faster-than-llama2-nas-generated-llm-with-variable-gqa/
 - https://microsoft.github.io/generative-ai-for-beginners/#/
+- https://www.lesswrong.com/posts/cgqh99SHsCv3jJYDS/we-found-an-neuron-in-gpt-2
 
 
 
