@@ -115,6 +115,7 @@
   - Apple says it would remove iMessage and FaceTime in the UK rather than break end-to-end encryption
 - https://www.washingtonpost.com/technology/2023/08/18/meta-news-ban-canada-wildfires/ - Justin Trudeau urges Meta to reverse news ban amid Canada wildfires - The Washington Post
 - https://www.hk01.com/%E7%A4%BE%E6%9C%83%E6%96%B0%E8%81%9E/965152/%E5%81%87%E6%9D%B1%E7%80%9B%E9%81%8Afb%E5%B0%88%E9%A0%81%E6%9C%8910%E8%90%AC%E7%B6%B2%E6%B0%91%E8%BF%BD%E8%B9%A4-%E6%96%B9%E4%BF%9D%E5%83%91%E5%AF%A6%E6%B8%AC%E6%8F%AD%E9%A8%99%E5%BE%92%E6%AE%B7%E5%8B%A4%E5%82%AC%E4%BF%83%E8%A8%82%E6%A9%9F%E7%A5%A8 - 假東瀛遊FB專頁有10萬網民追蹤　方保僑實測揭騙徒殷勤催促訂機票
+- https://arstechnica.com/science/2023/07/did-facebook-fuel-political-polarization-during-the-2020-election-its-complicated/
 
 
 # AI Law
@@ -124,4 +125,6 @@
 - https://www.bloomberg.com/news/articles/2023-04-11/china-to-mandate-security-reviews-for-new-chatgpt-like-services - Bloomberg - Are you a robot?
 - https://wolfhf.medium.com/the-eu-ai-act-is-coming-this-time-for-real-probably-df31ad8c451f - The EU AI Act is coming, this time for real, probably. | by Wolfgang Hauptfleisch | Medium
 - https://www.gov.uk/government/news/pm-meeting-with-leading-ceos-in-ai-24-may-2023 - PM meeting with leading CEOs in AI: 24 May 2023 - GOV.UK
+- https://arstechnica.com/information-technology/2023/08/rapid-growth-of-ai-systems-prompts-us-copyright-office-to-seek-public-input/
+
 
