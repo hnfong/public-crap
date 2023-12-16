@@ -233,8 +233,9 @@ Computer technology related.
 - https://deci.ai/blog/decilm-15-times-faster-than-llama2-nas-generated-llm-with-variable-gqa/ - 15 times Faster than Llama 2: Introducing DeciLM - NAS-Generated LLM with Variable GQA
 - https://microsoft.github.io/generative-ai-for-beginners/#/ - Generative AI for Beginners
 - https://www.lesswrong.com/posts/cgqh99SHsCv3jJYDS/we-found-an-neuron-in-gpt-2 - We Found An Neuron in GPT-2
-
-
+- https://esteininger.medium.com/building-a-vector-search-engine-using-hnsw-and-cosine-similarity-753fb5268839 - Building a Vector Search Engine Using HNSW and Cosine Similarity | by Ethan Steininger | Medium
+- https://thedataquarry.com/posts/vector-db-1/ - Vector databases (1): What makes each one different? | The Data QuarryVector databases (1): What makes each one different?
+- ☆ https://bernsteinbear.com/blog/compiling-ml-models/ Compiling ML models to C for fun
 
 ### Products, Libraries, frameworks, Tools
 
@@ -333,6 +334,7 @@ Computer technology related.
 - https://github.com/artidoro/qlora - QLoRA: Efficient Finetuning of Quantized LLMs
 - https://news.ycombinator.com/item?id=38338635 Practical Tips for Finetuning LLMs Using LoRA (Low-Rank Adaptation)
 - https://news.ycombinator.com/item?id=38364084 Exponentially faster language modelling
+- https://github.com/karpathy/llama2.c - Reference C implementation of LLAMA
 
 ### Toys
 
@@ -495,7 +497,10 @@ Computer technology related.
 - https://www.clientside.dev/explore - Practice with projects & problems taken from real interviews. Each with a set of unit tests so you never miss an edge case and solution explanations written by senior engineers to guide you.
 - https://github.com/google/comprehensive-rust - a multi-day Rust course / covers all aspects of Rust, from basic syntax to generics and error handling
 - https://pytorch.org/tutorials/beginner/introyt/modelsyt_tutorial.html - PyTorch Tutorial
-
+- https://viralinstruction.com/posts/hardware/ - What scientists must know about hardware to write fast code (Good for junior software engs as well)
+- https://software.rajivprab.com/2018/04/29/myths-programmers-believe-about-cpu-caches/ - Myths Programmers Believe about CPU Caches – Software the Hard way
+- https://dwheeler.com/essays/filenames-in-shell.html - Filenames and Pathnames in Shell (bash, dash, ash, ksh, and so on): How to do it Correctly
+- https://spencermortensen.com/articles/email-obfuscation/ - Email obfuscation: What works in 2023?
 
 
 ## Crypto
@@ -569,6 +574,8 @@ Computer technology related.
 - ☆ https://www.joelonsoftware.com/2004/06/13/how-microsoft-lost-the-api-war/
 - https://www.vanityfair.com/news/business/2014/11/satya-nadella-bill-gates-steve-ballmer-microsoft - Can C.E.O. Satya Nadella Save Microsoft? | Vanity Fair
 - https://500mile.email/ - 500 Mile Email • Absurd Bug Stories
+- https://medium.com/@laurajavier/google-slides-is-actually-hilarious-83c1ced857ee - Google Slides is Actually Hilarious | by Laura Javier | Medium
+
 
 
 ## Python
