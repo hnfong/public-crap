@@ -236,6 +236,7 @@ Computer technology related.
 - https://esteininger.medium.com/building-a-vector-search-engine-using-hnsw-and-cosine-similarity-753fb5268839 - Building a Vector Search Engine Using HNSW and Cosine Similarity | by Ethan Steininger | Medium
 - https://thedataquarry.com/posts/vector-db-1/ - Vector databases (1): What makes each one different? | The Data QuarryVector databases (1): What makes each one different?
 - ☆ https://bernsteinbear.com/blog/compiling-ml-models/ Compiling ML models to C for fun
+- https://paperswithcode.com/ - 
 
 ### Products, Libraries, frameworks, Tools
 
@@ -335,6 +336,8 @@ Computer technology related.
 - https://news.ycombinator.com/item?id=38338635 Practical Tips for Finetuning LLMs Using LoRA (Low-Rank Adaptation)
 - https://news.ycombinator.com/item?id=38364084 Exponentially faster language modelling
 - https://github.com/karpathy/llama2.c - Reference C implementation of LLAMA
+- https://github.com/wangyi-fudan/wyGPT - "This is my 2.5 years' day-and-night efforts on GPT. It is mature and highly optimized on single GPU."
+- https://github.com/mit-han-lab/TinyChatEngine - AWQ
 
 ### Toys
 

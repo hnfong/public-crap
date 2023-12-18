@@ -126,5 +126,4 @@
 - https://wolfhf.medium.com/the-eu-ai-act-is-coming-this-time-for-real-probably-df31ad8c451f - The EU AI Act is coming, this time for real, probably. | by Wolfgang Hauptfleisch | Medium
 - https://www.gov.uk/government/news/pm-meeting-with-leading-ceos-in-ai-24-may-2023 - PM meeting with leading CEOs in AI: 24 May 2023 - GOV.UK
 - https://arstechnica.com/information-technology/2023/08/rapid-growth-of-ai-systems-prompts-us-copyright-office-to-seek-public-input/
-
-
+- https://www.theverge.com/2023/12/15/24003542/openai-suspends-bytedances-account-after-it-used-gpt-to-train-its-own-ai-model
