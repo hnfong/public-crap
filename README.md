@@ -7,6 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2023
 
+- [23-唔識文言文，等如啲西人唔識拉丁文，冇問題㗎喎！（好似係）](writings/2023/23-唔識文言文，等如啲西人唔識拉丁文，冇問題㗎喎！（好似係）.md)
 - [22-平行宇宙入面嘅地獄s](writings/2023/22-平行宇宙入面嘅地獄s.md)
 - [21-AI Doomsday Scenarios](writings/2023/21-AI_Doomsday_Scenarios.md)
 - [20-What is Magic](writings/2023/20-What_is_Magic.md)
