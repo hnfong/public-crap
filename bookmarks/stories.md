@@ -155,6 +155,8 @@
 - https://www.youtube.com/watch?v=Zq0yycpXeYU - ANCIENT SPIRITUAL MYSTERIES: Uncover WHY This KNOWLEDGE Is Being Kept From Us! | Matt LaCroix - YouTube
 - https://www.youtube.com/watch?v=mrA-z28R3y4 - Lots of weird stuff
 
+- https://www.arts.cuhk.edu.hk/~ant/wp-content/uploads/PDF/CourseSyllabus2019-20Term2/ANTH2340_UGEC2960.pdf
+
 
 
 ## Theories
