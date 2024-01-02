@@ -161,6 +161,7 @@ Computer technology related.
 - https://github.com/wireservice/csvkit - A suite of utilities for converting to and working with CSV, the king of tabular file formats.
 - https://exple.tive.org/blarg/2023/02/17/modern-problems-require-modern-solutions/ - Modern Problems Require Modern Solutions | blarg
 - https://www.visidata.org/ - Open-source data multitool | VisiData
+- https://lima-vm.io - launches Linux virtual machines with automatic file sharing and port forwarding (probably the go to tool for MacOS Linux VMs now?)
 
 ## Machine Learning
 
