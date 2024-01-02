@@ -70,6 +70,7 @@
 - https://www.youtube.com/watch?v=KnWPBDWUuvs - The History of Vampires
 - https://news.ycombinator.com/item?id=38181200 The pyramid of Gunung Padang began construction in the deep past, study claims
 - https://www.youtube.com/watch?v=JL3BVuBTJpg - 天涯十大神貼，教你自己養靈寵&靈草的秘密，擋險、避災、鎮煞、招財|seeker大师兄
+- https://www.youtube.com/watch?v=ecwe5QDHxIQ - 大芊世界-觀音菩薩年關將至給出五大提醒~你中了哪幾個呢?
 
 
 ### Post-Concert Amnesia
@@ -157,7 +158,10 @@
 
 - https://www.arts.cuhk.edu.hk/~ant/wp-content/uploads/PDF/CourseSyllabus2019-20Term2/ANTH2340_UGEC2960.pdf
 
+- https://www.youtube.com/watch?v=YWmFyRjYQLo 酉陽雜俎：一本超越時空的《大唐驚奇筆記》，我們來說說其中最讓我難忘的三個故事……|自說自話的總裁
+  - https://ctext.org/wiki.pl?if=gb&res=895322 酉陽雜俎
 
+- https://en.wikipedia.org/wiki/Astrological_age
 
 ## Theories
 
@@ -176,6 +180,7 @@
 - ☆ https://www.johncoulthart.com/feuilleton/2023/09/04/the-most-unusual-magazine-ever-published-man-myth-and-magic/
   - https://archive.org/details/manmythmagictheillustratedencyclopediaofmythology21volumesin1/page/n5/mode/2up - Man, Myth & Magic The Illustrated Encyclopedia Of Mythology 21 Volumes In 1 : Free Download, Borrow, and Streaming : Internet Archive
 - https://www.youtube.com/watch?v=OHz4slbIRyE , https://www.youtube.com/watch?v=yyktccr5apU
+- https://www.jcim.net/acim_us/Acim.php - ACIM Original Edition
 
 ## Esoteric practices
 
