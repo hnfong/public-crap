@@ -162,6 +162,7 @@
   - https://ctext.org/wiki.pl?if=gb&res=895322 酉陽雜俎
 
 - https://en.wikipedia.org/wiki/Astrological_age
+- https://www.youtube.com/watch?v=sAW8T9tBDk8
 
 ## Theories
 
@@ -174,6 +175,12 @@
 -  https://www.facebook.com/permalink.php?story_fbid=pfbid05ktRimp7HxhenF9NWcWDK77xGnNcJwNDmT9bLsHdvMcdNYKZ3oc7uHqdT3iha7xbl&id=61550893512996 所以相信的力量是相當大的，它也是改變宇宙意識的重要關鍵。 如果有很大的一群人相信了A恐怖事件會發生，當這股相信的能量聚集到一定程度的時候，那麼它就會發生；同樣的，當你們相信神跡（奇蹟）的力量——治癒的力量，那它也會發生。 因為每一個相信者都是光體，對光來說沒有不可能的事情，因為光是一個超乎你們腦袋可以理解的現象，它是一個你們還不了解的思想，所以如果沒有透過你的相信，你就無法感知到那個部分，就算你感知到了，因為你用頭腦在思考這件事，所以你仍然會找到任何理由去排除它，那麼治癒就不可能發生。
   - https://www.facebook.com/permalink.php?story_fbid=pfbid02iSQg6xYZGW24pzh4ReYJMvqfGAwrBwMZbUSU6wFN5tzea1CoNf9h9NCA4G7HqCSal&id=61550893512996 - 菩心願行 - #指導靈談渡化文／怡伶2023.6.6個案問事後，我跟指導靈確認：...
   - https://www.facebook.com/permalink.php?story_fbid=pfbid02Xhup7kZBZUYGvp8t9imQYTPBH7ggu3DFrRokML27jeSXBDV3YmP8j7nrG6kzxwuhl&id=61550893512996 顯化
+- ☆ https://www.youtube.com/watch?v=RxY2LyFJRpA
+  - Manifestation
+  - Law of Three
+  - Rituals and history
+  - Channelling
+  - Calendar
 
 ## References
 

@@ -162,6 +162,10 @@ Computer technology related.
 - https://exple.tive.org/blarg/2023/02/17/modern-problems-require-modern-solutions/ - Modern Problems Require Modern Solutions | blarg
 - https://www.visidata.org/ - Open-source data multitool | VisiData
 - https://lima-vm.io - launches Linux virtual machines with automatic file sharing and port forwarding (probably the go to tool for MacOS Linux VMs now?)
+- https://github.com/uutils/coreutils - Rust rewrite of GNU coreutils
+- https://github.com/straussmaximilian/ocrmac - small Python wrapper to extract text from images on a Mac system. Uses the vision framework from Apple
+- https://github.com/ttscoff/curlyq - A command line helper for curl and web scraping
+- https://github.com/jasonjmcghee/rem - locally record everything you view on your Apple Silicon computer
 
 ## Machine Learning
 
@@ -238,6 +242,7 @@ Computer technology related.
 - https://thedataquarry.com/posts/vector-db-1/ - Vector databases (1): What makes each one different? | The Data QuarryVector databases (1): What makes each one different?
 - ☆ https://bernsteinbear.com/blog/compiling-ml-models/ Compiling ML models to C for fun
 - https://paperswithcode.com/ - 
+- https://www.youtube.com/watch?v=9dSkvxS2EB0 - Mamba: Linear-Time Sequence Modeling with Selective State Spaces (Paper Explained)
 
 ### Products, Libraries, frameworks, Tools
 
@@ -377,6 +382,9 @@ Computer technology related.
 - https://eieio.games/nonsense/game-11-flappy-bird-finder/ - Flappy Dird: Flappy Bird implemented in MacOS Finder | eieio.games
 - https://ffmpeg.app/ || https://ffmpegwasm.netlify.app/
 - https://www.youtube.com/watch?v=DcYLT37ImBY - Training AI to Play Pokemon with Reinforcement Learning
+- https://github.com/kparc/bcc/blob/master/d/sidenotes.md#style
+  - https://github.com/kelas/ooj
+  - https://github.com/kparc/pf
 
 
 ## Experimental Languages
@@ -425,6 +433,7 @@ Computer technology related.
 ## Business Tools
 
 - ☆ https://www.metaculus.com/home/ - https://www.metaculus.com/questions/ - Predictive Bets / Predictive Markets
+- ☆ https://news.ycombinator.com/item?id=39012544 - Where can I find good legal documents?
 - http://sumome.com/ - Sumo. FREE email capture tool (Newsletter)
 - https://hootsuite.com/ - Social Media Management startup company
 - https://projectshield.withgoogle.com/en/ - DDoS/security help from Google
@@ -579,7 +588,8 @@ Computer technology related.
 - https://www.vanityfair.com/news/business/2014/11/satya-nadella-bill-gates-steve-ballmer-microsoft - Can C.E.O. Satya Nadella Save Microsoft? | Vanity Fair
 - https://500mile.email/ - 500 Mile Email • Absurd Bug Stories
 - https://medium.com/@laurajavier/google-slides-is-actually-hilarious-83c1ced857ee - Google Slides is Actually Hilarious | by Laura Javier | Medium
-
+- https://migeel.sk/blog/2024/01/02/building-a-self-contained-game-in-csharp-under-2-kilobytes/
+- https://papereditor.app/dev - 9 years of Apple text editor solo dev
 
 
 ## Python
