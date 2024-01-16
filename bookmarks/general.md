@@ -158,6 +158,8 @@
 
 - https://www.youtube.com/watch?v=np_ylvc8Zj8 - The Spider's Web: Britain's Second Empire | The Secret World of Finance - YouTube
 - https://www.youtube.com/watch?v=WSK2F4xgXUU - 【信息素战史】魏武卒，强到离谱的重装步兵，为何会在魏国诞生？
+- https://www.youtube.com/watch?v=tgYaT9duXvY - 唐代政府是如何控制巨大的领土的？一个视频看懂唐朝政府组织的结构丨唐朝：壹丨中国历代政治得失06
+
 
 
 ## Pre-history
@@ -214,6 +216,7 @@
 - https://www.quantamagazine.org/the-physicist-who-bets-that-gravity-cant-be-quantized-20230710/ - Quanta Magazine
   - https://www.youtube.com/watch?v=DkRbNXILroI - A Bet Against Quantum Gravity - YouTube
 - https://azeemba.com/posts/boundaries-of-predictability.html - "This means that somewhere in between 40 and 50 collisions, our predictions go from pretty good to completely useless because we failed to account for the gravitational pull of the electron. It would take our gas molecule a microsecond to experience 50 collisions. So within a microsecond, our system is overwhelmed by the tiny influence of the electron at the end of the universe!"
+- https://www.youtube.com/watch?v=Vitf8YaVXhc - very simple and intuitive explanation of time dilation
 
 
 ## Deconstruction of English
