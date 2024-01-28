@@ -71,6 +71,12 @@
 - https://news.ycombinator.com/item?id=38181200 The pyramid of Gunung Padang began construction in the deep past, study claims
 - https://www.youtube.com/watch?v=JL3BVuBTJpg - 天涯十大神貼，教你自己養靈寵&靈草的秘密，擋險、避災、鎮煞、招財|seeker大师兄
 - https://www.youtube.com/watch?v=ecwe5QDHxIQ - 大芊世界-觀音菩薩年關將至給出五大提醒~你中了哪幾個呢?
+- https://www.youtube.com/watch?v=XJqjfNg1N5A - NEW EVIDENCE Revealed! LOST Ancient Technologies & Their HIDDEN POWER! | RJ Spina
+  - Frequency dial -- does this inform us about the Buddhist/Zen worlds? eg. https://www.youtube.com/watch?v=VlGe6HFrhko
+- https://en.wikipedia.org/wiki/Johnny_Appleseed
+- https://en.m.wikipedia.org/wiki/Sloot_Digital_Coding_System - WTF
+  - https://news.ycombinator.com/item?id=39123143
+
 
 
 ### Post-Concert Amnesia
@@ -122,7 +128,7 @@
   - Three paths to AGI - PIM (probability-interconnection-memory)
 
 - https://zh.wikisource.org/wiki/%E4%BA%86%E5%87%A1%E5%9B%9B%E8%A8%93 - 了凡四訓 - 维基文库，自由的图书馆
-  - 導讀 https://www.youtube.com/watch?v=V3QZhDp2XSw https://www.youtube.com/watch?v=ELHW9kgWDsg https://www.youtube.com/watch?v=Rucm_TRwUS8
+  - ☆ 導讀 https://www.youtube.com/watch?v=V3QZhDp2XSw https://www.youtube.com/watch?v=ELHW9kgWDsg https://www.youtube.com/watch?v=Rucm_TRwUS8
 
 - ☆ https://www.youtube.com/watch?v=GqDaZTdNSqY - Former White House advisor Pippa Malmgren
 
@@ -163,6 +169,7 @@
 
 - https://en.wikipedia.org/wiki/Astrological_age
 - https://www.youtube.com/watch?v=sAW8T9tBDk8
+- https://zh.wikipedia.org/wiki/%E5%BC%A0%E8%A1%A1
 
 ## Theories
 
