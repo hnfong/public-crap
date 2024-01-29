@@ -11,7 +11,7 @@ import subprocess
 import sys
 import tempfile
 
-LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or os.path.expanduser("~/projects/llama.gguf/patched_main")
+LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or os.path.expanduser("~/projects/llama.gguf/main")
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
 # DEFAULT_MODEL = "dolphin-2_6-phi-2"
@@ -60,6 +60,18 @@ class Preset:
         # Implemented by mixins if needed
         return self.prompt()
 
+class EmptyPreset(Preset):
+    def __init__(self, user_prompt, context):
+        super().__init__(user_prompt)
+        self.context = context
+    name = "empty"
+
+    def prompt(self):
+        return self.user_prompt
+
+    def system_message(self):
+        return ""
+
 class ExplainPreset(Preset):
     def __init__(self, user_prompt, context):
         super().__init__(user_prompt)
@@ -104,13 +116,21 @@ class CodeGenerationPreset(Preset):
 
 class ChatMLTemplateMixin:
     def templated_prompt(self):
-        return f"""
+        if self.system_message():
+            return f"""
 <|im_start|>system
 {self.system_message()}<|im_end|>
 <|im_start|>user
 {self.prompt()}<|im_end|>
 <|im_start|>assistant
-        """.strip() + "\n"
+            """.strip() + "\n"
+        else:
+            return f"""
+<|im_start|>user
+{self.prompt()}<|im_end|>
+<|im_start|>assistant
+            """.strip() + "\n"
+
 
 class InstructionTemplateMixin:
     def templated_prompt(self):
@@ -150,9 +170,6 @@ if __name__ == "__main__":
     preset = PRESETS.get(opts.get("-p") or "explain_this")
     assert preset is not None
 
-
-
-
     template = opts.get("-t") or "chatml"
     context = opts.get("-c") or ""
     model_name = opts.get("-m") or DEFAULT_MODEL
@@ -172,76 +189,87 @@ if __name__ == "__main__":
     else:
         templateMixIn = InstructionTemplateMixin
 
-    # Note: need to add the prompt after
-    class ModelPlaceholder:
-        pass
-    cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", ModelPlaceholder]
-    if preset is not CodeGenerationPreset:
-        class CurrentPrompt(templateMixIn, preset):
-            pass
-
-        user_prompt = None
-        if args:
-            user_prompt = " ".join(args)  # join all args into one string for easy use
-        elif opts.get("-f"):
-            user_prompt = open(opts.get("-f")).read()
-        else:
-            print("What is your question?")
-            user_prompt = sys.stdin.read()
-
-        prompt = CurrentPrompt(user_prompt, context).templated_prompt()
-        cmd += ["-p", prompt, "-c", "1024"]
-    else: # is CodeGenerationPreset
-        assert opts.get("-f") is not None
+    if preset is CodeGenerationPreset:
         # Force template to be code completion
-        class CodeGenerationPrompt(CodeLlamaCompletionTemplateMixin, preset):
-            pass
+        templateMixIn = CodeLlamaCompletionTemplateMixin
 
-        prompt = CodeGenerationPrompt(opts.get("-f"), int(args[0] or 0)).templated_prompt()
+        # We need a file for code generation
+        assert opts.get("-f") is not None
 
-        # Create a temporary file for storing the prompt
-        temp_prompt_file = tempfile.NamedTemporaryFile(mode="w", delete=False)
-        temp_prompt_file.write(prompt)
-        temp_prompt_file.close()
-        print(temp_prompt_file.name)
-        cmd += ["-f", temp_prompt_file.name, "-c", "4096"]
-        print(cmd)
+        cmd_args.append("-c")
+        cmd_args.append("4096")
+    else:
+        cmd_args.append("-c")
+        cmd_args.append("4096")
 
+    user_prompt = None
+    prompt_globs = []
+    if opts.get("-f"):
+        prompt_globs = sorted(glob.glob(opts.get("-f")))
+    elif args:
+        user_prompt = " ".join(args)
+    else:
+        print("What is your question?")
+        user_prompt = sys.stdin.read()
+
+    class ModelPlaceholder: pass
+    class CurrentPrompt(templateMixIn, preset): pass
+
+    cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", ModelPlaceholder, "--n-predict", "-2"]  # -2 means fill context
     for model in glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf"):
-        for infer_round in range(int(opts.get("-n") or 1)):
-            out_file = opts.get("-o")
-            if out_file is not None:
-                out_file = out_file.replace('{n}', str(infer_round)).replace('{m}', os.path.basename(model))
-                if os.path.exists(out_file):
-                    print(f"Skipping {out_file} as it already exists")
-                    continue
+        for prompt_file, prompt in zip([None,] + prompt_globs, [user_prompt,] + [open(prompt_file, "r").read() for prompt_file in prompt_globs]):
+            if prompt is None:
+                continue
 
-            this_cmd = cmd.copy()
-            this_cmd[this_cmd.index(ModelPlaceholder)] = model
-            p = subprocess.Popen(this_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(prompt_file)
 
-            if '-o' not in opts:
-                while dat := p.stdout.read(1):
-                    sys.stdout.buffer.write(dat)
-                    sys.stdout.flush()
+            # Create a temporary file for storing the prompt
+            with tempfile.NamedTemporaryFile(mode="w", delete=False) as temp_prompt_file:
+                templated_prompt = CurrentPrompt(prompt, context).templated_prompt()
+                print(templated_prompt)
+                temp_prompt_file.write(templated_prompt)
+                temp_prompt_file.close()
 
-            outs = p.communicate()
+                cmd = cmd + ["-f", temp_prompt_file.name]
 
-            # Check exit code
-            if p.returncode != 0:
-                print("Error: " + outs[1].decode("utf-8"))
-                sys.exit(1)
-            else:
-                outs_s = outs[0].decode("utf-8")
-                if out_file is not None:
-                    with open(out_file, "w") as f:
-                        f.write(outs_s)
-                else:
-                    if outs_s.startswith(prompt):
-                        outs_s = outs_s[len(prompt):]
-                        # This doesn't work at least in some models because <|im_end|>
-                        # seems to be tokenized and stringified back to an empty string.
-                        # Instead I just modified the llama.cpp code to just output the
-                        # results.
+                for infer_round in range(int(opts.get("-n") or 1)):
+                    out_file = opts.get("-o")
+                    if out_file is not None:
+                        out_file = (out_file.
+                            replace('{n}', str(infer_round)).
+                            replace('{m}', os.path.basename(model)).
+                            replace('{f}', os.path.basename(prompt_file)))
+                        if os.path.exists(out_file):
+                            print(f"Skipping {out_file} as it already exists")
+                            continue
 
-                    print(outs_s)
+                    this_cmd = cmd.copy()
+                    this_cmd[this_cmd.index(ModelPlaceholder)] = model
+                    print(this_cmd)
+                    p = subprocess.Popen(this_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+                    if '-o' not in opts:
+                        while dat := p.stdout.read(1):
+                            sys.stdout.buffer.write(dat)
+                            sys.stdout.flush()
+
+                    outs = p.communicate()
+
+                    # Check exit code
+                    if p.returncode != 0:
+                        print("Error: " + outs[1].decode("utf-8"))
+                        sys.exit(1)
+                    else:
+                        outs_s = outs[0].decode("utf-8")
+                        if out_file is not None:
+                            with open(out_file, "w") as f:
+                                f.write(outs_s)
+                        else:
+                            if outs_s.startswith(prompt):
+                                outs_s = outs_s[len(prompt):]
+                                # This doesn't work at least in some models because <|im_end|>
+                                # seems to be tokenized and stringified back to an empty string.
+                                # Instead I just modified the llama.cpp code to just output the
+                                # results.
+
+                            print(outs_s)
