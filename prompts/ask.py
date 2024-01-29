@@ -7,11 +7,8 @@
 import getopt
 import glob
 import os
-import random
-import re
 import subprocess
 import sys
-import time
 import tempfile
 
 LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or os.path.expanduser("~/projects/llama.gguf/patched_main")
@@ -72,7 +69,7 @@ class ExplainPreset(Preset):
 
     def prompt(self):
         if self.context:
-            return f"In the context of " + self.context + ", please explain the following. Be concise in your answer.\n```{self.user_prompt}```\n"
+            return f"In the context of {self.context}, please explain the following. Be concise in your answer.\n```{self.user_prompt}```\n"
         else:
             return f"Please explain the following. Be concise in your answer.\n```{self.user_prompt}```\n"
 
