@@ -14,8 +14,8 @@ import sys
 import time
 import tempfile
 
-LLAMA_CPP_PATH = os.path.expanduser("~/projects/llama.gguf/patched_main")
-MODELS_PATH = os.path.expanduser("~/Downloads/")
+LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or os.path.expanduser("~/projects/llama.gguf/patched_main")
+MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
 # DEFAULT_MODEL = "dolphin-2_6-phi-2"
 DEFAULT_MODEL = "phi-2-orange"
@@ -147,7 +147,7 @@ if __name__ == "__main__":
         if inspect.isclass(obj):
             if issubclass(obj, Preset) and obj != Preset:
                 PRESETS[obj.name] = obj
-    opt_list, args = getopt.getopt(sys.argv[1:], "hc:t:f:p:m:g")
+    opt_list, args = getopt.getopt(sys.argv[1:], "hc:t:f:o:p:m:n:g")
     opts = dict(opt_list)
 
     preset = PRESETS.get(opts.get("-p") or "explain_this")
@@ -176,7 +176,9 @@ if __name__ == "__main__":
         templateMixIn = InstructionTemplateMixin
 
     # Note: need to add the prompt after
-    cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf")[0]]
+    class ModelPlaceholder:
+        pass
+    cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", ModelPlaceholder]
     if preset is not CodeGenerationPreset:
         class CurrentPrompt(templateMixIn, preset):
             pass
@@ -208,25 +210,41 @@ if __name__ == "__main__":
         cmd += ["-f", temp_prompt_file.name, "-c", "4096"]
         print(cmd)
 
-    p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    for model in glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf"):
+        for infer_round in range(int(opts.get("-n") or 1)):
+            out_file = opts.get("-o")
+            if out_file is not None:
+                out_file = out_file.replace('{n}', str(infer_round)).replace('{m}', os.path.basename(model))
+                if os.path.exists(out_file):
+                    print(f"Skipping {out_file} as it already exists")
+                    continue
 
-    while dat := p.stdout.read(1):
-        sys.stdout.buffer.write(dat)
-        sys.stdout.flush()
+            this_cmd = cmd.copy()
+            this_cmd[this_cmd.index(ModelPlaceholder)] = model
+            p = subprocess.Popen(this_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    outs = p.communicate()
+            if '-o' not in opts:
+                while dat := p.stdout.read(1):
+                    sys.stdout.buffer.write(dat)
+                    sys.stdout.flush()
 
-    # Check exit code
-    if p.returncode != 0:
-        print("Error: " + outs[1].decode("utf-8"))
-        sys.exit(1)
-    else:
-        outs_s = outs[0].decode("utf-8")
-        if outs_s.startswith(prompt):
-            outs_s = outs_s[len(prompt):]
-            # This doesn't work at least in some models because <|im_end|>
-            # seems to be tokenized and stringified back to an empty string.
-            # Instead I just modified the llama.cpp code to just output the
-            # results.
+            outs = p.communicate()
 
-        print(outs_s)
+            # Check exit code
+            if p.returncode != 0:
+                print("Error: " + outs[1].decode("utf-8"))
+                sys.exit(1)
+            else:
+                outs_s = outs[0].decode("utf-8")
+                if out_file is not None:
+                    with open(out_file, "w") as f:
+                        f.write(outs_s)
+                else:
+                    if outs_s.startswith(prompt):
+                        outs_s = outs_s[len(prompt):]
+                        # This doesn't work at least in some models because <|im_end|>
+                        # seems to be tokenized and stringified back to an empty string.
+                        # Instead I just modified the llama.cpp code to just output the
+                        # results.
+
+                    print(outs_s)
