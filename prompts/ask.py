@@ -213,10 +213,17 @@ if __name__ == "__main__":
         user_prompt = sys.stdin.read()
 
     class ModelPlaceholder: pass
-    class CurrentPrompt(templateMixIn, preset): pass
 
     cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", ModelPlaceholder, "--n-predict", "-2"]  # -2 means fill context
     for model in glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf"):
+
+        overrideTemplateMixIn = templateMixIn
+        if 'llama-2' in model:  # XXX: We really should have a list of models and their corresponding templates in a file instead of this.
+            overrideTemplateMixIn = LlamaTemplateMixin
+        if 'instruct' in model: # This isn't accurate, but it's close enough for now
+            overrideTemplateMixIn = LlamaTemplateMixin
+
+        class CurrentPrompt(overrideTemplateMixIn, preset): pass
         for prompt_file, prompt in zip([None,] + prompt_globs, [user_prompt,] + [open(prompt_file, "r").read() for prompt_file in prompt_globs]):
             if prompt is None:
                 continue
@@ -224,13 +231,11 @@ if __name__ == "__main__":
             print(prompt_file)
 
             # Create a temporary file for storing the prompt
-            with tempfile.NamedTemporaryFile(mode="w", delete=False) as temp_prompt_file:
+            with tempfile.NamedTemporaryFile(mode="w", delete=True) as temp_prompt_file:
                 templated_prompt = CurrentPrompt(prompt, context).templated_prompt()
                 print(templated_prompt)
                 temp_prompt_file.write(templated_prompt)
-                temp_prompt_file.close()
-
-                cmd = cmd + ["-f", temp_prompt_file.name]
+                temp_prompt_file.flush()
 
                 for infer_round in range(int(opts.get("-n") or 1)):
                     out_file = opts.get("-o")
@@ -245,6 +250,7 @@ if __name__ == "__main__":
 
                     this_cmd = cmd.copy()
                     this_cmd[this_cmd.index(ModelPlaceholder)] = model
+                    this_cmd += ["-f", temp_prompt_file.name]
                     print(this_cmd)
                     p = subprocess.Popen(this_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
