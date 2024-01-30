@@ -235,6 +235,9 @@ if __name__ == "__main__":
                 templated_prompt = CurrentPrompt(prompt, context).templated_prompt()
                 print(templated_prompt)
                 temp_prompt_file.write(templated_prompt)
+                # Try to fix an apparent llama.cpp bug where it chops off the last newline
+                if templated_prompt[-1] == "\n":
+                    temp_prompt_file.write("\n")
                 temp_prompt_file.flush()
 
                 for infer_round in range(int(opts.get("-n") or 1)):
@@ -263,10 +266,10 @@ if __name__ == "__main__":
 
                     # Check exit code
                     if p.returncode != 0:
-                        print("Error: " + outs[1].decode("utf-8"))
+                        print("Error: " + outs[1].decode("utf-8", errors="replace"))
                         sys.exit(1)
                     else:
-                        outs_s = outs[0].decode("utf-8")
+                        outs_s = outs[0].decode("utf-8", errors="replace")
                         if out_file is not None:
                             with open(out_file, "w") as f:
                                 f.write(outs_s)
