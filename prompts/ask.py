@@ -152,6 +152,14 @@ class CodeLlamaCompletionTemplateMixin:
     def templated_prompt(self):
         return f"""▁<PRE> {self.prefix()}▁<SUF> {self.suffix()}▁<MID>"""
 
+class CodeLlama70bTemplateMixin:
+    def templated_prompt(self):
+        return f""" <step> Source: system
+
+  {self.system_message()} <step> Source: user
+
+  {self.prompt()} <step> Source: assistant""" + "\n\n"
+
 class LlamaTemplateMixin:
     def templated_prompt(self):
         return f"""<s>[INST] <<SYS>>\n{self.system_message()}\n<</SYS>>\n\n{self.prompt()} [/INST]"""
@@ -215,13 +223,19 @@ if __name__ == "__main__":
     class ModelPlaceholder: pass
 
     cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", ModelPlaceholder, "--n-predict", "-2"]  # -2 means fill context
+
     for model in glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf"):
 
         overrideTemplateMixIn = templateMixIn
-        if 'llama-2' in model:  # XXX: We really should have a list of models and their corresponding templates in a file instead of this.
+        if 'codellama-70b' in model:
+            overrideTemplateMixIn = CodeLlama70bTemplateMixin
+        elif 'llama-2' in model:  # XXX: We really should have a list of models and their corresponding templates in a file instead of this.
             overrideTemplateMixIn = LlamaTemplateMixin
-        if 'instruct' in model: # This isn't accurate, but it's close enough for now
+        elif 'instruct' in model and 'mixtral' in model: # This isn't accurate, but it's close enough for now
             overrideTemplateMixIn = LlamaTemplateMixin
+        elif 'instruct' in model:
+            overrideTemplateMixIn = InstructionTemplateMixin
+
 
         class CurrentPrompt(overrideTemplateMixIn, preset): pass
         for prompt_file, prompt in zip([None,] + prompt_globs, [user_prompt,] + [open(prompt_file, "r").read() for prompt_file in prompt_globs]):
@@ -252,6 +266,10 @@ if __name__ == "__main__":
                             continue
 
                     this_cmd = cmd.copy()
+                    if 'codellama-70b' in model: # XXX: Temp hack
+                        this_cmd.append("-r")
+                        this_cmd.append("EOT: true")
+
                     this_cmd[this_cmd.index(ModelPlaceholder)] = model
                     this_cmd += ["-f", temp_prompt_file.name]
                     print(this_cmd)
