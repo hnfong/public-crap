@@ -164,6 +164,15 @@ class LlamaTemplateMixin:
     def templated_prompt(self):
         return f"""<s>[INST] <<SYS>>\n{self.system_message()}\n<</SYS>>\n\n{self.prompt()} [/INST]"""
 
+def read_prompt_file(prompt_file, ignore_prefix="#!"):
+    lines = []
+    with open(prompt_file, "r") as f:
+        while line := f.readline():
+            if line.startswith(ignore_prefix):
+                continue
+            lines.append(line)
+    return "".join(lines)
+
 if __name__ == "__main__":
     PRESETS = {}
     # loop through all classes in this file and add them to the presets
@@ -172,7 +181,7 @@ if __name__ == "__main__":
         if inspect.isclass(obj):
             if issubclass(obj, Preset) and obj != Preset:
                 PRESETS[obj.name] = obj
-    opt_list, args = getopt.getopt(sys.argv[1:], "hc:t:f:o:p:m:n:g")
+    opt_list, args = getopt.getopt(sys.argv[1:], "hc:t:f:o:p:m:n:x:g")
     opts = dict(opt_list)
 
     preset = PRESETS.get(opts.get("-p") or "explain_this")
@@ -240,7 +249,7 @@ if __name__ == "__main__":
 
 
         class CurrentPrompt(overrideTemplateMixIn, preset): pass
-        for prompt_file, prompt in zip([None,] + prompt_globs, [user_prompt,] + [open(prompt_file, "r").read() for prompt_file in prompt_globs]):
+        for prompt_file, prompt in zip([None,] + prompt_globs, [user_prompt,] + [read_prompt_file(prompt_file, ignore_prefix=opts.get("-x") or "#!") for prompt_file in prompt_globs]):
             if prompt is None:
                 continue
 
