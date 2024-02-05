@@ -229,6 +229,8 @@ if __name__ == "__main__":
         overrideTemplateMixIn = templateMixIn
         if 'codellama-70b' in model:
             overrideTemplateMixIn = CodeLlama70bTemplateMixin
+        elif 'miqu' in model:  # XXX: We really should have a list of models and their corresponding templates in a file instead of this.
+            overrideTemplateMixIn = InstructionTemplateMixin
         elif 'llama-2' in model:  # XXX: We really should have a list of models and their corresponding templates in a file instead of this.
             overrideTemplateMixIn = LlamaTemplateMixin
         elif 'instruct' in model and 'mixtral' in model: # This isn't accurate, but it's close enough for now
