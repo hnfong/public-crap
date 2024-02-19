@@ -385,6 +385,8 @@ Computer technology related.
 - https://github.com/kparc/bcc/blob/master/d/sidenotes.md#style
   - https://github.com/kelas/ooj
   - https://github.com/kparc/pf
+- https://www.shadertoy.com/user/iq
+  - https://www.youtube.com/playlist?list=PL0EpikNmjs2CYUMePMGh3IjjP4tQlYqji
 
 
 ## Experimental Languages

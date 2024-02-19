@@ -76,6 +76,7 @@
 - https://en.wikipedia.org/wiki/Johnny_Appleseed
 - https://en.m.wikipedia.org/wiki/Sloot_Digital_Coding_System - WTF
   - https://news.ycombinator.com/item?id=39123143
+- https://www.youtube.com/watch?v=vaPuzZZ-hxE
 
 
 
