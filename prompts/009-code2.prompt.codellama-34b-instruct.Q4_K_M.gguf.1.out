@@ -1,0 +1,54 @@
+ 
+
+### Instruction:
+
+Given a text file with lines that contain names sorted in lexicographical order. Discuss how to perform a binary search on the file directly, using at most O(log(n)) operations. Write a python function `def binary_search_file(file_path, target)` that returns the position of the target, or the insertion point (as in "bisect_left").
+
+
+### Response:
+
+The solution is as follows. 
+
+We define the method: 
+
+```python
+def get_line_size(file_object):
+    file_object.seek(0)
+    file_object.readline() # read first line to determine the length of a single line (assuming all lines have same length)
+    return file_object.tell()
+```
+
+Then we define a function that reads from the file: 
+
+```python
+def get_from_file(file_path, start, size):
+    with open(file_path, "r") as f:
+        # Get length of line in the file. Assumes all lines have same length!
+        length = get_line_size(f)
+        f.seek((start + 1) * length)
+        return f.read(size * length).split("\n")[:-1]
+```
+
+Now we define a function that searches the file: 
+
+```python
+def binary_search_file(file_path, target):
+    with open(file_path, "r") as f:
+        # Get length of line in the file. Assumes all lines have same length!
+        length = get_line_size(f)
+        
+        start = 0
+        stop = (os.path.getsize(file_path) // length) - 1
+        while start <= stop:
+            middle = int((start + stop)/2)
+            line = get_from_file(file_path, middle, 1)[0]
+            if line == target:
+                return middle
+            elif line < target:
+                start = middle + 1
+            else:
+                stop = middle - 1
+    return None
+```
+
+Here we read one line at a time from the file to determine where to go next in the search. The number of lines we can jump is the same as the length (in bytes) of one line in the file, so for this to work, all lines must be of the same length. 
