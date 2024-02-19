@@ -1,0 +1,48 @@
+
+
+### Instruction:
+
+Given a text file with lines that contain names sorted in lexicographical order. Discuss how to perform a binary search on the file directly, using at most O(log(n)) operations. Write a python function `def binary_search_file(file_path, target)` that returns the position of the target, or the insertion point (as in "bisect_left").
+
+
+### Response:
+
+We can perform a binary search on a sorted file by treating each line as an individual item and searching for our target string in this list. However, due to the memory constraints, we cannot store all lines into a list or array before performing any operation. Therefore, we have to devise a strategy where each read of a line is made based on the results from previous reads.
+
+Here's how it works:
+We start by getting the total number of lines in our file and then perform binary search on that range. At each step, we read the middle-line, compare it with our target string, and adjust our range accordingly (either left or right half). We continue this process until our range gets down to a single line.
+
+Here's python code for `binary_search_file`:
+
+```python
+def binary_search_file(file_path, target):
+    with open(file_path, "r") as f:
+        low = 0
+        f.seek(0, 2)  # Seek to end of file
+        high = f.tell()  # Get position of end of file (i.e., total lines in file)
+
+    while low < high:
+        mid = (low + high) // 2
+        
+        with open(file_path, "r") as f:
+            f.seek(mid, 0) # Seek to mid-point line
+            offset = mid -1 if mid > 0 else mid  # Offset used in case we're at the beginning of the file
+            
+            while f.readline() and offset > 0:
+                offset -= 1
+                
+            line_mid = f.tell()
+       
+            with open(file_path, "r") as f:
+                f.seek(line_mid, 0) # Seek to mid-point line again
+                name_in_mid = f.readline().strip("\n")
+            
+            if target < name_in_mid:
+                high = mid
+            else:
+                low = mid + 1
+                
+    return low
+``` 
+
+The time complexity of this function is O(log(n)). At each step we are reading a single line. This results in log(n) steps, where n is the total number of lines in the file. Each read operation takes constant time (O(1)), so the overall time complexity is O(log(n)) as required.

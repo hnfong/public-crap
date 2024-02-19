@@ -1,0 +1,98 @@
+ 
+
+### Instruction:
+
+Given a text file with lines that contain names sorted in lexicographical order. Discuss how to perform a binary search on the file directly, using at most O(log(n)) operations. Write a python function `def binary_search_file(file_path, target)` that returns the position of the target, or the insertion point (as in "bisect_left").
+
+
+### Response:
+
+The idea is to use the file system as an index. If we have a text file with lines sorted lexicographically, we can easily binary search through it by searching for the middle of the file (i.e., the line at offset `filesize / 2`), then repeating this process on either half of the file depending on whether the target is less than or greater than the found value.
+
+For example, if our text file contains the following lines:
+```python
+Alice
+Bob
+Carol
+David
+Eve
+Frank
+Grace
+Henry
+Ivan
+Judy
+Kim
+Larry
+Mary
+Nick
+Owen
+Pat
+Rose
+Sam
+Tina
+Vanessa
+Walter
+Xavier
+Yvonne
+Zelda
+```
+We can perform a binary search for the value "Grace" as follows. First, we calculate the midpoint of the file by dividing its size in bytes by 2 (in our case, `filesize / 2 == 510`):
+```python
+file = open("names_sorted.txt")
+filesize = os.stat('names_sorted.txt').st_size
+midpoint = filesize // 2
+file.seek(midpoint)
+line = file.readline()
+print(line)
+# Output: Grace
+```
+Since we found the target, our job is done! But what if we wanted to search for a value that's not in the file? For example, let's say we want to find "Victor". We can use binary search on the file just like before, but instead of finding "Grace" at `filesize / 2`, we find "Grace" at `filesize / 4` (since "Grace" comes before "Victor" in lexicographic order).
+```python
+file = open("names_sorted.txt")
+filesize = os.stat('names_sorted.txt').st_size
+midpoint = filesize // 4
+file.seek(midpoint)
+line = file.readline()
+print(line)
+# Output: Grace
+```
+Now that we've found "Grace" at `filesize / 4`, we can repeat the process on either half of the first half of the file, depending on whether the target comes before or after "Grace". Let's say the target is "Victor", which comes after "Grace" in lexicographic order. We can now perform the search again on either the second quarter or the third quarter of the original file (depending on whether "Victor" comes before or after "Henry"), and so on until we find the target or reach a quarter with no lines remaining:
+```python
+# Grace is at filesize / 4
+# Henry is at filesize / 2
+# Judy is at 3 * (filesize / 4)
+# Victor is not in the file, so we return the insertion point after "Judy"
+def binary_search_file(file_path, target):
+    """Perform a binary search on the sorted text file located at `file_path`"""
+    filesize = os.stat(file_path).st_size
+    midpoint = filesize // 2
+    with open(file_path) as f:
+        while True:
+            if not f.seekable():
+                break
+            f.seek(midpoint)
+            line = f.readline()
+            # If we found the target, return its position
+            if line == target:
+                return midpoint
+            # If the target comes before our current position in the file...
+            elif target < line:
+                # ...repeat the process on either the first half or the second half of the file,
+                # depending on whether `midpoint` is at an odd or even index.
+                if midpoint % 2 == 0:
+                    midpoint //= 2
+                else:
+                    midpoint = (3 * midpoint) // 4
+            # If the target comes after our current position in the file...
+            elif target > line:
+                # ...repeat the process on either the second half or the third quarter of the file,
+                # depending on whether `midpoint` is at an odd or even index.
+                if midpoint % 2 == 0:
+                    midpoint = (3 * midpoint) // 4
+                else:
+                    midpoint = (7 * midpoint) // 8
+            # If the file has a quarter or less remaining, return the insertion point after our current position.
+            if f.tell() >= filesize - 1:
+                return midpoint + len(line) + 1
+```
+This method can be further optimized by reading and processing the file in chunks instead of one line at a time.
