@@ -5,6 +5,11 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 ## Writings
 
 
+### 2024
+
+- [孔子姓氏](writings/2024/孔子姓氏.md)
+- [gettier](writings/2024/gettier.md)
+
 ### 2023
 
 - [23-唔識文言文，等如啲西人唔識拉丁文，冇問題㗎喎！（好似係）](writings/2023/23-唔識文言文，等如啲西人唔識拉丁文，冇問題㗎喎！（好似係）.md)
@@ -272,9 +277,13 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [A layman's rant on infinity](writings/0000-2013/A_layman's_rant_on_infinity.md)
 - [A Meditation on Cups](writings/0000-2013/A_Meditation_on_Cups.md)
 
+## Transcripts
+
+
 ## Stream
 
 - [AI](stream/AI.md)
+- [2024](stream/2024.md)
 - [2023-06](stream/2023-06.md)
 - [2022-04](stream/2022-04.md)
 - [2022-03](stream/2022-03.md)
@@ -303,6 +312,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 - [tech](outline/tech.md)
 - [subjective-reality](outline/subjective-reality.md)
+- [spirit](outline/spirit.md)
 - [speculative stories](outline/speculative_stories.md)
 - [software-engineering](outline/software-engineering.md)
 - [portals](outline/portals.md)
