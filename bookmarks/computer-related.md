@@ -166,6 +166,8 @@ Computer technology related.
 - https://github.com/straussmaximilian/ocrmac - small Python wrapper to extract text from images on a Mac system. Uses the vision framework from Apple
 - https://github.com/ttscoff/curlyq - A command line helper for curl and web scraping
 - https://github.com/jasonjmcghee/rem - locally record everything you view on your Apple Silicon computer
+- https://github.com/electric-sql/pglite - PGlite - Postgres in WASM
+
 
 ## Machine Learning
 
@@ -387,6 +389,7 @@ Computer technology related.
   - https://github.com/kparc/pf
 - https://www.shadertoy.com/user/iq
   - https://www.youtube.com/playlist?list=PL0EpikNmjs2CYUMePMGh3IjjP4tQlYqji
+- https://news.ycombinator.com/item?id=39488668
 
 
 ## Experimental Languages
