@@ -177,7 +177,7 @@
 - https://www.youtube.com/watch?v=VV0MntUNp3E Scientists are Now Correcting Their Stupidity! | Gulf Of Cambay | Shiva | Aliens| Sadhguru|Adiyogi
 - https://www.youtube.com/watch?v=ZlFpq49Ri8Y The Big Bang Never Happened--The Science of the Censored Papers
 - https://woodfromeden.substack.com/p/violent-enough-to-stand-still - Violent enough to stand still Why human societies developed so little during 300 000 years
-
+- https://www.youtube.com/watch?v=QzFMDS6dkWU - Astonishing Results! More Ancient Egyptian Granite Vases Analyzed! More STL's available.
 
 
 ## Arcane
@@ -501,6 +501,7 @@
 - https://www.pnas.org/doi/10.1073/pnas.2208661120 - Income and emotional well-being: A conflict resolved
   - Measures of well-being have often been found to rise with log (income). Kahneman and Deaton [Proc. Natl. Acad. Sci. U.S.A. 107, 16489–93 (2010)] reported an exception; a measure of emotional well-being (happiness) increased but then flattened somewhere between $60,000 and $90,000. In contrast, Killingsworth [Proc. Natl. Acad. Sci. U.S.A. 118, e2016976118 (2021)] observed a linear relation between happiness and log(income) in an experience-sampling study. We discovered in a joint reanalysis of the experience sampling data that the flattening pattern exists but is restricted to the least happy 20% of the population, and that complementary nonlinearities contribute to the overall linear-log relationship between happiness and income. We trace the discrepant results to the authors’ reliance on standard practices and assumptions of data analysis that should be questioned more often, although they are standard in social science.
 - https://www.youtube.com/watch?v=hLmZ2ajcOvc - 10 Ways To Tell A "Normal" Relationship Vs. One With A Narcissist
+- https://www.youtube.com/watch?v=JJPWIiu-BUw - Tesla CEO Elon Musk discusses the implications of A.I. on his children's future in the workforce
 
 
 ## My image links

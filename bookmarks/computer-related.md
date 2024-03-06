@@ -282,6 +282,7 @@ Computer technology related.
 
 - ☆ https://lightning.ai/pages/community/lora-insights/
 - ☆ https://twitter.com/rasbt/status/1712816975083155496 - I ran hundreds if not thousands of LoRA & QLoRA experiments to finetune open-source LLMs, and here’s what I learned:
+- ☆ https://github.com/OpenAccess-AI-Collective/axolotl
 - https://github.com/facebookresearch/llama - Inference code for LLaMA models
   - https://ai.facebook.com/blog/large-language-model-llama-meta-ai/ - Introducing LLaMA: A foundational, 65-billion-parameter language model
   - https://github.com/ggerganov/llama.cpp - Port of Facebook's LLaMA model in C/C++
@@ -346,6 +347,7 @@ Computer technology related.
 - https://github.com/karpathy/llama2.c - Reference C implementation of LLAMA
 - https://github.com/wangyi-fudan/wyGPT - "This is my 2.5 years' day-and-night efforts on GPT. It is mature and highly optimized on single GPU."
 - https://github.com/mit-han-lab/TinyChatEngine - AWQ
+
 
 ### Toys
 
