@@ -77,7 +77,7 @@
 - https://en.m.wikipedia.org/wiki/Sloot_Digital_Coding_System - WTF
   - https://news.ycombinator.com/item?id=39123143
 - https://www.youtube.com/watch?v=vaPuzZZ-hxE
-
+- https://www.youtube.com/watch?v=iTdNPVqSv_0
 
 
 ### Post-Concert Amnesia
