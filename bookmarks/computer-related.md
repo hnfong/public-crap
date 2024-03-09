@@ -245,6 +245,8 @@ Computer technology related.
 - ☆ https://bernsteinbear.com/blog/compiling-ml-models/ Compiling ML models to C for fun
 - https://paperswithcode.com/ - 
 - https://www.youtube.com/watch?v=9dSkvxS2EB0 - Mamba: Linear-Time Sequence Modeling with Selective State Spaces (Paper Explained)
+- https://cgad.ski/blog/when-gradient-descent-is-a-kernel-method.html
+
 
 ### Products, Libraries, frameworks, Tools
 
@@ -263,6 +265,7 @@ Computer technology related.
 - https://sites.research.google/usm/ - Universal Speech Model -  Towards Automatic Speech Recognition for All
 - https://huggingface.co/alvanlii/whisper-small-cantonese/tree/main - alvanlii/whisper-small-cantonese at main
 - https://news.ycombinator.com/item?id=38487359 The Seamless Communication models - SeamlessExpressive: A model that aims to preserve expression and intricacies of speech across languages. SeamlessStreaming: A model that can deliver speech and text translations with around two seconds of latency. SeamlessM4T v2: A foundational multilingual and multitask model that allows people to communicate effortlessly through speech and text. Seamless: A model that merges capabilities from SeamlessExpressive, SeamlessStreaming and SeamlessM4T v2 into one.
+- https://arxiv.org/abs/2402.04825 https://stability-ai.github.io/stable-audio-demo/
 
 
 #### Images / Videos
@@ -347,6 +350,10 @@ Computer technology related.
 - https://github.com/karpathy/llama2.c - Reference C implementation of LLAMA
 - https://github.com/wangyi-fudan/wyGPT - "This is my 2.5 years' day-and-night efforts on GPT. It is mature and highly optimized on single GPU."
 - https://github.com/mit-han-lab/TinyChatEngine - AWQ
+- https://github.com/abacaj/fine-tune-mistral - (Sample code for fine tuning mistral)
+  - https://twitter.com/abacaj/status/1709647568081240311
+- https://www.answer.ai/posts/2024-03-06-fsdp-qlora.html - You can now train a 70b language model at home We’re releasing an open source system, based on FSDP and QLoRA, that can train a 70b model on two 24GB GPUs.
+- https://arxiv.org/abs/2402.13753 - LongRoPE: Extending LLM Context Window Beyond 2 Million Tokens
 
 
 ### Toys
@@ -482,6 +489,10 @@ Computer technology related.
 - https://gptforwork.com/ - Use ChatGPT in Google Sheets and Docs
 - redmine, trello, asana - Project Management Tools
 - https://news.ycombinator.com/item?id=38276515 Is Delaware the cheapest place to incorporate?
+- https://news.ycombinator.com/item?id=39604961 RAG on codebases that actually works
+  - (1) Instead of directly embedding code, we parse the AST of the codebase, recursively generate docstrings for each node in the tree, and then embed the docstrings. (2) Alongside vector similarity search and keyword search, we do “agentic search” where an agent reviews the relevance of the search results, and scans the source code to follow references that might lead to something important. Then it returns the relevant sources.
+- https://observablehq.com/product - Observable offers a modern way to create and host powerful, performant data apps. Use Markdown, JavaScript and SQL, Python, R, or any other language you choose.
+
 
 
 ## Graphics, Design, etc.
@@ -622,4 +633,9 @@ Computer technology related.
 - https://github.com/tandav/pipe21 - Simple functional pipes
 - https://pip.wtf/ - Inline dependencies for small Python scripts.
 
+## Rust
+
+- https://github.com/rust-lang/miri - An experimental interpreter for Rust's mid-level intermediate representation (MIR). It can run binaries and test suites of cargo projects and detect certain classes of undefined behavior
+- https://github.com/diesel-rs/diesel - A safe, extensible ORM and Query Builder for Rust
+- https://github.com/johnthagen/min-sized-rust - Minimizing Rust Binary Size - This repository demonstrates how to minimize the size of a Rust binary.
 
