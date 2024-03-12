@@ -1,6 +1,7 @@
 # Gettier
 
 ![image](./images/thinking.jpg)
+
 The confusion in modern philosophy is best illustrated by the case of the Gettier problem.
 
 Apparently modern philosophers believe that “knowledge” is “justified true belief”, an inoffensive definition that wouldn’t be out of place in a run-of-the-mill dictionary.

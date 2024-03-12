@@ -198,6 +198,7 @@
   - https://archive.org/details/manmythmagictheillustratedencyclopediaofmythology21volumesin1/page/n5/mode/2up - Man, Myth & Magic The Illustrated Encyclopedia Of Mythology 21 Volumes In 1 : Free Download, Borrow, and Streaming : Internet Archive
 - https://www.youtube.com/watch?v=OHz4slbIRyE , https://www.youtube.com/watch?v=yyktccr5apU
 - https://www.jcim.net/acim_us/Acim.php - ACIM Original Edition
+- https://www.crimsoncircle.com/News/Articles/CC-Tips-More/21-Shaumbra-Realizations
 
 ## Esoteric practices
 

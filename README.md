@@ -7,8 +7,8 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2024
 
-- [孔子姓氏](writings/2024/孔子姓氏.md)
-- [gettier](writings/2024/gettier.md)
+- [02-孔子姓氏](writings/2024/02-孔子姓氏.md)
+- [01-gettier](writings/2024/01-gettier.md)
 
 ### 2023
 

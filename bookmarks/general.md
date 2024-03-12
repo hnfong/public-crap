@@ -124,6 +124,7 @@
 - https://plaintextaccounting.org/ - Plain Text Accounting (PTA) - plaintextaccounting.org
 - Value of bond price (no risk): `P = C * (1 - (1 + r)**-n) / r + FV / ((1 + r)**n`
 - https://tradingeconomics.com/commodity/lumber - Lumber - Price - Chart - Historical Data - News
+- https://www.youtube.com/watch?v=6awVGa1xpZ0 - Tokyo Portfolio explains why Japanese housing is so cheap @TokyoPortfolio
 
 
 ## Prediction Markets

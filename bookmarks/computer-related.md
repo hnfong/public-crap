@@ -233,6 +233,7 @@ Computer technology related.
 - https://www.youtube.com/watch?v=L_Guz73e6fw - Sam Altman Lex Fridman Interview
 - https://twitter.com/emollick - posts very good commentary and news on AI especially LLMs
 - https://www.youtube.com/watch?v=tkqD9W5U9F4 - AlphaGo-style Tree Search on Thought Trees in GPT models
+- https://github.com/lightvector/KataGo/blob/master/docs/GraphSearch.md - Monte-Carlo Tree Search (MCTS) except applied to directed graphs instead of trees (caching of duplicate nodes)
 - http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf - Efficient BackProp
 - http://www.incompleteideas.net/IncIdeas/BitterLesson.html - highlights that leveraging computation through general methods is the most effective approach in AI research. Relying on human knowledge and understanding of specific domains often hinders progress
 - https://together.ai/blog/tri-dao-flash-attention - Introducing Together AI Chief Scientist Tri Dao, as he releases FlashAttention-2 to speed up model training and inference
@@ -246,6 +247,7 @@ Computer technology related.
 - https://paperswithcode.com/ - 
 - https://www.youtube.com/watch?v=9dSkvxS2EB0 - Mamba: Linear-Time Sequence Modeling with Selective State Spaces (Paper Explained)
 - https://cgad.ski/blog/when-gradient-descent-is-a-kernel-method.html
+- https://arxiv.org/abs/2305.18290 - Direct Preference Optimization: Your Language Model is Secretly a Reward Model
 
 
 ### Products, Libraries, frameworks, Tools
@@ -279,6 +281,7 @@ Computer technology related.
 - https://llava-vl.github.io/ - LLaVA
 - https://news.ycombinator.com/item?id=38487112 Easy Stable Diffusion XL in your device, offline
 - https://stability.ai/news/stable-video-diffusion-open-ai-video-model - Introducing Stable Video Diffusion — Stability AI
+- https://huggingface.co/liuhaotian/llava-v1.6-vicuna-13b
 
 
 #### Text, LLM, etc.
@@ -286,6 +289,7 @@ Computer technology related.
 - ☆ https://lightning.ai/pages/community/lora-insights/
 - ☆ https://twitter.com/rasbt/status/1712816975083155496 - I ran hundreds if not thousands of LoRA & QLoRA experiments to finetune open-source LLMs, and here’s what I learned:
 - ☆ https://github.com/OpenAccess-AI-Collective/axolotl
+- ☆ https://unsloth.ai/blog/gemma-bugs
 - https://github.com/facebookresearch/llama - Inference code for LLaMA models
   - https://ai.facebook.com/blog/large-language-model-llama-meta-ai/ - Introducing LLaMA: A foundational, 65-billion-parameter language model
   - https://github.com/ggerganov/llama.cpp - Port of Facebook's LLaMA model in C/C++
@@ -354,6 +358,7 @@ Computer technology related.
   - https://twitter.com/abacaj/status/1709647568081240311
 - https://www.answer.ai/posts/2024-03-06-fsdp-qlora.html - You can now train a 70b language model at home We’re releasing an open source system, based on FSDP and QLoRA, that can train a 70b model on two 24GB GPUs.
 - https://arxiv.org/abs/2402.13753 - LongRoPE: Extending LLM Context Window Beyond 2 Million Tokens
+- https://www.reddit.com/r/LocalLLaMA/comments/1b5uv86/perplexity_is_not_a_good_measurement_of_how_well/
 
 
 ### Toys
@@ -632,6 +637,8 @@ Computer technology related.
 - https://ed25519.cr.yp.to/python/ed25519.py Python implementation of ED25519
 - https://github.com/tandav/pipe21 - Simple functional pipes
 - https://pip.wtf/ - Inline dependencies for small Python scripts.
+- https://github.com/xonsh/xonsh - https://news.ycombinator.com/item?id=39368586 - xonsh/xonsh: :shell: Python-powered, cross-platform, Unix-gazing shell.
+
 
 ## Rust
 
