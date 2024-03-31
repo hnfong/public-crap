@@ -80,6 +80,8 @@ Computer technology related.
 - https://preshing.com/20201210/flap-hero-code-review/ Flap Hero is a small game written entirely in C++ without using an existing game engine. All of its source code is available on GitHub. I think it can serve as an interesting resource for novice and intermediate game developers to study.
   - https://github.com/arc80/FlapHero - A small C++ game built using Plywood
 - ☆ https://www.quantamagazine.org/why-mathematicians-cant-find-the-hay-in-a-haystack-20180917/ - A really good summary of complexity theory
+- https://en.algorithmica.org/hpc/ - performance computing book titled “Algorithms for Modern Hardware” by Sergey Slotin. Its intended audience is everyone from performance engineers and practical algorithm researchers to undergraduate computer science students who have just finished an advanced algorithms course and want to learn more practical ways to speed up a program
+- ☆ https://en.wikipedia.org/wiki/Post_correspondence_problem - A rather surprising undeciable result.
 
 
 
@@ -99,6 +101,7 @@ Computer technology related.
 - ☆ https://github.com/eudoxia0/cmacro cmacro: Lisp macros for C
 - ☆ https://kindavim.app/ - VIM accessibility bindings for macOS
 - ☆ https://litestream.io/alternatives/cron/ / https://github.com/benbjohnson/litestream
+- ☆ https://github.com/pretzelai/pretzelai - Pretzel is an open-source, offline browser-based tool for fast and intuitive data exploration and visualization. It can handle large data files, runs locally in your browser, and requires no backend setup.
 
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
@@ -167,6 +170,7 @@ Computer technology related.
 - https://github.com/ttscoff/curlyq - A command line helper for curl and web scraping
 - https://github.com/jasonjmcghee/rem - locally record everything you view on your Apple Silicon computer
 - https://github.com/electric-sql/pglite - PGlite - Postgres in WASM
+- https://github.com/messense/jieba-rs - The Jieba Chinese Word Segmentation Implemented in Rust
 
 
 ## Machine Learning
