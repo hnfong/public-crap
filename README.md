@@ -179,7 +179,6 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 ### 2017
 
 - [點解香港人成日鬧天文台錯誤預報天氣?](writings/2017/點解香港人成日鬧天文台錯誤預報天氣_qm_.md)
-- [點解 startup 可以賺咁多錢?](writings/2017/點解_startup_可以賺咁多錢_qm_.md)
 - [香港從來都冇民主精神，何來民主制度?](writings/2017/香港從來都冇民主精神_CM_何來民主制度_qm_.md)
 - [青少年自殺率因政治氣候而高咗?](writings/2017/青少年自殺率因政治氣候而高咗_qm_.md)
 - [關於Java嘅迷思](writings/2017/關於Java嘅迷思.md)
