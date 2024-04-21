@@ -102,6 +102,9 @@ Computer technology related.
 - ☆ https://kindavim.app/ - VIM accessibility bindings for macOS
 - ☆ https://litestream.io/alternatives/cron/ / https://github.com/benbjohnson/litestream
 - ☆ https://github.com/pretzelai/pretzelai - Pretzel is an open-source, offline browser-based tool for fast and intuitive data exploration and visualization. It can handle large data files, runs locally in your browser, and requires no backend setup.
+- ☆ https://github.com/ViNeek/wuhoo - Wuhoo loosely stands for W indows U sing H eaders O nly. It is an attempt to create a single-header library (in the spirit of STB [1]) for graphics related window management, compatible with both C and C++.
+  - Probably great for rendering Mandelbrot!
+
 
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
@@ -171,6 +174,13 @@ Computer technology related.
 - https://github.com/jasonjmcghee/rem - locally record everything you view on your Apple Silicon computer
 - https://github.com/electric-sql/pglite - PGlite - Postgres in WASM
 - https://github.com/messense/jieba-rs - The Jieba Chinese Word Segmentation Implemented in Rust
+- https://github.com/chearon/dropflow - Canvas text layout engine.
+- https://github.com/mitchellh/libxev - Zig/C event loop
+
+#### Json
+
+- https://github.com/ynqa/jnv
+- https://www.oilshell.org/
 
 
 ## Machine Learning
@@ -378,6 +388,7 @@ Computer technology related.
 - https://github.com/jjuliano/aifiles - A CLI that organize and manage your files using AI
 - https://github.com/eliasdorneles/upiano - A Piano in your terminal
 - https://dt.plumbing/ - dt: duck tape for your unix pipes
+- https://github.com/susam/fxyt - FXYT is a tiny canvas colouring language that consists of 36 simple stack-based commands
 
 
 ## Data and Datasets
@@ -408,6 +419,8 @@ Computer technology related.
 - https://www.shadertoy.com/user/iq
   - https://www.youtube.com/playlist?list=PL0EpikNmjs2CYUMePMGh3IjjP4tQlYqji
 - https://news.ycombinator.com/item?id=39488668
+- https://news.ycombinator.com/item?id=39799755
+  - https://oimo.io/works/life/
 
 
 ## Experimental Languages
@@ -559,6 +572,7 @@ Computer technology related.
 
 ## Archive, Stories, Articles, Reports, etc.
 
+- ☆ https://longnow.org/essays/richard-feynman-connection-machine/
 - ☆ http://www.bloomberg.com/graphics/2015-paul-ford-what-is-code/ - A super long, informative and (useless for software professionals) article on everything about code and software. Good intro to outsiders if they are willing to read.
 - ☆ https://killedbygoogle.com/
 - http://joyofandroid.com/how-to-downgrade-samsung-galaxy-s3-easily/ - How To Downgrade Samsung Galaxy S3 Easily: We Found The Answer - JoyofAndroid

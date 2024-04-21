@@ -224,6 +224,8 @@
 - https://www.youtube.com/watch?v=b9O6iCM4vCg
   - The double slit experiment through time.
   - https://www.nature.com/articles/s41567-023-01993-w
+- https://www.smbc-comics.com/comic/the-talk-3
+  - "If you don't talk to your kids about quantum computing... someone else will."
 
 ## Deconstruction of English
 
@@ -484,6 +486,7 @@
 
 ## Others
 
+- ☆ https://zhuanlan.zhihu.com/p/479058083 劳德诺日记（一）
 - https://herbarium.gov.hk/en/about-us/index.html - Look up stuff
 - http://www.cram.com/flashcards/riot-landlord-meetings-prep-3568372  - No idea what this is
 - http://www.hotelquickly.com/ - Hotel Booking
