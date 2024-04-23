@@ -7,6 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2024
 
+- [03-故仔](writings/2024/03-故仔.md)
 - [02-孔子姓氏](writings/2024/02-孔子姓氏.md)
 - [01-gettier](writings/2024/01-gettier.md)
 
@@ -314,9 +315,11 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [spirit](outline/spirit.md)
 - [speculative stories](outline/speculative_stories.md)
 - [software-engineering](outline/software-engineering.md)
+- [reviews of popular fiction](outline/reviews_of_popular_fiction.md)
 - [portals](outline/portals.md)
 - [law](outline/law.md)
 - [incantations](outline/incantations.md)
+- [glossary](outline/glossary.md)
 - [decline of magic](outline/decline_of_magic.md)
 - [curious-coincidences](outline/curious-coincidences.md)
 - [computer-test](outline/computer-test.md)
