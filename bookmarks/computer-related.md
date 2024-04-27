@@ -572,6 +572,7 @@ Computer technology related.
 
 ## Archive, Stories, Articles, Reports, etc.
 
+- ☆ https://www.mostlypython.com/django-from-first-principles-part-2/ - Single-file Django web app tutorial
 - ☆ https://longnow.org/essays/richard-feynman-connection-machine/
 - ☆ http://www.bloomberg.com/graphics/2015-paul-ford-what-is-code/ - A super long, informative and (useless for software professionals) article on everything about code and software. Good intro to outsiders if they are willing to read.
 - ☆ https://killedbygoogle.com/

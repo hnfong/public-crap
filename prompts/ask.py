@@ -164,6 +164,30 @@ class LlamaTemplateMixin:
     def templated_prompt(self):
         return f"""<s>[INST] <<SYS>>\n{self.system_message()}\n<</SYS>>\n\n{self.prompt()} [/INST]"""
 
+class Phi3TemplateMixin:
+    def templated_prompt(self):
+        return f"""<|user|>\n{self.prompt()}<|end|>\n<|assistant|>\n"""
+
+
+class Llama3TemplateMixin:
+    def templated_prompt(self):
+        return f"""
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+{self.system_message()}<|eot_id|><|start_header_id|>user<|end_header_id|>
+{self.prompt()}<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+""".strip() + "\n"
+
+NAME_MATCH_OVERRIDE = [
+    ("codellama-70b-instruct", CodeLlama70bTemplateMixin),
+    ("phi-3-mini-4k-instruct", Phi3TemplateMixin),
+    ("llama-2", LlamaTemplateMixin),
+    ("mixtral-8x7b-instruct", LlamaTemplateMixin),
+    ("dolphin", ChatMLTemplateMixin),
+    ("orange", ChatMLTemplateMixin),
+    ("llama-3", Llama3TemplateMixin),
+]
+
+
 def read_prompt_file(prompt_file, ignore_prefix="#!"):
     lines = []
     with open(prompt_file, "r") as f:
@@ -187,12 +211,17 @@ if __name__ == "__main__":
     preset = PRESETS.get(opts.get("-p") or "explain_this")
     assert preset is not None
 
-    template = opts.get("-t") or "chatml"
+    template = opts.get("-T") or "chatml"
+    temperature = float(opts.get("-t", 0.0)) or (0.0 if int(opts.get("-n", 1)) == 0 else None) # Use 0 if we only run once
     context = opts.get("-c") or ""
     model_name = opts.get("-m") or DEFAULT_MODEL
     if preset is CodeGenerationPreset:
         model_name = DEFAULT_CODE_GENERATION_MODEL
     cmd_args = []
+    if temperature is not None:
+        cmd_args.append("-t")
+        cmd_args.append(str(temperature))
+
     is_mac = "Darwin" in subprocess.run(["uname"], capture_output=True).stdout.decode("utf-8").strip()
     if opts.get("-g") or is_mac:
         cmd_args.append("-ngl")
@@ -236,17 +265,13 @@ if __name__ == "__main__":
     for model in glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf"):
 
         overrideTemplateMixIn = templateMixIn
-        if 'codellama-70b' in model:
-            overrideTemplateMixIn = CodeLlama70bTemplateMixin
-        elif 'miqu' in model:  # XXX: We really should have a list of models and their corresponding templates in a file instead of this.
-            overrideTemplateMixIn = InstructionTemplateMixin
-        elif 'llama-2' in model:  # XXX: We really should have a list of models and their corresponding templates in a file instead of this.
-            overrideTemplateMixIn = LlamaTemplateMixin
-        elif 'instruct' in model and 'mixtral' in model: # This isn't accurate, but it's close enough for now
-            overrideTemplateMixIn = LlamaTemplateMixin
-        elif 'instruct' in model:
-            overrideTemplateMixIn = InstructionTemplateMixin
-
+        for model_substring, tm in NAME_MATCH_OVERRIDE:
+            if model_substring.lower() in model.lower():
+                overrideTemplateMixIn = tm
+                break
+        else:
+            print(f"Warning: No template found for {model}, using ChatMLTemplateMixin as a fallback")
+            overrideTemplateMixIn = ChatMLTemplateMixin
 
         class CurrentPrompt(overrideTemplateMixIn, preset): pass
         for prompt_file, prompt in zip([None,] + prompt_globs, [user_prompt,] + [read_prompt_file(prompt_file, ignore_prefix=opts.get("-x") or "#!") for prompt_file in prompt_globs]):
@@ -280,6 +305,9 @@ if __name__ == "__main__":
                     if 'codellama-70b' in model: # XXX: Temp hack
                         this_cmd.append("-r")
                         this_cmd.append("EOT: true")
+                    if 'yi-34b' in model: # XXX: Temp hack
+                        this_cmd.append("-r")
+                        this_cmd.append("<|im_end|>")
 
                     this_cmd[this_cmd.index(ModelPlaceholder)] = model
                     this_cmd += ["-f", temp_prompt_file.name]

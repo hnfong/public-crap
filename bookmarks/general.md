@@ -227,6 +227,13 @@
 - https://www.smbc-comics.com/comic/the-talk-3
   - "If you don't talk to your kids about quantum computing... someone else will."
 
+## Geology
+
+- https://www.nature.com/articles/ngeo591 - Methane-derived hydrocarbons produced under upper-mantle conditions
+- https://www.nature.com/articles/s41598-020-61644-5 - Formation of complex hydrocarbon systems from methane at the upper mantle thermobaric conditions
+
+
+
 ## Deconstruction of English
 
 - https://www.dailyscandinavian.com/language-of-the-vikings/ - Language of the Vikings - Daily Scandinavian
@@ -283,6 +290,7 @@
   - fermented foods - mitochondria uncouplers, wormwood also uncouplers??!
 - https://en.wikipedia.org/wiki/Minnesota_Multiphasic_Personality_Inventory - MMPI-2 test - standardized psychometric test of adult personality and psychopathology
 - https://www.cambridge.org/core/journals/british-journal-of-nutrition/article/quercetin-lowers-plasma-uric-acid-in-prehyperuricaemic-males-a-randomised-doubleblinded-placebocontrolled-crossover-trial/93630E7EE14144BEC5FE9ED2AF9A2190 - Quercetin lowers plasma uric acid in pre-hyperuricaemic males: a randomised, double-blinded, placebo-controlled, cross-over trial | British Journal of Nutrition | Cambridge Core
+- https://news.ycombinator.com/item?id=39947530 - The Horror Story of the Shaken Baby Syndrome
 
 ## Jokes
 
@@ -483,6 +491,11 @@
 - https://www.youtube.com/@MUSICPLANETcoverchannel - Japanese music cover channel
 - https://www.youtube.com/@HistoriaCivilis - History
 - https://www.youtube.com/@cateen_hayatosumino - Japanese Pianist. Spectacular
+
+## Interesting Things
+
+- https://en.wikipedia.org/wiki/Thridrangaviti_Lighthouse
+
 
 ## Others
 
