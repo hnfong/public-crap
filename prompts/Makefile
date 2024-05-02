@@ -1,5 +1,5 @@
 # Find our models in the Downloads folder.
-MODELS=$(shell cd ~/Downloads/; ls *.gguf | grep -E 'chat|dolphin|orange|mixtral|miqu|yi-34b-chat' | sort -r)  # Qwen1.5-110B|Meta-Llama-3
+MODELS=$(shell cd ~/Downloads/; ls *.gguf | grep -iE 'WizardLm|chat|dolphin|orange|mixtral|miqu|yi-34b-chat|llama-2-7b|Meta-Llama-3|starling|Qwen1.5|qwen1_5|Phi-3'; echo split_ggufs/*00001-of-*gguf )
 
 # For each model
 TARGETS=$(foreach model,$(MODELS),__DONE__.$(model))
@@ -8,7 +8,9 @@ all: $(TARGETS)
 	echo $(TARGETS)
 
 __DONE__.%.gguf: ~/Downloads/%.gguf
-	./ask.py -p empty -n 3 -f '*.prompt' -o '{f}.{m}.{n}.out' -m $(shell basename $< .gguf)
+	./ask.py -p empty -n 1 -f '*.prompt' -o '{f}.{m}.{n}.out' -m $(shell basename $< .gguf)
+__DONE__.split_ggufs/%.gguf: ~/Downloads/split_ggufs/%.gguf
+	./ask.py -p empty -n 1 -f '*.prompt' -o '{f}.{m}.{n}.out' -m split_ggufs/$(shell basename $< .gguf)
 
 clean:
 	rm -vf *.out *.out.txt

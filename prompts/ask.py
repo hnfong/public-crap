@@ -177,8 +177,16 @@ class Llama3TemplateMixin:
 {self.prompt()}<|eot_id|><|start_header_id|>assistant<|end_header_id|>
 """.strip() + "\n"
 
+class WizardLmMixin:
+    def templated_prompt(self):
+        return f"""
+USER: {self.prompt()}
+ASSISTANT:
+""".strip() + " "
+
 NAME_MATCH_OVERRIDE = [
     ("codellama-70b-instruct", CodeLlama70bTemplateMixin),
+    ("wizardlm", WizardLmMixin),
     ("phi-3-mini-4k-instruct", Phi3TemplateMixin),
     ("llama-2", LlamaTemplateMixin),
     ("mixtral-8x7b-instruct", LlamaTemplateMixin),
@@ -212,7 +220,7 @@ if __name__ == "__main__":
     assert preset is not None
 
     template = opts.get("-T") or "chatml"
-    temperature = float(opts.get("-t", 0.0)) or (0.0 if int(opts.get("-n", 1)) == 0 else None) # Use 0 if we only run once
+    temperature = float(opts.get("-t", 0)) or (0.0 if int(opts.get("-n", 1)) == 1 else None) # Use 0 if we only run once
     context = opts.get("-c") or ""
     model_name = opts.get("-m") or DEFAULT_MODEL
     if preset is CodeGenerationPreset:
