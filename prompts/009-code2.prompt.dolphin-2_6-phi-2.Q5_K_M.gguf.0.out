@@ -2,34 +2,31 @@
 Given a text file with lines that contain names sorted in lexicographical order. Discuss how to perform a binary search on the file directly, using at most O(log(n)) operations. Write a python function `def binary_search_file(file_path, target)` that returns the position of the target, or the insertion point (as in "bisect_left").
 
 <|im_start|>assistant
-We will use a binary search to perform this operation as it is efficient for large data sets and has an average time complexity of O(log n).
+Binary search works on the principle of divide and conquer. It works on the assumption that the list or array is sorted. Binary search works by repeatedly dividing the sorted list in half. If the target value is less than the item in the middle of the list, then the left half of the list is updated to the left half, and the middle value is discarded. If the target value is greater than the item in the middle of the list, then the right half of the list is updated to the right half, and the middle value is discarded. This process continues until the target value is found or the list is empty.
 
-However, the challenge here lies in performing this operation on a file. We can read each line from the file into memory, sort them (in lexicographical order), and then iterate through the list to find our target. But doing this would result in a linear time complexity, which is not optimal given that we are aiming for at most O(log n) operations. 
+To perform binary search on a file, we can read the file line by line. Each line is a name sorted in lexicographical order. The first name in the file is the smallest name in the list. We can use binary search to find the position of the target name in the list. We can read the first name in the file and compare it with the target name. If they are equal, we return the position. If the target name is less than the first name, we need to perform binary search on the right half of the list. If the target name is greater than the first name, we need to perform binary search on the left half of the list. We can continue this process until the target name is found or the list is empty.
 
-A more efficient approach would be to use an iterator or generator to read the file line by line without loading all lines into memory. This way, we can iterate through the sorted lines in a binary search-like manner, comparing each line with the target until we find it or determine its insertion point (in "bisect_left").
-
-Here's a Python function that achieves this:
+Here is a Python function that performs binary search on a file:
 
 ```python
-import bisect
-
 def binary_search_file(file_path, target):
-    with open(file_path, 'r') as file:
-        lines = sorted([line.strip() for line in file])
-        index = bisect.bisect_left(lines, target)
-
-        if index and lines[index] == target:
-            return index
-        elif index < len(lines):
-            return index if lines[index] > target else index + 1
+    names = []
+    with open(file_path, 'r') as f:
+        for line in f:
+            names.append(line.strip())
+    names.sort()
+    left, right = 0, len(names) - 1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        if names[mid] == target:
+            return mid
+        elif names[mid] < target:
+            left = mid + 1
         else:
-            return None
+            right = mid - 1
+    
+    return left
 ```
-In this function:
 
-- We open the file in read mode and read each line. We strip any leading or trailing whitespaces from the lines using `strip()`.
-- The list of sorted lines is created using a list comprehension. 
-- Using `bisect_left`, we find the insertion point for the target in this list. If `target` is present, it will return its index. If not, it will return either less than or equal to the length of the list (if the target is greater), or more than the length of the list (if the target is smaller).
-- We then check if our found index and the value at that index are equal to the target. If they are, we return the index. Otherwise, we check whether the value at the found index is greater than the target. If it is, we return the insertion point. If not, we return None as our search has been unsuccessful.
-
-Please note that this function assumes each line in your file only contains a single name with no spaces or special characters. Also, it assumes the file does not contain any empty lines and all names are sorted lexicographically. If these assumptions do not hold true for your specific case, you will need to adjust the function accordingly.
+In this function, we first read the file and store the names in a list. We sort the list in ascending order. Then we initialize the left and right pointers to 0 and the length of the list minus 1, respectively. We enter a while loop that continues until the left pointer is greater than the right pointer. Inside the loop, we calculate the middle index as the average of the left and right pointers. If the name at the middle index is equal to the target name, we return the middle index. If the name at the middle index is less than the target name, we update the left pointer to the middle index plus 1. If the name at the middle index is greater than the target name, we update the right pointer to the middle index minus 1. After the loop ends, if the target name is not found in the list, we return the value of the left pointer, which is the insertion point.
