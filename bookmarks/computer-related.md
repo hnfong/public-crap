@@ -104,8 +104,8 @@ Computer technology related.
 - ☆ https://github.com/pretzelai/pretzelai - Pretzel is an open-source, offline browser-based tool for fast and intuitive data exploration and visualization. It can handle large data files, runs locally in your browser, and requires no backend setup.
 - ☆ https://github.com/ViNeek/wuhoo - Wuhoo loosely stands for W indows U sing H eaders O nly. It is an attempt to create a single-header library (in the spirit of STB [1]) for graphics related window management, compatible with both C and C++.
   - Probably great for rendering Mandelbrot!
-
-
+- ☆ https://github.com/huggingface/candle - Candle is a minimalist ML framework for Rust with a focus on performance (including GPU support) and ease of use
+  - https://github.com/EricLBuehler/mistral.rs
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
 - http://openrefine.org/ - Data analyzing and cleansing tool
@@ -176,6 +176,7 @@ Computer technology related.
 - https://github.com/messense/jieba-rs - The Jieba Chinese Word Segmentation Implemented in Rust
 - https://github.com/chearon/dropflow - Canvas text layout engine.
 - https://github.com/mitchellh/libxev - Zig/C event loop
+- https://github.com/paul-gauthier/aider - LLM code assistant tool
 
 #### Json
 
@@ -262,6 +263,7 @@ Computer technology related.
 - https://www.youtube.com/watch?v=9dSkvxS2EB0 - Mamba: Linear-Time Sequence Modeling with Selective State Spaces (Paper Explained)
 - https://cgad.ski/blog/when-gradient-descent-is-a-kernel-method.html
 - https://arxiv.org/abs/2305.18290 - Direct Preference Optimization: Your Language Model is Secretly a Reward Model
+- https://hugodutka.com/posts/answering-legal-questions-with-llms/ - Ideas on how to do this
 
 
 ### Products, Libraries, frameworks, Tools
@@ -282,7 +284,7 @@ Computer technology related.
 - https://huggingface.co/alvanlii/whisper-small-cantonese/tree/main - alvanlii/whisper-small-cantonese at main
 - https://news.ycombinator.com/item?id=38487359 The Seamless Communication models - SeamlessExpressive: A model that aims to preserve expression and intricacies of speech across languages. SeamlessStreaming: A model that can deliver speech and text translations with around two seconds of latency. SeamlessM4T v2: A foundational multilingual and multitask model that allows people to communicate effortlessly through speech and text. Seamless: A model that merges capabilities from SeamlessExpressive, SeamlessStreaming and SeamlessM4T v2 into one.
 - https://arxiv.org/abs/2402.04825 https://stability-ai.github.io/stable-audio-demo/
-
+- https://tincans.ai/slm3 - world first joint speech-language model
 
 #### Images / Videos
 
@@ -308,6 +310,7 @@ Computer technology related.
   - https://ai.facebook.com/blog/large-language-model-llama-meta-ai/ - Introducing LLaMA: A foundational, 65-billion-parameter language model
   - https://github.com/ggerganov/llama.cpp - Port of Facebook's LLaMA model in C/C++
   - https://github.com/remixer-dec/llama-mps - Experimental fork of Facebooks LLaMa model which runs it with GPU acceleration on Apple Silicon M1/M2
+- ☆ https://arxiv.org/abs/2404.15758 - Let's Think Dot by Dot: Hidden Computation in Transformer Language Models
 - https://open-assistant.io/ - Apparently developing a foundation model and training data
 - https://huggingface.co/togethercomputer/GPT-NeoXT-Chat-Base-20B - togethercomputer/GPT-NeoXT-Chat-Base-20B · Hugging Face
 - https://github.com/facebookresearch/metaseq https://huggingface.co/facebook - Some other lesser-known Facebook models pre-lamma
@@ -373,6 +376,7 @@ Computer technology related.
 - https://www.answer.ai/posts/2024-03-06-fsdp-qlora.html - You can now train a 70b language model at home We’re releasing an open source system, based on FSDP and QLoRA, that can train a 70b model on two 24GB GPUs.
 - https://arxiv.org/abs/2402.13753 - LongRoPE: Extending LLM Context Window Beyond 2 Million Tokens
 - https://www.reddit.com/r/LocalLLaMA/comments/1b5uv86/perplexity_is_not_a_good_measurement_of_how_well/
+- https://arxiv.org/abs/2403.07691 - ORPO: Monolithic Preference Optimization without Reference Model
 
 
 ### Toys
