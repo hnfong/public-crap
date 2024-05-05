@@ -169,6 +169,10 @@ class Phi3TemplateMixin:
         return f"""<|user|>\n{self.prompt()}<|end|>\n<|assistant|>\n"""
 
 
+class ZephyrTemplateMixin:
+    def templated_prompt(self):
+        return f"""<|user|>\n{self.prompt()}</s>\n<|assistant|>\n"""
+
 class Llama3TemplateMixin:
     def templated_prompt(self):
         return f"""
@@ -188,6 +192,7 @@ NAME_MATCH_OVERRIDE = [
     ("codellama-70b-instruct", CodeLlama70bTemplateMixin),
     ("wizardlm", WizardLmMixin),
     ("phi-3-mini-4k-instruct", Phi3TemplateMixin),
+    ("zephyr", ZephyrTemplateMixin),
     ("llama-2", LlamaTemplateMixin),
     ("mixtral-8x7b-instruct", LlamaTemplateMixin),
     ("dolphin", ChatMLTemplateMixin),
