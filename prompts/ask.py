@@ -49,12 +49,17 @@ index 5668b011..0acacd2e 100644
 class Preset:
     def __init__(self, user_prompt):
         self.user_prompt = user_prompt
+        self._system_message = ""
 
     def prompt(self):
         raise NotImplementedError("Please implement this method in a subclass")
 
     def system_message(self):
-        return "You are a helpful assistant. You will answer questions in a helpful and concise manner."
+        return self._system_message
+
+    def set_system_message(self, message):
+        self._system_message = message
+
 
     def templated_prompt(self):
         # Implemented by mixins if needed
@@ -68,9 +73,6 @@ class EmptyPreset(Preset):
 
     def prompt(self):
         return self.user_prompt
-
-    def system_message(self):
-        return ""
 
 class ExplainPreset(Preset):
     def __init__(self, user_prompt, context):
@@ -201,14 +203,21 @@ NAME_MATCH_OVERRIDE = [
 ]
 
 
-def read_prompt_file(prompt_file, ignore_prefix="#!"):
+def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:"):
     lines = []
+    system = []
     with open(prompt_file, "r") as f:
         while line := f.readline():
             if line.startswith(ignore_prefix):
+                if line.startswith(ignore_prefix + system_prefix):
+                    system.append(line[len(ignore_prefix) + len(system_prefix):])
                 continue
             lines.append(line)
-    return "".join(lines)
+    return {
+        "user": "".join(lines),
+        "system": "".join(system).strip()
+        }
+
 
 if __name__ == "__main__":
     PRESETS = {}
@@ -287,15 +296,19 @@ if __name__ == "__main__":
             overrideTemplateMixIn = ChatMLTemplateMixin
 
         class CurrentPrompt(overrideTemplateMixIn, preset): pass
-        for prompt_file, prompt in zip([None,] + prompt_globs, [user_prompt,] + [read_prompt_file(prompt_file, ignore_prefix=opts.get("-x") or "#!") for prompt_file in prompt_globs]):
-            if prompt is None:
+        for prompt_file, prompt in zip([None,] + prompt_globs, [{"user":user_prompt},] + [read_prompt_file(prompt_file, ignore_prefix=opts.get("-x") or "#!") for prompt_file in prompt_globs]):
+            if prompt.get("user") is None:
                 continue
 
             print(prompt_file)
 
             # Create a temporary file for storing the prompt
             with tempfile.NamedTemporaryFile(mode="w", delete=True) as temp_prompt_file:
-                templated_prompt = CurrentPrompt(prompt, context).templated_prompt()
+                cp = CurrentPrompt(prompt.get("user"), context)
+                sys = prompt.get("system")
+                if sys:
+                    cp.set_system_message(sys)
+                templated_prompt = cp.templated_prompt()
                 print(templated_prompt)
                 temp_prompt_file.write(templated_prompt)
                 # Try to fix an apparent llama.cpp bug where it chops off the last newline
