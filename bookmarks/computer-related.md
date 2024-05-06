@@ -311,6 +311,7 @@ Computer technology related.
   - https://github.com/ggerganov/llama.cpp - Port of Facebook's LLaMA model in C/C++
   - https://github.com/remixer-dec/llama-mps - Experimental fork of Facebooks LLaMa model which runs it with GPU acceleration on Apple Silicon M1/M2
 - ☆ https://arxiv.org/abs/2404.15758 - Let's Think Dot by Dot: Hidden Computation in Transformer Language Models
+- ☆ https://arxiv.org/abs/2403.06634 - Stealing Part of a Production Language Model "We also recover the exact hidden dimension size of the gpt-3.5-turbo model"
 - https://open-assistant.io/ - Apparently developing a foundation model and training data
 - https://huggingface.co/togethercomputer/GPT-NeoXT-Chat-Base-20B - togethercomputer/GPT-NeoXT-Chat-Base-20B · Hugging Face
 - https://github.com/facebookresearch/metaseq https://huggingface.co/facebook - Some other lesser-known Facebook models pre-lamma
