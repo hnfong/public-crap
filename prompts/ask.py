@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
-# Ask an AI a question
-
-# Use llama.cpp
+"""
+This is a script to interact with llama.cpp models. It is a wrapper around the
+llama.cpp binary that allows you to easily infer prompts and get responses. It
+also allows you to use presets to make it easier to use.
+"""
 
 import getopt
 import glob
@@ -15,7 +17,7 @@ LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or os.path.expanduser("~/proje
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
 # DEFAULT_MODEL = "dolphin-2_6-phi-2"
-DEFAULT_MODEL = "phi-2-orange"
+DEFAULT_MODEL = "Meta-Llama-3-8B"
 # DEFAULT_CODE_GENERATION_MODEL = "stable-code-3b" # Sucks
 DEFAULT_CODE_GENERATION_MODEL = "codellama-34b-instruct"
 
@@ -55,9 +57,11 @@ class Preset:
         raise NotImplementedError("Please implement this method in a subclass")
 
     def system_message(self):
+        assert self._system_message is not None
         return self._system_message
 
     def set_system_message(self, message):
+        assert message is not None
         self._system_message = message
 
 
@@ -69,8 +73,17 @@ class EmptyPreset(Preset):
     def __init__(self, user_prompt, context):
         super().__init__(user_prompt)
         self.context = context
+    def prompt(self):
+        return self.user_prompt
     name = "empty"
 
+class DefaultPreset(Preset):
+    def __init__(self, user_prompt, context):
+        super().__init__(user_prompt)
+        self.context = context
+        self._system_message = "You are a helpful, thoughtful and creative AI assistant. Give concise answers unless the answer would be better with more detail."
+
+    name = "default"
     def prompt(self):
         return self.user_prompt
 
@@ -78,6 +91,7 @@ class ExplainPreset(Preset):
     def __init__(self, user_prompt, context):
         super().__init__(user_prompt)
         self.context = context
+        self._system_message = "You are a helpful, thoughtful and creative AI assistant. Give concise answers unless the answer would be better with more detail."
 
     name = "explain_this"
 
@@ -85,7 +99,7 @@ class ExplainPreset(Preset):
         if self.context:
             return f"In the context of {self.context}, please explain the following. Be concise in your answer.\n```{self.user_prompt}```\n"
         else:
-            return f"Please explain the following. Be concise in your answer.\n```{self.user_prompt}```\n"
+            return f"Please explain the following.\n```{self.user_prompt}```\n"
 
 class CodeReviewPreset(Preset):
     def __init__(self, user_prompt, context):
@@ -230,19 +244,33 @@ if __name__ == "__main__":
     opt_list, args = getopt.getopt(sys.argv[1:], "hc:t:f:o:p:m:n:x:g")
     opts = dict(opt_list)
 
-    preset = PRESETS.get(opts.get("-p") or "explain_this")
+    # Default to explain_this if we don't have a file. If we have a file it's better to assume the file contains a full prompt
+    if opts.get("-p") is None:
+        preset = ExplainPreset if "explain" in sys.argv[0] else DefaultPreset
+    else:
+        preset = PRESETS.get(opts.get("-p"))
     assert preset is not None
 
+    user_prompt = None
+    prompt_globs = []
+    if opts.get("-f"):
+        prompt_globs = sorted(glob.glob(opts.get("-f")))
+    elif args:
+        user_prompt = " ".join(args)
+    else:
+        print("What is your question?")
+        user_prompt = sys.stdin.read()
+
     template = opts.get("-T") or "chatml"
-    temperature = float(opts.get("-t", 0)) or (0.0 if int(opts.get("-n", 1)) == 1 else None) # Use 0 if we only run once
+    temperature = float(opts.get("-t", 0)) or (0.0 if (int(opts.get("-n", 1)) == 1 and user_prompt is None) else 0.3) # Use 0 if we only run once on a file
     context = opts.get("-c") or ""
     model_name = opts.get("-m") or DEFAULT_MODEL
     if preset is CodeGenerationPreset:
         model_name = DEFAULT_CODE_GENERATION_MODEL
     cmd_args = []
-    if temperature is not None:
-        cmd_args.append("-t")
-        cmd_args.append(str(temperature))
+    assert temperature >= 0
+    cmd_args.append("-t")
+    cmd_args.append(str(temperature))
 
     is_mac = "Darwin" in subprocess.run(["uname"], capture_output=True).stdout.decode("utf-8").strip()
     if opts.get("-g") or is_mac:
@@ -270,21 +298,11 @@ if __name__ == "__main__":
         cmd_args.append("-c")
         cmd_args.append("4096")
 
-    user_prompt = None
-    prompt_globs = []
-    if opts.get("-f"):
-        prompt_globs = sorted(glob.glob(opts.get("-f")))
-    elif args:
-        user_prompt = " ".join(args)
-    else:
-        print("What is your question?")
-        user_prompt = sys.stdin.read()
-
     class ModelPlaceholder: pass
 
     cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", ModelPlaceholder, "--n-predict", "-2"]  # -2 means fill context
 
-    for model in glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf"):
+    for model in glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf") or [model_name]:
 
         overrideTemplateMixIn = templateMixIn
         for model_substring, tm in NAME_MATCH_OVERRIDE:
@@ -305,9 +323,9 @@ if __name__ == "__main__":
             # Create a temporary file for storing the prompt
             with tempfile.NamedTemporaryFile(mode="w", delete=True) as temp_prompt_file:
                 cp = CurrentPrompt(prompt.get("user"), context)
-                sys = prompt.get("system")
-                if sys:
-                    cp.set_system_message(sys)
+                sys_prompt = prompt.get("system")
+                if sys_prompt:
+                    cp.set_system_message(sys_prompt)
                 templated_prompt = cp.templated_prompt()
                 print(templated_prompt)
                 temp_prompt_file.write(templated_prompt)
@@ -357,8 +375,9 @@ if __name__ == "__main__":
                             with open(out_file, "w") as f:
                                 f.write(outs_s)
                         else:
-                            if outs_s.startswith(prompt):
-                                outs_s = outs_s[len(prompt):]
+                            prompt_user = prompt.get("user")
+                            if outs_s.startswith(prompt_user):
+                                outs_s = outs_s[len(prompt_user):]
                                 # This doesn't work at least in some models because <|im_end|>
                                 # seems to be tokenized and stringified back to an empty string.
                                 # Instead I just modified the llama.cpp code to just output the

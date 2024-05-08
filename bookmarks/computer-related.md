@@ -288,6 +288,7 @@ Computer technology related.
 
 #### Images / Videos
 
+- https://www.chenyang.co/diffusion.html - Diffusion models from scratch, from a new theoretical perspective
 - https://github.com/nerdyrodent/VQGAN-CLIP Just playing with getting VQGAN+CLIP running locally, rather than having to use colab.
 - https://github.com/nerdyrodent/CLIP-Guided-Diffusion/  Just playing with getting CLIP Guided Diffusion running locally, rather than having to use colab.
 - https://github.com/mehdidc/feed_forward_vqgan_clip Feed forward VQGAN-CLIP model, where the goal is to eliminate the need for optimizing the latent space of VQGAN for each input prompt. 
@@ -301,6 +302,9 @@ Computer technology related.
 
 
 #### Text, LLM, etc.
+
+- ☆ https://arxiv.org/abs/2403.04652 - Yi: Open Foundation Models by 01.AI
+  - Hey everyone, the YI paper has been published and it’s a gem of information on how to train and finetune strong models. In the era of most models refusing to publish any meaningful information, these paper delves into lots of details of how the data was collated, filtered, the data mix etc and how the SFT data was processed. -- https://www.reddit.com/r/LocalLLaMA/comments/1b9kq9v/01ai_paper_is_a_gem_for_model_trainers/
 
 - ☆ https://lightning.ai/pages/community/lora-insights/
 - ☆ https://twitter.com/rasbt/status/1712816975083155496 - I ran hundreds if not thousands of LoRA & QLoRA experiments to finetune open-source LLMs, and here’s what I learned:
