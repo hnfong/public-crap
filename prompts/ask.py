@@ -101,6 +101,37 @@ class ExplainPreset(Preset):
         else:
             return f"Please explain the following.\n```{self.user_prompt}```\n"
 
+class SummarizePreset(Preset):
+    def __init__(self, user_prompt, context):
+        super().__init__(user_prompt)
+        self.context = context
+        self._system_message = "You are a helpful, thoughtful and creative AI assistant."
+
+    name = "summarize"
+
+    def prompt(self):
+        return f"""
+Please summarize the following text. Be concise (i.e. avoid superfluous writing), but make sure you mention all important and interesting points.
+
+```
+{self.user_prompt}
+```
+
+Please summarize the above text. Be concise (i.e. avoid superfluous writing), but make sure you mention all important and interesting points.
+"""
+
+
+class ReviewPreset(Preset):
+    def __init__(self, user_prompt, context):
+        super().__init__(user_prompt)
+        self.context = context
+        self._system_message = "You are a helpful, thoughtful and creative AI assistant. Give concise answers unless the answer would be better with more detail."
+
+    name = "review"
+
+    def prompt(self):
+        return f"Please review the following text. Point out (a) mistakes (if any), (b) suggestions for improvements, and (c) other comments that may be relevant. Be thoughtful and creative. Don't just make trivial comments on low hanging fruit. Be engaging. \n```{self.user_prompt}```\n"
+
 class CodeReviewPreset(Preset):
     def __init__(self, user_prompt, context):
         super().__init__(user_prompt)
@@ -189,6 +220,10 @@ class ZephyrTemplateMixin:
     def templated_prompt(self):
         return f"""<|user|>\n{self.prompt()}</s>\n<|assistant|>\n"""
 
+class MiniCPMTemplateMixin:
+    def templated_prompt(self):
+        return f"""<用户>{self.prompt()}\n<AI>"""
+
 class Llama3TemplateMixin:
     def templated_prompt(self):
         return f"""
@@ -214,6 +249,7 @@ NAME_MATCH_OVERRIDE = [
     ("dolphin", ChatMLTemplateMixin),
     ("orange", ChatMLTemplateMixin),
     ("llama-3", Llama3TemplateMixin),
+    ("minicpm", MiniCPMTemplateMixin),
 ]
 
 
