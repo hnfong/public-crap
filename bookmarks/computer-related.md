@@ -27,6 +27,7 @@ Computer technology related.
 - ☆ https://betterdev.blog/minimal-safe-bash-script-template/
 - ☆ https://www.matuzo.at/blog/html-boilerplate/
 - ☆ https://soatok.blog/2022/12/29/what-we-do-in-the-etc-shadow-cryptography-with-passwords/
+- ☆ https://www.cs251.com/ - Great Ideas in Theoretical Computer Science
 - http://pubs.opengroup.org/onlinepubs/000095399/ - POSIX Specification
 - http://www.unicode.org/cgi-bin/UnihanRSIndex.pl?radical=159&minstrokes=4&maxstrokes=6&useutf8=true - Unihan Radical-Stroke Index for Radical #159
 - http://research.microsoft.com/apps/pubs/default.aspx?id=144888 - Cycles, Cells and Platters: An Empirical Analysis of Hardware Failures on a Million Consumer PCs
@@ -106,6 +107,7 @@ Computer technology related.
   - Probably great for rendering Mandelbrot!
 - ☆ https://github.com/huggingface/candle - Candle is a minimalist ML framework for Rust with a focus on performance (including GPU support) and ease of use
   - https://github.com/EricLBuehler/mistral.rs
+- ☆ https://en.wikipedia.org/wiki/OBS_Studio
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
 - http://openrefine.org/ - Data analyzing and cleansing tool
@@ -177,6 +179,7 @@ Computer technology related.
 - https://github.com/chearon/dropflow - Canvas text layout engine.
 - https://github.com/mitchellh/libxev - Zig/C event loop
 - https://github.com/paul-gauthier/aider - LLM code assistant tool
+- https://github.com/benibela/xidel - Extracting data from HTML
 
 #### Json
 
@@ -264,12 +267,15 @@ Computer technology related.
 - https://cgad.ski/blog/when-gradient-descent-is-a-kernel-method.html
 - https://arxiv.org/abs/2305.18290 - Direct Preference Optimization: Your Language Model is Secretly a Reward Model
 - https://hugodutka.com/posts/answering-legal-questions-with-llms/ - Ideas on how to do this
+- https://www.reddit.com/r/LocalLLaMA/comments/191s7x3/a_simple_guide_to_local_llm_finetuning_on_a_mac/
+
 
 
 ### Products, Libraries, frameworks, Tools
 
 #### Libraries / Tools
 
+- ☆ https://aihorde.net/
 - ☆ https://annas-archive.org/datasets
   - Chinese books: https://annas-blog.org/duxiu-exclusive.html
 - https://bellard.org/ - Fabrice Bellard's Home Pagelibnc/ LibNC is a C library for tensor manipulation. It supports automatic differentiation and can be used to implement machine learning models such as LSTM and Transformers. (Intel+Linux/Win only, not open source)
@@ -285,6 +291,9 @@ Computer technology related.
 - https://news.ycombinator.com/item?id=38487359 The Seamless Communication models - SeamlessExpressive: A model that aims to preserve expression and intricacies of speech across languages. SeamlessStreaming: A model that can deliver speech and text translations with around two seconds of latency. SeamlessM4T v2: A foundational multilingual and multitask model that allows people to communicate effortlessly through speech and text. Seamless: A model that merges capabilities from SeamlessExpressive, SeamlessStreaming and SeamlessM4T v2 into one.
 - https://arxiv.org/abs/2402.04825 https://stability-ai.github.io/stable-audio-demo/
 - https://tincans.ai/slm3 - world first joint speech-language model
+- https://github.com/collabora/WhisperSpeech - An Open Source text-to-speech system built by inverting Whisper. Previously known as spear-tts-pytorch.
+- https://github.com/suno-ai/bark
+  - https://huggingface.co/suno/bark
 
 #### Images / Videos
 
@@ -382,6 +391,7 @@ Computer technology related.
 - https://arxiv.org/abs/2402.13753 - LongRoPE: Extending LLM Context Window Beyond 2 Million Tokens
 - https://www.reddit.com/r/LocalLLaMA/comments/1b5uv86/perplexity_is_not_a_good_measurement_of_how_well/
 - https://arxiv.org/abs/2403.07691 - ORPO: Monolithic Preference Optimization without Reference Model
+- https://www.microsoft.com/en-us/research/blog/phi-2-the-surprising-power-of-small-language-models/
 
 
 ### Toys
@@ -398,6 +408,7 @@ Computer technology related.
 - https://github.com/eliasdorneles/upiano - A Piano in your terminal
 - https://dt.plumbing/ - dt: duck tape for your unix pipes
 - https://github.com/susam/fxyt - FXYT is a tiny canvas colouring language that consists of 36 simple stack-based commands
+- http://fractaljourney.blogspot.com/
 
 
 ## Data and Datasets
@@ -479,6 +490,7 @@ Computer technology related.
 
 - ☆ https://www.metaculus.com/home/ - https://www.metaculus.com/questions/ - Predictive Bets / Predictive Markets
 - ☆ https://news.ycombinator.com/item?id=39012544 - Where can I find good legal documents?
+- https://shipfa.st/tools/logo-fast - lazy way to make nice logos
 - http://sumome.com/ - Sumo. FREE email capture tool (Newsletter)
 - https://hootsuite.com/ - Social Media Management startup company
 - https://projectshield.withgoogle.com/en/ - DDoS/security help from Google
@@ -666,9 +678,15 @@ Computer technology related.
 - https://github.com/tandav/pipe21 - Simple functional pipes
 - https://pip.wtf/ - Inline dependencies for small Python scripts.
 - https://github.com/xonsh/xonsh - https://news.ycombinator.com/item?id=39368586 - xonsh/xonsh: :shell: Python-powered, cross-platform, Unix-gazing shell.
+- https://github.com/Maratyszcza/PeachPy - Portable Efficient Assembly Code-generator in Higher-level Python (PeachPy)
 
 
 ## Rust
+
+- ☆ https://github.com/rust-unofficial
+  - https://github.com/rust-unofficial/awesome-rust - A curated list of Rust code and resources.
+  - https://github.com/rust-unofficial/rust-practise-questions
+  - https://github.com/rust-unofficial/patterns
 
 - https://github.com/rust-lang/miri - An experimental interpreter for Rust's mid-level intermediate representation (MIR). It can run binaries and test suites of cargo projects and detect certain classes of undefined behavior
 - https://github.com/diesel-rs/diesel - A safe, extensible ORM and Query Builder for Rust

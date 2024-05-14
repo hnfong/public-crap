@@ -78,6 +78,10 @@
 - https://www.youtube.com/watch?v=TrR6puARRlA My Year-24 Stardew Valley Farm Tour (100% Perfection, No Mods)
 - https://www.youtube.com/watch?v=gvECQlxrhbw Gris Game
 - https://www.reddit.com/r/macgaming/comments/1446hj6/all_working_games_list_game_porting_toolkit/
+- https://github.com/abagames
+  - https://abagames.github.io/joys-of-small-game-development-en/
+  - https://abagames.github.io/crisp-game-lib-11-games/?pakupaku
+
 
 ## Finance and Business
 
@@ -190,6 +194,7 @@
 
 ## Physics
 
+- ☆ https://en.wikipedia.org/wiki/Consistent_histories - Seems to be a interpretation of Quantum Mechanics that postulate that the past can be probabilistic?
 - https://aeon.co/essays/shut-up-and-calculate-does-a-disservice-to-quantum-mechanics - ‘Shut up and calculate’ does a disservice to quantum mechanics | Aeon Essays
 - https://en.wikipedia.org/wiki/Born_rule
 - https://www.feynmanlectures.caltech.edu/I_toc.html - 403 Forbidden
@@ -291,6 +296,7 @@
 - https://en.wikipedia.org/wiki/Minnesota_Multiphasic_Personality_Inventory - MMPI-2 test - standardized psychometric test of adult personality and psychopathology
 - https://www.cambridge.org/core/journals/british-journal-of-nutrition/article/quercetin-lowers-plasma-uric-acid-in-prehyperuricaemic-males-a-randomised-doubleblinded-placebocontrolled-crossover-trial/93630E7EE14144BEC5FE9ED2AF9A2190 - Quercetin lowers plasma uric acid in pre-hyperuricaemic males: a randomised, double-blinded, placebo-controlled, cross-over trial | British Journal of Nutrition | Cambridge Core
 - https://news.ycombinator.com/item?id=39947530 - The Horror Story of the Shaken Baby Syndrome
+- ☆ https://en.wikipedia.org/wiki/Aphantasia - the inability to create mental imagery
 
 ## Jokes
 
