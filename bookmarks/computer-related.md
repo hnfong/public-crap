@@ -180,6 +180,7 @@ Computer technology related.
 - https://github.com/mitchellh/libxev - Zig/C event loop
 - https://github.com/paul-gauthier/aider - LLM code assistant tool
 - https://github.com/benibela/xidel - Extracting data from HTML
+- https://mise.jdx.dev/how-i-use-mise.html - Standardized CLI environments
 
 #### Json
 
@@ -283,6 +284,16 @@ Computer technology related.
 - https://nn-512.com/ Generate Neural Nets in C (compiler is in Go)
 - https://github.com/Unstructured-IO Open-Source Pre-Processing Tools for Unstructured Data
 - https://news.ycombinator.com/item?id=38487199 - This is a fascinating read about the optimizability of standard machine learning tooling
+- https://www.reddit.com/r/LocalLLaMA/comments/1bv3hl4/anythingllm_an_opensource_allinone_ai_desktop_app/
+
+
+##### RAG
+
+- https://github.com/explodinggradients/ragas
+  - https://news.ycombinator.com/item?id=39780114
+- https://www.reddit.com/r/LocalLLaMA/comments/1cqolrb/fully_local_rag_with_llama3/
+  - https://huggingface.co/nvidia/Llama3-ChatQA-1.5-8B
+
 
 #### Audio / Speech
 - https://github.com/coqui-ai/TTS - text to speech (see https://news.ycombinator.com/item?id=26790951 )
@@ -392,6 +403,7 @@ Computer technology related.
 - https://www.reddit.com/r/LocalLLaMA/comments/1b5uv86/perplexity_is_not_a_good_measurement_of_how_well/
 - https://arxiv.org/abs/2403.07691 - ORPO: Monolithic Preference Optimization without Reference Model
 - https://www.microsoft.com/en-us/research/blog/phi-2-the-surprising-power-of-small-language-models/
+- https://research.myshell.ai/jetmoe - trained with less than $0.1 million cost but outperforms LLaMA2-7B
 
 
 ### Toys
