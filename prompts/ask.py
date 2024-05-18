@@ -376,7 +376,7 @@ if __name__ == "__main__":
                         out_file = (out_file.
                             replace('{n}', str(infer_round)).
                             replace('{m}', os.path.basename(model)).
-                            replace('{f}', os.path.basename(prompt_file)))
+                            replace('{f}', prompt_file))
                         if os.path.exists(out_file):
                             print(f"Skipping {out_file} as it already exists")
                             continue
