@@ -8,9 +8,9 @@ all: $(TARGETS)
 	echo $(TARGETS)
 
 __DONE__.%.gguf: ~/Downloads/%.gguf
-	./ask.py -p empty -n 1 -f '*.prompt' -o '{f}.{m}.{n}.out' -m $(shell basename $< .gguf)
+	./ask.py -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m $(shell basename $< .gguf)
 __DONE__.split_ggufs/%.gguf: ~/Downloads/split_ggufs/%.gguf
-	./ask.py -p empty -n 1 -f '*.prompt' -o '{f}.{m}.{n}.out' -m split_ggufs/$(shell basename $< .gguf)
+	./ask.py -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m split_ggufs/$(shell basename $< .gguf)
 
 clean:
 	rm -vf *.out *.out.txt
