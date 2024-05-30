@@ -224,6 +224,14 @@ class MiniCPMTemplateMixin:
     def templated_prompt(self):
         return f"""<用户>{self.prompt()}\n<AI>"""
 
+class DeepSeekV2LiteMixin:
+    def templated_prompt(self):
+        #   "chat_template": "{% if not add_generation_prompt is defined %}{% set add_generation_prompt = false %}{% endif %}{{ bos_token }}{% for message in messages %}{% if message['role'] == 'user' %}{{ 'User: ' + message['content'] + '\n\n' }}{% elif message['role'] == 'assistant' %}{{ 'Assistant: ' + message['content'] + eos_token }}{% elif message['role'] == 'system' %}{{ message['content'] + '\n\n' }}{% endif %}{% endfor %}{% if add_generation_prompt %}{{ 'Assistant:' }}{% endif %}"
+        if self.system_message():
+            return f"""{self.system_message()}\n\nUser: {self.prompt()}\n\nAssistant: """
+        else:
+            return f"""User: {self.prompt()}\n\nAssistant: """
+
 class Llama3TemplateMixin:
     def templated_prompt(self):
         return f"""
@@ -239,10 +247,18 @@ USER: {self.prompt()}
 ASSISTANT:
 """.strip() + " "
 
+class CommandRPlusTemplateMixin:
+    # <BOS_TOKEN><|START_OF_TURN_TOKEN|><|SYSTEM_TOKEN|>{system_prompt}<|END_OF_TURN_TOKEN|><|START_OF_TURN_TOKEN|><|USER_TOKEN|>{prompt}<|END_OF_TURN_TOKEN|><|START_OF_TURN_TOKEN|><|CHATBOT_TOKEN|><|END_OF_TURN_TOKEN|><|START_OF_TURN_TOKEN|><|CHATBOT_TOKEN|>
+
+    def templated_prompt(self):
+        return f"""<|START_OF_TURN_TOKEN|><|SYSTEM_TOKEN|>{self.system_message()}<|END_OF_TURN_TOKEN|><|START_OF_TURN_TOKEN|><|USER_TOKEN|>{self.prompt()}<|END_OF_TURN_TOKEN|><|START_OF_TURN_TOKEN|><|CHATBOT_TOKEN|><|END_OF_TURN_TOKEN|><|START_OF_TURN_TOKEN|><|CHATBOT_TOKEN|>"""
+
+
 NAME_MATCH_OVERRIDE = [
+    ("command-r-plus", CommandRPlusTemplateMixin),
     ("codellama-70b-instruct", CodeLlama70bTemplateMixin),
     ("wizardlm", WizardLmMixin),
-    ("phi-3-mini-4k-instruct", Phi3TemplateMixin),
+    ("phi-3-", Phi3TemplateMixin),
     ("zephyr", ZephyrTemplateMixin),
     ("llama-2", LlamaTemplateMixin),
     ("mixtral-8x7b-instruct", LlamaTemplateMixin),
@@ -250,6 +266,7 @@ NAME_MATCH_OVERRIDE = [
     ("orange", ChatMLTemplateMixin),
     ("llama-3", Llama3TemplateMixin),
     ("minicpm", MiniCPMTemplateMixin),
+    ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
 ]
 
 
@@ -388,6 +405,9 @@ if __name__ == "__main__":
                     if 'yi-34b' in model: # XXX: Temp hack
                         this_cmd.append("-r")
                         this_cmd.append("<|im_end|>")
+                    if overrideTemplateMixIn == DeepSeekV2LiteMixin:
+                        this_cmd.append("-b")
+                        this_cmd.append("256") # https://github.com/ggerganov/llama.cpp/issues/7652#issuecomment-2140568771
 
                     this_cmd[this_cmd.index(ModelPlaceholder)] = model
                     this_cmd += ["-f", temp_prompt_file.name]

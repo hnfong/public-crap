@@ -269,6 +269,7 @@ Computer technology related.
 - https://arxiv.org/abs/2305.18290 - Direct Preference Optimization: Your Language Model is Secretly a Reward Model
 - https://hugodutka.com/posts/answering-legal-questions-with-llms/ - Ideas on how to do this
 - https://www.reddit.com/r/LocalLLaMA/comments/191s7x3/a_simple_guide_to_local_llm_finetuning_on_a_mac/
+- https://www.reddit.com/r/LocalLLaMA/comments/1d1bnql/awesome_prompting_techniques/
 
 
 
@@ -404,6 +405,7 @@ Computer technology related.
 - https://arxiv.org/abs/2403.07691 - ORPO: Monolithic Preference Optimization without Reference Model
 - https://www.microsoft.com/en-us/research/blog/phi-2-the-surprising-power-of-small-language-models/
 - https://research.myshell.ai/jetmoe - trained with less than $0.1 million cost but outperforms LLaMA2-7B
+- https://barryzhang.substack.com/p/our-humble-attempt-at-fine-tuning
 
 
 ### Toys

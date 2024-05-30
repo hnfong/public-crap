@@ -526,6 +526,7 @@
   - Measures of well-being have often been found to rise with log (income). Kahneman and Deaton [Proc. Natl. Acad. Sci. U.S.A. 107, 16489–93 (2010)] reported an exception; a measure of emotional well-being (happiness) increased but then flattened somewhere between $60,000 and $90,000. In contrast, Killingsworth [Proc. Natl. Acad. Sci. U.S.A. 118, e2016976118 (2021)] observed a linear relation between happiness and log(income) in an experience-sampling study. We discovered in a joint reanalysis of the experience sampling data that the flattening pattern exists but is restricted to the least happy 20% of the population, and that complementary nonlinearities contribute to the overall linear-log relationship between happiness and income. We trace the discrepant results to the authors’ reliance on standard practices and assumptions of data analysis that should be questioned more often, although they are standard in social science.
 - https://www.youtube.com/watch?v=hLmZ2ajcOvc - 10 Ways To Tell A "Normal" Relationship Vs. One With A Narcissist
 - https://www.youtube.com/watch?v=JJPWIiu-BUw - Tesla CEO Elon Musk discusses the implications of A.I. on his children's future in the workforce
+- https://hentai20.io/hare-kon-chapter-1/
 
 
 ## My image links
