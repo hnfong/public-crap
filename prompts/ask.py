@@ -267,6 +267,7 @@ NAME_MATCH_OVERRIDE = [
     ("llama-3", Llama3TemplateMixin),
     ("minicpm", MiniCPMTemplateMixin),
     ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
+    ("qwen2", ChatMLTemplateMixin),
 ]
 
 
@@ -351,7 +352,8 @@ if __name__ == "__main__":
         cmd_args.append("-c")
         cmd_args.append("4096")
 
-    class ModelPlaceholder: pass
+    class ModelPlaceholder:
+        pass
 
     cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", ModelPlaceholder, "--n-predict", "-2"]  # -2 means fill context
 
@@ -366,7 +368,8 @@ if __name__ == "__main__":
             print(f"Warning: No template found for {model}, using ChatMLTemplateMixin as a fallback")
             overrideTemplateMixIn = ChatMLTemplateMixin
 
-        class CurrentPrompt(overrideTemplateMixIn, preset): pass
+        class CurrentPrompt(overrideTemplateMixIn, preset):
+            pass
         for prompt_file, prompt in zip([None,] + prompt_globs, [{"user":user_prompt},] + [read_prompt_file(prompt_file, ignore_prefix=opts.get("-x") or "#!") for prompt_file in prompt_globs]):
             if prompt.get("user") is None:
                 continue
