@@ -186,6 +186,7 @@ Computer technology related.
 
 - https://github.com/ynqa/jnv
 - https://www.oilshell.org/
+- https://www.pgrs.net/2024/03/21/duckdb-as-the-new-jq/
 
 
 ## Machine Learning
@@ -306,6 +307,8 @@ Computer technology related.
 - https://github.com/collabora/WhisperSpeech - An Open Source text-to-speech system built by inverting Whisper. Previously known as spear-tts-pytorch.
 - https://github.com/suno-ai/bark
   - https://huggingface.co/suno/bark
+- https://github.com/mustafaaljadery/lightning-whisper-mlx
+
 
 #### Images / Videos
 
@@ -326,6 +329,7 @@ Computer technology related.
 
 - ☆ https://arxiv.org/abs/2403.04652 - Yi: Open Foundation Models by 01.AI
   - Hey everyone, the YI paper has been published and it’s a gem of information on how to train and finetune strong models. In the era of most models refusing to publish any meaningful information, these paper delves into lots of details of how the data was collated, filtered, the data mix etc and how the SFT data was processed. -- https://www.reddit.com/r/LocalLLaMA/comments/1b9kq9v/01ai_paper_is_a_gem_for_model_trainers/
+- ☆ https://docs.google.com/spreadsheets/u/0/d/1kT4or6b0Fedd-W_jMwYpb63e1ZR3aePczz3zlbJW-Y4/htmlview?pli=1 - A manually curated list of LLMs
 
 - ☆ https://lightning.ai/pages/community/lora-insights/
 - ☆ https://twitter.com/rasbt/status/1712816975083155496 - I ran hundreds if not thousands of LoRA & QLoRA experiments to finetune open-source LLMs, and here’s what I learned:
@@ -406,6 +410,16 @@ Computer technology related.
 - https://www.microsoft.com/en-us/research/blog/phi-2-the-surprising-power-of-small-language-models/
 - https://research.myshell.ai/jetmoe - trained with less than $0.1 million cost but outperforms LLaMA2-7B
 - https://barryzhang.substack.com/p/our-humble-attempt-at-fine-tuning
+- https://blog.allenai.org/olmo-open-language-model-87ccfc95f580
+- https://www.jasonwei.net/blog/emergence - 137 emergent abilities of large language models
+- https://github.com/intel-analytics/ipex-llm?tab=readme-ov-file - This page is probably a nice list of important locally-runnable models. Ignore the Intel thing.
+- https://research.myshell.ai/jetmoe - JetMoE-8B is trained with less than $ 0.1 million cost but outperforms LLaMA2-7B
+- https://qwenlm.github.io/blog/qwen-moe/
+- https://github.com/deepseek-ai/DeepSeek-VL?tab=readme-ov-file
+
+
+
+
 
 
 ### Toys
