@@ -7,13 +7,19 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2024
 
+- [09-Prompt Priests](writings/2024/09-Prompt_Priests.md)
+- [08-內需 vs on9工](writings/2024/08-內需_vs_on9工.md)
+- [07-Simulation](writings/2024/07-Simulation.md)
+- [06-Songs](writings/2024/06-Songs.md)
+- [05-Murphy And Manifestation](writings/2024/05-Murphy_And_Manifestation.md)
+- [04-宗教](writings/2024/04-宗教.md)
 - [03-故仔](writings/2024/03-故仔.md)
 - [02-孔子姓氏](writings/2024/02-孔子姓氏.md)
 - [01-gettier](writings/2024/01-gettier.md)
 
 ### 2023
 
-- [23-唔識文言文，等如啲西人唔識拉丁文，冇問題㗎喎！（好似係）](writings/2023/23-唔識文言文，等如啲西人唔識拉丁文，冇問題㗎喎！（好似係）.md)
+- [23-唔識文言文，等如啲西人唔識拉丁文，冇問題㗎喎！（好似係）](writings/2023/23-唔識文言文_CM_等如啲西人唔識拉丁文_CM_冇問題㗎喎_EX__LP_好似係_RP_.md)
 - [22-平行宇宙入面嘅地獄s](writings/2023/22-平行宇宙入面嘅地獄s.md)
 - [21-AI Doomsday Scenarios](writings/2023/21-AI_Doomsday_Scenarios.md)
 - [20-What is Magic](writings/2023/20-What_is_Magic.md)
