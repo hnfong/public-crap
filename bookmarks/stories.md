@@ -80,6 +80,9 @@
 - https://www.youtube.com/watch?v=iTdNPVqSv_0
 - ☆ https://www.youtube.com/watch?v=r20mSQr19zI - Freddy Silva
 - https://en.wikipedia.org/wiki/Tunguska_event
+- https://www.youtube.com/watch?v=ef-Qxc4LfPM - List of more famous UFO sightings reports (Chinese) 「完全版」1870年至今的UFO目擊事件&照片大全！歷史上最真實的資料都在這裡「曉涵哥來了」
+- https://www.youtube.com/watch?v=\_\_af1h5faJw - 8200
+
 
 
 
@@ -90,6 +93,7 @@
 - https://www.bbc.com/news/entertainment-arts-65765368 - Taylor Swift fans report 'amnesia' following Eras show - BBC News
   - Taylor Swift fans report 'amnesia' following Eras show
 - https://time.com/6282468/taylor-swift-concert-memory/ - Why You Can't Remember Parts of the Concert You Just Went To | TIME
+- https://news.ycombinator.com/item?id=35540356 - James Flynn on Flynn effect and IQ. White bears from the north pole.
 
 ## TODO
 

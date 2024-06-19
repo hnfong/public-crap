@@ -187,6 +187,9 @@ Computer technology related.
 - https://github.com/ynqa/jnv
 - https://www.oilshell.org/
 - https://www.pgrs.net/2024/03/21/duckdb-as-the-new-jq/
+- https://dt.plumbing/
+- https://www.nushell.sh/
+
 
 
 ## Machine Learning
@@ -271,6 +274,7 @@ Computer technology related.
 - https://hugodutka.com/posts/answering-legal-questions-with-llms/ - Ideas on how to do this
 - https://www.reddit.com/r/LocalLLaMA/comments/191s7x3/a_simple_guide_to_local_llm_finetuning_on_a_mac/
 - https://www.reddit.com/r/LocalLLaMA/comments/1d1bnql/awesome_prompting_techniques/
+- https://huggingface.co/blog/rlhf
 
 
 
@@ -621,6 +625,7 @@ Computer technology related.
 
 ## Archive, Stories, Articles, Reports, etc.
 
+- ☆ https://motherduck.com/blog/big-data-is-dead/
 - ☆ https://www.mostlypython.com/django-from-first-principles-part-2/ - Single-file Django web app tutorial
 - ☆ https://longnow.org/essays/richard-feynman-connection-machine/
 - ☆ http://www.bloomberg.com/graphics/2015-paul-ford-what-is-code/ - A super long, informative and (useless for software professionals) article on everything about code and software. Good intro to outsiders if they are willing to read.

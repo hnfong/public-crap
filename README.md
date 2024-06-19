@@ -7,6 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2024
 
+- [10-ACIM](writings/2024/10-ACIM.md)
 - [09-Prompt Priests](writings/2024/09-Prompt_Priests.md)
 - [08-內需 vs on9工](writings/2024/08-內需_vs_on9工.md)
 - [07-Simulation](writings/2024/07-Simulation.md)
