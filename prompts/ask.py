@@ -268,6 +268,7 @@ NAME_MATCH_OVERRIDE = [
     ("minicpm", MiniCPMTemplateMixin),
     ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
     ("qwen2", ChatMLTemplateMixin),
+    ("tinyllama_v1.1", ChatMLTemplateMixin),
 ]
 
 

@@ -192,7 +192,12 @@
 - https://en.wikipedia.org/wiki/Solomon%27s_shamir (Lost Egyptian technology to cut hard stones???? - Moses was an Egyptian Priest)
 - http://erikvikersveen.blogspot.com/2013/06/theories-about-sacred-circuits-tm.html - Erik Vikersveen: Theories about the Sacred Circuits tm.
 
-## Physics
+## Sciences
+
+- https://www.researchgate.net/publication/363852167_Experimental_indications_of_non-classical_brain_functions
+  - Recent proposals in quantum gravity have suggested that unknown systems can mediate entanglement between two known quantum systems, if and only if the mediator itself is non-classical. This approach may be applicable to the brain, where speculations about quantum operations in consciousness and cognition have a long history. Proton spins of bulk water, which most likely interfere with any brain function, can act as the known quantum systems. If an unknown mediator exists, then NMR methods based on multiple quantum coherence (MQC) can act as an entanglement witness. However, there are doubts that today's NMR signals can contain quantum correlations in general, and specifically in the brain environment. Here, we used a witness protocol based on zero quantum coherence (ZQC) whereby we minimized the classical signals to circumvent the NMR detection limits for quantum correlation. For short repetitive periods, we found evoked signals in most parts of the brain, whereby the temporal appearance resembled heartbeat-evoked potentials (HEPs). We found that those signals had no correlates with any classical NMR contrast. Similar to HEPs, the evoked signal depended on conscious awareness. Consciousness-related or electrophysiological signals are unknown in NMR. Remarkably, these signals only appeared if the local properties of the magnetization were reduced. Our findings suggest that we may have witnessed entanglement mediated by consciousness-related brain functions. Those brain functions must then operate non-classically, which would mean that consciousness is non-classical.
+
+### Physics
 
 - ☆ https://en.wikipedia.org/wiki/Consistent_histories - Seems to be a interpretation of Quantum Mechanics that postulate that the past can be probabilistic?
 - https://aeon.co/essays/shut-up-and-calculate-does-a-disservice-to-quantum-mechanics - ‘Shut up and calculate’ does a disservice to quantum mechanics | Aeon Essays
@@ -245,6 +250,7 @@
 
 ## Lifestyles, Lifehacks
 
+- ☆ https://lovelygreens.com/complete-guide-natural-soap-additives/
 - http://www.trueactivist.com/gab_gallery/how-to-turn-a-beer-can-into-the-only-camping-stove-youll-ever-need/ - Page not found - True Activist
 - https://www.facebook.com/chaplinwu/posts/10203730425715623 - baby wrap
 - http://time.com/12086/how-to-make-your-kids-smarter-10-steps-backed-by-science/ - How To Make Your Kids Smarter: 10 Steps Backed By Science | TIME
@@ -497,6 +503,9 @@
 - https://www.youtube.com/@MUSICPLANETcoverchannel - Japanese music cover channel
 - https://www.youtube.com/@HistoriaCivilis - History
 - https://www.youtube.com/@cateen_hayatosumino - Japanese Pianist. Spectacular
+- https://www.youtube.com/@GeoCosmicREX
+- https://www.youtube.com/@chinatowngangstories
+
 
 ## Interesting Things
 
