@@ -406,7 +406,7 @@ if __name__ == "__main__":
                     if 'codellama-70b' in model: # XXX: Temp hack
                         this_cmd.append("-r")
                         this_cmd.append("EOT: true")
-                    if 'yi-34b' in model: # XXX: Temp hack
+                    if 'yi-34b' or 'starling' in model: # XXX: Temp hack
                         this_cmd.append("-r")
                         this_cmd.append("<|im_end|>")
                     if overrideTemplateMixIn == DeepSeekV2LiteMixin:
