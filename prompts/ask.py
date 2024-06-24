@@ -4,6 +4,29 @@
 This is a script to interact with llama.cpp models. It is a wrapper around the
 llama.cpp binary that allows you to easily infer prompts and get responses. It
 also allows you to use presets to make it easier to use.
+
+Usage:
+
+ask.py [OPTIONS] [PROMPT]
+
+Options:
+
+-h: Show this help message
+-g: Set the no generation limit flag
+
+-P args:           Pass through arguments to llama.cpp
+-C context:        Set the context for the prompt (not very useful)
+-c size:           Set context size prompt (default: 4096)
+-t temperature:    Set the temperature (default: 0.3)
+-f file:           Input prompt file (can be a glob)
+-o file:           Output file (can contain {n}, {m}, {f} for round, model, and file)
+-p preset:         Set the preset to use (default: explain_this)
+-m model:          Set the model to use. This can be a string in which case the first substring match in ~/Downloads or MODELS_PATH will be used.
+-n rounds:         Set the number of rounds to run (default: 1)
+-x ignore_prefix:  Set the prefix to ignore in the prompt file (default: #!)
+-X extra_prompt:   Set the extra prompt to add to the assistant output (default: "")
+-T template:       Set the template to use (default: chatml, but we hardcode some models to use different templates)
+
 """
 
 import getopt
@@ -13,7 +36,7 @@ import subprocess
 import sys
 import tempfile
 
-LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or os.path.expanduser("~/projects/llama.gguf/main")
+LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or os.path.expanduser("~/projects/llama.gguf/llama-cli")
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
 # DEFAULT_MODEL = "dolphin-2_6-phi-2"
@@ -296,7 +319,7 @@ if __name__ == "__main__":
         if inspect.isclass(obj):
             if issubclass(obj, Preset) and obj != Preset:
                 PRESETS[obj.name] = obj
-    opt_list, args = getopt.getopt(sys.argv[1:], "hc:t:f:o:p:m:n:x:g")
+    opt_list, args = getopt.getopt(sys.argv[1:], "hP:C:c:t:f:o:p:m:n:x:gX:T:")
     opts = dict(opt_list)
 
     # Default to explain_this if we don't have a file. If we have a file it's better to assume the file contains a full prompt
@@ -317,8 +340,18 @@ if __name__ == "__main__":
         user_prompt = sys.stdin.read()
 
     template = opts.get("-T") or "chatml"
-    temperature = float(opts.get("-t", 0)) or (0.0 if (int(opts.get("-n", 1)) == 1 and user_prompt is None) else 0.3) # Use 0 if we only run once on a file
-    context = opts.get("-c") or ""
+
+    if opts.get("-t") is not None:
+        temperature = float(opts.get("-t"))
+    elif int(opts.get("-n") or 1) == 1 and user_prompt is None:
+        # Use 0 if we only run once on a file
+        temperature = 0.0
+    else:
+        # Default to 0.3
+        temperature = 0.3
+
+    context = opts.get("-C") or ""
+    gguf_context_size = opts.get("-c", "4096")
     model_name = opts.get("-m") or DEFAULT_MODEL
     if preset is CodeGenerationPreset:
         model_name = DEFAULT_CODE_GENERATION_MODEL
@@ -348,15 +381,24 @@ if __name__ == "__main__":
         assert opts.get("-f") is not None
 
         cmd_args.append("-c")
-        cmd_args.append("4096")
+        cmd_args.append(gguf_context_size)
     else:
         cmd_args.append("-c")
-        cmd_args.append("4096")
+        cmd_args.append(gguf_context_size)
+
+    # Passthrough arguments
+    if opts.get("-P"):
+        cmd_args += opts.get("-P").strip().split()
+
+    # If -n or --n-predict is not in the args, we add "--n-predict", "-2"
+    if '-n' not in cmd_args and '--n-predict' not in cmd_args:
+        cmd_args += ["--n-predict", "-2"] # -2 means fill context
+
 
     class ModelPlaceholder:
         pass
 
-    cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", ModelPlaceholder, "--n-predict", "-2"]  # -2 means fill context
+    cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", ModelPlaceholder]
 
     for model in glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf") or [model_name]:
 
@@ -386,6 +428,7 @@ if __name__ == "__main__":
                 templated_prompt = cp.templated_prompt()
                 print(templated_prompt)
                 temp_prompt_file.write(templated_prompt)
+                temp_prompt_file.write(opts.get("-X") or "") # Extra prompt as prefix of assistant output
                 # Try to fix an apparent llama.cpp bug where it chops off the last newline
                 if templated_prompt[-1] == "\n":
                     temp_prompt_file.write("\n")

@@ -82,6 +82,10 @@
 - https://en.wikipedia.org/wiki/Tunguska_event
 - https://www.youtube.com/watch?v=ef-Qxc4LfPM - List of more famous UFO sightings reports (Chinese) 「完全版」1870年至今的UFO目擊事件&照片大全！歷史上最真實的資料都在這裡「曉涵哥來了」
 - https://www.youtube.com/watch?v=\_\_af1h5faJw - 8200
+- https://en.wikipedia.org/wiki/Mechthild_of_Magdeburg
+  - https://www.youtube.com/watch?v=RdwLlUqdleE - Mysticism of Flowing Light, Spiritual Eroticism & Divine Alienation - Mechthild of Magdeburg
+
+
 
 
 
