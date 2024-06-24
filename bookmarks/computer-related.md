@@ -189,6 +189,7 @@ Computer technology related.
 - https://www.pgrs.net/2024/03/21/duckdb-as-the-new-jq/
 - https://dt.plumbing/
 - https://www.nushell.sh/
+- https://github.com/jhspetersson/fselect
 
 
 
