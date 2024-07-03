@@ -13,6 +13,7 @@ Options:
 
 -h: Show this help message
 -g: Set the no generation limit flag
+-k: Keep the temporary prompt file
 
 -P args:           Pass through arguments to llama.cpp
 -C context:        Set the context for the prompt (not very useful)
@@ -319,7 +320,7 @@ if __name__ == "__main__":
         if inspect.isclass(obj):
             if issubclass(obj, Preset) and obj != Preset:
                 PRESETS[obj.name] = obj
-    opt_list, args = getopt.getopt(sys.argv[1:], "hP:C:c:t:f:o:p:m:n:x:gX:T:")
+    opt_list, args = getopt.getopt(sys.argv[1:], "hkP:C:c:t:f:o:p:m:n:x:gX:T:v")
     opts = dict(opt_list)
 
     # Default to explain_this if we don't have a file. If we have a file it's better to assume the file contains a full prompt
@@ -357,7 +358,7 @@ if __name__ == "__main__":
         model_name = DEFAULT_CODE_GENERATION_MODEL
     cmd_args = []
     assert temperature >= 0
-    cmd_args.append("-t")
+    cmd_args.append("--temp")
     cmd_args.append(str(temperature))
 
     is_mac = "Darwin" in subprocess.run(["uname"], capture_output=True).stdout.decode("utf-8").strip()
@@ -420,18 +421,23 @@ if __name__ == "__main__":
             print(prompt_file)
 
             # Create a temporary file for storing the prompt
-            with tempfile.NamedTemporaryFile(mode="w", delete=True) as temp_prompt_file:
+            with tempfile.NamedTemporaryFile(mode="w", delete=('-k' not in opts)) as temp_prompt_file:
                 cp = CurrentPrompt(prompt.get("user"), context)
                 sys_prompt = prompt.get("system")
                 if sys_prompt:
                     cp.set_system_message(sys_prompt)
                 templated_prompt = cp.templated_prompt()
-                print(templated_prompt)
+                if "-v" in opts:
+                    print(templated_prompt)
                 temp_prompt_file.write(templated_prompt)
-                temp_prompt_file.write(opts.get("-X") or "") # Extra prompt as prefix of assistant output
                 # Try to fix an apparent llama.cpp bug where it chops off the last newline
                 if templated_prompt[-1] == "\n":
                     temp_prompt_file.write("\n")
+                if extra := opts.get("-X"):
+                    # Extra prompt as prefix of assistant output
+                    temp_prompt_file.write(extra)
+                    if extra[-1] != "\n":
+                        temp_prompt_file.write("\n")
                 temp_prompt_file.flush()
 
                 for infer_round in range(int(opts.get("-n") or 1)):
