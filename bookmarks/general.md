@@ -325,6 +325,7 @@
 
 ## Gadgets and Fancy stuff
 
+- ☆ https://www.youtube.com/watch?v=5HVK55hEtjk - Crafting an Amethyst D20, then scratching all the edges! Hedron Rockworks
 - http://iro3d.com/ - Low cost 3D printer that prints high-carbon steel
 - https://doersino.github.io/tixyz/?code=40%2F%28%2B%2Bi-abs%28sin%28t%29\*257-257%29%29 - (t,i,x,y,z) => "creative code golfing"
 - https://www.knivesandtools.com/en/ct/knife-steel-types-and-information.htm (High end steels and brands)
