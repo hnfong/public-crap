@@ -244,6 +244,10 @@ class ZephyrTemplateMixin:
     def templated_prompt(self):
         return f"""<|user|>\n{self.prompt()}</s>\n<|assistant|>\n"""
 
+class Gemma2Mixin:
+    def templated_prompt(self):
+        return f"""<start_of_turn>user\n{self.prompt()}<end_of_turn>\n<start_of_turn>model\n"""
+
 class MiniCPMTemplateMixin:
     def templated_prompt(self):
         return f"""<用户>{self.prompt()}\n<AI>"""
@@ -293,6 +297,7 @@ NAME_MATCH_OVERRIDE = [
     ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
     ("qwen2", ChatMLTemplateMixin),
     ("tinyllama_v1.1", ChatMLTemplateMixin),
+    ("gemma-2", Gemma2Mixin),
 ]
 
 
