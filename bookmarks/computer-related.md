@@ -190,6 +190,7 @@ Computer technology related.
 - https://dt.plumbing/
 - https://www.nushell.sh/
 - https://github.com/jhspetersson/fselect
+- https://news.ycombinator.com/item?id=40864541
 
 
 
