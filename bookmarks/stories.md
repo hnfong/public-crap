@@ -84,6 +84,7 @@
 - https://www.youtube.com/watch?v=\_\_af1h5faJw - 8200
 - https://en.wikipedia.org/wiki/Mechthild_of_Magdeburg
   - https://www.youtube.com/watch?v=RdwLlUqdleE - Mysticism of Flowing Light, Spiritual Eroticism & Divine Alienation - Mechthild of Magdeburg
+- https://www.nejm.org/doi/full/10.1056/NEJMp2401849
 
 
 
