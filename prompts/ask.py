@@ -40,10 +40,8 @@ import tempfile
 LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or os.path.expanduser("~/projects/llama.gguf/llama-cli")
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
-# DEFAULT_MODEL = "dolphin-2_6-phi-2"
 DEFAULT_MODEL = "Meta-Llama-3-8B"
-# DEFAULT_CODE_GENERATION_MODEL = "stable-code-3b" # Sucks
-DEFAULT_CODE_GENERATION_MODEL = "codellama-34b-instruct"
+DEFAULT_CODE_GENERATION_MODEL = "codegeex4-all-9b"
 
 # Patch used to avoid outputting the prompt
 """
@@ -92,6 +90,9 @@ class Preset:
     def templated_prompt(self):
         # Implemented by mixins if needed
         return self.prompt()
+
+    def has_postprocess(self):
+        return False
 
 class EmptyPreset(Preset):
     def __init__(self, user_prompt, context):
@@ -169,15 +170,52 @@ class CodeGenerationPreset(Preset):
     def __init__(self, file_name, offset):
         super().__init__("")
         self.file_name = file_name
-        self.offset = offset
+        self.offset = int(offset)
 
         # assert file size is less than 10kb
-        assert os.path.getsize(self.file_name) < 10000
+        assert os.path.getsize(self.file_name) < 50000
         self.content_bytes = open(self.file_name, "rb").read()
 
         while self.content_bytes[self.offset] != ord(b"\n"):
-            print(repr(self.content_bytes[self.offset]))
             self.offset += 1
+
+    def path(self):
+        return self.file_name
+    def code_language(self):
+        GUESSES = {
+            ".py": "python",
+            ".c": "c",
+            ".cpp": "cpp",
+            ".h": "cpp",
+            ".hpp": "cpp",
+            ".java": "java",
+            ".js": "javascript",
+            ".ts": "typescript",
+            ".html": "html",
+            ".css": "css",
+            ".scss": "scss",
+            ".sass": "sass",
+            ".less": "less",
+            ".php": "php",
+            ".sql": "sql",
+            ".rb": "ruby",
+            ".rs": "rust",
+            ".vim": "vimscript",
+        }
+        for x in range(1, 10):
+            suffix = self.file_name[-x:]
+            if suffix in GUESSES:
+                return GUESSES[suffix]
+
+        # Guess from shebang
+        if self.content_bytes.startswith(b"#!"):
+            shebang = self.content_bytes[:max(self.offset, 128)].split(b"\n")[0]
+            if b"python" in shebang:
+                return "python"
+            if b"bash" in shebang:
+                return "bash"
+            if b"/sh" in shebang:
+                return "bash"
 
     def prefix(self):
         return self.content_bytes[:self.offset].decode("utf-8")
@@ -215,21 +253,24 @@ class InstructionTemplateMixin:
 
 """
 
-class StableCodeCompletionTemplateMixin:
+class CodeGeeX4TemplateMixin:
     def templated_prompt(self):
-        return f"""<fim_prefix>{self.prefix()}<fim_suffix>{self.suffix()}<fim_middle>"""
+        return f"""
 
-class CodeLlamaCompletionTemplateMixin:
-    def templated_prompt(self):
-        return f"""▁<PRE> {self.prefix()}▁<SUF> {self.suffix()}▁<MID>"""
+###PATH:{self.path()}
+###LANGUAGE:{self.code_language()}
+###MODE:LINE
+<|code_suffix|>{self.suffix()}<|code_prefix|>{self.prefix()}<|code_middle|>
+""".strip() + "\n"
 
-class CodeLlama70bTemplateMixin:
-    def templated_prompt(self):
-        return f""" <step> Source: system
+    def postprocess(self, outs):
+        # Remove '<|code_middle|>' (somehow llama.cpp emits this, not sure why)
+        PREFIX = "<|code_middle|>\n"
+        splitter = outs.split(PREFIX)
+        return splitter[-1]
 
-  {self.system_message()} <step> Source: user
-
-  {self.prompt()} <step> Source: assistant""" + "\n\n"
+    def has_postprocess(self):
+        return True
 
 class LlamaTemplateMixin:
     def templated_prompt(self):
@@ -284,7 +325,6 @@ class CommandRPlusTemplateMixin:
 
 NAME_MATCH_OVERRIDE = [
     ("command-r-plus", CommandRPlusTemplateMixin),
-    ("codellama-70b-instruct", CodeLlama70bTemplateMixin),
     ("wizardlm", WizardLmMixin),
     ("phi-3-", Phi3TemplateMixin),
     ("zephyr", ZephyrTemplateMixin),
@@ -338,7 +378,10 @@ if __name__ == "__main__":
     user_prompt = None
     prompt_globs = []
     if opts.get("-f"):
-        prompt_globs = sorted(glob.glob(opts.get("-f")))
+        if preset is CodeGenerationPreset:
+            user_prompt = opts.get("-f")
+        else:
+            prompt_globs = sorted(glob.glob(opts.get("-f")))
     elif args:
         user_prompt = " ".join(args)
     else:
@@ -381,7 +424,8 @@ if __name__ == "__main__":
 
     if preset is CodeGenerationPreset:
         # Force template to be code completion
-        templateMixIn = CodeLlamaCompletionTemplateMixin
+        templateMixIn = CodeGeeX4TemplateMixin
+        context = args[0]
 
         # We need a file for code generation
         assert opts.get("-f") is not None
@@ -414,8 +458,9 @@ if __name__ == "__main__":
                 overrideTemplateMixIn = tm
                 break
         else:
-            print(f"Warning: No template found for {model}, using ChatMLTemplateMixin as a fallback")
-            overrideTemplateMixIn = ChatMLTemplateMixin
+            if overrideTemplateMixIn is None:
+                print(f"Warning: No template found for {model}, using ChatMLTemplateMixin as a fallback")
+                overrideTemplateMixIn = ChatMLTemplateMixin
 
         class CurrentPrompt(overrideTemplateMixIn, preset):
             pass
@@ -423,7 +468,8 @@ if __name__ == "__main__":
             if prompt.get("user") is None:
                 continue
 
-            print(prompt_file)
+            if "-v" in opts:
+                print(prompt_file)
 
             # Create a temporary file for storing the prompt
             with tempfile.NamedTemporaryFile(mode="w", delete=('-k' not in opts)) as temp_prompt_file:
@@ -469,10 +515,11 @@ if __name__ == "__main__":
 
                     this_cmd[this_cmd.index(ModelPlaceholder)] = model
                     this_cmd += ["-f", temp_prompt_file.name]
-                    print(this_cmd)
+                    if "-v" in opts:
+                        print(this_cmd)
                     p = subprocess.Popen(this_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-                    if '-o' not in opts:
+                    if '-o' not in opts and not cp.has_postprocess():
                         while dat := p.stdout.read(1):
                             sys.stdout.buffer.write(dat)
                             sys.stdout.flush()
@@ -481,10 +528,15 @@ if __name__ == "__main__":
 
                     # Check exit code
                     if p.returncode != 0:
-                        print("Error: " + outs[1].decode("utf-8", errors="replace"))
+                        sys.stderr.write("Error: " + outs[1].decode("utf-8", errors="replace"))
+                        sys.stderr.write("\n")
+                        sys.stderr.flush()
                         sys.exit(1)
                     else:
                         outs_s = outs[0].decode("utf-8", errors="replace")
+                        if cp.has_postprocess():
+                            outs_s = cp.postprocess(outs_s)
+
                         if out_file is not None:
                             with open(out_file, "w") as f:
                                 f.write(outs_s)
