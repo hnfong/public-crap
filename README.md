@@ -7,6 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2024
 
+- [11-人做決定之前，係唔知自己會做咩決定](writings/2024/11-人做決定之前_CM_係唔知自己會做咩決定.md)
 - [10-ACIM](writings/2024/10-ACIM.md)
 - [09-Prompt Priests](writings/2024/09-Prompt_Priests.md)
 - [08-內需 vs on9工](writings/2024/08-內需_vs_on9工.md)

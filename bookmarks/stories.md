@@ -186,6 +186,8 @@
 
 - https://zh.wikipedia.org/wiki/%E6%B4%9E%E5%A4%A9
 
+- Sierra del Divisor , El Cono, Pyramid Shaped Mountain
+
 ## Theories
 
 - https://www.youtube.com/watch?v=iFxBq5NBopA - 深度解析《大只佬》全部細節佐證和疑問排解，足以讓人大徹大悟！！
