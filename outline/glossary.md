@@ -233,6 +233,10 @@ Possibly an over-hyped endevour. Suspect the actual process is more calm and ant
 
 A mysterious process where soul/spirit and body is combined.
 
+### Greed / 貪
+
+為咗一啲自己唔係真係想要嘅嘢，不自覺咁放棄咗自己本來有嘅嘢。
+
 ----
 
 # Generated items from ChatGPT...
