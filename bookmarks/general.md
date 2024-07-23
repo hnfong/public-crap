@@ -71,6 +71,7 @@
 
 ## Games
 
+- ☆ https://www.youtube.com/watch?v=lApoqj68FQw (SNES Super Mario World complete walkthrough)
 - https://www.youtube.com/playlist?list=PL7qFBOhneFnTAZmv35MTlWKC3YBmR7T7L  - Starcraft II 廣東話教學
 - https://pathofexile.gamepedia.com/Occultist%27s_Dominion - Interesting RPG (diablo-like) game
 - https://www.klei.com/games/dont-starve - Don't Starve | Klei Entertainment
@@ -237,6 +238,10 @@
   - https://www.nature.com/articles/s41567-023-01993-w
 - https://www.smbc-comics.com/comic/the-talk-3
   - "If you don't talk to your kids about quantum computing... someone else will."
+- Geometric description of Sol-Mars binary system, no gravity, etc.
+  - https://www.youtube.com/watch?v=x0Zs-tKJTGM
+  - https://www.lulu.com/shop/simon-shack-and-nigel-howitt-and-per-berglund-and-patrik-holmqvist/the-tychos-our-geoaxial-binary-system-2nd-edition/hardcover/product-gjjnq58.html
+  - https://www.tychos.space/
 
 ## Geology
 
