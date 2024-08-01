@@ -301,6 +301,16 @@ class DeepSeekV2LiteMixin:
         else:
             return f"""User: {self.prompt()}\n\nAssistant: """
 
+class MistralLargeInstructTemplate(ChatMLTemplateMixin):
+    # "chat_template": "{%- if messages[0]['role'] == 'system' %}\n    {%- set system_message = messages[0]['content'] %}\n    {%- set loop_messages = messages[1:] %}\n{%- else %}\n    {%- set loop_messages = messages %}\n{%- endif %}\n\n{{- bos_token }}\n{%- for message in loop_messages %}\n    {%- if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}\n        {{- raise_exception('After the optional system message, conversation roles must alternate user/assistant/user/assistant/...') }}\n    {%- endif %}\n    {%- if message['role'] == 'user' %}\n        {%- if loop.last and system_message is defined %}\n            {{- '[INST] ' + system_message + '\\n\\n' + message['content'] + '[/INST]' }}\n        {%- else %}\n            {{- '[INST] ' + message['content'] + '[/INST]' }}\n        {%- endif %}\n    {%- elif message['role'] == 'assistant' %}\n        {{- ' ' + message['content'] + eos_token}}\n    {%- else %}\n        {{- raise_exception('Only user and assistant roles are supported, with the exception of an initial optional system message!') }}\n    {%- endif %}\n{%- endfor %}\n",
+    def templated_prompt(self):
+        # wtf? If we really believe the chat_template above, this is the result. But it doesn't work.
+        # return f"""\n    \n\n\n<s>\n\n    \n    \n        \n            [INST] {self.prompt()}[/INST]\n        \n    \n        """
+        return f"""<s>[INST] {self.prompt()}[/INST] """
+
+        # Funny enough, the ChatMLTemplateMixin also works...
+
+
 class Llama3TemplateMixin:
     def templated_prompt(self):
         return f"""
@@ -338,6 +348,7 @@ NAME_MATCH_OVERRIDE = [
     ("qwen2", ChatMLTemplateMixin),
     ("tinyllama_v1.1", ChatMLTemplateMixin),
     ("gemma-2", Gemma2Mixin),
+    ("Mistral-Large-Instruct", MistralLargeInstructTemplate),
 ]
 
 
@@ -451,6 +462,9 @@ if __name__ == "__main__":
     cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", ModelPlaceholder]
 
     for model in glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf") or [model_name]:
+        if '-of-000' in model and '01-of-000' not in model:
+            # Only use the first shard
+            continue
 
         overrideTemplateMixIn = templateMixIn
         for model_substring, tm in NAME_MATCH_OVERRIDE:
