@@ -108,6 +108,7 @@ Computer technology related.
 - ☆ https://github.com/huggingface/candle - Candle is a minimalist ML framework for Rust with a focus on performance (including GPU support) and ease of use
   - https://github.com/EricLBuehler/mistral.rs
 - ☆ https://en.wikipedia.org/wiki/OBS_Studio
+- ☆ https://rqlite.io/ - rqlite is a distributed relational database that combines the simplicity of SQLite with the robustness of a fault-tolerant, highly available cluster
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
 - http://openrefine.org/ - Data analyzing and cleansing tool

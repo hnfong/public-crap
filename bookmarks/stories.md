@@ -85,6 +85,14 @@
 - https://en.wikipedia.org/wiki/Mechthild_of_Magdeburg
   - https://www.youtube.com/watch?v=RdwLlUqdleE - Mysticism of Flowing Light, Spiritual Eroticism & Divine Alienation - Mechthild of Magdeburg
 - https://www.nejm.org/doi/full/10.1056/NEJMp2401849
+- https://www.youtube.com/watch?v=m2g_FM8C5JY - 徐福---秦始皇海外殖民计划的探路者，东渡不仅仅是为了采集仙药/徐福是日本的首位天皇吗？日本人来源之谜，是“倭”还是“吴”/福冈，福岛 都是徐福儿子们的姓氏/绳纹文化与塔岛效应----文明的退化
+- https://www.threads.net/@awgelllll_/post/C-KpGlaBa5v - Glitch in MTR
+  - 好恐怖想知係有結界定咩 我放工係尖沙咀上車around 7:30 p.m. 覆咗陣message 啦 跟住架車開咗幾分鐘我諗住睇下到邊啦 跟住係kick 係金鐘下站尖沙咀個位 但架車行緊周圍隧道係黑色睇唔到係邊啦 但一到站開門又係尖沙咀wtf 好恐怖。。。。。。 但成車人都好似無咩反應咁
+  - 我都試過，仲要唔係得我一個人，我同細佬約咗老豆系太子月台等（我地黃埔出發）坐咗陣之後聽到開門聲我習慣抬頭望吓到邊啦，見到旺角咁我就同坐隔離嘅細佬講下個站落車啦，細佬都抬頭望咗眼我地依家到邊，所以我地就有共識下次開門就唔洗望咩站就直接落車啦，到咗之後就打電話俾老豆話我地到咗唔見你既，搵雙方既時候先發現點解我哋會系旺角站落咗車，我同細佬瞬間好震驚咁望住大家😨😨
+- https://www.threads.net/@mariinrinne/post/C-PbqgRSfkO
+  - 靈異經歷 我本來有個姑媽 話係醫院出世後比姑娘抱去沖涼時浸死 可能係年代又或者係爺嫲係基督徒既關係 無拎返條屍/幫佢改名 完全當姑媽無存在過咁 十幾年後姑媽報夢同阿嫲講識左個男仔想結婚 因為信仰阿嫲唔信純粹當係夢 點知有日男家上門提親 殺到埋身無得再唔理 冥婚事情全部交哂比太婆跟 （太婆信佛有拜神） 事情完結後男家有留低聯絡資料 但又係信仰阿嫲扔哂所有聯絡資料 繼續當姑媽無存在過 ps. 因為阿嫲生既全部都係仔無女 細時問d 大人又唔講 淨係好隱晦話有過 大個問返d 長輩先拼返件事出黎
+
+
 
 
 
@@ -194,6 +202,8 @@
   - https://ja.wikipedia.org/wiki/%E7%A5%9E%E9%9A%A0%E3%81%97
 
 - https://en.wikipedia.org/wiki/Yips
+
+- https://en.wikipedia.org/wiki/Borobudur
 
 ## Theories
 
