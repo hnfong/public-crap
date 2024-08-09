@@ -74,6 +74,11 @@ A fundamentally dualistic process of binary determination. Suspecting that compu
 
 The idea of contrasts. It is everywhere in the physical world and in our ideas. Whereever we can count anything to two, or contrast anything with something else.
 
+### Pan-Omnism
+
+(Coined by the author) Anything anyone believes in is "true".
+
+
 ----
 
 ## Self Related
@@ -126,7 +131,7 @@ The only (if any) valid way to reason about subjective probability. Implies noth
 
 ### Love / Divine love
 
-Connection to all and everything.
+Connectedness. Connection to all and everything.
 
 ### God
 
@@ -135,6 +140,14 @@ Everything that exists. Everything including the apparently good and apparently 
 ### Oneness
 
 See #God.
+
+### Creation
+
+See #God, but there may be difference between the God that exists and the God that creates. The God that exists does not want; the God that creates has intentions; See perhaps #Trinity as well
+
+### Trinity
+
+Traditionally, the Father, the Son and the Holy Spirit;  perhaps one interpretation is Existence, Creation, and Dualism (respectively)?
 
 ### I / Self
 
@@ -237,6 +250,10 @@ A mysterious process where soul/spirit and body is combined.
 
 為咗一啲自己唔係真係想要嘅嘢，不自覺咁放棄咗自己本來有嘅嘢。
 
+### Rubber Duck Debugging
+
+- Possibly a thinly veiled ritual to ask one's "higher self" for help with troubleshooting or brainstorming
+
 ----
 
 # Generated items from ChatGPT...
@@ -251,7 +268,6 @@ A mysterious process where soul/spirit and body is combined.
 - Ayahuasca
 - Blessings
 - Compassion
-- Creation
 - Devotion
 - Divine
 - Divine guidance
