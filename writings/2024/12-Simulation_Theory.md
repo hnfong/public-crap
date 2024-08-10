@@ -1,5 +1,7 @@
 # On Simulation Theory
 
+![image](./images/elvenmage.jpg)
+
 If this is a simulation, and suppose the simulation is basically perfect (because why not?), it's normal to doubt whether it makes any sense at all to discuss this hypothesis that is mostly not "testable" by empirical observations.
 
 This was, essentially, my stance. To be clear, there *are* often credible reports of the simulation glitching out here and there, but that doesn't exclude the possibility of deeply nested layers of simulations (and some of which are not glitching). In short, if you think finding one layer of simulation is the end of the story, you're going to be surprised quite often.
