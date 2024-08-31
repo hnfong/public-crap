@@ -40,7 +40,7 @@ import tempfile
 LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or os.path.expanduser("~/projects/llama.gguf/llama-cli")
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
-DEFAULT_MODEL = "Meta-Llama-3-8B"
+DEFAULT_MODEL = "gemma-2-9b-it"
 DEFAULT_CODE_GENERATION_MODEL = "codegeex4-all-9b"
 
 # Patch used to avoid outputting the prompt

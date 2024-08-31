@@ -91,6 +91,11 @@
   - 我都試過，仲要唔係得我一個人，我同細佬約咗老豆系太子月台等（我地黃埔出發）坐咗陣之後聽到開門聲我習慣抬頭望吓到邊啦，見到旺角咁我就同坐隔離嘅細佬講下個站落車啦，細佬都抬頭望咗眼我地依家到邊，所以我地就有共識下次開門就唔洗望咩站就直接落車啦，到咗之後就打電話俾老豆話我地到咗唔見你既，搵雙方既時候先發現點解我哋會系旺角站落咗車，我同細佬瞬間好震驚咁望住大家😨😨
 - https://www.threads.net/@mariinrinne/post/C-PbqgRSfkO
   - 靈異經歷 我本來有個姑媽 話係醫院出世後比姑娘抱去沖涼時浸死 可能係年代又或者係爺嫲係基督徒既關係 無拎返條屍/幫佢改名 完全當姑媽無存在過咁 十幾年後姑媽報夢同阿嫲講識左個男仔想結婚 因為信仰阿嫲唔信純粹當係夢 點知有日男家上門提親 殺到埋身無得再唔理 冥婚事情全部交哂比太婆跟 （太婆信佛有拜神） 事情完結後男家有留低聯絡資料 但又係信仰阿嫲扔哂所有聯絡資料 繼續當姑媽無存在過 ps. 因為阿嫲生既全部都係仔無女 細時問d 大人又唔講 淨係好隱晦話有過 大個問返d 長輩先拼返件事出黎
+- https://www.youtube.com/watch?v=mLjYWI9UqNQ - 前世記憶改變了他的人生，專訪海南再生人唐江山——塔哥秘談錄 | 塔哥奇談
+  - 塔哥專訪海南再生人唐江山——他是個非常真誠善良的人，雖然並不健談，但也毫無保留的分享了許多經歷，也展示了前世留下的胎記，希望大家能夠從這個訪談中重新開始思考生命的意義，並能夠更積極樂觀的去擁抱當下的生活，因為——靈魂是不滅的，生命是永恒的！
+- https://www.youtube.com/watch?v=bThPGRvFO6U - 【独家专访张靖平】谁说中国没有外星人？亲身调查UFO事件30年，国产最强X-MAN亲述！史上最强，中国UFO事件大揭秘！
+
+
 
 
 
@@ -114,6 +119,7 @@
 
 ## Breadcrumbs
 
+- ☆ 中華道藏 https://zh.daoinfo.org/index.php?title=%E4%B8%AD%E8%8F%AF%E9%81%93%E8%97%8F
 - https://en.wikipedia.org/wiki/Automatic_writing
 - https://en.wikipedia.org/wiki/Eleusinian_Mysteries
 - https://en.wikipedia.org/wiki/Plato%27s_unwritten_doctrines
@@ -134,76 +140,54 @@
 - https://www.youtube.com/watch?v=N9jVxmZ9Mxc - 最神秘的老道：懂希臘神話，會奇門遁甲，當過宰相，寫過醫書，還是歷史上重要的政治家、將軍，也是道門領袖，紫衣象簡，而他的故事，可能給我們描繪了一個真正的大唐……|自說自話的總裁 - YouTube
   - 杜光庭
   - 歷世真仙體道通鑑
-
 - ☆ https://www.youtube.com/watch?v=e8qJsk1j2zE
   - Joscha Bach: Life, Intelligence, Consciousness, AI & the Future of Humans | Lex Fridman Podcast #392
 - https://www.youtube.com/watch?v=szSH59xhZvo - Various ideas here
-
 - ☆☆ https://www.youtube.com/watch?v=PkkN4bJN2pg - Is There Really a Hard Problem of Consciousness? - Joscha Bach, Artificial Intelligence Researcher - YouTube - Is There Really a Hard Problem of Consciousness? - Joscha Bach, Artificial Intelligence Researcher
   - Lots of very interesting discussions. One topic was about where "ideas" come from, where the host describes artistic inspirations as being sudden (eg. songs suddenly form in their mind, without prompting). I suppose Joscha is not as aware of these experiences as artists would be, since they might be a form of channelling (and is very hard to explain with materialistic theories).
-
 - https://www.youtube.com/watch?v=PkkN4bJN2pg - Is There Really a Hard Problem of Consciousness? - Joscha Bach, Artificial Intelligence Researcher - YouTube
   - Joscha Bach and DemystifySci Podcast generally good interactions. Super long podcast. Topics were very broad.
-
 - https://youtu.be/GSKq1vMWMDU?t=8891 - Urability, Origins of Life, and Limits of Phenotype - Dr. Bruce Damer, Biota Institute DSci 179 - YouTube
   - Three paths to AGI - PIM (probability-interconnection-memory)
-
 - https://zh.wikisource.org/wiki/%E4%BA%86%E5%87%A1%E5%9B%9B%E8%A8%93 - 了凡四訓 - 维基文库，自由的图书馆
   - ☆ 導讀 https://www.youtube.com/watch?v=V3QZhDp2XSw https://www.youtube.com/watch?v=ELHW9kgWDsg https://www.youtube.com/watch?v=Rucm_TRwUS8
-
 - ☆ https://www.youtube.com/watch?v=GqDaZTdNSqY - Former White House advisor Pippa Malmgren
-
 - https://en.wikipedia.org/wiki/Billy_Milligan
 - https://en.m.wikipedia.org/wiki/Cryptomnesia - Cryptomnesia - Wikipedia
 - https://www.youtube.com/watch?v=eckqwwu07-8 老子不小心泄露天機，被黃石公寫成道家奇書，一本教你成為帝王將相的書|seeker大师兄 (素書)
 - https://www.youtube.com/watch?v=DtiWP-Tpg3M 1984年，一個工程師研究金字塔，卻意外發現了特斯拉的秘密，原來，這是一齣人類的悲劇……|自說自話的總裁
-
 - 山海經 ?
 - https://www.youtube.com/watch?v=Zu95yxVY93U - 進化論為何被推上神壇？《2012》難道不是科幻？原來，除了進化論，還有另一套學說可以解釋地球、生命和物種的故事，它竟然還和我們的神話，以及末日洪水的真相有關……|自說自話的總裁 - YouTube
-
 - "Intersubjectivity" - Edmund Husserl
 - https://en.wikipedia.org/wiki/Telling_the_bees
 - https://en.wikipedia.org/wiki/Luminescence_dating - "bleached" crystals? internal state after exposure to light????
-
 - https://en.wikipedia.org/wiki/Pythia
-
 - https://www.atlasobscura.com/articles/ancient-egypt-soul-houses-false-doors - In Ancient Egypt, Soul Houses and False Doors Connected the Living and the Dead - Atlas Obscura
-
 - https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%85%83%E7%AF%80%E8%88%87%E7%9B%82%E8%98%AD%E7%9B%86%E7%AF%80#%E9%A6%99%E6%B8%AF - 中元節與盂蘭盆節 - 维基百科，自由的百科全书
   - 海民習俗？
-
 - https://vocus.cc/article/61e95809fd89780001a6730a - 【靈性筆記】「零極限 夏威夷療法」只要簡單五句話，讓你快速清理內在潛意識負能量！｜方格子 vocus
 - https://en.wikipedia.org/wiki/Desert_Fathers - People who followed Jesus at least up to the second step of his journey.
 - https://www.youtube.com/watch?v=r4LoXCl7drQ - Christian Mysticism (a lot of introductory concepts that might be worth investigating)
   - The channel itself is probably very useful too.
 - https://en.wikipedia.org/wiki/Young%27s_Literal_Translation
-
 - https://baike.baidu.hk/item/%E7%9A%87%E7%94%AB%E8%AC%90/430319 皇甫謐
 - https://en.wikipedia.org/wiki/Rosicrucianism
 - https://www.youtube.com/watch?v=Zq0yycpXeYU - ANCIENT SPIRITUAL MYSTERIES: Uncover WHY This KNOWLEDGE Is Being Kept From Us! | Matt LaCroix - YouTube
 - https://www.youtube.com/watch?v=mrA-z28R3y4 - Lots of weird stuff
-
 - https://www.arts.cuhk.edu.hk/~ant/wp-content/uploads/PDF/CourseSyllabus2019-20Term2/ANTH2340_UGEC2960.pdf
-
 - https://www.youtube.com/watch?v=YWmFyRjYQLo 酉陽雜俎：一本超越時空的《大唐驚奇筆記》，我們來說說其中最讓我難忘的三個故事……|自說自話的總裁
   - https://ctext.org/wiki.pl?if=gb&res=895322 酉陽雜俎
-
 - https://en.wikipedia.org/wiki/Astrological_age
 - https://www.youtube.com/watch?v=sAW8T9tBDk8
 - https://zh.wikipedia.org/wiki/%E5%BC%A0%E8%A1%A1
-
 - https://zh.wikipedia.org/wiki/%E6%B4%9E%E5%A4%A9
-
 - Sierra del Divisor , El Cono, Pyramid Shaped Mountain
-
 - https://zh.wikipedia.org/zh-hk/%E6%8B%BE%E9%81%BA%E8%A8%98
-
 - https://en.wikipedia.org/wiki/Spirit_away
   - https://ja.wikipedia.org/wiki/%E7%A5%9E%E9%9A%A0%E3%81%97
-
 - https://en.wikipedia.org/wiki/Yips
-
 - https://en.wikipedia.org/wiki/Borobudur
+- https://en.wikipedia.org/wiki/Acoustic_levitation
 
 ## Theories
 
