@@ -7,6 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2024
 
+- [17-On Evidence](writings/2024/17-On_Evidence.md)
 - [16-英國係維京人嘅後代](writings/2024/16-英國係維京人嘅後代.md)
 - [15-犧牲就係意義修正版](writings/2024/15-犧牲就係意義修正版.md)
 - [14-God Games For Gods](writings/2024/14-God_Games_For_Gods.md)
