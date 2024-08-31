@@ -7,6 +7,10 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2024
 
+- [16-英國係維京人嘅後代](writings/2024/16-英國係維京人嘅後代.md)
+- [15-犧牲就係意義修正版](writings/2024/15-犧牲就係意義修正版.md)
+- [14-God Games For Gods](writings/2024/14-God_Games_For_Gods.md)
+- [13-所有嘢都啱](writings/2024/13-所有嘢都啱.md)
 - [12-Simulation Theory](writings/2024/12-Simulation_Theory.md)
 - [11-人做決定之前，係唔知自己會做咩決定](writings/2024/11-人做決定之前_CM_係唔知自己會做咩決定.md)
 - [10-ACIM](writings/2024/10-ACIM.md)
