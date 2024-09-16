@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 # So apparently, Jekyll (as implemented in Github) even recognizes unicode "？"
 # (65311) and somehow processes the character in the links differently enough
