@@ -192,6 +192,7 @@ Computer technology related.
 - https://www.nushell.sh/
 - https://github.com/jhspetersson/fselect
 - https://news.ycombinator.com/item?id=40864541
+- https://news.ycombinator.com/item?id=41482661
 
 
 
