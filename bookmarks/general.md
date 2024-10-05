@@ -568,3 +568,16 @@
 - https://www.youtube.com/watch?v=LhOSM6uCWxk - The Hardest Trip - Mandelbrot Fractal Zoom - YouTube
 - https://stackoverflow.com/questions/66709289/what-are-the-fastest-algorithms-for-rendering-the-mandelbrot-set - c++ - What are the fastest algorithms for rendering the mandelbrot set? - Stack Overflow
 - https://en.wikipedia.org/wiki/Buddhabrot
+
+## Philanthropy
+
+- https://hkmanna.com/
+
+## Travelling
+
+- https://www.youtube.com/watch?v=hyZQlbSOvPA - Nara travel guide
+- https://www.youtube.com/watch?v=oHPIdwaMdrc - Chiba travel guide.
+- https://www.youtube.com/watch?v=EXlaC57yT9o - 瀞峡 (新宮) travel guide.
+- https://visitkinosaki.com/tc/visitor-info/tattoo-friendly-onsen/
+
+

@@ -35,6 +35,7 @@
 - https://en.wikipedia.org/wiki/Operation_Choke_Point
 - https://www.youtube.com/watch?v=wJuRx1wARUk Clarence and Ginni Thomas: Politics, Power and the Supreme Court (full documentary) | FRONTLINE
 - https://www.bitsaboutmoney.com/archive/the-waste-stream-of-consumer-finance/ - The unspoken industry of credit card debt collecting
+- https://www.youtube.com/watch?v=cZG95grO-vc - How Japan's Biggest Idiot Singlehandedly Destroyed a Political Party (Funny - Tachibana Takashi)
 
 # Big Tech
 
