@@ -83,7 +83,7 @@ Computer technology related.
 - ☆ https://www.quantamagazine.org/why-mathematicians-cant-find-the-hay-in-a-haystack-20180917/ - A really good summary of complexity theory
 - https://en.algorithmica.org/hpc/ - performance computing book titled “Algorithms for Modern Hardware” by Sergey Slotin. Its intended audience is everyone from performance engineers and practical algorithm researchers to undergraduate computer science students who have just finished an advanced algorithms course and want to learn more practical ways to speed up a program
 - ☆ https://en.wikipedia.org/wiki/Post_correspondence_problem - A rather surprising undeciable result.
-
+- https://computerhistory.org/blog/adobe-photoshop-source-code/
 
 
 ## Open Source Tools
@@ -182,6 +182,8 @@ Computer technology related.
 - https://github.com/paul-gauthier/aider - LLM code assistant tool
 - https://github.com/benibela/xidel - Extracting data from HTML
 - https://mise.jdx.dev/how-i-use-mise.html - Standardized CLI environments
+- https://github.com/gelisam/hawk - Similar to awk, but using Haskell as the text-processing language.
+
 
 #### Json
 
@@ -480,6 +482,7 @@ Computer technology related.
 - https://news.ycombinator.com/item?id=39488668
 - https://news.ycombinator.com/item?id=39799755
   - https://oimo.io/works/life/
+- https://gamengen.github.io/ GameNGen, the first game engine powered entirely by a neural model that enables real-time interaction with a complex environment over long trajectories at high quality. GameNGen can interactively simulate the classic game DOOM at over 20 frames per second on a single TPU
 
 
 ## Experimental Languages
