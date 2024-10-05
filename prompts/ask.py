@@ -301,6 +301,13 @@ class DeepSeekV2LiteMixin:
         else:
             return f"""User: {self.prompt()}\n\nAssistant: """
 
+class DeepSeekV25Mixin:
+    def templated_prompt(self):
+        if self.system_message():
+            return f"""<｜begin▁of▁sentence｜>{self.system_message()}<｜User｜>{self.prompt()}<｜Assistant｜>"""
+        else:
+            return f"""<｜begin▁of▁sentence｜><｜User｜>{self.prompt()}<｜Assistant｜>"""
+
 class MistralLargeInstructTemplate(ChatMLTemplateMixin):
     # "chat_template": "{%- if messages[0]['role'] == 'system' %}\n    {%- set system_message = messages[0]['content'] %}\n    {%- set loop_messages = messages[1:] %}\n{%- else %}\n    {%- set loop_messages = messages %}\n{%- endif %}\n\n{{- bos_token }}\n{%- for message in loop_messages %}\n    {%- if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}\n        {{- raise_exception('After the optional system message, conversation roles must alternate user/assistant/user/assistant/...') }}\n    {%- endif %}\n    {%- if message['role'] == 'user' %}\n        {%- if loop.last and system_message is defined %}\n            {{- '[INST] ' + system_message + '\\n\\n' + message['content'] + '[/INST]' }}\n        {%- else %}\n            {{- '[INST] ' + message['content'] + '[/INST]' }}\n        {%- endif %}\n    {%- elif message['role'] == 'assistant' %}\n        {{- ' ' + message['content'] + eos_token}}\n    {%- else %}\n        {{- raise_exception('Only user and assistant roles are supported, with the exception of an initial optional system message!') }}\n    {%- endif %}\n{%- endfor %}\n",
     def templated_prompt(self):
@@ -345,6 +352,7 @@ NAME_MATCH_OVERRIDE = [
     ("llama-3", Llama3TemplateMixin),
     ("minicpm", MiniCPMTemplateMixin),
     ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
+    ("DeepSeek-V2.5", DeepSeekV25Mixin),
     ("qwen2", ChatMLTemplateMixin),
     ("tinyllama_v1.1", ChatMLTemplateMixin),
     ("gemma-2", Gemma2Mixin),
@@ -526,6 +534,13 @@ if __name__ == "__main__":
                     if overrideTemplateMixIn == DeepSeekV2LiteMixin:
                         this_cmd.append("-b")
                         this_cmd.append("256") # https://github.com/ggerganov/llama.cpp/issues/7652#issuecomment-2140568771
+                    if overrideTemplateMixIn == DeepSeekV25Mixin:  # We don't have enough RAM for 4096
+                        ctx_idx = this_cmd.index("-c")
+                        if ctx_idx < 0:
+                            this_cmd.append("-c")
+                            this_cmd.append("2048")
+                        else:
+                            this_cmd[ctx_idx + 1] = "2048"
 
                     this_cmd[this_cmd.index(ModelPlaceholder)] = model
                     this_cmd += ["-f", temp_prompt_file.name]
