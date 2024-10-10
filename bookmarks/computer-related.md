@@ -84,6 +84,7 @@ Computer technology related.
 - https://en.algorithmica.org/hpc/ - performance computing book titled “Algorithms for Modern Hardware” by Sergey Slotin. Its intended audience is everyone from performance engineers and practical algorithm researchers to undergraduate computer science students who have just finished an advanced algorithms course and want to learn more practical ways to speed up a program
 - ☆ https://en.wikipedia.org/wiki/Post_correspondence_problem - A rather surprising undeciable result.
 - https://computerhistory.org/blog/adobe-photoshop-source-code/
+- https://developers.google.com/machine-learning/glossary/
 
 
 ## Open Source Tools
@@ -109,6 +110,9 @@ Computer technology related.
   - https://github.com/EricLBuehler/mistral.rs
 - ☆ https://en.wikipedia.org/wiki/OBS_Studio
 - ☆ https://rqlite.io/ - rqlite is a distributed relational database that combines the simplicity of SQLite with the robustness of a fault-tolerant, highly available cluster
+- ☆ https://github.com/xmake-io/xmake - Xmake = Build backend + Project Generator + Package Manager + [Remote|Distributed] Build + Cache
+- ☆ https://whattheduck.incentius.com/
+  - https://github.com/incentius-foss/WhatTheDuck
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
 - http://openrefine.org/ - Data analyzing and cleansing tool
@@ -183,6 +187,10 @@ Computer technology related.
 - https://github.com/benibela/xidel - Extracting data from HTML
 - https://mise.jdx.dev/how-i-use-mise.html - Standardized CLI environments
 - https://github.com/gelisam/hawk - Similar to awk, but using Haskell as the text-processing language.
+- https://github.com/amber-lang/amber - Programming language that compiles to Bash. It's a high level programming language that makes it easy to create shell scripts.
+- https://github.com/skeeto/w64devkit - Some better mingw32 packaged for modern windows
+- https://github.com/arunsupe/semantic-grep (Grep using word2vec or something...)
+- https://ui.shadcn.com/ - Beautifully designed components that you can copy and paste into your apps.
 
 
 #### Json
@@ -281,7 +289,7 @@ Computer technology related.
 - https://www.reddit.com/r/LocalLLaMA/comments/191s7x3/a_simple_guide_to_local_llm_finetuning_on_a_mac/
 - https://www.reddit.com/r/LocalLLaMA/comments/1d1bnql/awesome_prompting_techniques/
 - https://huggingface.co/blog/rlhf
-
+- https://arxiv.org/abs/2205.14135 - FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness
 
 
 ### Products, Libraries, frameworks, Tools
@@ -297,6 +305,7 @@ Computer technology related.
 - https://github.com/Unstructured-IO Open-Source Pre-Processing Tools for Unstructured Data
 - https://news.ycombinator.com/item?id=38487199 - This is a fascinating read about the optimizability of standard machine learning tooling
 - https://www.reddit.com/r/LocalLLaMA/comments/1bv3hl4/anythingllm_an_opensource_allinone_ai_desktop_app/
+- https://coral.ai/products/accelerator/ - A USB accessory that brings accelerated ML inferencing to existing systems.
 
 
 ##### RAG
@@ -433,6 +442,8 @@ Computer technology related.
   - https://www.nature.com/articles/s41586-024-07335-x
   - https://github.com/facebookresearch/fairseq/
   - https://ai.meta.com/research/no-language-left-behind/
+- https://github.com/unslothai/unsloth - good reviews
+- https://www.reddit.com/r/LocalLLaMA/comments/1eqec8v/an_extensive_open_source_collection_of_rag/ - RAG discussions
 
 
 ### Toys
@@ -442,6 +453,8 @@ Computer technology related.
 - https://sumplete.com/about/ - ChatGPT written game
 - https://github.com/xenova/transformers.js - Run 🤗 Transformers in your browser!
 - https://github.com/karpathy/nanoGPT - The simplest, fastest repository for training/finetuning medium-sized GPTs.
+  - https://github.com/karpathy/llm.c
+  - https://github.com/regrettable-username/llm.metal
 - https://github.com/nat/openplayground - An LLM playground you can run on your laptop.
 - https://www.ermine.ai/ - Speech recognition in browser
 - https://github.com/Torantulino/Auto-GPT - AutoGPT is the vision of accessible AI for everyone, to use and to build on. Our mission is to provide the tools, so that you can focus on what matters.
@@ -696,6 +709,7 @@ Computer technology related.
 - https://medium.com/@laurajavier/google-slides-is-actually-hilarious-83c1ced857ee - Google Slides is Actually Hilarious | by Laura Javier | Medium
 - https://migeel.sk/blog/2024/01/02/building-a-self-contained-game-in-csharp-under-2-kilobytes/
 - https://papereditor.app/dev - 9 years of Apple text editor solo dev
+- https://loglog.games/blog/leaving-rust-gamedev/
 
 
 ## Python
