@@ -7,6 +7,11 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2024
 
+- [22-Toxic Information](writings/2024/22-Toxic_Information.md)
+- [21-Discrete is Harder](writings/2024/21-Discrete_is_Harder.md)
+- [20-Decisions](writings/2024/20-Decisions.md)
+- [19-Why is the sky blue](writings/2024/19-Why_is_the_sky_blue.md)
+- [18-偷聽](writings/2024/18-偷聽.md)
 - [17-On Evidence](writings/2024/17-On_Evidence.md)
 - [16-英國係維京人嘅後代](writings/2024/16-英國係維京人嘅後代.md)
 - [15-犧牲就係意義修正版](writings/2024/15-犧牲就係意義修正版.md)
@@ -330,6 +335,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [spirit](outline/spirit.md)
 - [speculative stories](outline/speculative_stories.md)
 - [software-engineering](outline/software-engineering.md)
+- [reviews of popular fiction](outline/reviews_of_popular_fiction.md)
 - [portals](outline/portals.md)
 - [law](outline/law.md)
 - [incantations](outline/incantations.md)
