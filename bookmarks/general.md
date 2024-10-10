@@ -248,6 +248,8 @@
   - https://www.youtube.com/watch?v=x0Zs-tKJTGM
   - https://www.lulu.com/shop/simon-shack-and-nigel-howitt-and-per-berglund-and-patrik-holmqvist/the-tychos-our-geoaxial-binary-system-2nd-edition/hardcover/product-gjjnq58.html
   - https://www.tychos.space/
+- https://www.youtube.com/watch?v=zsA3X40nz9w - Duracell PowerCheck: A genius idea which didn't last that long
+
 
 ## Geology
 
