@@ -37,6 +37,10 @@
 - https://www.bitsaboutmoney.com/archive/the-waste-stream-of-consumer-finance/ - The unspoken industry of credit card debt collecting
 - https://www.youtube.com/watch?v=cZG95grO-vc - How Japan's Biggest Idiot Singlehandedly Destroyed a Political Party (Funny - Tachibana Takashi)
 
+# Economics
+
+- https://asteriskmag.com/issues/07/want-growth-kill-small-businesses
+
 # Big Tech
 
 - https://arstechnica.com/information-technology/2021/05/twitters-latest-robo-nag-will-flag-harmful-language-before-you-post/ - Twitter’s latest robo-nag will flag “harmful” language before you post | Ars Technica
