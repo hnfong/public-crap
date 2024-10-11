@@ -1,5 +1,7 @@
 # Why
 
+![image](./images/bluesky.jpg)
+
 ```
 Why is the sky blue?
 To match the color of the sea
