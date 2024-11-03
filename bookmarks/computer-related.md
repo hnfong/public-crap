@@ -114,6 +114,7 @@ Computer technology related.
 - ☆ https://github.com/xmake-io/xmake - Xmake = Build backend + Project Generator + Package Manager + [Remote|Distributed] Build + Cache
 - ☆ https://whattheduck.incentius.com/
   - https://github.com/incentius-foss/WhatTheDuck
+- ☆ https://docs.pygfx.org/stable/index.html Pygfx (pronounced “py-graphics”) is built on wgpu, enabling superior performance and reliability compared to OpenGL-based solutions.
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
 - http://openrefine.org/ - Data analyzing and cleansing tool
@@ -445,6 +446,8 @@ Computer technology related.
   - https://ai.meta.com/research/no-language-left-behind/
 - https://github.com/unslothai/unsloth - good reviews
 - https://www.reddit.com/r/LocalLLaMA/comments/1eqec8v/an_extensive_open_source_collection_of_rag/ - RAG discussions
+- https://github.com/microsoft/BitNet (1-bit llm)
+
 
 
 ### Toys
@@ -497,6 +500,7 @@ Computer technology related.
 - https://news.ycombinator.com/item?id=39799755
   - https://oimo.io/works/life/
 - https://gamengen.github.io/ GameNGen, the first game engine powered entirely by a neural model that enables real-time interaction with a complex environment over long trajectories at high quality. GameNGen can interactively simulate the classic game DOOM at over 20 frames per second on a single TPU
+- https://replicate.com/blog/flux-is-fast-and-open-source - Super fast image generation from prompt
 
 
 ## Experimental Languages
