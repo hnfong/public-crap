@@ -103,6 +103,10 @@
 
 
 
+### Interesting / Fun stories
+
+- https://www.youtube.com/watch?v=oAgGirY-GUQ - Divorce Expert interview from "The Diary of a CEO"
+
 
 
 
