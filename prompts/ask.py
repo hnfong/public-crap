@@ -41,7 +41,7 @@ LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or os.path.expanduser("~/proje
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
 DEFAULT_MODEL = "gemma-2-9b-it"
-DEFAULT_CODE_GENERATION_MODEL = "codegeex4-all-9b"
+DEFAULT_CODE_GENERATION_MODEL = "qwen2.5-coder-7b-instruct"
 
 # Patch used to avoid outputting the prompt
 """
@@ -135,7 +135,13 @@ class AskUserPreset(Preset):
     def prompt(self):
         if self._user_question is None:
             self._user_question = input("What's your question? ")
-        return f"{self._user_question}\n(Please be concise unless the answer requires in-depth analysis)\n---\n\n{self.user_prompt}"
+
+        if len(self.user_prompt) < 1024:
+            return f"{self._user_question}\n(Please be concise unless the answer requires in-depth analysis)\n---\n\n{self.user_prompt}"
+        else:
+            # For longer contexts, repeat the question/instruction at the end
+            return f"{self._user_question}\n(Please be concise unless the answer requires in-depth analysis)\n--- Start of data ---\n\n{self.user_prompt}\n\n--- End of data ---\n\n{self._user_question}\n(Please be concise unless the answer requires in-depth analysis)\n"
+
 
 class SummarizePreset(Preset):
     def __init__(self, user_prompt, context):
@@ -430,7 +436,7 @@ if __name__ == "__main__":
         temperature = 0.3
 
     context = opts.get("-C") or ""
-    gguf_context_size = opts.get("-c", "4096")
+    gguf_context_size = opts.get("-c", "0")
     model_name = opts.get("-m") or DEFAULT_MODEL
     if preset in (CodeGenerationPreset, AskUserPreset, CodeReviewPreset):
         model_name = DEFAULT_CODE_GENERATION_MODEL
