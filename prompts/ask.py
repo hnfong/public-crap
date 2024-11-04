@@ -126,6 +126,17 @@ class ExplainPreset(Preset):
         else:
             return f"Please explain the following.\n```{self.user_prompt}```\n"
 
+class AskUserPreset(Preset):
+    def __init__(self, user_prompt, context):
+        super().__init__(user_prompt)
+        self._system_message = "You are a helpful, thoughtful and creative AI assistant."
+        self._user_question = None
+    name = "ask_user"
+    def prompt(self):
+        if self._user_question is None:
+            self._user_question = input("What's your question? ")
+        return f"{self._user_question}\n(Please be concise unless the answer requires in-depth analysis)\n---\n\n{self.user_prompt}"
+
 class SummarizePreset(Preset):
     def __init__(self, user_prompt, context):
         super().__init__(user_prompt)
@@ -421,7 +432,7 @@ if __name__ == "__main__":
     context = opts.get("-C") or ""
     gguf_context_size = opts.get("-c", "4096")
     model_name = opts.get("-m") or DEFAULT_MODEL
-    if preset is CodeGenerationPreset:
+    if preset in (CodeGenerationPreset, AskUserPreset, CodeReviewPreset):
         model_name = DEFAULT_CODE_GENERATION_MODEL
     cmd_args = []
     assert temperature >= 0
