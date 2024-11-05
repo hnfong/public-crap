@@ -30,14 +30,16 @@ Options:
 
 """
 
+import datetime
 import getopt
 import glob
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
 
-LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or os.path.expanduser("~/projects/llama.gguf/llama-cli")
+LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or shutil.which('llama-cli') or os.path.expanduser("~/projects/llama.gguf/llama-cli")
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
 DEFAULT_MODEL = "gemma-2-9b-it"
@@ -94,6 +96,9 @@ class Preset:
     def has_postprocess(self):
         return False
 
+    def override_model(self):
+        return None
+
 class EmptyPreset(Preset):
     def __init__(self, user_prompt, context):
         super().__init__(user_prompt)
@@ -131,12 +136,72 @@ class AskUserPreset(Preset):
         super().__init__(user_prompt)
         self._system_message = "You are a helpful, thoughtful and creative AI assistant."
         self._user_question = None
+        self._override_model = None
     name = "ask_user"
-    def prompt(self):
-        if self._user_question is None:
-            self._user_question = input("What's your question? ")
 
-        if len(self.user_prompt) < 1024:
+    example_ini = """
+[code_review]
+question = Review this code.
+
+[fill_in]
+question = Fill in the parts marked with "..." according to the comments. Keep the comments except "...".
+
+[whatswrong]
+question = Identify errors (if any) with this code and suggest replacements. Just write out the code that needs to be changed,.
+
+[didwemiss]
+question = Did we miss anything? Be creative and thoughtful. Do not point out mundane things just for the sake of answering though.
+model = gemma-2-9b
+"""
+
+    def override_model(self):
+        return self._override_model
+
+    def prompt(self):
+        import configparser
+        if self._user_question is None:
+            # Read user-defined preset questions from ~/.config/ask/presets.ini using configparser
+            config = configparser.ConfigParser()
+            config.read(os.path.expanduser("~/.config/ask/presets.ini"))
+            presets = config.sections()
+            choices = {}
+            models = {}
+            for i, preset in enumerate(presets, 1):
+                print(f"{i}. {preset}: {config[preset]['question']}")
+                choices[i] = config[preset]['question']
+                models[i] = config[preset].get('model') # OK to be None
+
+            cache_dir = os.path.expanduser("~/.cache/ask")
+            os.makedirs(cache_dir, exist_ok=True)
+            history_file = os.path.join(cache_dir, "history.txt")
+
+            # In addition to presets, show the last 3 entries from ~/.cache/ask/history.txt . These history choices are to be named 'a', 'b', 'c' (to separate them from the numeric ones)
+            with open(history_file, "r") as f:
+                history = f.readlines()
+                for i, entry in enumerate(history[-3:], 1):
+                    abc = chr(i + ord('a') - 1)
+                    qqq = entry.strip().split('\t', 1)[-1]
+                    print(f"{abc}. " + qqq)
+                    choices[abc] = qqq
+
+            user_input = input("Choose a preset (or type a custom question): ")
+            if user_input.isdigit() and 1 <= int(user_input) <= len(presets):
+                self._user_question = choices[int(user_input)]
+                self._override_model = models[int(user_input)]
+            elif user_input.strip() in choices.keys():
+                self._user_question = choices[user_input.strip()]
+            else:
+                self._user_question = user_input
+
+            # If the user inputs a single number, replace it with the preset value instead
+            if self._user_question.isdigit() and 1 <= int(self._user_question) <= len(presets):
+                self._user_question = config[presets[int(self._user_question) - 1]]['question']
+
+            # Remember the question in ~/.cache/ask/history.txt
+            with open(history_file, "a") as f:
+                f.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\t{self._user_question}\n")
+
+        if len(self.user_prompt) < 4096:
             return f"{self._user_question}\n(Please be concise unless the answer requires in-depth analysis)\n---\n\n{self.user_prompt}"
         else:
             # For longer contexts, repeat the question/instruction at the end
@@ -441,6 +506,7 @@ if __name__ == "__main__":
     if preset in (CodeGenerationPreset, AskUserPreset, CodeReviewPreset):
         model_name = DEFAULT_CODE_GENERATION_MODEL
     cmd_args = []
+    cmd_args.append("--no-escape")  # llama.cpp just doesn't do sane defaults...
     assert temperature >= 0
     cmd_args.append("--temp")
     cmd_args.append(str(temperature))
@@ -532,6 +598,17 @@ if __name__ == "__main__":
 
                 for infer_round in range(int(opts.get("-n") or 1)):
                     out_file = opts.get("-o")
+                    if '-m' not in opts: # allow overriding the model if the user did not specify it.
+                        if cp.override_model() is not None:
+                            try:
+                                try_model = glob.glob(f"{MODELS_PATH}/*{cp.override_model()}*.gguf")[0]
+                                if not os.path.isfile(try_model):
+                                    raise Exception(try_model + " exists but is not a file?!")
+                                    model = try_model
+                            except Exception as e:
+                                sys.stderr.write(f"Error using {cp.override_model()} as model: {e}")
+                                sys.stderr.write("\n")
+                                sys.stderr.flush()
                     if out_file is not None:
                         out_file = (out_file.
                             replace('{n}', str(infer_round)).
