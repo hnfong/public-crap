@@ -43,7 +43,7 @@ LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or shutil.which('llama-cli') o
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
 DEFAULT_MODEL = "gemma-2-9b-it"
-DEFAULT_CODE_GENERATION_MODEL = "qwen2.5-coder-7b-instruct"
+DEFAULT_CODE_GENERATION_MODEL = "SuperNova-Medius"
 
 # Patch used to avoid outputting the prompt
 """
@@ -604,7 +604,7 @@ if __name__ == "__main__":
                                 try_model = glob.glob(f"{MODELS_PATH}/*{cp.override_model()}*.gguf")[0]
                                 if not os.path.isfile(try_model):
                                     raise Exception(try_model + " exists but is not a file?!")
-                                    model = try_model
+                                model = try_model
                             except Exception as e:
                                 sys.stderr.write(f"Error using {cp.override_model()} as model: {e}")
                                 sys.stderr.write("\n")
