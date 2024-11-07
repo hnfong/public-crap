@@ -43,32 +43,8 @@ LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or shutil.which('llama-cli') o
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
 DEFAULT_MODEL = "gemma-2-9b-it"
-DEFAULT_CODE_GENERATION_MODEL = "SuperNova-Medius"
-
-# Patch used to avoid outputting the prompt
-"""
-diff --git a/examples/main/main.cpp b/examples/main/main.cpp
-index 5668b011..0acacd2e 100644
---- a/examples/main/main.cpp
-+++ b/examples/main/main.cpp
-@@ -733,13 +733,15 @@ int main(int argc, char ** argv) {
-         if (input_echo && display) {
-             for (auto id : embd) {
-                 const std::string token_str = llama_token_to_piece(ctx, id);
--                printf("%s", token_str.c_str());
-+                // printf("%s", token_str.c_str());
-
-                 if (embd.size() > 1) {
-                     input_tokens.push_back(id);
-                 } else {
-                     output_tokens.push_back(id);
-                     output_ss << token_str;
-+                    printf("%s", token_str.c_str());
-+
-                 }
-             }
-             fflush(stdout);
-"""
+# DEFAULT_CODE_GENERATION_MODEL = "SuperNova-Medius"
+DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5.1-Coder-7B"
 
 # Presets
 
@@ -167,7 +143,9 @@ model = gemma-2-9b
             choices = {}
             models = {}
             for i, preset in enumerate(presets, 1):
-                print(f"{i}. {preset}: {config[preset]['question']}")
+                question = config[preset]['question']
+                # print(f"{i}. {preset}: {question[:30]}")
+                print(f"{i}. \033[1m{preset}\033[0m: {question[:30]}")
                 choices[i] = config[preset]['question']
                 models[i] = config[preset].get('model') # OK to be None
 
@@ -202,7 +180,7 @@ model = gemma-2-9b
                 f.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\t{self._user_question}\n")
 
         if len(self.user_prompt) < 4096:
-            return f"{self._user_question}\n(Please be concise unless the answer requires in-depth analysis)\n---\n\n{self.user_prompt}"
+            return f"{self._user_question}\n(Please be concise unless the answer requires in-depth analysis)\n--- Start of data ---\n\n{self.user_prompt}\n\n--- End of data ---\n"
         else:
             # For longer contexts, repeat the question/instruction at the end
             return f"{self._user_question}\n(Please be concise unless the answer requires in-depth analysis)\n--- Start of data ---\n\n{self.user_prompt}\n\n--- End of data ---\n\n{self._user_question}\n(Please be concise unless the answer requires in-depth analysis)\n"
@@ -436,6 +414,7 @@ NAME_MATCH_OVERRIDE = [
     ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
     ("DeepSeek-V2.5", DeepSeekV25Mixin),
     ("qwen2", ChatMLTemplateMixin),
+    ("Qwen2", ChatMLTemplateMixin),
     ("tinyllama_v1.1", ChatMLTemplateMixin),
     ("gemma-2", Gemma2Mixin),
     ("Mistral-Large-Instruct", MistralLargeInstructTemplate),
