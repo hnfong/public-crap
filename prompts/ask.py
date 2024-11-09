@@ -60,7 +60,10 @@ MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/"
 
 DEFAULT_MODEL = "gemma-2-9b-it"
 # DEFAULT_CODE_GENERATION_MODEL = "SuperNova-Medius"
-DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5.1-Coder-7B"
+DEFAULT_CODE_INSTRUCT_MODEL = "Qwen2.5.1-Coder-7B-Instruct"
+
+# Apparently the instruct models got their <fim> capabilities tuned away. (DeepSeek v2.5 seems fine though)
+DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5-Coder-7B."
 
 # Presets
 
@@ -252,8 +255,8 @@ class CodeGenerationPreset(Preset):
         assert os.path.getsize(self.file_name) < 50000
         self.content_bytes = open(self.file_name, "rb").read()
 
-        while self.content_bytes[self.offset] != ord(b"\n"):
-            self.offset += 1
+        # while self.content_bytes[self.offset] != ord(b"\n"):
+            # self.offset += 1
 
     def path(self):
         return self.file_name
@@ -304,12 +307,19 @@ class CodeGenerationPreset(Preset):
 class QwenFimMixin:
     def templated_prompt(self):
         return f"""
-<|fim_prefix|>
-{self.prefix()}
-<|fim_suffix|>
-{self.suffix()}
-<|fim_middle|>
+<|fim_prefix|>{self.prefix()}<|fim_suffix|>{self.suffix()}<|fim_middle|>
 """.strip() + "\n"
+
+    def postprocess(self, outs):
+        ends = (' [end of text]', '[end of text]', )
+        for end in ends:
+            if end in outs:
+                return outs.split(end)[0]
+        return outs
+
+    def has_postprocess(self):
+        return True
+
 
 class ChatMLTemplateMixin:
     def templated_prompt(self):
@@ -515,7 +525,9 @@ if __name__ == "__main__":
     context = opts.get("-C") or ""
     gguf_context_size = opts.get("-c", "0")
     model_name = opts.get("-m") or DEFAULT_MODEL
-    if preset in (CodeGenerationPreset, AskUserPreset, CodeReviewPreset):
+    if preset in (AskUserPreset, CodeReviewPreset):
+        model_name = DEFAULT_CODE_INSTRUCT_MODEL
+    if preset in (CodeGenerationPreset,):
         model_name = DEFAULT_CODE_GENERATION_MODEL
     cmd_args = []
     cmd_args.append("--no-escape")  # llama.cpp just doesn't do sane defaults...
@@ -561,7 +573,7 @@ if __name__ == "__main__":
         cmd_args.append(gguf_context_size)
 
         cmd_args.append("--n-predict")
-        cmd_args.append("400")
+        cmd_args.append("200")
     else:
         cmd_args.append("-c")
         cmd_args.append(gguf_context_size)
