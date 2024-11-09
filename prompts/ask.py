@@ -30,6 +30,22 @@ Options:
 
 """
 
+# Note that we are using --verbose-prompt by assuming this patch is applied:
+VERBOSE_PROMPT_PATCH = """
+diff --git a/examples/main/main.cpp b/examples/main/main.cpp
+index 374ed47a..36d6cd51 100644
+--- a/examples/main/main.cpp
++++ b/examples/main/main.cpp
+@@ -496,7 +496,7 @@ int main(int argc, char ** argv) {
+     }
+
+     bool is_antiprompt        = false;
+-    bool input_echo           = true;
++    bool input_echo           = params.verbose_prompt;
+     bool display              = true;
+     bool need_to_save_session = !path_session.empty() && n_matching_session_tokens < embd_inp.size();
+"""
+
 import datetime
 import getopt
 import glob
@@ -54,7 +70,7 @@ class Preset:
         self._system_message = ""
 
     def prompt(self):
-        raise NotImplementedError("Please implement this method in a subclass")
+        raise NotImplementedError("Please implement this method in a subclass", self.__class__)
 
     def system_message(self):
         assert self._system_message is not None
@@ -242,6 +258,8 @@ class CodeGenerationPreset(Preset):
     def path(self):
         return self.file_name
     def code_language(self):
+        # XXX: The CodeGeeX4 model wants the language. We may or may not be
+        # using this model, but the code seems generally useful enough.
         GUESSES = {
             ".py": "python",
             ".c": "c",
@@ -282,6 +300,16 @@ class CodeGenerationPreset(Preset):
 
     def suffix(self):
         return self.content_bytes[self.offset:].decode("utf-8")
+
+class QwenFimMixin:
+    def templated_prompt(self):
+        return f"""
+<|fim_prefix|>
+{self.prefix()}
+<|fim_suffix|>
+{self.suffix()}
+<|fim_middle|>
+""".strip() + "\n"
 
 class ChatMLTemplateMixin:
     def templated_prompt(self):
@@ -420,6 +448,11 @@ NAME_MATCH_OVERRIDE = [
     ("Mistral-Large-Instruct", MistralLargeInstructTemplate),
 ]
 
+FIM_MATCH_OVERRIDE = [
+    ("Qwen2", QwenFimMixin),
+    ("codegeex4", CodeGeeX4TemplateMixin),
+]
+
 
 def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:"):
     lines = []
@@ -445,7 +478,7 @@ if __name__ == "__main__":
         if inspect.isclass(obj):
             if issubclass(obj, Preset) and obj != Preset:
                 PRESETS[obj.name] = obj
-    opt_list, args = getopt.getopt(sys.argv[1:], "hkP:C:c:t:f:o:p:m:n:x:gX:T:v")
+    opt_list, args = getopt.getopt(sys.argv[1:], "qhkP:C:c:t:f:o:p:m:n:x:gX:T:v")
     opts = dict(opt_list)
 
     # Default to explain_this if we don't have a file. If we have a file it's better to assume the file contains a full prompt
@@ -495,7 +528,12 @@ if __name__ == "__main__":
         cmd_args.append("-ngl")
         cmd_args.append("99")
 
+    if "-q" not in opts:
+        # If not quiet mode, verbose prompt
+        cmd_args.append("--verbose-prompt")
+
     templateMixIn = None
+    overrideTemplateMixIn = None
     if template == "chatml":
         templateMixIn = ChatMLTemplateMixin
     elif template == "llama":
@@ -505,14 +543,25 @@ if __name__ == "__main__":
 
     if preset is CodeGenerationPreset:
         # Force template to be code completion
-        templateMixIn = CodeGeeX4TemplateMixin
-        context = args[0]
+        model = glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf")[0]
+        for model_substring, tm in FIM_MATCH_OVERRIDE:
+            if model_substring.lower() in model.lower():
+                overrideTemplateMixIn = tm
+                break
+        else:
+            if overrideTemplateMixIn is None:
+                print(f"Warning: No template found for {model}, using QwenFimMixin as a fallback")
+                overrideTemplateMixIn = QwenFimMixin
 
+        context = args[0]
         # We need a file for code generation
         assert opts.get("-f") is not None
 
         cmd_args.append("-c")
         cmd_args.append(gguf_context_size)
+
+        cmd_args.append("--n-predict")
+        cmd_args.append("400")
     else:
         cmd_args.append("-c")
         cmd_args.append(gguf_context_size)
@@ -531,20 +580,23 @@ if __name__ == "__main__":
 
     cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", ModelPlaceholder]
 
+    assert_count = 0
     for model in glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf") or [model_name]:
         if '-of-000' in model and '01-of-000' not in model:
             # Only use the first shard
             continue
+        assert_count += 1
+        assert assert_count == 1, "We need to refactor this so that we don't iterate on the model since we actually don't need to"
 
-        overrideTemplateMixIn = templateMixIn
-        for model_substring, tm in NAME_MATCH_OVERRIDE:
-            if model_substring.lower() in model.lower():
-                overrideTemplateMixIn = tm
-                break
-        else:
-            if overrideTemplateMixIn is None:
-                print(f"Warning: No template found for {model}, using ChatMLTemplateMixin as a fallback")
-                overrideTemplateMixIn = ChatMLTemplateMixin
+        if overrideTemplateMixIn is None:
+            for model_substring, tm in NAME_MATCH_OVERRIDE:
+                if model_substring.lower() in model.lower():
+                    overrideTemplateMixIn = tm
+                    break
+            else:
+                if overrideTemplateMixIn is None:
+                    print(f"Warning: No template found for {model}, using ChatMLTemplateMixin as a fallback")
+                    overrideTemplateMixIn = ChatMLTemplateMixin
 
         class CurrentPrompt(overrideTemplateMixIn, preset):
             pass
