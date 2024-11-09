@@ -294,9 +294,7 @@ Computer technology related.
 - https://arxiv.org/abs/2205.14135 - FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness
 
 
-### Products, Libraries, frameworks, Tools
-
-#### Libraries / Tools
+### Libraries / Tools
 
 - ☆ https://aihorde.net/
 - ☆ https://annas-archive.org/datasets
@@ -310,7 +308,7 @@ Computer technology related.
 - https://coral.ai/products/accelerator/ - A USB accessory that brings accelerated ML inferencing to existing systems.
 
 
-##### RAG
+### RAG
 
 - https://github.com/explodinggradients/ragas
   - https://news.ycombinator.com/item?id=39780114
@@ -318,7 +316,7 @@ Computer technology related.
   - https://huggingface.co/nvidia/Llama3-ChatQA-1.5-8B
 
 
-#### Audio / Speech
+### Audio / Speech
 - https://github.com/coqui-ai/TTS - text to speech (see https://news.ycombinator.com/item?id=26790951 )
 - https://sites.research.google/usm/ - Universal Speech Model -  Towards Automatic Speech Recognition for All
 - https://huggingface.co/alvanlii/whisper-small-cantonese/tree/main - alvanlii/whisper-small-cantonese at main
@@ -331,7 +329,7 @@ Computer technology related.
 - https://github.com/mustafaaljadery/lightning-whisper-mlx
 
 
-#### Images / Videos
+### Images / Videos
 
 - https://www.chenyang.co/diffusion.html - Diffusion models from scratch, from a new theoretical perspective
 - https://github.com/nerdyrodent/VQGAN-CLIP Just playing with getting VQGAN+CLIP running locally, rather than having to use colab.
@@ -346,7 +344,7 @@ Computer technology related.
 - https://huggingface.co/liuhaotian/llava-v1.6-vicuna-13b
 
 
-#### Text, LLM, etc.
+### Text, LLM, etc.
 
 - ☆ https://huggingface.co/numind/NuExtract - fine-tuned on a private high-quality synthetic dataset for information extraction. To use the model, provide an input text (less than 2000 tokens) and a JSON template describing the information you need to extract.
 - ☆ https://www.reddit.com/r/LocalLLaMA/comments/1dtt32y/new_collection_of_llama_mistral_phi_qwen_and/
