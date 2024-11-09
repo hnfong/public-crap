@@ -531,6 +531,9 @@ if __name__ == "__main__":
         model_name = DEFAULT_CODE_GENERATION_MODEL
     cmd_args = []
     cmd_args.append("--no-escape")  # llama.cpp just doesn't do sane defaults...
+    assert temperature >= 0
+    cmd_args.append("--temp")
+    cmd_args.append(str(temperature))
 
     is_mac = "Darwin" in subprocess.run(["uname"], capture_output=True).stdout.decode("utf-8").strip()
     if opts.get("-g") or is_mac:
@@ -571,14 +574,9 @@ if __name__ == "__main__":
 
         cmd_args.append("--n-predict")
         cmd_args.append("200")
-        temperature = 0.1
     else:
         cmd_args.append("-c")
         cmd_args.append(gguf_context_size)
-
-    assert temperature >= 0
-    cmd_args.append("--temp")
-    cmd_args.append(str(temperature))
 
     # Passthrough arguments
     if opts.get("-P"):
