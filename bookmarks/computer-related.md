@@ -115,6 +115,7 @@ Computer technology related.
 - ☆ https://whattheduck.incentius.com/
   - https://github.com/incentius-foss/WhatTheDuck
 - ☆ https://docs.pygfx.org/stable/index.html Pygfx (pronounced “py-graphics”) is built on wgpu, enabling superior performance and reliability compared to OpenGL-based solutions.
+- ☆ https://www.ironcalc.com/ - Open Source Online Spreadsheet
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
 - http://openrefine.org/ - Data analyzing and cleansing tool
