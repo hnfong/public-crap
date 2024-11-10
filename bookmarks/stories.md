@@ -97,18 +97,13 @@
 - https://www.youtube.com/watch?v=J_4evteGqBE - 秦始皇的大一统政策，是抄的波斯帝国的作业吗？统一文字，货币，度量衡，修建陵墓，驰道。。。三百年前的大流士做过完全相同的事情/神秘的十二金人，祆教的十二月神/始皇妃嫔中的欧洲面孔/兵马俑的技术来自波斯？
   - 秦一世、二世⋯ 西方帝王命名方式?!
 - https://www.youtube.com/watch?v=ININBD34Maw - 侍主情深 - 家庭聖召系列(陳柏霖執事) 15/03/2024
-
-
-
-
+- https://pubmed.ncbi.nlm.nih.gov/38694651/ - Beyond the Pump: A Narrative Study Exploring Heart Memory
+- https://www.mdpi.com/2673-3943/5/1/2 - Personality Changes Associated with Organ Transplants
 
 
 ### Interesting / Fun stories
 
 - https://www.youtube.com/watch?v=oAgGirY-GUQ - Divorce Expert interview from "The Diary of a CEO"
-
-
-
 
 
 
