@@ -60,8 +60,7 @@ MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/"
 
 DEFAULT_MODEL = "gemma-2-9b-it"
 # DEFAULT_CODE_GENERATION_MODEL = "SuperNova-Medius"
-DEFAULT_CODE_INSTRUCT_MODEL = "Qwen2.5.1-Coder-7B-Instruct"
-
+DEFAULT_CODE_INSTRUCT_MODEL = "SuperNova-Medius"
 # Apparently the instruct models got their <fim> capabilities tuned away. (DeepSeek v2.5 seems fine though)
 DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5-Coder-7B."
 
@@ -203,6 +202,33 @@ model = gemma-2-9b
         else:
             # For longer contexts, repeat the question/instruction at the end
             return f"{self._user_question}\n(Please be concise unless the answer requires in-depth analysis)\n--- Start of data ---\n\n{self.user_prompt}\n\n--- End of data ---\n\n{self._user_question}\n(Please be concise unless the answer requires in-depth analysis)\n"
+
+
+class GitCommitSummarizePreset(Preset):
+    def __init__(self, user_prompt, context):
+        super().__init__(user_prompt)
+        self.context = context
+        self._system_message = "You are a helpful, thoughtful and creative AI assistant."
+
+    name = "gitcommit"
+
+    def postprocess(self, outs):
+        outs = outs.replace('[end of text]', '').rstrip()
+        return "\n".join(line.strip() if line.strip() == '' else '🤖 ' + line.rstrip() for line in outs.splitlines(keepends=False))
+
+    def has_postprocess(self):
+        return True
+
+    def prompt(self):
+        return f"""
+Please write a summary of the changes as a git commit message. The first line must be very concise and short. Subsequent paragraph(s) should be concise, but make sure you mention all important and interesting points.
+
+```
+{self.user_prompt}
+```
+
+Please write a summary of the changes as a git commit message. The first line must be very concise and short. Subsequent paragraph(s) should be concise, but make sure you mention all important and interesting points.
+"""
 
 
 class SummarizePreset(Preset):
@@ -508,7 +534,9 @@ if __name__ == "__main__":
     elif args:
         user_prompt = " ".join(args)
     else:
-        print("What is your question?")
+        # if it's a terminal print the prompt
+        if sys.stdin.isatty():
+            print("What is your question?")
         user_prompt = sys.stdin.read()
 
     template = opts.get("-T") or "chatml"
