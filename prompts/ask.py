@@ -62,7 +62,7 @@ DEFAULT_MODEL = "gemma-2-9b-it"
 # DEFAULT_CODE_GENERATION_MODEL = "SuperNova-Medius"
 DEFAULT_CODE_INSTRUCT_MODEL = "SuperNova-Medius"
 # Apparently the instruct models got their <fim> capabilities tuned away. (DeepSeek v2.5 seems fine though)
-DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5-Coder-7B."
+DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5-Coder-32B-Q"
 
 # Presets
 
@@ -364,6 +364,10 @@ class ChatMLTemplateMixin:
 <|im_start|>assistant
             """.strip() + "\n"
 
+class QwenTemplateMixin(ChatMLTemplateMixin):
+    def system_message(self):
+        # https://www.reddit.com/r/LocalLLaMA/comments/1gpwrq1/how_to_use_qwen25coderinstruct_without/
+        return "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."
 
 class InstructionTemplateMixin:
     def templated_prompt(self):
@@ -477,8 +481,8 @@ NAME_MATCH_OVERRIDE = [
     ("minicpm", MiniCPMTemplateMixin),
     ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
     ("DeepSeek-V2.5", DeepSeekV25Mixin),
-    ("qwen2", ChatMLTemplateMixin),
-    ("Qwen2", ChatMLTemplateMixin),
+    ("qwen2", QwenTemplateMixin),
+    ("Qwen2", QwenTemplateMixin),
     ("tinyllama_v1.1", ChatMLTemplateMixin),
     ("gemma-2", Gemma2Mixin),
     ("Mistral-Large-Instruct", MistralLargeInstructTemplate),
