@@ -60,9 +60,9 @@ MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/"
 
 DEFAULT_MODEL = "gemma-2-9b-it"
 # DEFAULT_CODE_GENERATION_MODEL = "SuperNova-Medius"
-DEFAULT_CODE_INSTRUCT_MODEL = "SuperNova-Medius"
+DEFAULT_CODE_INSTRUCT_MODEL = "Qwen2.5-Coder-32B-Instruct"
 # Apparently the instruct models got their <fim> capabilities tuned away. (DeepSeek v2.5 seems fine though)
-DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5-Coder-32B-Q"
+DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5-Coder-32B-Instruct"
 
 # Presets
 
@@ -110,6 +110,23 @@ class DefaultPreset(Preset):
     name = "default"
     def prompt(self):
         return self.user_prompt
+
+class CliPreset(Preset):
+    def __init__(self, user_prompt, context):
+        super().__init__(user_prompt)
+        self.context = context
+        self._system_message = "You are a helpful AI assistant."
+
+    name = "cli"
+
+    def get_os(self):
+        import platform
+        override = {'Darwin': 'macOS'}
+        ret = platform.system()
+        return override.get(ret) or ret
+
+    def prompt(self):
+        return f"[Only give the command. Do not explain unless necessary, but if you explain, put it in the form of comments appropriate for the script/language you are using as output. IMPORTANT: Make sure the output is executable.]\n[Environment: {os.environ.get('SHELL')}; Operating System: {self.get_os()}\n\n{self.user_prompt}\n"
 
 class ExplainPreset(Preset):
     def __init__(self, user_prompt, context):
