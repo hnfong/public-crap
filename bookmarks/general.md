@@ -141,6 +141,7 @@
 ## Misc History
 
 - ☆ https://www.strangeloopcanon.com/p/some-things-to-learn-from-the-british - Unreasonable Efficiency of the British East India Company
+- ☆ https://www.histsyn.com/ hkintexts.histsyn.com - 香港史料全文搜尋器
 - https://www.youtube.com/watch?v=VXGfGwKQDWw - 香港街巷心理戰 Part 2 解碼
 - http://www.ap.org/content/press-release/2015/ap-makes-one-million-minutes-of-history-available-on-youtube - AP makes one million minutes of historical footage available on YouTube
 - https://www.youtube.com/watch?v=BNeXlJW70KQ - Steve Jobs brainstorming NEXT 1985
@@ -199,10 +200,20 @@
 - https://www.researchgate.net/publication/363852167_Experimental_indications_of_non-classical_brain_functions
   - Recent proposals in quantum gravity have suggested that unknown systems can mediate entanglement between two known quantum systems, if and only if the mediator itself is non-classical. This approach may be applicable to the brain, where speculations about quantum operations in consciousness and cognition have a long history. Proton spins of bulk water, which most likely interfere with any brain function, can act as the known quantum systems. If an unknown mediator exists, then NMR methods based on multiple quantum coherence (MQC) can act as an entanglement witness. However, there are doubts that today's NMR signals can contain quantum correlations in general, and specifically in the brain environment. Here, we used a witness protocol based on zero quantum coherence (ZQC) whereby we minimized the classical signals to circumvent the NMR detection limits for quantum correlation. For short repetitive periods, we found evoked signals in most parts of the brain, whereby the temporal appearance resembled heartbeat-evoked potentials (HEPs). We found that those signals had no correlates with any classical NMR contrast. Similar to HEPs, the evoked signal depended on conscious awareness. Consciousness-related or electrophysiological signals are unknown in NMR. Remarkably, these signals only appeared if the local properties of the magnetization were reduced. Our findings suggest that we may have witnessed entanglement mediated by consciousness-related brain functions. Those brain functions must then operate non-classically, which would mean that consciousness is non-classical.
 
-### Mathematics
+### Mathematics and Logic
 
 - https://www.youtube.com/watch?v=48sCx-wBs34 - The Infinite Pattern That Never Repeats
   - 5-fold symmetries, non-repeating tilings, quasi-crystals (with pentagonal structure), golden ratio
+
+- https://joe-antognini.github.io/machine-learning/steins-paradox
+  - 🤖 Stein's paradox shows that in three or more dimensions, a better estimate for the mean of a Gaussian distribution is to shrink the sample towards the origin rather than using the sample itself, unlike in one or two dimensions. This James-Stein estimator works by correcting for the tendency of samples to be further from the origin than the true mean, reducing the overall risk of the estimate. The paradox highlights the impact of dimensionality on statistical estimates and the benefits of introducing bias to reduce variance in high-dimensional spaces.
+
+- https://en.wikipedia.org/wiki/Tarski%27s_undefinability_theorem
+  - Informally, the theorem states that "arithmetical truth cannot be defined in arithmetic"
+
+### Biology
+
+- https://jsomers.net/e-coli-chemotaxis/
 
 ### Physics
 
@@ -581,5 +592,7 @@
 - https://www.youtube.com/watch?v=oHPIdwaMdrc - Chiba travel guide.
 - https://www.youtube.com/watch?v=EXlaC57yT9o - 瀞峡 (新宮) travel guide.
 - https://visitkinosaki.com/tc/visitor-info/tattoo-friendly-onsen/
+- https://www.yu-shan-ge.com.tw/location-detail/Taipei/
+
 
 

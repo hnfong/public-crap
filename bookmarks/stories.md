@@ -100,6 +100,8 @@
 - https://pubmed.ncbi.nlm.nih.gov/38694651/ - Beyond the Pump: A Narrative Study Exploring Heart Memory
 - https://www.mdpi.com/2673-3943/5/1/2 - Personality Changes Associated with Organ Transplants
 - https://en.wikipedia.org/wiki/John_Titor - John Titor and TimeTravel_0 are pseudonyms used in communications and on internet forums between 1998 and 2001 by an individual claiming to be an American military time traveler from the year 2036
+- https://thereader.mitpress.mit.edu/aldous-huxleys-deep-reflection/ 
+
 
 
 ### Interesting / Fun stories
