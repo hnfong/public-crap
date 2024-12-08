@@ -194,6 +194,8 @@
 - https://en.wikipedia.org/wiki/Yips
 - https://en.wikipedia.org/wiki/Borobudur
 - https://en.wikipedia.org/wiki/Acoustic_levitation
+- https://en.wikipedia.org/wiki/Picatrix
+- ☆ https://www.youtube.com/watch?v=rDrekCif8lc
 
 ## Theories
 
