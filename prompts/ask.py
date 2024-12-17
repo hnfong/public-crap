@@ -732,7 +732,7 @@ if __name__ == "__main__":
                     this_cmd += ["-f", temp_prompt_file.name]
                     if "-v" in opts:
                         print(this_cmd)
-                    p = subprocess.Popen(this_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    p = subprocess.Popen(this_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
 
                     if '-o' not in opts and not cp.has_postprocess():
                         while dat := p.stdout.read(1):
