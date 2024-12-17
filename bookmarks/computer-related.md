@@ -90,6 +90,8 @@ Computer technology related.
 
 ## Open Source Tools
 
+- ☆ https://github.com/enigo-rs/enigo?tab=readme-ov-file - Cross platform input simulation in Rust
+  - https://news.ycombinator.com/item?id=42158311
 - ☆ http://sourcehut.org - sth like github but created by OSS maniacs
 - ☆ https://datasette.io/ An open source multi-tool for exploring and publishing data
 - ☆ https://github.com/geohot/tinygrad - Small neural network tool
