@@ -167,7 +167,7 @@
 - https://www.youtube.com/watch?v=np_ylvc8Zj8 - The Spider's Web: Britain's Second Empire | The Secret World of Finance - YouTube
 - https://www.youtube.com/watch?v=WSK2F4xgXUU - 【信息素战史】魏武卒，强到离谱的重装步兵，为何会在魏国诞生？
 - https://www.youtube.com/watch?v=tgYaT9duXvY - 唐代政府是如何控制巨大的领土的？一个视频看懂唐朝政府组织的结构丨唐朝：壹丨中国历代政治得失06
-
+- https://www.youtube.com/watch?v=uTanGrf4JaY - 【圆桌派 第六季】 EP7 考古：“我发现了一座城” | 窦文涛/陈晓楠/唐际根/马未都 | 优酷纪实 YOUKU DOCUMENTARY
 
 
 ## Pre-history
@@ -424,6 +424,7 @@
   - Also, the slice of rwanda life is interesting too
 - https://www.youtube.com/watch?v=XDBWjfUgaR8 Former CIA Chief of Disguise Answers Spy Questions From Twitter | Tech Support | WIRED
 - https://en.wikipedia.org/wiki/Michael_Shen_Fu-Tsung Shen Fu-Tsung also met with King James II.[9] It is the first recorded instance of a Chinese man visiting Britain.
+- https://www.youtube.com/watch?v=v4pezeJWpVM - "I Thought Tai Chi Was USELESS"
 
 ## Interesting but distracting channels
 

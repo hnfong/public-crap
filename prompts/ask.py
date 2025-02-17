@@ -453,7 +453,7 @@ class DeepSeekV25Mixin:
         else:
             return f"""<｜begin▁of▁sentence｜><｜User｜>{self.prompt()}<｜Assistant｜>"""
 
-class MistralLargeInstructTemplate(ChatMLTemplateMixin):
+class MistralInstructTemplate(ChatMLTemplateMixin):
     # "chat_template": "{%- if messages[0]['role'] == 'system' %}\n    {%- set system_message = messages[0]['content'] %}\n    {%- set loop_messages = messages[1:] %}\n{%- else %}\n    {%- set loop_messages = messages %}\n{%- endif %}\n\n{{- bos_token }}\n{%- for message in loop_messages %}\n    {%- if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}\n        {{- raise_exception('After the optional system message, conversation roles must alternate user/assistant/user/assistant/...') }}\n    {%- endif %}\n    {%- if message['role'] == 'user' %}\n        {%- if loop.last and system_message is defined %}\n            {{- '[INST] ' + system_message + '\\n\\n' + message['content'] + '[/INST]' }}\n        {%- else %}\n            {{- '[INST] ' + message['content'] + '[/INST]' }}\n        {%- endif %}\n    {%- elif message['role'] == 'assistant' %}\n        {{- ' ' + message['content'] + eos_token}}\n    {%- else %}\n        {{- raise_exception('Only user and assistant roles are supported, with the exception of an initial optional system message!') }}\n    {%- endif %}\n{%- endfor %}\n",
     def templated_prompt(self):
         # wtf? If we really believe the chat_template above, this is the result. But it doesn't work.
@@ -502,7 +502,8 @@ NAME_MATCH_OVERRIDE = [
     ("Qwen2", QwenTemplateMixin),
     ("tinyllama_v1.1", ChatMLTemplateMixin),
     ("gemma-2", Gemma2Mixin),
-    ("Mistral-Large-Instruct", MistralLargeInstructTemplate),
+    ("Mistral-Large-Instruct", MistralInstructTemplate),
+    ("Mistral-Small", MistralInstructTemplate),
 ]
 
 FIM_MATCH_OVERRIDE = [
@@ -580,6 +581,7 @@ if __name__ == "__main__":
         model_name = DEFAULT_CODE_GENERATION_MODEL
     cmd_args = []
     cmd_args.append("--no-escape")  # llama.cpp just doesn't do sane defaults...
+    cmd_args.append("-no-cnv")  # llama.cpp just doesn't do sane defaults...
     assert temperature >= 0
     cmd_args.append("--temp")
     cmd_args.append(str(temperature))
