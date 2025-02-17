@@ -216,6 +216,7 @@ Computer technology related.
 
 ### Theory, Fundamentals, Documentation, Tutorials, Guides
 
+- ☆ https://agi.safe.ai/ - Humanity's Last Exam is a challenging, multi-modal benchmark designed to rigorously test the limits of large language models across a broad range of subjects.
 - ☆ https://evjang.com/2021/10/23/generalization.html
 - https://towardsdatascience.com/choosing-the-right-gpu-for-deep-learning-on-aws-d69c157d8c86 - Choosing the right GPU for deep learning on AWS | by Shashank Prasanna | Towards Data Science
 - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/install-nvidia-driver.html - Install NVIDIA drivers on Linux instances - Amazon Elastic Compute Cloud
