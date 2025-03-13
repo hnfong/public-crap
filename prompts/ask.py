@@ -17,7 +17,7 @@ Options:
 
 -P args:           Pass through arguments to llama.cpp
 -C context:        Set the context for the prompt (not very useful)
--c size:           Set context size prompt (default: 4096)
+-c size:           Set context size prompt (default: model default)
 -t temperature:    Set the temperature (default: 0.3)
 -f file:           Input prompt file (can be a glob)
 -o file:           Output file (can contain {n}, {m}, {f} for round, model, and file)
@@ -434,6 +434,8 @@ class Gemma2Mixin:
     def templated_prompt(self):
         return f"""<start_of_turn>user\n{self.prompt()}<end_of_turn>\n<start_of_turn>model\n"""
 
+Gemma3Mixin = Gemma2Mixin
+
 class MiniCPMTemplateMixin:
     def templated_prompt(self):
         return f"""<用户>{self.prompt()}\n<AI>"""
@@ -502,6 +504,7 @@ NAME_MATCH_OVERRIDE = [
     ("Qwen2", QwenTemplateMixin),
     ("tinyllama_v1.1", ChatMLTemplateMixin),
     ("gemma-2", Gemma2Mixin),
+    ("gemma-3", Gemma3Mixin),
     ("Mistral-Large-Instruct", MistralInstructTemplate),
     ("Mistral-Small", MistralInstructTemplate),
 ]
