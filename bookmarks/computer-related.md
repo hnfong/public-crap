@@ -197,6 +197,9 @@ Computer technology related.
 - https://github.com/arunsupe/semantic-grep (Grep using word2vec or something...)
 - https://ui.shadcn.com/ - Beautifully designed components that you can copy and paste into your apps.
 - https://pyspread.gitlab.io - goal of pyspread is to be the most pythonic spreadsheet
+- https://github.com/tidwall/bgen - Bgen is a B-tree generator for C. It's small & fast and includes a variety of options for creating custom in-memory btree based collections.
+- https://github.com/lukas-blecher/LaTeX-OCR
+- https://github.com/AnswerDotAI/gpu.cpp - GPGPU on WebGPU spec as a portable low-level GPU interface
 
 
 #### Json
@@ -452,6 +455,8 @@ Computer technology related.
 - https://github.com/unslothai/unsloth - good reviews
 - https://www.reddit.com/r/LocalLLaMA/comments/1eqec8v/an_extensive_open_source_collection_of_rag/ - RAG discussions
 - https://github.com/microsoft/BitNet (1-bit llm)
+- https://www.reddit.com/r/LocalLLaMA/comments/1ggmsmo/smollm2_the_new_best_small_models_for_ondevice/ - Small models
+- https://www.reddit.com/r/LocalLLaMA/comments/1g03rdn/hidden_gem_happzy2633qwen257binsv3_is_an/ - Early reasoning model that came before DeepSeek-R1
 
 
 
@@ -472,6 +477,11 @@ Computer technology related.
 - https://dt.plumbing/ - dt: duck tape for your unix pipes
 - https://github.com/susam/fxyt - FXYT is a tiny canvas colouring language that consists of 36 simple stack-based commands
 - http://fractaljourney.blogspot.com/
+
+### Interesting AI Use Cases And Applications
+
+- https://www.reddit.com/r/LocalLLaMA/comments/1gjfajq/i_got_laid_off_so_i_have_to_start_applying_to_as/ -- Reads the CV and automatically tries to answer questions in forms.
+
 
 
 ## Data and Datasets

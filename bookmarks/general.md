@@ -142,6 +142,7 @@
 
 - ☆ https://www.strangeloopcanon.com/p/some-things-to-learn-from-the-british - Unreasonable Efficiency of the British East India Company
 - ☆ https://www.histsyn.com/ hkintexts.histsyn.com - 香港史料全文搜尋器
+- ☆ https://www.youtube.com/watch?v=I6xwMIUPHss - History (Rise and Fall!) of North America Telcos
 - https://www.youtube.com/watch?v=VXGfGwKQDWw - 香港街巷心理戰 Part 2 解碼
 - http://www.ap.org/content/press-release/2015/ap-makes-one-million-minutes-of-history-available-on-youtube - AP makes one million minutes of historical footage available on YouTube
 - https://www.youtube.com/watch?v=BNeXlJW70KQ - Steve Jobs brainstorming NEXT 1985
