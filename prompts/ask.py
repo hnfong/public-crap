@@ -27,6 +27,7 @@ Options:
 -x ignore_prefix:  Set the prefix to ignore in the prompt file (default: #!)
 -X extra_prompt:   Set the extra prompt to add to the assistant output (default: "")
 -T template:       Set the template to use (default: chatml, but we hardcode some models to use different templates)
+-M match,options.. If the model filename contains the match string, then append the specified options (comma separated).
 
 """
 
@@ -464,6 +465,14 @@ class MistralInstructTemplate(ChatMLTemplateMixin):
 
         # Funny enough, the ChatMLTemplateMixin also works...
 
+class Mistral3InstructTemplate(ChatMLTemplateMixin):
+    # "chat_template": "{%- if messages[0]['role'] == 'system' %}\n    {%- set system_message = messages[0]['content'] %}\n    {%- set loop_messages = messages[1:] %}\n{%- else %}\n    {%- set loop_messages = messages %}\n{%- endif %}\n\n{{- bos_token }}\n{%- for message in loop_messages %}\n    {%- if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}\n        {{- raise_exception('After the optional system message, conversation roles must alternate user/assistant/user/assistant/...') }}\n    {%- endif %}\n    {%- if message['role'] == 'user' %}\n        {%- if loop.last and system_message is defined %}\n            {{- '[INST] ' + system_message + '\\n\\n' + message['content'] + '[/INST]' }}\n        {%- else %}\n            {{- '[INST] ' + message['content'] + '[/INST]' }}\n        {%- endif %}\n    {%- elif message['role'] == 'assistant' %}\n        {{- ' ' + message['content'] + eos_token}}\n    {%- else %}\n        {{- raise_exception('Only user and assistant roles are supported, with the exception of an initial optional system message!') }}\n    {%- endif %}\n{%- endfor %}\n",
+    def templated_prompt(self):
+        # wtf? If we really believe the chat_template above, this is the result. But it doesn't work.
+        # return f"""\n    \n\n\n<s>\n\n    \n    \n        \n            [INST] {self.prompt()}[/INST]\n        \n    \n        """
+        return f"""<s>[SYSTEM_PROMPT]{self.system_message()}[/SYSTEM_PROMPT][INST]{self.prompt()}[/INST]"""
+
+        # Funny enough, the ChatMLTemplateMixin also works...
 
 class Llama3TemplateMixin:
     def templated_prompt(self):
@@ -505,8 +514,8 @@ NAME_MATCH_OVERRIDE = [
     ("tinyllama_v1.1", ChatMLTemplateMixin),
     ("gemma-2", Gemma2Mixin),
     ("gemma-3", Gemma3Mixin),
-    ("Mistral-Large-Instruct", MistralInstructTemplate),
-    ("Mistral-Small", MistralInstructTemplate),
+    ("Mistral-Large-Instruct", Mistral3InstructTemplate),
+    ("Mistral-Small", Mistral3InstructTemplate),
 ]
 
 FIM_MATCH_OVERRIDE = [
@@ -539,7 +548,7 @@ if __name__ == "__main__":
         if inspect.isclass(obj):
             if issubclass(obj, Preset) and obj != Preset:
                 PRESETS[obj.name] = obj
-    opt_list, args = getopt.getopt(sys.argv[1:], "qhkP:C:c:t:f:o:p:m:n:x:gX:T:v")
+    opt_list, args = getopt.getopt(sys.argv[1:], "qhkP:C:c:t:f:o:p:m:n:x:gX:T:M:v")
     opts = dict(opt_list)
 
     # Default to explain_this if we don't have a file. If we have a file it's better to assume the file contains a full prompt
@@ -735,6 +744,12 @@ if __name__ == "__main__":
 
                     this_cmd[this_cmd.index(ModelPlaceholder)] = model
                     this_cmd += ["-f", temp_prompt_file.name]
+
+                    if "-M" in opts:  # if model matches a string, add more options
+                        conditional_options = opts.get("-M").split(",")
+                        if conditional_options[0] in model:
+                            this_cmd += conditional_options[1:]
+
                     if "-v" in opts:
                         print(this_cmd)
                     p = subprocess.Popen(this_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
