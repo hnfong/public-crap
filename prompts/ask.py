@@ -28,6 +28,7 @@ Options:
 -X extra_prompt:   Set the extra prompt to add to the assistant output (default: "")
 -T template:       Set the template to use (default: chatml, but we hardcode some models to use different templates)
 -M match,options.. If the model filename contains the match string, then append the specified options (comma separated).
+-F match,options.. If the input filename contains the match string, then append the specified options (comma separated).
 
 """
 
@@ -266,6 +267,32 @@ Please summarize the following text. Be concise (i.e. avoid superfluous writing)
 ```
 
 Please summarize the above text. Be concise (i.e. avoid superfluous writing), but make sure you mention all important and interesting points.
+"""
+
+class ExplainSourceCodePreset(Preset):
+    def __init__(self, user_prompt, context):
+        super().__init__(user_prompt)
+        self.context = context
+        self._system_message = "You are a helpful AI assistant."
+
+    name = "sourcefile"
+    def prompt(self):
+        return f"""
+Explain what this source code file is doing on a very high level. Do not
+discuss implementation details. Just explain what it does to somebody who is
+not familiar with the codebase (and not familiar with the class names and their
+interactions etc.)
+
+----
+
+{self.user_prompt}
+
+----
+
+Explain what this source code file is doing on a very high level. Do not
+discuss implementation details. Just explain what it does to somebody who is
+not familiar with the codebase (and not familiar with the class names and their
+interactions etc.)
 """
 
 
@@ -548,7 +575,7 @@ if __name__ == "__main__":
         if inspect.isclass(obj):
             if issubclass(obj, Preset) and obj != Preset:
                 PRESETS[obj.name] = obj
-    opt_list, args = getopt.getopt(sys.argv[1:], "qhkP:C:c:t:f:o:p:m:n:x:gX:T:M:v")
+    opt_list, args = getopt.getopt(sys.argv[1:], "DqhkP:C:c:t:f:o:p:m:n:x:gX:T:M:F:v")
     opts = dict(opt_list)
 
     # Default to explain_this if we don't have a file. If we have a file it's better to assume the file contains a full prompt
@@ -594,6 +621,7 @@ if __name__ == "__main__":
     cmd_args = []
     cmd_args.append("--no-escape")  # llama.cpp just doesn't do sane defaults...
     cmd_args.append("-no-cnv")  # llama.cpp just doesn't do sane defaults...
+    cmd_args.append("--no-display-prompt")  # llama.cpp just doesn't do sane defaults...
     assert temperature >= 0
     cmd_args.append("--temp")
     cmd_args.append(str(temperature))
@@ -745,6 +773,12 @@ if __name__ == "__main__":
                     this_cmd[this_cmd.index(ModelPlaceholder)] = model
                     this_cmd += ["-f", temp_prompt_file.name]
 
+                    if prompt_file and "-F" in opts:  # if filename matches a string, add more options
+                        conditional_options = opts.get("-F").split(",")
+                        if conditional_options[0] in prompt_file:
+                            this_cmd += conditional_options[1:]
+                            if '--skip--' in this_cmd:
+                                continue
                     if "-M" in opts:  # if model matches a string, add more options
                         conditional_options = opts.get("-M").split(",")
                         if conditional_options[0] in model:
@@ -752,18 +786,26 @@ if __name__ == "__main__":
 
                     if "-v" in opts:
                         print(this_cmd)
-                    p = subprocess.Popen(this_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
 
-                    if '-o' not in opts and not cp.has_postprocess():
-                        while dat := p.stdout.read(1):
-                            sys.stdout.buffer.write(dat)
-                            sys.stdout.flush()
+                    if "-D" in opts:
+                        # Dry run only
+                        continue
 
-                    outs = p.communicate()
+                    stderr_output = b""
+                    with tempfile.TemporaryFile() as temp_stderr:
+                        p = subprocess.Popen(this_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=temp_stderr)
+                        if '-o' not in opts and not cp.has_postprocess():
+                            while dat := p.stdout.read(1):
+                                sys.stdout.buffer.write(dat)
+                                sys.stdout.flush()
+
+                        outs = p.communicate()
+                        temp_stderr.seek(0)
+                        stderr_output = temp_stderr.read()
 
                     # Check exit code
                     if p.returncode != 0:
-                        sys.stderr.write("Error: " + outs[1].decode("utf-8", errors="replace"))
+                        sys.stderr.write("Error: " + stderr_output.decode("utf-8", errors="replace"))
                         sys.stderr.write("\n")
                         sys.stderr.flush()
                         sys.exit(1)
@@ -773,6 +815,7 @@ if __name__ == "__main__":
                             outs_s = cp.postprocess(outs_s)
 
                         if out_file is not None:
+                            print(f"Writing result to: {out_file}")
                             with open(out_file, "w") as f:
                                 f.write(outs_s)
                         else:

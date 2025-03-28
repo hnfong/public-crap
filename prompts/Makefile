@@ -7,9 +7,9 @@ TARGETS=$(foreach model,$(MODELS),__DONE__.$(model))
 all: $(TARGETS)
 
 __DONE__.%.gguf: ~/Downloads/%.gguf
-	./ask.py -c 2048 -M qwq,-c,8192 -v -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m $(shell basename $< .gguf)
+	./ask.py -c 2048 -M qwq,-c,8192 -F LONGER_CTX,-c,10000 -v -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m $(shell basename $< .gguf)
 __DONE__.split_ggufs/%.gguf: ~/Downloads/split_ggufs/%.gguf
-	./ask.py -c 2048 -M qwq,-c,8192 -v -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m split_ggufs/$(shell basename $< .gguf)
+	./ask.py -c 2048 -M qwq,-c,8192 -F LONGER_CTX,--skip-- -v -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m split_ggufs/$(shell basename $< .gguf)
 
 targets:
 	echo $(TARGETS)
