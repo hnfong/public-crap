@@ -576,6 +576,7 @@ if __name__ == "__main__":
             if issubclass(obj, Preset) and obj != Preset:
                 PRESETS[obj.name] = obj
     opt_list, args = getopt.getopt(sys.argv[1:], "DqhkP:C:c:t:f:o:p:m:n:x:gX:T:M:F:v")
+    verbosity = opt_list.count(('-v', ''))
     opts = dict(opt_list)
 
     # Default to explain_this if we don't have a file. If we have a file it's better to assume the file contains a full prompt
@@ -707,7 +708,7 @@ if __name__ == "__main__":
             if prompt.get("user") is None:
                 continue
 
-            if "-v" in opts:
+            if verbosity > 0:
                 print(prompt_file)
 
             # Create a temporary file for storing the prompt
@@ -717,7 +718,7 @@ if __name__ == "__main__":
                 if sys_prompt:
                     cp.set_system_message(sys_prompt)
                 templated_prompt = cp.templated_prompt()
-                if "-v" in opts:
+                if verbosity >= 2:
                     print(templated_prompt)
                 temp_prompt_file.write(templated_prompt)
                 # Try to fix an apparent llama.cpp bug where it chops off the last newline
@@ -784,7 +785,8 @@ if __name__ == "__main__":
                         if conditional_options[0] in model:
                             this_cmd += conditional_options[1:]
 
-                    if "-v" in opts:
+                    if verbosity > 0:
+                        print("Original prompt file: ", prompt_file)
                         print(this_cmd)
 
                     if "-D" in opts:

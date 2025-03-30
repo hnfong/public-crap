@@ -1,7 +1,7 @@
 # Find our models in the Downloads folder.
 MODELS=$(shell cd ~/Downloads/; ls *.gguf | grep -iE 'qwq|WizardLm|chat|mixtral|miqu|Meta-Llama-3|Llama-3.2-|Llama-3.3-|starling|Qwen1.5|qwen1_5|Qwen2.5|minicpm|qwen2-0_5b|tinyllama_v1.1|gemma-3|glm-4-|mistral-nemo|Mistral-Large-.*00001|Nemotron|granite|SmolLM|codegeex4|SuperNova-Medius|Mistral-Small-3.1|DeepSeek-v2.5-1210-UD-'; echo split_ggufs/*00001-of-*gguf )
 
-LONG_CTX_MODELS=$(shell cd ~/Downloads/; ls *.gguf | grep -iE 'Meta-Llama-3.1-8B-Instruct|Llama-3.2-3B-Instruct|gemma-3-4b-it|gemma-3-12b-it')
+LONG_CTX_MODELS=$(shell cd ~/Downloads/; ls *.gguf | grep -iE 'SuperNova-Medius|Meta-Llama-3.1-8B-Instruct|Llama-3.2-3B-Instruct|gemma-3-4b-it|gemma-3-12b-it|gemma-3-27b-it')
 
 
 # For each model
