@@ -200,6 +200,10 @@ Computer technology related.
 - https://github.com/tidwall/bgen - Bgen is a B-tree generator for C. It's small & fast and includes a variety of options for creating custom in-memory btree based collections.
 - https://github.com/lukas-blecher/LaTeX-OCR
 - https://github.com/AnswerDotAI/gpu.cpp - GPGPU on WebGPU spec as a portable low-level GPU interface
+- https://mithril.js.org/index.html - Small Compact Library to create single page webapps (comments by HN in https://news.ycombinator.com/item?id=43550317 )
+- https://github.com/bionicles/tree_plus - Use tree_plus to Summarize huge codebases easily; Autogenerate API documentation; Create ideal LLM prompts
+
+
 
 
 #### Json
@@ -517,6 +521,7 @@ Computer technology related.
   - https://oimo.io/works/life/
 - https://gamengen.github.io/ GameNGen, the first game engine powered entirely by a neural model that enables real-time interaction with a complex environment over long trajectories at high quality. GameNGen can interactively simulate the classic game DOOM at over 20 frames per second on a single TPU
 - https://replicate.com/blog/flux-is-fast-and-open-source - Super fast image generation from prompt
+- https://github.com/hail-hydrant/zxc
 
 
 ## Experimental Languages

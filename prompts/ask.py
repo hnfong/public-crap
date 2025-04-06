@@ -296,6 +296,37 @@ interactions etc.)
 """
 
 
+class SummarizeLawCase(Preset):
+    def __init__(self, user_prompt, context):
+        super().__init__(user_prompt)
+        self.context = context
+        self._system_message = "You are a helpful AI assistant."
+
+    name = "lawcase"
+    def prompt(self):
+        return f"""
+### TASKS ###
+
+1. Briefly summarize the facts of the following case.
+2. Then, briefly summarize the arguments of the two parties.
+3. Summarize the legal principles (ratio decidendi) of the case. Be detailed and thorough. There is no word limit. Use multiple paragraphs. If applicable, focus on the points that might be novel or controversial.
+4. Finally, is there anything striking, unusual or remarkable about the case? (It may or may not be about law, just anything you find extraordinary.)
+
+----
+
+{self.user_prompt}
+
+----
+
+### TASKS ###
+
+1. Briefly summarize the facts of the above case.
+2. Then, briefly summarize the arguments of the two parties.
+3. Summarize the legal principles (ratio decidendi) of the case. Be detailed and thorough. There is no word limit. Use multiple paragraphs. If applicable, focus on the points that might be novel or controversial.
+4. Finally, is there anything striking, unusual or remarkable about the case? (It may or may not be about law, just anything you find extraordinary.)
+"""
+
+
 class ReviewPreset(Preset):
     def __init__(self, user_prompt, context):
         super().__init__(user_prompt)
