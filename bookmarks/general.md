@@ -595,6 +595,7 @@
 - https://www.youtube.com/watch?v=EXlaC57yT9o - 瀞峡 (新宮) travel guide.
 - https://visitkinosaki.com/tc/visitor-info/tattoo-friendly-onsen/
 - https://www.yu-shan-ge.com.tw/location-detail/Taipei/
+- https://www.youtube.com/watch?v=_9aUy56n-yI - 47 Things to do in JAPAN | Ultimate Travel Guide (Things to do in each prefecture in Japan)
 
 
 
