@@ -105,7 +105,7 @@ Computer technology related.
 - ☆ https://jodd.org/ The Unbearable Lightness of Java - Jodd is a set of micro-frameworks and developer-friendly tools and utilities.
 - ☆ https://github.com/eudoxia0/cmacro cmacro: Lisp macros for C
 - ☆ https://kindavim.app/ - VIM accessibility bindings for macOS
-- ☆ https://litestream.io/alternatives/cron/ / https://github.com/benbjohnson/litestream
+- ☆ https://litestream.io/alternatives/cron/ / https://github.com/benbjohnson/litestream - Litestream is a standalone disaster recovery tool for SQLite. It runs as a background process and safely replicates changes incrementally to another file or S3.
 - ☆ https://github.com/pretzelai/pretzelai - Pretzel is an open-source, offline browser-based tool for fast and intuitive data exploration and visualization. It can handle large data files, runs locally in your browser, and requires no backend setup.
 - ☆ https://github.com/ViNeek/wuhoo - Wuhoo loosely stands for W indows U sing H eaders O nly. It is an attempt to create a single-header library (in the spirit of STB [1]) for graphics related window management, compatible with both C and C++.
   - Probably great for rendering Mandelbrot!
@@ -115,9 +115,11 @@ Computer technology related.
 - ☆ https://rqlite.io/ - rqlite is a distributed relational database that combines the simplicity of SQLite with the robustness of a fault-tolerant, highly available cluster
 - ☆ https://github.com/xmake-io/xmake - Xmake = Build backend + Project Generator + Package Manager + [Remote|Distributed] Build + Cache
 - ☆ https://whattheduck.incentius.com/
-  - https://github.com/incentius-foss/WhatTheDuck
+  - https://github.com/incentius-foss/WhatTheDuck - WhatTheDuck is an open-source web application built on DuckDB, designed to allow users to upload CSV files, store them in tables, and perform SQL queries on the uploaded data.
 - ☆ https://docs.pygfx.org/stable/index.html Pygfx (pronounced “py-graphics”) is built on wgpu, enabling superior performance and reliability compared to OpenGL-based solutions.
 - ☆ https://www.ironcalc.com/ - Open Source Online Spreadsheet
+- ☆ https://github.com/danielgatis/rembg - Background Removal Python Lib
+- https://www.oilshell.org/ - Oil is a new shell language built as a better, more reliable alternative to bash, designed for easier scripting and a smoother upgrade path for existing code. It aims to fix shell's longstanding issues while remaining compatible with current scripts.
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
 - http://openrefine.org/ - Data analyzing and cleansing tool
@@ -202,14 +204,14 @@ Computer technology related.
 - https://github.com/AnswerDotAI/gpu.cpp - GPGPU on WebGPU spec as a portable low-level GPU interface
 - https://mithril.js.org/index.html - Small Compact Library to create single page webapps (comments by HN in https://news.ycombinator.com/item?id=43550317 )
 - https://github.com/bionicles/tree_plus - Use tree_plus to Summarize huge codebases easily; Autogenerate API documentation; Create ideal LLM prompts
+- https://github.com/ChartsCSS/charts.css - Charts.css is an open source CSS framework for data visualization.
 
 
 
 
 #### Json
 
-- https://github.com/ynqa/jnv
-- https://www.oilshell.org/
+- https://github.com/ynqa/jnv - jnv is designed for navigating JSON, offering an interactive JSON viewer and jq filter editor.
 - https://www.pgrs.net/2024/03/21/duckdb-as-the-new-jq/
 - https://dt.plumbing/
 - https://www.nushell.sh/
