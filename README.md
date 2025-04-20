@@ -5,8 +5,26 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 ## Writings
 
 
+### 2025
+
+- [14-算命](writings/2025/14-算命.md)
+- [13-[Vibe Essay]-The System Is Cracking, and Something Else Is Coming](writings/2025/13-[Vibe_Essay]-The_System_Is_Cracking_cm__and_Something_Else_Is_Coming.md)
+- [12-Covering old loans with new loans](writings/2025/12-Covering_old_loans_with_new_loans.md)
+- [11-Austere Instincts](writings/2025/11-Austere_Instincts.md)
+- [10-The Re:Zero Hypothesis](writings/2025/10-The_Re_cl_Zero_Hypothesis.md)
+- [09-What Would God Do? The Paradox of Intolerance](writings/2025/09-What_Would_God_Do_qm__The_Paradox_of_Intolerance.md)
+- [08-AGI and Free Will](writings/2025/08-AGI_and_Free_Will.md)
+- [07-Interpretation of Two Parables](writings/2025/07-Interpretation_of_Two_Parables.md)
+- [06-Why does love fade?](writings/2025/06-Why_does_love_fade_qm_.md)
+- [05-關於布施](writings/2025/05-關於布施.md)
+- [04-心經隨筆](writings/2025/04-心經隨筆.md)
+- [03-Is God Knowable?](writings/2025/03-Is_God_Knowable_qm_.md)
+- [02-Divine Free Will](writings/2025/02-Divine_Free_Will.md)
+- [01-Some notes on the concept of time](writings/2025/01-Some_notes_on_the_concept_of_time.md)
+
 ### 2024
 
+- [23-Can Humans Solve NP Hard Problems AI will find out](writings/2024/23-Can_Humans_Solve_NP_Hard_Problems_AI_will_find_out.md)
 - [22-Toxic Information](writings/2024/22-Toxic_Information.md)
 - [21-Discrete is Harder](writings/2024/21-Discrete_is_Harder.md)
 - [20-Decisions](writings/2024/20-Decisions.md)
@@ -32,6 +50,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2023
 
+- [24-讀書](writings/2023/24-讀書.md)
 - [23-唔識文言文，等如啲西人唔識拉丁文，冇問題㗎喎！（好似係）](writings/2023/23-唔識文言文_CM_等如啲西人唔識拉丁文_CM_冇問題㗎喎_EX__LP_好似係_RP_.md)
 - [22-平行宇宙入面嘅地獄s](writings/2023/22-平行宇宙入面嘅地獄s.md)
 - [21-AI Doomsday Scenarios](writings/2023/21-AI_Doomsday_Scenarios.md)
@@ -337,6 +356,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [software-engineering](outline/software-engineering.md)
 - [reviews of popular fiction](outline/reviews_of_popular_fiction.md)
 - [portals](outline/portals.md)
+- [perspectives](outline/perspectives.md)
 - [law](outline/law.md)
 - [incantations](outline/incantations.md)
 - [glossary](outline/glossary.md)
