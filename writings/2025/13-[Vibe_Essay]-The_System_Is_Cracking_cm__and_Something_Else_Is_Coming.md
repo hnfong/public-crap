@@ -1,4 +1,4 @@
-# The System Is Cracking, and Something Else Is Coming
+# [Vibe Essaying] The System Is Cracking, and Something Else Is Coming
 
 ![image](./images/dollar_breaking.jpg)
 
