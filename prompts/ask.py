@@ -62,7 +62,7 @@ MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/"
 
 DEFAULT_MODEL = "gemma-2-9b-it"
 # DEFAULT_CODE_GENERATION_MODEL = "SuperNova-Medius"
-DEFAULT_CODE_INSTRUCT_MODEL = "Qwen2.5-Coder-32B-Instruct"
+DEFAULT_CODE_INSTRUCT_MODEL = "GLM-4-32B-0414"
 # Apparently the instruct models got their <fim> capabilities tuned away. (DeepSeek v2.5 seems fine though)
 DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5-Coder-32B-Instruct"
 
@@ -494,6 +494,12 @@ class Gemma2Mixin:
         return f"""<start_of_turn>user\n{self.prompt()}<end_of_turn>\n<start_of_turn>model\n"""
 
 Gemma3Mixin = Gemma2Mixin
+class GLMTemplateMixin:
+    def templated_prompt(self):
+        return f"""[gMASK]<sop><|system|>
+{self.system_message()}<|user|>
+{self.prompt()}<|assistant|>"""
+
 
 class MiniCPMTemplateMixin:
     def templated_prompt(self):
@@ -555,25 +561,34 @@ class CommandRPlusTemplateMixin:
 
 
 NAME_MATCH_OVERRIDE = [
-    ("command-r-plus", CommandRPlusTemplateMixin),
-    ("wizardlm", WizardLmMixin),
-    ("phi-3-", Phi3TemplateMixin),
-    ("zephyr", ZephyrTemplateMixin),
-    ("llama-2", LlamaTemplateMixin),
-    ("mixtral-8x7b-instruct", LlamaTemplateMixin),
-    ("dolphin", ChatMLTemplateMixin),
-    ("orange", ChatMLTemplateMixin),
-    ("llama-3", Llama3TemplateMixin),
-    ("minicpm", MiniCPMTemplateMixin),
+    ("Athene-V2", ChatMLTemplateMixin),
     ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
     ("DeepSeek-V2.5", DeepSeekV25Mixin),
-    ("qwen2", QwenTemplateMixin),
-    ("Qwen2", QwenTemplateMixin),
-    ("tinyllama_v1.1", ChatMLTemplateMixin),
-    ("gemma-2", Gemma2Mixin),
-    ("gemma-3", Gemma3Mixin),
+    ("DeepSeek-R1-Distill", DeepSeekV25Mixin),
     ("Mistral-Large-Instruct", Mistral3InstructTemplate),
     ("Mistral-Small", Mistral3InstructTemplate),
+    ("miqu-", Mistral3InstructTemplate),
+    ("OpenCoder-8B", ChatMLTemplateMixin),
+    ("SuperNova-Medius", ChatMLTemplateMixin),
+    ("Virtuoso-", ChatMLTemplateMixin),
+    ("Qwen2", QwenTemplateMixin),
+    ("command-r-plus", CommandRPlusTemplateMixin),
+    ("dolphin", ChatMLTemplateMixin),
+    ("gemma-2", Gemma2Mixin),
+    ("gemma-3", Gemma3Mixin),
+    ("glm-4", GLMTemplateMixin),
+    ("llama-2", LlamaTemplateMixin),
+    ("llama-3", Llama3TemplateMixin),
+    ("minicpm", MiniCPMTemplateMixin),
+    ("mixtral-8x7b-instruct", LlamaTemplateMixin),
+    ("orange", ChatMLTemplateMixin),
+    ("phi-3", Phi3TemplateMixin),
+    ("qwen2", QwenTemplateMixin),
+    ("qwq-32b", QwenTemplateMixin),
+    ("starling", ChatMLTemplateMixin),  # Officially it's not ChatML, but it works. Officially, the prompt template looks like this: single_turn_prompt = f"GPT4 Correct User: {prompt}<|end_of_turn|>GPT4 Correct Assistant:"
+    ("tinyllama_v1.1", ChatMLTemplateMixin),
+    ("wizardlm", WizardLmMixin),
+    ("zephyr", ZephyrTemplateMixin),
 ]
 
 FIM_MATCH_OVERRIDE = [
@@ -730,8 +745,12 @@ if __name__ == "__main__":
                     break
             else:
                 if overrideTemplateMixIn is None:
-                    print(f"Warning: No template found for {model}, using ChatMLTemplateMixin as a fallback")
-                    overrideTemplateMixIn = ChatMLTemplateMixin
+                    if opts.get('-T') == 'REQUIRED':
+                        print(f"No appropriate template found for {model}, exiting with error")
+                        sys.exit(1)
+                    else:
+                        print(f"Warning: No template found for {model}, using ChatMLTemplateMixin as a fallback")
+                        overrideTemplateMixIn = ChatMLTemplateMixin
 
         class CurrentPrompt(overrideTemplateMixIn, preset):
             pass
