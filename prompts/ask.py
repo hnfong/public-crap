@@ -573,6 +573,7 @@ NAME_MATCH_OVERRIDE = [
     ("Virtuoso-", ChatMLTemplateMixin),
     ("Qwen2", QwenTemplateMixin),
     ("command-r-plus", CommandRPlusTemplateMixin),
+    ("calme-3.2-instruct", ChatMLTemplateMixin),
     ("dolphin", ChatMLTemplateMixin),
     ("gemma-2", Gemma2Mixin),
     ("gemma-3", Gemma3Mixin),
