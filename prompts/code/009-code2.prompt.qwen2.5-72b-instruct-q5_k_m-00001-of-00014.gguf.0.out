@@ -1,0 +1,75 @@
+To perform a binary search on a text file directly, we need to handle the file in a way that allows us to efficiently access and compare lines at specific positions. The key challenge is that files are typically accessed sequentially, but we can use a combination of file seeking and line reading to achieve the desired O(log(n)) complexity.
+
+Here's a step-by-step approach to implement the `binary_search_file` function:
+
+1. **Determine the File Size**: We need to know the total size of the file to set up our binary search range.
+2. **Binary Search**: Use binary search to find the target line. This involves:
+   - Seeking to the middle of the current range.
+   - Reading the line at the current position.
+   - Comparing the line with the target.
+   - Adjusting the search range based on the comparison.
+
+3. **Handling Line Boundaries**: When seeking to a position, we need to ensure we are at the start of a line. This can be done by reading backwards to find the start of the line.
+
+4. **Return the Position**: If the target is found, return its position. If not, return the insertion point.
+
+Here's the Python implementation:
+
+```python
+def binary_search_file(file_path, target):
+    def read_line(file, pos):
+        # Seek to the position and read the line
+        file.seek(pos)
+        # Move backwards to the start of the line
+        while pos > 0 and file.read(1) != '\n':
+            pos -= 1
+            file.seek(pos)
+        # Read the line from the start
+        return file.readline().strip(), pos
+
+    with open(file_path, 'r') as file:
+        # Get the file size
+        file.seek(0, 2)
+        file_size = file.tell()
+        
+        # Binary search
+        low, high = 0, file_size
+        while low < high:
+            mid = (low + high) // 2
+            line, start_pos = read_line(file, mid)
+            
+            if line == target:
+                return start_pos
+            elif line < target:
+                low = start_pos + len(line) + 1
+            else:
+                high = start_pos
+        
+        # If not found, return the insertion point
+        return low
+
+# Example usage:
+file_path = 'names.txt'
+target = 'John'
+position = binary_search_file(file_path, target)
+print(f"Position: {position}")
+```
+
+### Explanation:
+
+1. **read_line Function**:
+   - This function seeks to a given position in the file and reads the line starting from the nearest newline character before the position.
+   - It ensures that we are always reading a complete line.
+
+2. **Binary Search**:
+   - We initialize `low` to 0 and `high` to the file size.
+   - In each iteration, we calculate the middle position `mid`.
+   - We read the line at `mid` and compare it with the target.
+   - If the line is equal to the target, we return the start position of the line.
+   - If the line is less than the target, we adjust `low` to the position after the current line.
+   - If the line is greater than the target, we adjust `high` to the start position of the current line.
+   - If the target is not found, we return `low` as the insertion point.
+
+This approach ensures that the binary search is performed in O(log(n)) operations, where n is the number of lines in the file. [end of text]
+
+
