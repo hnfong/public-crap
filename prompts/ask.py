@@ -60,7 +60,7 @@ import tempfile
 LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or shutil.which('llama-cli') or os.path.expanduser("~/projects/llama.gguf/llama-cli")
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
-DEFAULT_MODEL = "gemma-2-9b-it"
+DEFAULT_MODEL = "gemma-3-12b-it"
 # DEFAULT_CODE_GENERATION_MODEL = "SuperNova-Medius"
 DEFAULT_CODE_INSTRUCT_MODEL = "GLM-4-32B-0414"
 # Apparently the instruct models got their <fim> capabilities tuned away. (DeepSeek v2.5 seems fine though)
@@ -597,19 +597,24 @@ FIM_MATCH_OVERRIDE = [
 ]
 
 
-def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:"):
+def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:", extra_args_prefix=" ARGS:"):
     lines = []
     system = []
+    extra_args = []
     with open(prompt_file, "r") as f:
         while line := f.readline():
             if line.startswith(ignore_prefix):
                 if line.startswith(ignore_prefix + system_prefix):
                     system.append(line[len(ignore_prefix) + len(system_prefix):])
+                if line.startswith(ignore_prefix + extra_args_prefix):
+                    extra_args += line[len(ignore_prefix) + len(extra_args_prefix):].split()
+
                 continue
             lines.append(line)
     return {
         "user": "".join(lines),
-        "system": "".join(system).strip()
+        "system": "".join(system).strip(),
+        "extra_args": extra_args
         }
 
 
@@ -754,12 +759,14 @@ if __name__ == "__main__":
 
         class CurrentPrompt(overrideTemplateMixIn, preset):
             pass
-        for prompt_file, prompt in zip([None,] + prompt_globs, [{"user":user_prompt},] + [read_prompt_file(prompt_file, ignore_prefix=opts.get("-x") or "#!") for prompt_file in prompt_globs]):
+        for prompt_file in [None,] + prompt_globs:
+            if prompt_file is None:
+                prompt = {"user":user_prompt}
+            else:
+                prompt = read_prompt_file(prompt_file, ignore_prefix=opts.get("-x") or "#!")
+
             if prompt.get("user") is None:
                 continue
-
-            if verbosity > 0:
-                print(prompt_file)
 
             # Create a temporary file for storing the prompt
             with tempfile.NamedTemporaryFile(mode="w", delete=('-k' not in opts)) as temp_prompt_file:
@@ -823,6 +830,10 @@ if __name__ == "__main__":
 
                     this_cmd[this_cmd.index(ModelPlaceholder)] = model
                     this_cmd += ["-f", temp_prompt_file.name]
+
+                    if (prompt_extra_args := prompt.get("extra_args")):
+                        this_cmd += prompt_extra_args
+
 
                     if prompt_file and "-F" in opts:  # if filename matches a string, add more options
                         conditional_options = opts.get("-F").split(",")
