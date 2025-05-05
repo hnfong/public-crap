@@ -7,6 +7,13 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2025
 
+- [21-罪疚、時間、自由](writings/2025/21-罪疚、時間、自由.md)
+- [20-《展拓香港界址專條》只係一份歷史文件，不再具有任何現實意義](writings/2025/20-《展拓香港界址專條》只係一份歷史文件_CM_不再具有任何現實意義.md)
+- [19-醫學期刊話自己客觀中立](writings/2025/19-醫學期刊話自己客觀中立.md)
+- [18-Exterminating the Ghost of Imperialism](writings/2025/18-Exterminating_the_Ghost_of_Imperialism.md)
+- [17-時代嘅魔法](writings/2025/17-時代嘅魔法.md)
+- [16-讀書冇用](writings/2025/16-讀書冇用.md)
+- [15-解釋就係掩飾](writings/2025/15-解釋就係掩飾.md)
 - [14-算命](writings/2025/14-算命.md)
 - [13-[Vibe Essay]-The System Is Cracking, and Something Else Is Coming](writings/2025/13-[Vibe_Essay]-The_System_Is_Cracking_cm__and_Something_Else_Is_Coming.md)
 - [12-Covering old loans with new loans](writings/2025/12-Covering_old_loans_with_new_loans.md)
