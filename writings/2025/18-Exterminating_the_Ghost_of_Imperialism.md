@@ -1,5 +1,7 @@
 # Exterminating the Ghost of Imperialism: The End of Dominion in the Age of Equality
 
+![image](./images/imperialism_ruins.jpg)
+
 It's a common narrative that China is rising and about to challenge the US as the leading world power, but I think it misses the point. The US has basically imploded from its own internal inconsistencies, as reality has caught up with the contradictions built into its empire and economy.
 
 In a sense, imperialism and colonialism never really went away. It became less overt, yet the notion that some peoples (or tribes, nations, countries, etc.) are superior over others never really died. It just morphed into new (and admittedly less sinister) forms.
