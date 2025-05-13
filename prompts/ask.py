@@ -62,7 +62,7 @@ MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/"
 
 DEFAULT_MODEL = "gemma-3-12b-it"
 # DEFAULT_CODE_GENERATION_MODEL = "SuperNova-Medius"
-DEFAULT_CODE_INSTRUCT_MODEL = "GLM-4-32B-0414"
+DEFAULT_CODE_INSTRUCT_MODEL = "SuperNova-Medius"
 # Apparently the instruct models got their <fim> capabilities tuned away. (DeepSeek v2.5 seems fine though)
 DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5-Coder-32B-Instruct"
 
@@ -308,6 +308,7 @@ class SummarizeLawCase(Preset):
 ### TASKS ###
 
 1. Briefly summarize the facts of the following case.
+1.1 After your summary, craft a catchy, memorable sentence to help the reader remember the case. (The sentence should be short and concise and reference distinctive elements of the case)
 2. Then, briefly summarize the arguments of the two parties.
 3. Summarize the legal principles (ratio decidendi) of the case. Be detailed and thorough. There is no word limit. Use multiple paragraphs. If applicable, focus on the points that might be novel or controversial.
 4. Finally, is there anything striking, unusual or remarkable about the case? (It may or may not be about law, just anything you find extraordinary.)
@@ -321,6 +322,7 @@ class SummarizeLawCase(Preset):
 ### TASKS ###
 
 1. Briefly summarize the facts of the above case.
+1.1 After your summary, craft a catchy, memorable sentence to help the reader remember the case. (The sentence should be short and concise and reference distinctive elements of the case)
 2. Then, briefly summarize the arguments of the two parties.
 3. Summarize the legal principles (ratio decidendi) of the case. Be detailed and thorough. There is no word limit. Use multiple paragraphs. If applicable, focus on the points that might be novel or controversial.
 4. Finally, is there anything striking, unusual or remarkable about the case? (It may or may not be about law, just anything you find extraordinary.)
@@ -445,6 +447,27 @@ class QwenTemplateMixin(ChatMLTemplateMixin):
         # https://www.reddit.com/r/LocalLLaMA/comments/1gpwrq1/how_to_use_qwen25coderinstruct_without/
         return "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."
 
+class Qwen3TemplateMixin:
+    # XXX: added /nothink to disable thinking by default
+    def templated_prompt(self):
+        if self.system_message():
+            return f"""
+<|im_start|>system
+{self.system_message()}<|im_end|>
+<|im_start|>user
+{self.prompt()} /nothink<|im_end|>
+<|im_start|>assistant
+            """.strip() + "\n"
+        else:
+            return f"""
+<|im_start|>user
+{self.prompt()} /nothink<|im_end|>
+<|im_start|>assistant
+            """.strip() + "\n"
+    def system_message(self):
+        # https://www.reddit.com/r/LocalLLaMA/comments/1gpwrq1/how_to_use_qwen25coderinstruct_without/
+        return "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."
+
 class InstructionTemplateMixin:
     def templated_prompt(self):
         return f"""
@@ -565,6 +588,7 @@ NAME_MATCH_OVERRIDE = [
     ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
     ("DeepSeek-V2.5", DeepSeekV25Mixin),
     ("DeepSeek-R1-Distill", DeepSeekV25Mixin),
+    ("Mimo", ChatMLTemplateMixin),
     ("Mistral-Large-Instruct", Mistral3InstructTemplate),
     ("Mistral-Small", Mistral3InstructTemplate),
     ("miqu-", Mistral3InstructTemplate),
@@ -572,6 +596,7 @@ NAME_MATCH_OVERRIDE = [
     ("SuperNova-Medius", ChatMLTemplateMixin),
     ("Virtuoso-", ChatMLTemplateMixin),
     ("Qwen2", QwenTemplateMixin),
+    ("Qwen3", Qwen3TemplateMixin),
     ("command-r-plus", CommandRPlusTemplateMixin),
     ("calme-3.2-instruct", ChatMLTemplateMixin),
     ("dolphin", ChatMLTemplateMixin),
@@ -843,9 +868,11 @@ if __name__ == "__main__":
                             if '--skip--' in this_cmd:
                                 continue
                     if "-M" in opts:  # if model matches a string, add more options
-                        conditional_options = opts.get("-M").split(",")
-                        if conditional_options[0] in model:
-                            this_cmd += conditional_options[1:]
+                        m_params = [opt[1] for opt in opt_list if opt[0] == '-M']
+                        for m_param in m_params:
+                            conditional_options = m_param.split(",")
+                            if conditional_options[0] in model:
+                                this_cmd += conditional_options[1:]
 
                     if verbosity > 0:
                         print("Original prompt file: ", prompt_file)
