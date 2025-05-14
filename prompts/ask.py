@@ -442,6 +442,9 @@ class ChatMLTemplateMixin:
 <|im_start|>assistant
             """.strip() + "\n"
 
+    def extra_gguf_options(self):
+        return ["-r", "<|im_end|>"]
+
 class QwenTemplateMixin(ChatMLTemplateMixin):
     def system_message(self):
         # https://www.reddit.com/r/LocalLLaMA/comments/1gpwrq1/how_to_use_qwen25coderinstruct_without/
@@ -507,6 +510,12 @@ class Phi3TemplateMixin:
     def templated_prompt(self):
         return f"""<|user|>\n{self.prompt()}<|end|>\n<|assistant|>\n"""
 
+class Phi4TemplateMixin:
+    def templated_prompt(self):
+        return f"""<|system|>{self.system_message()}<|end|><|user|>{self.prompt()}<|end|><|assistant|>"""
+
+    def extra_gguf_options(self):
+        return ["-r", "<|end|>"]
 
 class ZephyrTemplateMixin:
     def templated_prompt(self):
@@ -535,6 +544,8 @@ class DeepSeekV2LiteMixin:
             return f"""{self.system_message()}\n\nUser: {self.prompt()}\n\nAssistant: """
         else:
             return f"""User: {self.prompt()}\n\nAssistant: """
+    def extra_gguf_options(self):
+        return ["-b", "256"] # https://github.com/ggerganov/llama.cpp/issues/7652#issuecomment-2140568771
 
 class DeepSeekV25Mixin:
     def templated_prompt(self):
@@ -542,6 +553,9 @@ class DeepSeekV25Mixin:
             return f"""<｜begin▁of▁sentence｜>{self.system_message()}<｜User｜>{self.prompt()}<｜Assistant｜>"""
         else:
             return f"""<｜begin▁of▁sentence｜><｜User｜>{self.prompt()}<｜Assistant｜>"""
+
+    def extra_gguf_options(self):
+        return ["-c", "2048"] # We don't have enough RAM for 4096
 
 class MistralInstructTemplate(ChatMLTemplateMixin):
     # "chat_template": "{%- if messages[0]['role'] == 'system' %}\n    {%- set system_message = messages[0]['content'] %}\n    {%- set loop_messages = messages[1:] %}\n{%- else %}\n    {%- set loop_messages = messages %}\n{%- endif %}\n\n{{- bos_token }}\n{%- for message in loop_messages %}\n    {%- if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}\n        {{- raise_exception('After the optional system message, conversation roles must alternate user/assistant/user/assistant/...') }}\n    {%- endif %}\n    {%- if message['role'] == 'user' %}\n        {%- if loop.last and system_message is defined %}\n            {{- '[INST] ' + system_message + '\\n\\n' + message['content'] + '[/INST]' }}\n        {%- else %}\n            {{- '[INST] ' + message['content'] + '[/INST]' }}\n        {%- endif %}\n    {%- elif message['role'] == 'assistant' %}\n        {{- ' ' + message['content'] + eos_token}}\n    {%- else %}\n        {{- raise_exception('Only user and assistant roles are supported, with the exception of an initial optional system message!') }}\n    {%- endif %}\n{%- endfor %}\n",
@@ -609,6 +623,7 @@ NAME_MATCH_OVERRIDE = [
     ("mixtral-8x7b-instruct", LlamaTemplateMixin),
     ("orange", ChatMLTemplateMixin),
     ("phi-3", Phi3TemplateMixin),
+    ("phi-4", Phi4TemplateMixin),
     ("qwen2", QwenTemplateMixin),
     ("qwq-32b", QwenTemplateMixin),
     ("starling", ChatMLTemplateMixin),  # Officially it's not ChatML, but it works. Officially, the prompt template looks like this: single_turn_prompt = f"GPT4 Correct User: {prompt}<|end_of_turn|>GPT4 Correct Assistant:"
@@ -783,7 +798,7 @@ if __name__ == "__main__":
                         print(f"Warning: No template found for {model}, using ChatMLTemplateMixin as a fallback")
                         overrideTemplateMixIn = ChatMLTemplateMixin
 
-        class CurrentPrompt(overrideTemplateMixIn, preset):
+        class CurrentPromptTemplate(overrideTemplateMixIn, preset):
             pass
         for prompt_file in [None,] + prompt_globs:
             if prompt_file is None:
@@ -796,7 +811,7 @@ if __name__ == "__main__":
 
             # Create a temporary file for storing the prompt
             with tempfile.NamedTemporaryFile(mode="w", delete=('-k' not in opts)) as temp_prompt_file:
-                cp = CurrentPrompt(prompt.get("user"), context)
+                cp = CurrentPromptTemplate(prompt.get("user"), context)
                 sys_prompt = prompt.get("system")
                 if sys_prompt:
                     cp.set_system_message(sys_prompt)
@@ -837,22 +852,8 @@ if __name__ == "__main__":
                             continue
 
                     this_cmd = cmd.copy()
-                    if 'codellama-70b' in model: # XXX: Temp hack
-                        this_cmd.append("-r")
-                        this_cmd.append("EOT: true")
-                    if 'yi-34b' or 'starling' in model: # XXX: Temp hack
-                        this_cmd.append("-r")
-                        this_cmd.append("<|im_end|>")
-                    if overrideTemplateMixIn == DeepSeekV2LiteMixin:
-                        this_cmd.append("-b")
-                        this_cmd.append("256") # https://github.com/ggerganov/llama.cpp/issues/7652#issuecomment-2140568771
-                    if overrideTemplateMixIn == DeepSeekV25Mixin:  # We don't have enough RAM for 4096
-                        ctx_idx = this_cmd.index("-c")
-                        if ctx_idx < 0:
-                            this_cmd.append("-c")
-                            this_cmd.append("2048")
-                        else:
-                            this_cmd[ctx_idx + 1] = "2048"
+                    if hasattr(cp, "extra_gguf_options"):
+                        this_cmd.extend(cp.extra_gguf_options())
 
                     this_cmd[this_cmd.index(ModelPlaceholder)] = model
                     this_cmd += ["-f", temp_prompt_file.name]
