@@ -11,7 +11,7 @@ Selected comments. Very subjective.
 | Model Name | Comments |
 |------------|----------|
 | TheDrummer_Valkyrie-49B-v1-Q6_K_L.gguf | Some good comments on [https://www.reddit.com/r/LocalLLaMA/comments/1kqgwh2/drummers_valkyrie_49 b_v1_a_strong_creative/](/localllama/), but in my (these) tests, the model performs really poorly for its class |
-| Qwen3-4B | Apparently punches above its weight for coding and some tasks. Currently using this for simple coding tasks |
+| Qwen3-4B | Apparently punches above its weight for coding and some tasks. Currently using this for simple coding tasks. Integrated into (n)vim via a [https://github.com/hnfong/dotfiles/blob/master/nvim/init.vim](AskVisualSelection) function. |
 | gemma-3-12b-it | Works pretty well on long contexts. |
 | gemma-3-27b-it | Generally a great model, and is curiously capable of writing passable Classical Chinese poetry, but in some conversations it tends to be a bit too flattering. |
 | qwq-32b-q8_0 | An early reasoning model. On my (Mac) hardware, thinking is slow and in most cases isn't really worth the extra tokens. The cost/benefit ratio might change if you're using Nvidia where inference is fast but vRAM is expensive. |
