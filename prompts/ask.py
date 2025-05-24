@@ -32,22 +32,6 @@ Options:
 
 """
 
-# Note that we are using --verbose-prompt by assuming this patch is applied:
-VERBOSE_PROMPT_PATCH = """
-diff --git a/examples/main/main.cpp b/examples/main/main.cpp
-index 374ed47a..36d6cd51 100644
---- a/examples/main/main.cpp
-+++ b/examples/main/main.cpp
-@@ -496,7 +496,7 @@ int main(int argc, char ** argv) {
-     }
-
-     bool is_antiprompt        = false;
--    bool input_echo           = true;
-+    bool input_echo           = params.verbose_prompt;
-     bool display              = true;
-     bool need_to_save_session = !path_session.empty() && n_matching_session_tokens < embd_inp.size();
-"""
-
 import datetime
 import getopt
 import glob
@@ -61,10 +45,8 @@ LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or shutil.which('llama-cli') o
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
 DEFAULT_MODEL = "gemma-3-12b-it"
-# DEFAULT_CODE_GENERATION_MODEL = "SuperNova-Medius"
-DEFAULT_CODE_INSTRUCT_MODEL = "SuperNova-Medius"
-# Apparently the instruct models got their <fim> capabilities tuned away. (DeepSeek v2.5 seems fine though)
-DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5-Coder-32B-Instruct"
+DEFAULT_CODE_INSTRUCT_MODEL = "Qwen3-4B-Q8"
+DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5.1-Coder-7B-Instruct"  # FIM
 
 # Presets
 
@@ -630,6 +612,7 @@ NAME_MATCH_OVERRIDE = [
     ("tinyllama_v1.1", ChatMLTemplateMixin),
     ("wizardlm", WizardLmMixin),
     ("zephyr", ZephyrTemplateMixin),
+    ("TheDrummer_Valkyrie", Llama3TemplateMixin),
 ]
 
 FIM_MATCH_OVERRIDE = [

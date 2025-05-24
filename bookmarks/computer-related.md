@@ -463,7 +463,7 @@ Computer technology related.
 - https://github.com/microsoft/BitNet (1-bit llm)
 - https://www.reddit.com/r/LocalLLaMA/comments/1ggmsmo/smollm2_the_new_best_small_models_for_ondevice/ - Small models
 - https://www.reddit.com/r/LocalLLaMA/comments/1g03rdn/hidden_gem_happzy2633qwen257binsv3_is_an/ - Early reasoning model that came before DeepSeek-R1
-
+- https://www.reddit.com/r/LocalLLaMA/comments/1khwxal/the_great_quant_wars_of_2025/ - Quantization and benchmarks
 
 
 ### Toys
