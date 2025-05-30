@@ -341,4 +341,5 @@ def evaluate_prompt_files():
             print(f"Written evaluation results (test cases) to {eval_file}")
 
 
-evaluate_prompt_files()
+if __name__ == "__main__":
+    evaluate_prompt_files()
