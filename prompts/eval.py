@@ -197,7 +197,10 @@ def evaluate_prompt_files():
                     with open(out_file, 'r') as f_out:
                         content = f_out.read().replace('[end of text]', '')
                         try:
-                            eval_result = eval_expr(content.split("think>")[-1])  # Evaluate the content, except thinking parts
+                            content = content.split("/think>")[-1]
+                            if '<think>' in content:
+                                content = ""  # did not complete thinking
+                            eval_result = eval_expr(content)  # Evaluate the content, except thinking parts
                             model_name = os.path.basename(out_file)[len(base_prompt_path):].lstrip('.').split(".gguf")[0]
                             results.append((eval_result, model_name, out_file))
                         except Exception as e:

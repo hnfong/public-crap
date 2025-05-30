@@ -45,7 +45,7 @@ LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or shutil.which('llama-cli') o
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
 DEFAULT_MODEL = "gemma-3-12b-it"
-DEFAULT_CODE_INSTRUCT_MODEL = "Qwen3-4B-Q8"
+DEFAULT_CODE_INSTRUCT_MODEL = "Qwen3-8B-"
 DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5.1-Coder-7B-Instruct"  # FIM
 
 # Presets
@@ -760,7 +760,8 @@ if __name__ == "__main__":
     cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", ModelPlaceholder]
 
     assert_count = 0
-    for model in glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf") or [model_name]:
+    ggg = glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf")
+    for model in ggg or [model_name]:
         if '-of-000' in model and '01-of-000' not in model:
             # Only use the first shard
             continue
@@ -903,3 +904,9 @@ if __name__ == "__main__":
                                 # results.
 
                             print(outs_s)
+    else:
+        if sys.stdout.isatty():
+            print(ggg)
+else:
+    print(__name__)
+
