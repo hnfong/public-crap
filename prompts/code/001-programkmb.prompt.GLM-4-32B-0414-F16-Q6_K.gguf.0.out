@@ -7,38 +7,45 @@ import java.util.regex.Pattern;
 public class NumberSuffixSum {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
+        StringBuilder input = new StringBuilder();
+        while (scanner.hasNextLine()) {
+            input.append(scanner.nextLine()).append("\n");
+        }
         scanner.close();
 
-        Pattern pattern = Pattern.compile("([0-9,]+\\.?[0-9]*)[kKmMgG]");
-        Matcher matcher = pattern.matcher(input);
+        Pattern pattern = Pattern.compile("([0-9,]+\\.?[0-9]*)[kKmMgG]?");
+        Matcher matcher = pattern.matcher(input.toString());
         double totalSum = 0.0;
 
         while (matcher.find()) {
             String numberStr = matcher.group(1).replace(",", "");
             double number = Double.parseDouble(numberStr);
-            char suffix = matcher.group().charAt(matcher.group().length() - 1);
-            double value = convertToBase(number, suffix);
-            totalSum += value;
+            String suffix = matcher.group().substring(numberStr.length());
+
+            switch (suffix) {
+                case "k":
+                case "K":
+                    number *= 1024;
+                    break;
+                case "m":
+                case "M":
+                    number *= 1024 * 1024;
+                    break;
+                case "g":
+                case "G":
+                    number *= 1024 * 1024 * 1024;
+                    break;
+                default:
+                    // No suffix, number remains as is
+                    break;
+            }
+            totalSum += number;
         }
 
-        System.out.println(totalSum);
-        System.out.println(totalSum / 1024 + " K");
-        System.out.println(totalSum / (1024 * 1024) + " M");
-        System.out.println(totalSum / (1024 * 1024 * 1024) + " G");
-    }
-
-    private static double convertToBase(double number, char suffix) {
-        switch (Character.toLowerCase(suffix)) {
-            case 'k':
-                return number * 1024;
-            case 'm':
-                return number * 1024 * 1024;
-            case 'g':
-                return number * 1024 * 1024 * 1024;
-            default:
-                return number;
-        }
+        System.out.printf("%.1f\n", totalSum);
+        System.out.printf("%.1f k\n", totalSum / 1024);
+        System.out.printf("%.1f M\n", totalSum / (1024 * 1024));
+        System.out.printf("%.1f G\n", totalSum / (1024 * 1024 * 1024));
     }
 }
 ``` [end of text]

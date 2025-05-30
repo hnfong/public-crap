@@ -11,68 +11,69 @@ import java.math.RoundingMode;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class NumberSuffixSum {
+public class NumberSumCalculator {
+    private static final BigDecimal KILO = BigDecimal.valueOf(1024);
+    private static final BigDecimal MEGA = KILO.multiply(KILO);
+    private static final BigDecimal GIGA = MEGA.multiply(KILO);
+    
     public static void main(String[] args) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             StringBuilder input = new StringBuilder();
             String line;
+            
+            // Read all input
             while ((line = reader.readLine()) != null) {
-                input.append(line).append(" ");
+                input.append(line).append("\n");
             }
             
-            String inputStr = input.toString().trim();
-            BigDecimal totalBytes = processInput(inputStr);
+            // Process the input
+            BigDecimal totalBytes = processInput(input.toString());
             
+            // Output results
             System.out.println(totalBytes.stripTrailingZeros().toPlainString());
-            System.out.println(totalBytes.divide(BigDecimal.valueOf(1024), 1, RoundingMode.HALF_UP) + " K");
-            System.out.println(totalBytes.divide(BigDecimal.valueOf(1024 * 1024), 1, RoundingMode.HALF_UP) + " M");
-            System.out.println(totalBytes.divide(BigDecimal.valueOf(1024 * 1024 * 1024), 1, RoundingMode.HALF_UP) + " G");
+            System.out.println(totalBytes.divide(KILO, 1, RoundingMode.HALF_UP) + " k");
+            System.out.println(totalBytes.divide(MEGA, 1, RoundingMode.HALF_UP) + " M");
+            System.out.println(totalBytes.divide(GIGA, 1, RoundingMode.HALF_UP) + " G");
         } catch (IOException e) {
             System.err.println("Error reading input: " + e.getMessage());
+            System.exit(1);
         }
     }
     
     private static BigDecimal processInput(String input) {
-        Pattern pattern = Pattern.compile("([\\d,.]+\\s*[kKmMgG]?)\\b");
+        // Pattern to match numbers with optional suffixes
+        Pattern pattern = Pattern.compile("([\\d,.]+)([kKmMgG]?)\\b");
         Matcher matcher = pattern.matcher(input);
         
         BigDecimal total = BigDecimal.ZERO;
         
         while (matcher.find()) {
-            String match = matcher.group(1).trim();
-            BigDecimal value = parseValue(match);
+            String numberStr = matcher.group(1);
+            String suffix = matcher.group(2).toLowerCase();
+            
+            // Remove commas and parse the number
+            BigDecimal value = new BigDecimal(numberStr.replace(",", ""));
+            
+            // Apply suffix multiplier
+            switch (suffix) {
+                case "g":
+                    value = value.multiply(GIGA);
+                    break;
+                case "m":
+                    value = value.multiply(MEGA);
+                    break;
+                case "k":
+                    value = value.multiply(KILO);
+                    break;
+                default:
+                    // No suffix, assume bytes
+                    break;
+            }
+            
             total = total.add(value);
         }
         
         return total;
-    }
-    
-    private static BigDecimal parseValue(String valueStr) {
-        // Remove any commas and whitespace
-        valueStr = valueStr.replaceAll("[,\\s]", "");
-        
-        char suffix = ' ';
-        if (valueStr.length() > 0) {
-            suffix = Character.toUpperCase(valueStr.charAt(valueStr.length() - 1));
-            if (Character.isDigit(suffix)) {
-                suffix = ' ';
-            } else {
-                valueStr = valueStr.substring(0, valueStr.length() - 1);
-            }
-        }
-        
-        BigDecimal value = new BigDecimal(valueStr);
-        
-        switch (suffix) {
-            case 'G':
-                return value.multiply(BigDecimal.valueOf(1024 * 1024 * 1024));
-            case 'M':
-                return value.multiply(BigDecimal.valueOf(1024 * 1024));
-            case 'K':
-                return value.multiply(BigDecimal.valueOf(1024));
-            default:
-                return value;
-        }
     }
 }
 ``` [end of text]

@@ -18,6 +18,10 @@ import glob
 import os
 import fnmatch
 
+def verbose_print(s):
+    if False:
+        print(s)
+
 def find_files(pattern, root='.'):
     """Find all files matching the pattern using os.walk."""
     matched_paths = []
@@ -177,13 +181,109 @@ def semi_safe_exec(path):
 
 TestCase = collections.namedtuple('TestCase', ['func_name', 'args', 'expected'])
 
+def read_outfile_contents(path):
+    with open(path, 'r') as f_out:
+        content = f_out.read().replace('[end of text]', '')
+        content = content.split("/think>")[-1]
+        if '<think>' in content:
+            content = ""  # did not complete thinking
+        return content
+
+def extract_language_block(lang, content):
+    if "```" not in content:
+        return content
+
+    if "```" + lang in content:
+        return content.split("```" + lang)[-1].split("```")[0]
+    else:
+        splitter = content.split("```")
+        # Just see which segment has the most semicolons. It's probably right unless it's python, in which case add some parentheses.
+        return max(splitter, key=lambda x: x.count(";") + x.count('(') + x.count(')'))
+
+def compare_output_with_sample(env_info, output):
+    sample_output = env_info.get("sample_output")
+    sample_set = set([line.strip() for line in open(sample_output).readlines() if line != ""])
+    output_set = set([line.strip() for line in output.strip().split("\n") if line != ""])
+    return int(len(output_set & sample_set) / len(sample_set) * 100)
+
+def compile_and_run_java(env_info, result_file):
+    import os
+    import re
+    import tempfile
+    import subprocess
+    # Extract the java code, usually it is ```java but sometimes it is ```
+    content = read_outfile_contents(result_file) # This strips away [end of text] and <think>
+    content = extract_language_block("java", content)
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        # Extract class name from "public class XXX"
+        matcher = re.search(r'public\s+class\s+(\w+)', content, re.MULTILINE)
+        if not matcher:
+            return 0
+
+        class_name = matcher.group(1)
+        java_file_path = os.path.join(temp_dir, f"{class_name}.java")
+
+        # Write content to the Java file
+        with open(java_file_path, "w") as java_file:
+            java_file.write(content)
+
+        # Call javac
+        try:
+            subprocess.run(["javac", java_file_path], check=True, stderr=subprocess.DEVNULL)
+        except Exception as e:
+            # print(f"Compilation failed for {result_file}: {e}")
+            return 0
+
+        # construct the stdin
+        stdin_f = open(env_info.get("sample_input"))
+
+        # Run the compiled class
+        verbose_print(result_file)
+        try:
+            # XXX: this won't work in a recent version of java since security
+            # manager is deprecated (and removed in recent versions). We will
+            # have to figure out how to sandbox, but let's do this for now.
+            output = subprocess.check_output(["java", "-Djava.security.manager", "-cp", temp_dir, class_name], stderr=subprocess.DEVNULL, stdin=stdin_f, text=True)
+            verbose_print(output)
+        except Exception as e:
+            # print(f"Execution failed: {e}")
+            return 10
+
+        # If it runs without error, let's give it 20 marks
+        return max(20, compare_output_with_sample(env_info, output))
+
+
+
+
+
+def compile_and_run(env_info, result_file):
+    print(f"Compile and run: {result_file}...")
+    if env_info.get("lang") == "java":
+        return compile_and_run_java(env_info, result_file)
+    else:
+        raise Exception(f"Unsupported language in {env_info} when evaluating {result_file}")
+
 def evaluate_prompt_files():
     # Find all .prompt files
     for prompt_path in find_files('*.prompt'):
         python_tests_info = []
         base_prompt_path = os.path.basename(prompt_path)
+        eval_file = prompt_path + ".eval"
 
-        for line in open(prompt_path, 'r').readlines():
+        # Check whether any out_files here are newer than the eval_file, if not, we can skip
+
+        if os.path.isfile(eval_file):
+            can_skip = True
+            eval_file_mtime = os.path.getmtime(eval_file)
+            for out_file in find_files(base_prompt_path + '.*.out'):
+                if os.path.getmtime(out_file) > eval_file_mtime:
+                    can_skip = False
+            if can_skip:
+                continue
+
+        results = []
+        for line_num, line in enumerate(open(prompt_path, 'r').readlines()):
             line = line.strip()
             if line.startswith('#! EVAL(') and (last_close := line.rfind(')')) != -1:
                 expr_string = line.strip()[8:last_close]  # Extract expression inside EVAL()
@@ -191,35 +291,40 @@ def evaluate_prompt_files():
                 eval_expr = eval(expr_string, get_ctx())  # Evaluate the expression. Might throw but it's OK
 
 
-                results = []
                 # Find corresponding .out files using the same function
                 for out_file in find_files(base_prompt_path + '.*.out'):
-                    with open(out_file, 'r') as f_out:
-                        content = f_out.read().replace('[end of text]', '')
-                        try:
-                            content = content.split("/think>")[-1]
-                            if '<think>' in content:
-                                content = ""  # did not complete thinking
-                            eval_result = eval_expr(content)  # Evaluate the content, except thinking parts
-                            model_name = os.path.basename(out_file)[len(base_prompt_path):].lstrip('.').split(".gguf")[0]
-                            results.append((eval_result, model_name, out_file))
-                        except Exception as e:
-                            print(f"Error evaluating {out_file}: {e}")
-                eval_file = prompt_path + ".eval"
-                with open(eval_file, "w") as f:
-                    for score, model, out_file in reversed(sorted(results)):
-                        f.write(f"{score}\t{model}\t{out_file}\n")
-                print(f"Written evaluation results (inline eval) to {eval_file}")
+                    model_name = os.path.basename(out_file)[len(base_prompt_path):].lstrip('.').split(".gguf")[0]
+                    content = read_outfile_contents(out_file)
+                    try:
+                        eval_result = eval_expr(content)  # Evaluate the content, except thinking parts
+                        results.append((line_num, eval_result, model_name, out_file))
+                    except Exception as e:
+                        print(f"Error evaluating {out_file}: {e}")
 
-            if line.startswith('#! PYTHON_TEST(') and (last_close := line.rfind(')')) != -1:
+            elif line.startswith('#! PYTHON_TEST(') and (last_close := line.rfind(')')) != -1:
                 expr_string = line.strip()[15:last_close]
                 # We expect 3 args, arg1 is the function name, arg2 is the input, arg3 is the expected output
                 func_name, other = expr_string.split(",", maxsplit=1)
                 x, y = eval("[" + other + "]")
                 python_tests_info.append(TestCase(func_name, x, y))
+            elif line.startswith('#! COMPILE_AND_RUN(') and (last_close := line.rfind(')')) != -1:
+                expr_string = line.strip()[line.find('(')+1:last_close]
+                env_info = eval(expr_string, get_ctx())
+                results = []
+                for out_file in find_files(base_prompt_path + '.*.out'):
+                    model_name = os.path.basename(out_file)[len(base_prompt_path):].lstrip('.').split(".gguf")[0]
+                    score = compile_and_run(env_info, out_file)
+                    results.append((line_num,score, model_name, out_file))
+
+        if results:
+            with open(eval_file, "w") as f:
+                for line_num, score, model, out_file in reversed(sorted(results)):
+                    f.write(f"{score}\t{model}\t{out_file}\n")
+                    # TODO: add the line num at the end -- defer to make it easier to check whether our outputs are same with previous outputs
+            print(f"Written evaluation results (inline eval) to {eval_file}")
 
         # print(python_tests_info)
-        if python_tests_info:
+        elif python_tests_info:
             results = []
             for out_file in find_files(base_prompt_path + '.*.out'):
                 model_name = os.path.basename(out_file)[len(base_prompt_path):].lstrip('.').split(".gguf")[0]
@@ -230,7 +335,6 @@ def evaluate_prompt_files():
                     results.append((-1, "", model_name, out_file))
 
 
-            eval_file = prompt_path + ".eval"
             with open(eval_file, "w") as f:
                 for score, tc_results, model, out_file in reversed(sorted(results)):
                     f.write(f"{score}\t{tc_results}\t{model}\t{out_file}\n")

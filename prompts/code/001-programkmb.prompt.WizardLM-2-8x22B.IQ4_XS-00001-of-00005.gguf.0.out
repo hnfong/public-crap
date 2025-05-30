@@ -2,50 +2,60 @@
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.text.DecimalFormat;
 
 public class ByteSumCalculator {
 
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+)(,\\d+)*(\\.\\d+)?([kKmMgG]?)");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#");
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the string containing numbers with optional suffixes:");
-        String input = scanner.nextLine();
-        scanner.close();
+        double totalBytes = 0;
 
-        Pattern pattern = Pattern.compile("(\\d+(\\.\\d+)?)([kKmMgG]?)");
-        Matcher matcher = pattern.matcher(input);
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            Matcher matcher = NUMBER_PATTERN.matcher(line);
 
-        double totalSum = 0;
-        while (matcher.find()) {
-            double value = Double.parseDouble(matcher.group(1).replace(",", ""));
-            String suffix = matcher.group(3).toLowerCase();
-            switch (suffix) {
-                case "k":
-                case "K":
-                    value *= 1024;
-                    break;
-                case "m":
-                case "M":
-                    value *= 1024 * 1024;
-                    break;
-                case "g":
-                case "G":
-                    value *= 1024 * 1024 * 1024;
-                    break;
-                // no suffix, so it's in bytes
-                default:
-                    break;
+            while (matcher.find()) {
+                String number = matcher.group(1).replaceAll(",", "") + (matcher.group(2) != null ? matcher.group(2).replaceAll(",", "") : "") + (matcher.group(3) != null ? matcher.group(3) : "");
+                String suffix = matcher.group(4);
+                double value = Double.parseDouble(number);
+
+                switch (suffix != null ? suffix.toLowerCase() : "") {
+                    case "k":
+                    case "kilo":
+                        value *= 1024;
+                        break;
+                    case "m":
+                    case "mega":
+                        value *= 1024 * 1024;
+                        break;
+                    case "g":
+                    case "giga":
+                        value *= 1024 * 1024 * 1024;
+                        break;
+                    // no suffix, already in bytes
+                }
+
+                totalBytes += value;
             }
-            totalSum += value;
         }
 
-        System.out.printf("%f%n", totalSum);
-        System.out.printf("%f K%n", totalSum / 1024);
-        System.out.printf("%f M%n", totalSum / (1024 * 1024));
-        System.out.printf("%f G%n", totalSum / (1024 * 1024 * 1024));
+        scanner.close();
+
+        double totalKilobytes = totalBytes / 1024;
+        double totalMegabytes = totalBytes / (1024 * 1024);
+        double totalGigabytes = totalBytes / (1024 * 1024 * 1024);
+
+        System.out.println(DECIMAL_FORMAT.format(totalBytes));
+        System.out.println(DECIMAL_FORMAT.format(totalKilobytes) + " k");
+        System.out.println(DECIMAL_FORMAT.format(totalMegabytes) + " M");
+        System.out.println(DECIMAL_FORMAT.format(totalGigabytes) + " G");
     }
 }
 ```
 
-This Java program reads a string from standard input, extracts all numbers with optional suffixes, converts them to their base value in bytes, calculates their sum, and prints the total sum as well as the sum in kilobytes (K), megabytes (M), and gigabytes (G). It handles numbers with commas as thousand separators and supports both lowercase and uppercase suffixes. [end of text]
+This Java program reads input from the standard input, extracts numbers with optional suffixes, converts them to bytes, calculates the sum, and prints the total in bytes, kilobytes, megabytes, and gigabytes to one decimal place. It handles numbers with commas as thousand separators and supports both lowercase and uppercase suffixes. [end of text]
 
 
