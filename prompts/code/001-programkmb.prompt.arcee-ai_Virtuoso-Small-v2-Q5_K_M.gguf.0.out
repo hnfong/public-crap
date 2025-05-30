@@ -1,46 +1,48 @@
 ```java
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NumberSumConverter {
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
-        scanner.close();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String input;
+        long totalSum = 0;
 
-        double totalSum = 0;
-        Pattern pattern = Pattern.compile("(\\d{1,3}(?:,\\d{3})*|\\d+)([kKmMgG]?)");
-        Matcher matcher = pattern.matcher(input);
-
-        while (matcher.find()) {
-            String numberStr = matcher.group(1).replace(",", "");
-            double number = Double.parseDouble(numberStr);
-            String suffix = matcher.group(2);
-
-            switch (suffix) {
-                case "k":
-                case "K":
-                    number *= 1024;
-                    break;
-                case "m":
-                case "M":
-                    number *= 1024 * 1024;
-                    break;
-                case "g":
-                case "G":
-                    number *= 1024 * 1024 * 1024;
-                    break;
+        try {
+            while ((input = reader.readLine()) != null) {
+                Matcher matcher = Pattern.compile("(\\d{1,3}(?:,\\d{3})*)(?:\\.\\d+)?[kKmMgG]?", Pattern.CASE_INSENSITIVE).matcher(input);
+                while (matcher.find()) {
+                    String numberStr = matcher.group(1).replace(",", "");
+                    String suffix = matcher.group().substring(numberStr.length()).toUpperCase();
+                    double number = Double.parseDouble(numberStr);
+                    totalSum += convertToBase(number, suffix);
+                }
             }
-
-            totalSum += number;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        System.out.println(totalSum);
-        System.out.println(totalSum / 1024 + " K");
-        System.out.println(totalSum / (1024 * 1024) + " M");
-        System.out.println(totalSum / (1024 * 1024 * 1024) + " G");
+        System.out.printf("%.1f%n", totalSum);
+        System.out.printf("%.1f k%n", totalSum / 1024.0);
+        System.out.printf("%.1f M%n", totalSum / (1024.0 * 1024.0));
+        System.out.printf("%.1f G%n", totalSum / (1024.0 * 1024.0 * 1024.0));
+    }
+
+    private static long convertToBase(double number, String suffix) {
+        switch (suffix) {
+            case "K":
+                return (long) (number * 1024);
+            case "M":
+                return (long) (number * 1024 * 1024);
+            case "G":
+                return (long) (number * 1024 * 1024 * 1024);
+            default:
+                return (long) number;
+        }
     }
 }
 ``` [end of text]

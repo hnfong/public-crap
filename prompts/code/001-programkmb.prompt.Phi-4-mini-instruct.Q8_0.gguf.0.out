@@ -2,31 +2,47 @@
 import java.util.Scanner;
 
 public class NumberConverter {
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
+        scanner.close();
+
         double totalSum = 0;
+        double sumInK = 0;
+        double sumInM = 0;
+        double sumInG = 0;
 
         String[] parts = input.split(",\\s*and\\s*");
         for (String part : parts) {
-            String[] numberAndSuffix = part.trim().split("[,\\s]+");
-            for (String numberAndSuffixPart : numberAndSuffix) {
-                double number = parseNumber(numberAndSuffixPart);
-                totalSum += number;
+            part = part.trim();
+            if (part.isEmpty()) continue;
+
+            String[] numbers = part.split("\\s+");
+            for (String number : numbers) {
+                double value = parseNumber(number);
+                if (value > 0) {
+                    totalSum += value;
+                    if (value >= 1024) {
+                        sumInG += value / 1024;
+                    } else if (value >= 1024 * 1024) {
+                        sumInM += value / (1024 * 1024);
+                    } else {
+                        sumInK += value;
+                    }
+                }
             }
         }
 
         System.out.printf("%.1f\n", totalSum);
-        System.out.printf("%.0f K\n", totalSum / 1024);
-        System.out.printf("%.0f M\n", totalSum / (1024 * 1024));
-        System.out.printf("%.0f G\n", totalSum / (1024 * 1024 * 1024));
+        System.out.printf("%.1f k\n", sumInK);
+        System.out.printf("%.1f M\n", sumInM);
+        System.out.printf("%.1f G\n", sumInG);
     }
 
-    private static double parseNumber(String numberAndSuffix) {
-        String number = numberAndSuffix.replaceAll("[kKmMgG]", "").trim();
+    private static double parseNumber(String number) {
+        number = number.replace(",", "");
         double value = Double.parseDouble(number);
-        String suffix = numberAndSuffix.substring(number.length()).trim().toUpperCase();
+        String suffix = number.substring(value == 0 ? 0 : number.length() - 1).toUpperCase();
 
         switch (suffix) {
             case "K":

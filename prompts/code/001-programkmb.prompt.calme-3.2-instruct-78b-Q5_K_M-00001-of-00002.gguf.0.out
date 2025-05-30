@@ -1,48 +1,74 @@
 ```java
-import java.util.Scanner;
-import java.text.DecimalFormat;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.NumberFormat;
-import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class NumberSuffixSum {
+public class SumNumbersWithSuffixes {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        BigDecimal totalSum = new BigDecimal("0");
-        
-        while (scanner.hasNext()) {
-            String token = scanner.next();
-            if (token.matches("[-+]?\\d*\\.?\\d+([kKmMgG])?")) {
-                token = token.replace(",", "");
-                BigDecimal number = new BigDecimal(token.replaceAll("[kKmMgG]", ""));
-                String suffix = token.replaceAll("[\\d.,-+]+", "");
-                switch (suffix) {
-                    case "k" :
-                    case "K" :
-                        number = number.multiply(new BigDecimal("1024"));
-                        break;
-                    case "m" :
-                    case "M" :
-                        number = number.multiply(new BigDecimal("1024").pow(2));
-                        break;
-                    case "g" :
-                    case "G" :
-                        number = number.multiply(new BigDecimal("1024").pow(3));
-                        break;
-                }
-                totalSum = totalSum.add(number);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder input = new StringBuilder();
+        String line;
+        try {
+            while ((line = reader.readLine()) != null) {
+                input.append(line).append("\n");
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        
-        NumberFormat formatter = NumberFormat.getInstance();
-        formatter.setMaximumFractionDigits(1);
-        DecimalFormat df = new DecimalFormat("0.0");
-        
-        System.out.println(formatter.format(totalSum));
-        System.out.println(df.format(totalSum.divide(new BigDecimal("1024"))) + " K");
-        System.out.println(df.format(totalSum.divide(new BigDecimal("1024").pow(2))) + " M");
-        System.out.println(df.format(totalSum.divide(new BigDecimal("1024").pow(3))) + " G");
+
+        String[] inputLines = input.toString().split("\n");
+        long totalSum = 0;
+        for (String line : inputLines) {
+            totalSum += parseAndSumLine(line);
+        }
+
+        printSums(totalSum);
+    }
+
+    private static long parseAndSumLine(String line) {
+        long sum = 0;
+        Pattern pattern = Pattern.compile("(\\d+(\\.\\d+)?)([kKmMgG]?)");
+        Matcher matcher = pattern.matcher(line.replaceAll(",", ""));
+        while (matcher.find()) {
+            double number = Double.parseDouble(matcher.group(1));
+            String suffix = matcher.group(3);
+            sum += convertToBaseValue(number, suffix);
+        }
+        return sum;
+    }
+
+    private static long convertToBaseValue(double number, String suffix) {
+        switch (suffix) {
+            case "k":
+            case "K":
+                return (long) (number * 1024);
+            case "m":
+            case "M":
+                return (long) (number * 1024 * 1024);
+            case "g":
+            case "G":
+                return (long) (number * 1024 * 1024 * 1024);
+            default:
+                return (long) number;
+        }
+    }
+
+    private static void printSums(long totalSum) {
+        double k = totalSum / 1024.0;
+        double m = k / 1024.0;
+        double g = m / 1024.0;
+        System.out.printf("%.1f%n", totalSum);
+        System.out.printf("%.1f k%n", k);
+        System.out.printf("%.1f M%n", m);
+        System.out.printf("%.1f G%n", g);
     }
 }
-``` [end of text]
+```
+This program, however, does not fully meet the requirement of using only the standard library as it stands, due to the use of regular expressions (Pattern and Matcher classes) which are part of the java.util.regex package, which is not in the java.* namespace. To fully comply with the given constraints, one would need to parse the input string without the use of regular expressions. This would make the code significantly more complex and less readable. [end of text]
 
 

@@ -1,112 +1,116 @@
 <Thought>
-Alright, I need to write a complete single-file Java program that reads a string from standard input, processes it to extract numbers followed by optional suffixes like k, K, m, M, g, G, converts these numbers to their base values, sums them up, and then prints the total sum along with the sum converted to kilobytes (K), megabytes (M), and gigabytes (G). The program should handle numbers with commas as thousand separators and support both lowercase and uppercase suffixes. Let's break this down step by step.
+Alright, I need to write a complete single-file Java program that reads a string from standard input, processes it to extract numbers with optional suffixes (k, K, m, M, g, G), converts these numbers to their base values based on the suffixes provided, calculates the sum of these values, and then prints out the total sum along with the sum converted to kilobytes (K), megabytes (M), and gigabytes (G), all formatted to one decimal place.
 
-First, I'll need to read input from the standard input. In Java, I can use `BufferedReader` wrapped around `System.in` to read the input string. I'll need to ensure that the input is properly read and parsed.
+First, I'll need to handle reading input from standard input. In Java, I can use `BufferedReader` wrapped around `System.in` to read the input line by line. Since the input can contain multiple lines, I'll read until there's no more input.
 
-Next, I need to extract all numbers followed by optional suffixes. The suffixes are k, K, m, M, g, G. I'll have to use a regular expression to match these patterns. The regex should capture numbers that may have commas and optional suffixes.
+Next, I need to extract numbers followed by optional suffixes. The suffixes are k, K, m, M, g, G. I'll need to identify these patterns in the input string. Regular expressions might be useful here to match numbers followed by these suffixes. I'll have to ensure that the regex correctly captures the number and the suffix, even if there are commas as thousand separators.
 
 Once I have the numbers with their respective suffixes, I need to convert them to their base values. The base values are:
 - k and K: 1024
 - m and M: 1024 * 1024
 - g and G: 1024 * 1024 * 1024
 
-I'll need to parse the numbers, remove the commas, and then apply the appropriate multiplier based on the suffix.
+I'll need to map these suffixes to their corresponding multipliers. I'll have to handle both lowercase and uppercase suffixes, so my mapping should account for both cases.
 
-After converting all the numbers to their base values, I'll sum them up. I'll have to ensure that the sum is accurate, especially since we're dealing with large numbers and floating-point precision.
+After converting each number to its base value, I'll sum all these values. I'll need to ensure that the sum is accurate, especially since some of the numbers might be quite large.
 
-Finally, I need to print the total sum along with the sum converted to K, M, and G. I'll have to format the output to match the example output, ensuring that the numbers are displayed with the correct number of decimal places.
+Finally, I need to print out the total sum along with the sum converted to K, M, and G, each formatted to one decimal place. I'll have to calculate these conversions by dividing the total sum by the base values for K, M, and G respectively.
 
-I also need to handle edge cases, such as:
-- Input strings with no numbers or invalid formats.
+I also need to handle potential edge cases, such as:
+- Input lines that don't contain any valid numbers.
 - Numbers without any suffix.
-- Multiple consecutive commas.
-- Very large numbers that might cause overflow.
+- Non-numeric values that might be present in the input.
+- Ensuring that the program doesn't crash if unexpected input is provided.
 
-To make the program production-ready, I'll need to ensure that it's robust, handles exceptions gracefully, and provides meaningful error messages if something goes wrong.
+To make the program production-ready, I'll need to ensure that it's robust, handles exceptions gracefully, and provides meaningful error messages if something goes wrong. I'll also need to make sure that the program is efficient, especially if dealing with very large inputs.
 
-Additionally, I'll consider using Java's standard library methods to keep the program within the specified constraints. I'll avoid using any external libraries or frameworks.
+Additionally, I'll need to ensure that the program adheres to good coding practices, such as proper variable naming, commenting where necessary, and following Java conventions.
 
-Let me start drafting the code structure:
+Alright, time to start coding. I'll begin by setting up the main method, reading the input, processing each line, extracting and converting the numbers, summing them up, and then printing the results.
 
-1. Import necessary packages from `java.*`.
-2. Create a `main` method.
-3. Read input from `System.in` using `BufferedReader`.
-4. Use regex to extract numbers with optional suffixes.
-5. Parse and convert each number to its base value.
-6. Sum all the converted numbers.
-7. Format and print the total sum and the sum in K, M, and G.
-
-I'll need to be careful with the regex pattern to ensure it correctly captures numbers with commas and optional suffixes. Also, I'll have to handle the conversion from strings to numbers, ensuring that commas are removed and the correct suffix multipliers are applied.
-
-Testing the program with the provided examples will be crucial to ensure it behaves as expected. I'll need to run multiple test cases, including those with commas, different suffixes, and large numbers.
-
-Alright, time to put this into code.
 </Thought>
 <Output>
 ```java
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NumberSummarizer {
     public static void main(String[] args) {
+        // Define the multiplier for each suffix
+        final double K = 1024;
+        final double M = K * 1024;
+        final double G = M * 1024;
+
+        // Pattern to match numbers with optional suffixes
+        Pattern pattern = Pattern.compile("(\\d+(?:,\\d+)*)[kKmMgG]?");
+        double totalSum = 0.0;
+
         // Read input from standard input
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String input = "";
-        try {
-            input = reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Define suffix multipliers
-        String[] suffixes = {"k", "K", "m", "M", "g", "G"};
-        double[] multipliers = {1024, 1024 * 1024, 1024 * 1024 * 1024};
-
-        // Use regex to extract numbers with optional suffixes
-        String regex = "(\\d+(?:,\\d+)?)\\s*(" + String.join("|", suffixes) + ")?";
-        List<Double> numbers = new ArrayList<>();
-
-        // Find all matches
-        java.util.regex.Matcher matcher = java.util.regex.Pattern.compile(regex).matcher(input);
-        while (matcher.find()) {
-            String numberStr = matcher.group(1);
-            String suffix = matcher.group(2);
-            // Remove commas
-            numberStr = numberStr.replace(",", "");
-            double number = Double.parseDouble(numberStr);
-            // Find the multiplier based on the suffix
-            int index = -1;
-            for (int i = 0; i < suffixes.length; i++) {
-                if (suffix != null && suffix.equalsIgnoreCase(suffixes[i])) {
-                    index = i;
-                    break;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                // Find all matches in the line
+                Matcher matcher = pattern.matcher(line);
+                while (matcher.find()) {
+                    String numberStr = matcher.group(1);
+                    String suffix = matcher.group(2);
+                    double number = parseNumber(numberStr);
+                    double multiplier = 1.0;
+                    if (suffix != null) {
+                        multiplier = getMultiplier(suffix);
+                    }
+                    totalSum += number * multiplier;
                 }
             }
-            if (index != -1) {
-                number *= multipliers[index];
-            }
-            numbers.add(number);
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+            return;
         }
 
-        // Calculate total sum
-        double totalSum = 0;
-        for (double num : numbers) {
-            totalSum += num;
-        }
-
-        // Calculate sum in K, M, G
-        double sumK = totalSum / 1024;
-        double sumM = sumK / 1024;
-        double sumG = sumM / 1024;
-
-        // Print the results
+        // Calculate and print the total sum
         System.out.println(String.format("%.1f", totalSum));
-        System.out.println(String.format("%.1f K", sumK));
+
+        // Calculate and print the sum in K, M, and G
+        double sumK = totalSum / K;
+        double sumM = totalSum / M;
+        double sumG = totalSum / G;
+        System.out.println(String.format("%.1f k", sumK));
         System.out.println(String.format("%.1f M", sumM));
         System.out.println(String.format("%.1f G", sumG));
+    }
+
+    // Method to parse the number string, handling commas
+    private static double parseNumber(String numberStr) {
+        if (numberStr == null || numberStr.isEmpty()) {
+            return 0.0;
+        }
+        // Remove commas and convert to double
+        String cleanNumber = numberStr.replace(',', '');
+        try {
+            return Double.parseDouble(cleanNumber);
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid number format: " + numberStr);
+            return 0.0;
+        }
+    }
+
+    // Method to get the multiplier based on the suffix
+    private static double getMultiplier(String suffix) {
+        if (suffix == null || suffix.isEmpty()) {
+            return 1.0;
+        }
+        switch (suffix.toLowerCase()) {
+            case "k":
+            case "m":
+            case "g":
+                return 1024;
+            default:
+                System.err.println("Unknown suffix: " + suffix);
+                return 1.0;
+        }
     }
 }
 ```

@@ -1,50 +1,61 @@
 ```java
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.Scanner;
+import java.text.DecimalFormat;
 
 public class NumberSum {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
-        scanner.close();
-
-        double totalSum = 0.0;
-        Pattern pattern = Pattern.compile("(\\d+(?:,\\d+)*)(?:[kKmMgG])?");
-        Matcher matcher = pattern.matcher(input);
-
-        while (matcher.find()) {
-            String numberStr = matcher.group(1);
-            String suffix = matcher.group().substring(numberStr.length());
-
-            double number = parseNumber(numberStr);
-
-            double multiplier = 1.0;
-            switch (suffix.toLowerCase()) {
-                case "k":
-                    multiplier = 1024.0;
-                    break;
-                case "m":
-                    multiplier = 1024.0 * 1024.0;
-                    break;
-                case "g":
-                    multiplier = 1024.0 * 1024.0 * 1024.0;
-                    break;
-            }
-
-            totalSum += number * multiplier;
+        StringBuilder input = new StringBuilder();
+        while (scanner.hasNextLine()) {
+            input.append(scanner.nextLine());
         }
 
-        System.out.println(totalSum);
-        System.out.println(totalSum / 1024.0 + " K");
-        System.out.println(totalSum / (1024.0 * 1024.0) + " M");
-        System.out.println(totalSum / (1024.0 * 1024.0 * 1024.0) + " G");
+        String str = input.toString();
+        String[] numbers = str.split("[ ,]+");
+        double sum = 0;
+
+        for (String number : numbers) {
+            if (number.isEmpty()) continue;
+            try {
+                double value = parseNumber(number);
+                sum += value;
+            } catch (NumberFormatException e) {
+                // Ignore invalid numbers
+            }
+        }
+
+        DecimalFormat df = new DecimalFormat("#.#");
+
+        System.out.println(df.format(sum));
+        System.out.println(df.format(sum / 1024) + " k");
+        System.out.println(df.format(sum / (1024 * 1024)) + " M");
+        System.out.println(df.format(sum / (1024 * 1024 * 1024)) + " G");
     }
 
-    private static double parseNumber(String numberStr) {
-        numberStr = numberStr.replace(",", "");
-        return Double.parseDouble(numberStr);
+    private static double parseNumber(String number) {
+        String numStr = number.replaceAll(",", "");
+        double value = Double.parseDouble(numStr);
+        String suffix = "";
+        for (int i = numStr.length(); i < number.length(); i++) {
+            suffix += number.charAt(i);
+        }
+
+        switch (suffix.toLowerCase()) {
+            case "k":
+                value *= 1024;
+                break;
+            case "m":
+                value *= 1024 * 1024;
+                break;
+            case "g":
+                value *= 1024 * 1024 * 1024;
+                break;
+            default:
+                // No suffix, use the parsed value as is
+        }
+
+        return value;
     }
 }
 ``` [end of text]

@@ -3,80 +3,67 @@
 </think>
 
 ```java
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class NumberConverter {
-    private static final String[] UNIT = {"k", "K", "m", "M", "g", "G"};
-    private static final String[] UNIT_LOWERCASE = {"k", "K", "m", "M", "g", "G"};
-    private static final String[] UNIT_REGEX = {"k", "K", "m", "M", "g", "G"};
-    private static final String[] UNIT_REGEX_LOWERCASE = {"k", "K", "m", "M", "g", "G"};
-    private static final String[] UNIT_REGEX_UPPERCASE = {"K", "k", "M", "m", "G", "g"};
-    private static final String[] UNIT_REGEX_MIXED = {"k", "K", "m", "M", "g", "G"};
+    private static final String[] SUFFIXES = {"k", "K", "m", "M", "g", "G"};
+    private static final Map<String, Integer> SUFFIX_MAP = new HashMap<>();
+    static {
+        SUFFIX_MAP.put("k", 1024);
+        SUFFIX_MAP.put("K", 1024);
+        SUFFIX_MAP.put("m", 1024 * 1024);
+        SUFFIX_MAP.put("M", 1024 * 1024);
+        SUFFIX_MAP.put("g", 1024 * 1024 * 1024);
+        SUFFIX_MAP.put("G", 1024 * 1024 * 1024);
+    }
 
     public static void main(String[] args) {
-        String input = args[0];
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        scanner.close();
+
         List<Double> numbers = new ArrayList<>();
+        String[] lines = input.split("\n");
+        for (String line : lines) {
+            String[] parts = line.split(",");
+            for (String part : parts) {
+                String numStr = part.trim();
+                if (numStr.isEmpty()) continue;
 
-        // Split input into tokens
-        String[] tokens = input.split("\\s+");
-        for (String token : tokens) {
-            String value = token;
-            if (value.contains(",")) {
-                value = value.replace(",", "");
+                double value = parseNumber(numStr);
+                numbers.add(value);
             }
-
-            // Extract number and unit
-            String numStr = value;
-            String unit = "";
-            int i = numStr.length() - 1;
-            while (i >= 0 && (numStr.charAt(i) == '0' || numStr.charAt(i) == '1' || numStr.charAt(i) == '2' || numStr.charAt(i) == '3' || numStr.charAt(i) == '4' || numStr.charAt(i) == '5' || numStr.charAt(i) == '6' || numStr.charAt(i) == '7' || numStr.charAt(i) == '8' || numStr.charAt(i) == '9')) {
-                i--;
-            }
-            if (i >= 0 && (numStr.charAt(i) == 'k' || numStr.charAt(i) == 'K' || numStr.charAt(i) == 'm' || numStr.charAt(i) == 'M' || numStr.charAt(i) == 'g' || numStr.charAt(i) == 'G')) {
-                unit = numStr.substring(i + 1);
-                i--;
-            }
-
-            // Parse number
-            double num = 0;
-            if (i >= 0) {
-                num = Double.parseDouble(numStr.substring(0, i + 1));
-            } else {
-                num = Double.parseDouble(numStr);
-            }
-
-            // Convert to base unit
-            double baseValue = num;
-            for (int j = 0; j < UNIT.length && j < unit.length(); j++) {
-                if (unit.charAt(j) == 'k' || unit.charAt(j) == 'K') {
-                    baseValue /= 1024;
-                } else if (unit.charAt(j) == 'm' || unit.charAt(j) == 'M') {
-                    baseValue /= 1024 * 1024;
-                } else if (unit.charAt(j) == 'g' || unit.charAt(j) == 'G') {
-                    baseValue /= 1024 * 1024 * 1024;
-                }
-            }
-
-            numbers.add(baseValue);
         }
 
-        double total = 0.0;
-        for (double num : numbers) {
-            total += num;
-        }
-
-        // Convert total to K, M, G
-        double totalK = total / 1024;
-        double totalM = totalK / 1024;
-        double totalG = totalM / 1024;
+        double total = numbers.stream().reduce(0.0, Double::sum);
+        double totalK = total / SUFFIX_MAP.get("k");
+        double totalM = totalK / SUFFIX_MAP.get("m");
+        double totalG = totalM / SUFFIX_MAP.get("g");
 
         System.out.printf("%.1f%n", total);
-        System.out.printf("%.1f K%n", totalK);
+        System.out.printf("%.1f k%n", totalK);
         System.out.printf("%.1f M%n", totalM);
         System.out.printf("%.1f G%n", totalG);
+    }
+
+    private static double parseNumber(String numStr) {
+        numStr = numStr.replace(",", " ");
+        String[] parts = numStr.split("\\s+");
+        double value = 0.0;
+        String unit = "";
+
+        for (String part : parts) {
+            if (part.matches("-?\\d+")) {
+                value = Double.parseDouble(part);
+            } else if (part.matches("-?\\d+\\s+([kKmMgG])")) {
+                String suffix = part.substring(part.length() - 1).toUpperCase();
+                if (SUFFIX_MAP.containsKey(suffix)) {
+                    value = Double.parseDouble(part.substring(0, part.length() - 1)) * SUFFIX_MAP.get(suffix);
+                }
+            }
+        }
+
+        return value;
     }
 }
 ``` [end of text]

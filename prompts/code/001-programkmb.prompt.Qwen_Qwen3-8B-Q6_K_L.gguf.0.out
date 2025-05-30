@@ -3,47 +3,47 @@
 </think>
 
 ```java
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UnitConverter {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String input = reader.readLine();
+        StringBuilder input = new StringBuilder();
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            input.append(line).append("\n");
+        }
+
         List<Double> values = new ArrayList<>();
+        Pattern pattern = Pattern.compile("(\\d+\\.?\\d*)[kKmMgG]");
+        Matcher matcher = pattern.matcher(input.toString());
 
-        String[] tokens = input.trim().split("\\s+");
-        for (String token : tokens) {
-            if (token.isEmpty()) continue;
+        while (matcher.find()) {
+            String match = matcher.group();
+            String numberStr = match.replaceAll("[kKmMgG]", "");
+            double number = Double.parseDouble(numberStr);
+            char suffix = match.charAt(match.length() - 1);
+            double factor = 1.0;
 
-            double number = 0.0;
-            String suffix = "";
-            boolean hasSuffix = false;
-
-            // Check for suffix
-            if (token.length() > 1 && "kKmMgG".indexOf(token.charAt(token.length() - 1)) >= 0) {
-                suffix = String.valueOf(token.charAt(token.length() - 1));
-                token = token.substring(0, token.length() - 1);
-                hasSuffix = true;
+            switch (Character.toLowerCase(suffix)) {
+                case 'k':
+                    factor = 1024;
+                    break;
+                case 'm':
+                    factor = 1024 * 1024;
+                    break;
+                case 'g':
+                    factor = 1024 * 1024 * 1024;
+                    break;
             }
 
-            // Remove commas
-            token = token.replace(",", "");
-
-            try {
-                number = Double.parseDouble(token);
-            } catch (NumberFormatException e) {
-                continue;
-            }
-
-            double multiplier = 1.0;
-            switch (suffix.toLowerCase()) {
-                case "k": case "kilo": multiplier = 1024; break;
-                case "m": case "mega": multiplier = 1024 * 1024; break;
-                case "g": case "giga": multiplier = 1024 * 1024 * 1024; break;
-            }
-
-            values.add(number * multiplier);
+            values.add(number * factor);
         }
 
         double total = 0.0;
@@ -51,14 +51,14 @@ public class UnitConverter {
             total += value;
         }
 
-        double totalK = total / 1024;
-        double totalM = total / (1024 * 1024);
-        double totalG = total / (1024 * 1024 * 1024);
+        double kb = total / 1024;
+        double mb = kb / 1024;
+        double gb = mb / 1024;
 
         System.out.printf("%.1f%n", total);
-        System.out.printf("%.1f K%n", totalK);
-        System.out.printf("%.1f M%n", totalM);
-        System.out.printf("%.1f G%n", totalG);
+        System.out.printf("%.1f k%n", kb);
+        System.out.printf("%.1f M%n", mb);
+        System.out.printf("%.1f G%n", gb);
     }
 }
 ``` [end of text]

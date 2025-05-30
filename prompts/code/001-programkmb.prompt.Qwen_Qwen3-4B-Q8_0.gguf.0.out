@@ -3,47 +3,83 @@
 </think>
 
 ```java
-import java.util.*;
-import java.text.DecimalFormat;
 import java.io.*;
+import java.util.*;
 
-public class UnitConverter {
+public class NumberParser {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
-        scanner.close();
-
-        List<Double> values = new ArrayList<>();
-        String[] tokens = input.split("[,\\s]+");
-
-        for (String token : tokens) {
-            if (token.matches("-?\\d+(\\.\\d+)?[kKmMgG]?")) {
-                double value = parseValue(token);
-                values.add(value);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringBuilder input = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                input.append(line).append("\n");
             }
-        }
 
-        double total = 0.0;
-        for (double value : values) {
-            total += value;
-        }
+            String[] tokens = input.toString().split("[,\\s]+");
+            double total = 0;
+            double kTotal = 0, mTotal = 0, gTotal = 0;
 
-        DecimalFormat df = new DecimalFormat("#.0");
-        System.out.println(total);
-        System.out.println(df.format(total / 1024.0) + " K");
-        System.out.println(df.format(total / (1024.0 * 1024.0)) + " M");
-        System.out.println(df.format(total / (1024.0 * 1024.0 * 1024.0)) + " G");
+            for (String token : tokens) {
+                if (token.trim().isEmpty()) continue;
+
+                double value = parseNumber(token);
+                if (value == -1) continue;
+
+                String suffix = getSuffix(token);
+                double baseValue = convertToBase(value, suffix);
+
+                total += baseValue;
+                kTotal += baseValue / 1024;
+                mTotal += baseValue / (1024 * 1024);
+                gTotal += baseValue / (1024 * 1024 * 1024);
+            }
+
+            System.out.printf("%.1f%n", total);
+            System.out.printf("%.1f k%n", kTotal);
+            System.out.printf("%.1f M%n", mTotal);
+            System.out.printf("%.1f G%n", gTotal);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private static double parseValue(String token) {
-        double value = Double.parseDouble(token.replaceAll("[kKmMgG]", ""));
-        String suffix = token.replaceAll("\\D", "");
-        switch (suffix) {
-            case "K": case "k": return value * 1024;
-            case "M": case "m": return value * 1024 * 1024;
-            case "G": case "g": return value * 1024 * 1024 * 1024;
-            default: return value;
+    private static double parseNumber(String token) {
+        try {
+            // Check if the token contains a comma (thousand separator)
+            if (token.contains(",")) {
+                String[] parts = token.split(",");
+                String numPart = parts[0];
+                if (numPart.isEmpty()) return -1;
+                return Double.parseDouble(numPart);
+            } else {
+                return Double.parseDouble(token);
+            }
+        } catch (NumberFormatException e) {
+            return -1;
         }
+    }
+
+    private static String getSuffix(String token) {
+        String suffix = "";
+        for (int i = token.length() - 1; i >= 0; i--) {
+            char c = token.charAt(i);
+            if (c == 'G' || c == 'g' || c == 'M' || c == 'm' || c == 'K' || c == 'k') {
+                suffix = String.valueOf(c);
+                token = token.substring(0, i);
+                break;
+            }
+        }
+        return suffix;
+    }
+
+    private static double convertToBase(double value, String suffix) {
+        double base = 1;
+        switch (suffix.toUpperCase()) {
+            case "K": case "k": base = 1024; break;
+            case "M": case "m": base = 1024 * 1024; break;
+            case "G": case "g": base = 1024 * 1024 * 1024; break;
+        }
+        return value * base;
     }
 }
 ``` [end of text]

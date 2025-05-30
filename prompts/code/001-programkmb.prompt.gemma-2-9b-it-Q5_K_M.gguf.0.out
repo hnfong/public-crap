@@ -1,41 +1,47 @@
 ```java
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SizeCalculator {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
-        String[] parts = input.split(", ");
-        double totalBytes = 0;
-        double totalK = 0;
-        double totalM = 0;
-        double totalG = 0;
-        for (String part : parts) {
-            String[] numberAndSuffix = part.split(" ");
-            String numberStr = numberAndSuffix[0].replace(",", "");
-            double number = Double.parseDouble(numberStr);
-            String suffix = numberAndSuffix.length > 1 ? numberAndSuffix[1].toLowerCase() : "";
-            switch (suffix) {
-                case "k":
-                    totalBytes += number * 1024;
-                    totalK += number;
-                    break;
-                case "m":
-                    totalBytes += number * 1024 * 1024;
-                    totalM += number;
-                    break;
-                case "g":
-                    totalBytes += number * 1024 * 1024 * 1024;
-                    totalG += number;
-                    break;
-                default:
-                    totalBytes += number;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String line;
+        BigDecimal totalBytes = BigDecimal.ZERO;
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split(",");
+            for (String part : parts) {
+                part = part.trim();
+                Matcher matcher = Pattern.compile("([0-9]+(?:,[0-9]+)*) *(k|K|m|M|g|G)").matcher(part);
+                if (matcher.find()) {
+                    BigDecimal number = new BigDecimal(matcher.group(1).replace(",", ""));
+                    String suffix = matcher.group(2).toLowerCase();
+                    BigDecimal size = calculateSize(number, suffix);
+                    totalBytes = totalBytes.add(size);
+                }
             }
         }
         System.out.println(totalBytes);
-        System.out.printf("%.1f K\n", totalK);
-        System.out.printf("%.1f M\n", totalM);
-        System.out.printf("%.1f G\n", totalG);
+        System.out.println(totalBytes.divide(BigDecimal.valueOf(1024), 1).setScale(1));
+        System.out.println(totalBytes.divide(BigDecimal.valueOf(1024 * 1024), 1).setScale(1));
+        System.out.println(totalBytes.divide(BigDecimal.valueOf(1024 * 1024 * 1024), 1).setScale(1));
+    }
+
+    private static BigDecimal calculateSize(BigDecimal number, String suffix) {
+        switch (suffix) {
+            case "k":
+                return number.multiply(BigDecimal.valueOf(1024));
+            case "m":
+                return number.multiply(BigDecimal.valueOf(1024 * 1024));
+            case "g":
+                return number.multiply(BigDecimal.valueOf(1024 * 1024 * 1024));
+            default:
+                return number;
+        }
     }
 }
 ``` [end of text]
