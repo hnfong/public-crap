@@ -1,0 +1,61 @@
+To perform a binary search on a file directly, we need to read the file in chunks rather than loading the entire file into memory. This approach ensures that we only read the necessary parts of the file, maintaining an O(log(n)) complexity.
+
+Here's a step-by-step explanation of how to achieve this:
+
+1. **Open the File**: Open the file in read mode.
+2. **Determine File Size**: Get the size of the file to calculate the middle point.
+3. **Binary Search Logic**:
+   - Calculate the middle point of the file.
+   - Read the middle line to compare it with the target.
+   - Depending on the comparison, decide whether to search in the first half or the second half of the file.
+   - Repeat the process until the target is found or the search space is exhausted.
+4. **Return the Position**: Return the position of the target if found, or the insertion point if not found.
+
+Here's the Python function implementing this logic:
+
+```python
+def binary_search_file(file_path, target):
+    def read_line(file, position):
+        file.seek(position)
+        return file.readline().strip()
+
+    with open(file_path, 'r') as file:
+        file.seek(0, 2)  # Move the cursor to the end of the file
+        file_size = file.tell()  # Get the size of the file
+
+        low, high = 0, file_size
+
+        while low < high:
+            mid = (low + high) // 2
+            file.seek(mid)
+            file.readline()  # Move to the next line to ensure we are at the start of a line
+            mid_line = file.readline().strip()
+
+            if mid_line == target:
+                return mid
+            elif mid_line < target:
+                low = file.tell()
+            else:
+                high = mid
+
+        return low
+
+# Example usage:
+# Assuming 'names.txt' is a file with names sorted in lexicographical order
+# position = binary_search_file('names.txt', 'John')
+# print(position)
+```
+
+### Explanation:
+1. **read_line Function**: This helper function reads a line from a specific position in the file.
+2. **File Handling**: The file is opened in read mode. The cursor is moved to the end of the file to determine its size.
+3. **Binary Search**:
+   - The `low` and `high` pointers are initialized to the start and end of the file, respectively.
+   - The middle point is calculated, and the file cursor is moved to this point.
+   - The line at the middle point is read and compared with the target.
+   - Depending on the comparison, the search space is adjusted.
+4. **Return Value**: The function returns the position where the target would be inserted if not found.
+
+This approach ensures that we only read the necessary parts of the file, maintaining an O(log(n)) complexity. [end of text]
+
+
