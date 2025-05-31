@@ -488,6 +488,10 @@ class LlamaTemplateMixin:
     def templated_prompt(self):
         return f"""<s>[INST] <<SYS>>\n{self.system_message()}\n<</SYS>>\n\n{self.prompt()} [/INST]"""
 
+class DevstralTemplateMixin:
+    def templated_prompt(self):
+        return f"""[SYSTEM_PROMPT]{self.system_message()}[/SYSTEM_PROMPT][INST]{self.prompt()}[/INST]""".strip()
+
 class Phi3TemplateMixin:
     def templated_prompt(self):
         return f"""<|user|>\n{self.prompt()}<|end|>\n<|assistant|>\n"""
@@ -528,6 +532,13 @@ class DeepSeekV2LiteMixin:
             return f"""User: {self.prompt()}\n\nAssistant: """
     def extra_gguf_options(self):
         return ["-b", "256"] # https://github.com/ggerganov/llama.cpp/issues/7652#issuecomment-2140568771
+
+class DeepSeekR1DistillMixin:
+    def templated_prompt(self):
+        if self.system_message():
+            return f"""<｜begin▁of▁sentence｜>{self.system_message()}<｜User｜>{self.prompt()}<｜Assistant｜>"""
+        else:
+            return f"""<｜begin▁of▁sentence｜><｜User｜>{self.prompt()}<｜Assistant｜>"""
 
 class DeepSeekV25Mixin:
     def templated_prompt(self):
@@ -583,7 +594,7 @@ NAME_MATCH_OVERRIDE = [
     ("Athene-V2", ChatMLTemplateMixin),
     ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
     ("DeepSeek-V2.5", DeepSeekV25Mixin),
-    ("DeepSeek-R1-Distill", DeepSeekV25Mixin),
+    ("DeepSeek-R1", DeepSeekR1DistillMixin),  # Distills, basically
     ("Mimo", ChatMLTemplateMixin),
     ("Mistral-Large-Instruct", Mistral3InstructTemplate),
     ("Mistral-Small", Mistral3InstructTemplate),
@@ -613,6 +624,8 @@ NAME_MATCH_OVERRIDE = [
     ("wizardlm", WizardLmMixin),
     ("zephyr", ZephyrTemplateMixin),
     ("TheDrummer_Valkyrie", Llama3TemplateMixin),
+    ("Devstral-", DevstralTemplateMixin),
+    ("Falcon3-Mamba-7B", ChatMLTemplateMixin),
 ]
 
 FIM_MATCH_OVERRIDE = [
