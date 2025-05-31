@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -ex
+
+safestring=$(basename "$1")
+
+model=$(echo "$(basename "$1")" | sed 's/---/\//g;')
+
+pushd vl
+for ff in *.vprompt; do
+    OUTFILE="$ff"."$safestring".out
+    if [[ ! -f "$OUTFILE" || "$ff" -nt "$OUTFILE" ]]; then
+        mlx_vlm.generate --max-tokens 500 --model "$model" --prompt "$(jq -M -r -c '.prompt' "$ff")" --image "$(jq -r -M -c '.image' "$ff")" > "$OUTFILE"
+    fi
+done
+popd
+
