@@ -499,6 +499,8 @@ Computer technology related.
 
 ## Crazy Flexes
 
+- ☆ https://benjaminaster.github.io/CSS-Minecraft/
+  - Explanation: https://simonwillison.net/2025/May/26/css-minecraft/ 
 - https://bellard.org/ - Fabrice Bellard's Home Page
 - https://twitter.com/David3141593/status/1573218394358386688 The image in this tweet displays its own MD5 hash. You can download and hash it yourself, and it should still match - 1337e2ef42b9bee8de06a4d223a51337 I think this is the first PNG/MD5 hashquine.
 - https://browsix.org/ UNIX IN YOUR BROWSER TAB (implement POSIX in the browser)
