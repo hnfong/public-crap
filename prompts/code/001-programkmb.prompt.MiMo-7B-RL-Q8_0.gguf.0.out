@@ -76,5 +76,598 @@ So the regex pattern would be:
 
 ([+-]?\d+\.?\d*)([kKmMgG]?) 
 
-But perhaps the sign is allowed? The problem says "numbers", but the example input doesn't have negative numbers. The problem statement doesn't mention handling negatives. So perhaps the code can assume that numbers are positive. So the
+But perhaps the sign is allowed? The problem says "numbers", but the example input doesn't have negative numbers. The problem statement doesn't mention handling negatives. So perhaps the code can assume that numbers are positive. So the regex can ignore signs.
+
+So the regex pattern would be:
+
+(\d+\.?\d*|\.\d+)([kKmMgG]?) 
+
+But perhaps the code can use a more precise pattern. Let's think. The number part can be:
+
+- One or more digits followed by an optional decimal point and zero or more digits (e.g., 123, 123.45)
+
+- Or a decimal point followed by one or more digits (e.g., .45)
+
+But the problem's example input includes numbers like 1.5G, 2K, 3M, etc. So the code should handle numbers with decimal points.
+
+So the regex pattern for the number part would be:
+
+([+-]?(?:\d+\.?\d*|\.\d+))
+
+But again, perhaps the code can ignore signs. So the regex can be:
+
+(\d+\.?\d*|\.\d+)([kKmMgG]?) 
+
+But perhaps the code can use a more precise regex. Let's see. Let's use a regex group for the number and the suffix.
+
+So the regex would be:
+
+(?<number>\d+\.?\d*|\.\d+)(?(suffix)[kKmMgG])
+
+Wait, perhaps using a positive lookahead. Alternatively, use a group for the suffix.
+
+So the regex can be written as:
+
+([^\d]+)?((\d+\.?\d*|\.\d+))([kKmMgG]?)?
+
+Wait, perhaps not. Let's think again. The code needs to find all tokens that start with a number (possibly with decimal) followed by an optional suffix (k, K, m, M, g, G). So the regex can be:
+
+(\d+\.?\d*|\.\d+)([kKmMgG]?) 
+
+But this might not capture all cases. For example, if the number is followed by a letter that is not a suffix. But the problem says that the suffix is one of the specified letters. So the regex should match the number followed by an optional suffix (one of k, K, m, M, g, G). So the suffix part is optional. So the regex would capture the number and the suffix if present.
+
+So the code can use a regex pattern like:
+
+(\d+\.?\d*|\.\d+)([kKmMgG]?) 
+
+But perhaps the code should use a case-insensitive flag for the suffix letters. So the suffix can be in any case.
+
+So the regex can be written as:
+
+(\d+\.?\d*|\.\d+)([kKmMgG]?) 
+
+But perhaps the code can use a case-insensitive flag for the suffix letters. Wait, the suffix can be uppercase or lowercase. So the regex should match either. So the suffix part can be [kKmMgG], but perhaps using a case-insensitive flag would make it easier. So the code can use the regex with the case-insensitive flag.
+
+Alternatively, the code can make the suffix letters case-insensitive by using [kKmMgG], but perhaps using a case-insensitive flag would be better. So the code can use:
+
+Pattern.compile("^\\s*(\\d+\.?\d*|\\.\\d+)([kKmMgG]?)\\s*$")
+
+Wait, but perhaps the code should match the entire token. For example, in the input "1.5G, 2K,", after removing commas, it becomes "1.5G  2K". So the code needs to find all occurrences of the number followed by optional suffix, possibly surrounded by whitespace.
+
+So perhaps the regex should match each token, which can be a number followed by an optional suffix. So the code can split the input into tokens, but perhaps using a regex to find all matches of the pattern.
+
+So the code can process the entire input string (after removing commas) and use a regex to find all matches of the pattern:
+
+(\d+\.?\d*|\.\d+)([kKmMgG]?) 
+
+But perhaps the code should also account for possible whitespace between the number and the suffix. For example, "1.5 K" would have a space between the number and the suffix. But the problem's example input shows "1.5G, 2K," which implies that the suffix is directly after the number. So perhaps the code should not consider any whitespace between the number and the suffix. So the regex should match the number followed by the suffix (if present) without any characters in between.
+
+So the code can use a regex that matches the entire token. So the regex would be:
+
+(\d+\.?\d*|\.\d+)([kKmMgG]?) 
+
+But perhaps the code should also skip any non-digit characters after the suffix. For example, if there's a number followed by a suffix and then other characters. But the code is supposed to extract the numbers followed by optional suffixes. So the regex should capture the number and suffix as a whole.
+
+So the code can use a regex that matches the entire token. So perhaps the code can split the input into tokens, but perhaps using a regex to find all occurrences of the pattern.
+
+Alternatively, the code can split the input into tokens by splitting on non-numeric characters, but that might not work. So perhaps the best approach is to use a regex to find all matches of the pattern.
+
+So the code can process the input string (after removing commas) and use a Matcher to find all occurrences of the pattern.
+
+Once the code extracts the number and suffix, it needs to convert the number to a base value. For example, if the suffix is 'G', then the value is the number multiplied by 1024^3 (since G is gigabytes, which is 1024^3 bytes). Wait, the note says: kilo=1024, M=1024*1024, etc. So the multipliers are:
+
+k = 1024
+
+K = same as k? Or perhaps the suffix is case-insensitive. So K is same as k. So the code can process the suffix in a case-insensitive way.
+
+So the suffixes and their multipliers:
+
+k/K → 1024
+
+m/M → 1024 * 1024 = 1,048,576
+
+g/G → 1024^3 = 1,073,741,824
+
+Wait, but the problem says: kilo=1024, M=1024*1024, etc. So:
+
+k or K → 1024
+
+m or M → 1024^2 (1,048,576)
+
+g or G → 1024^3 (1,073,741,824)
+
+Wait, but the problem says "kilo=1024, M=1024*1024, etc." So perhaps the suffixes are:
+
+k/K → 1024 (kilo)
+
+m/M → 1024^2 (mega?)
+
+Wait, but in standard terms, M is often 1,000,000. But the problem specifies that M is 1024*1024. So the code must use the multipliers as per the problem's note.
+
+So the code needs to map the suffixes to their respective multipliers. So:
+
+suffix → multiplier
+
+k → 1024
+
+K → same as k
+
+m → 1024^2
+
+M → same as m
+
+g → 1024^3
+
+G → same as g
+
+So the code can create a map or a switch case that converts the suffix to the multiplier. For example, if the suffix is 'k' or 'K', multiply by 1024. If 'm' or 'M', multiply by 1024*1024. If 'g' or 'G', multiply by 1024^3. If there is no suffix, then the multiplier is 1.
+
+So the code will process each number as follows:
+
+number_part = the parsed number (as a double)
+
+suffix = the matched suffix (case-insensitive)
+
+if suffix is present:
+
+convert number_part * multiplier (based on suffix) to bytes.
+
+Wait, no. Wait, the code needs to convert the number to its base value. For example, 1.5G would be 1.5 * 1024^3 bytes. Because G is 1024^3.
+
+So the code will take the number (as a double) and multiply by the multiplier (based on the suffix). Then sum all these values.
+
+So the steps for each token:
+
+1. Remove commas from the input string.
+
+2. Use regex to find all tokens that match the pattern of a number (with optional decimal) followed by an optional suffix (k, K, m, M, g, G, case-insensitive).
+
+3. For each token:
+
+   a. Extract the number part and the suffix.
+
+   b. Parse the number part as a double.
+
+   c. Determine the multiplier based on the suffix (if any).
+
+   d. Multiply the parsed number by the multiplier to get the value in bytes.
+
+4. Sum all the values.
+
+Once the sum is calculated, the code needs to output the sum as:
+
+- The total sum as is (e.g., 7264621772.8)
+
+- Then the sum converted to kilobytes (K), with one decimal place (e.g., 7094357.2 k)
+
+- Then megabytes (M), e.g., 6928.1 M
+
+- Then gigabytes (G), e.g., 6.8 G
+
+Wait, the example output shows:
+
+7264621772.8
+
+7094357.2 k
+
+6928.1 M
+
+6.8 G
+
+So the total sum is displayed first, then the same sum converted to K, M, G, each with one decimal place.
+
+Wait, but how is the conversion done? Let's see:
+
+The total sum is in bytes. So to convert to kilobytes (K), divide by 1024. To megabytes (M), divide by 1024^2. To gigabytes (G), divide by 1024^3.
+
+But the example input's output:
+
+The first line is 7264621772.8 bytes.
+
+Then, converting to K: 7264621772.8 / 1024 = 7094357.2 (exactly as in the example). Then to M: 7094357.2 / 1024 = 6928.1 (approximate). Wait, wait:
+
+Wait, 7264621772.8 bytes divided by 1024 is 7094357.2 K (since 1K = 1024 bytes). Then 7094357.2 K is 7094357.2 / 1024 = 6928.1 M. Then 6928.1 M / 1024 = 6.765... G, which rounds to 6.8 G.
+
+So the code needs to take the total sum (in bytes) and convert it to K, M, G by dividing by 1024, 1024^2, 1024^3 respectively, each time, and format each to one decimal place.
+
+So the code's steps after summing:
+
+- Compute the total sum in bytes.
+
+- Then, for K: sum_bytes / 1024.0 → format to one decimal.
+
+- For M: sum_bytes / (1024 * 1024) → format to one decimal.
+
+- For G: sum_bytes / (1024 * 1024 * 1024) → format to one decimal.
+
+But wait, the example output shows that the sum in K is 7094357.2, which is 7264621772.8 / 1024 = 7094357.2 exactly. Then M is 7094357.2 / 1024 = 6928.1 (exactly). Then G is 6928.1 / 1024 = 6.765... which rounds to 6.8.
+
+So the code must format each value to one decimal place, even if the decimal is zero. For example, if the value is an integer, it should show .0.
+
+So the code needs to format each of the K, M, G values to one decimal place.
+
+Now, the code structure:
+
+Read input from stdin. Process:
+
+1. Read the entire input as a string.
+
+2. Remove all commas from the string.
+
+3. Use a regex to find all tokens that match the pattern of a number followed by optional suffix.
+
+4. For each token:
+
+   a. Split into number part and suffix (if any).
+
+   b. Parse the number part as a double.
+
+   c. Determine the multiplier based on the suffix.
+
+   d. Add (number * multiplier) to the sum.
+
+Once all tokens are processed, compute the sum in bytes. Then compute the sum in K, M, G.
+
+Then output:
+
+- The sum as is (bytes? Or the sum after processing? Wait, the example's first line is 7264621772.8. Let's see:
+
+Looking at the example input:
+
+1.5G, 2K, 3M, 500,000K, 600M.
+
+Processing each:
+
+1.5G → 1.5 * 1024^3 = 1.5 * 1073741824 = 1610612736
+
+2K → 2 * 1024 = 2048
+
+3M → 3 * 1024^2 = 3 * 1048576 = 3145728
+
+500,000K → 500000 * 1024 = 512000000
+
+600M → 600 * 1024^2 = 600 * 1048576 = 629145600
+
+Summing these:
+
+1610612736 + 2048 = 1610614784
+
++3145728 → 1610614784 + 3,145,728 = 161,093,0512? Wait, let's compute step by step:
+
+1.5G: 1.5 * 1024^3 = 1.5 * 1073741824 = 1,610,612,736 bytes.
+
+2K: 2 * 1024 = 2048 bytes.
+
+3M: 3 * 1024^2 = 3 * 1,048,576 = 3,145,728 bytes.
+
+500,000K: 500,000 * 1024 = 512,000,000 bytes.
+
+600M: 600 * 1,048,576 = 629,145,600 bytes.
+
+Adding all together:
+
+1,610,612,736 + 2,048 = 1,610,614,784
+
++3,145,728 → 1,613,760,512
+
++512,000,000 → 2,125,760,512
+
++629,145,600 → 2,754,906,112 bytes?
+
+Wait, but the example output's first line is 7264621772.8. Wait, perhaps I made a mistake in calculation.
+
+Wait, perhaps the example input is:
+
+The input is:
+
+1.5G, 2K,
+
+3M, and 4.2G
+
+500,000K and 600M
+
+So let's process each token:
+
+First line: "1.5G, 2K," → after removing commas: "1.5G 2K"
+
+Tokens: "1.5G", "2K".
+
+1.5G → 1.5 * 1024^3 = 1.5 * 1073741824 = 1,610,612,736 bytes.
+
+2K → 2 * 1024 = 2048 bytes. Sum so far: 1,610,614,784.
+
+Second line: "3M, and 4.2G" → after removing commas: "3M and 4.2G". Tokens: "3M", "4.2G".
+
+3M → 3 * 1024^2 = 3 * 1,048,576 = 3,145,728 bytes. Sum becomes 1,613,760,512.
+
+4.2G → 4.2 * 1024^3 = 4.2 * 1,073,741,824 = let's compute that: 4 * 1,073,741,824 = 4,294,967,296; 0.2 * 1,073,741,824 = 214,748,364.8 → total 4,509,715,660.8 bytes. Sum becomes 1,613,760,512 + 4,509,715,660.8 = 6,123,476,172.8 bytes.
+
+Third line: "500,000K and 600M" → after removing commas: "500000K 600M". Tokens: "500000K", "600M".
+
+500000K → 500,000 * 1024 = 512,000,000 bytes. Sum becomes 6,123,476,172.8 + 512,000,000 = 6,635,476,172.8.
+
+600M → 600 * 1,048,576 = 629,145,600 bytes. Sum becomes 6,635,476,172.8 + 629,145,600 = 7,264,621,772.8 bytes. Which matches the example's first line output of 7264621772.8 (note the decimal point is after 7264621772.8).
+
+So the code's sum is correct.
+
+Now, the code needs to process each token correctly.
+
+So the code steps:
+
+Read input, remove commas.
+
+Use a regex to find all tokens that match the pattern of a number followed by optional suffix.
+
+The regex pattern for each token would be:
+
+The number part can be:
+
+- digits followed by optional . and digits (e.g., 123, 123.45, .45?)
+
+But the problem's example doesn't have .45, but perhaps the code should handle it.
+
+So the regex pattern for the number part is:
+
+([+-]?(?:\d+\.?\d*|\.\d+))
+
+But since the problem says numbers can have commas (which are stripped), and the code has already removed commas, the code can process the remaining string.
+
+So the regex pattern can be:
+
+(\d+\.?\d*|\.\d+)([kKmMgG]?) 
+
+But perhaps the code can use a case-insensitive flag for the suffix letters.
+
+So the code can use:
+
+Pattern.compile("(\\d+\.?\d*|\\.\\d+)([kKmMgG]?)")
+
+But perhaps the code should also ignore any whitespace between the number and the suffix. For example, "1.5 K" would have a space. But the problem's example input doesn't have that. So perhaps the code should assume that the suffix is directly after the number. So the regex would match the number followed by the suffix (if present) with no characters in between.
+
+So the code can use the regex to find all matches of the pattern.
+
+Once the code extracts the number and suffix, it can process them.
+
+So the code can use a Matcher to loop through all matches. For each match:
+
+Group 1 is the number part, group 2 is the suffix (could be empty).
+
+So for each match:
+
+double number = Double.parseDouble(group1);
+
+String suffix = group2;
+
+Then determine the multiplier based on the suffix.
+
+So the code can have a helper method to get the multiplier for a suffix.
+
+For example:
+
+private static double getMultiplier(String suffix) {
+    switch (suffix.toLowerCase()) {
+        case "k":
+        case "kilo":
+            return 1024.0;
+        case "m":
+        case "mega":
+            return 1024.0 * 1024.0;
+        case "g":
+        case "giga":
+            return 1024.0 * 1024.0 * 1024.0;
+        default:
+            return 1.0;
+    }
+}
+
+Wait, but according to the problem's note, the suffixes are k, K, m, M, g, G. So the code can check for 'k', 'm', 'g' (case-insensitive). So:
+
+if suffix is 'k' or 'K', multiplier is 1024.
+
+if suffix is 'm' or 'M', multiplier is 1024^2.
+
+if suffix is 'g' or 'G', multiplier is 1024^3.
+
+Else, multiplier is 1.
+
+So code:
+
+private static double getMultiplier(String suffix) {
+    suffix = suffix.toLowerCase();
+    if (suffix.equals("k")) {
+        return 1024.0;
+    } else if (suffix.equals("m")) {
+        return 1024.0 * 1024.0;
+    } else if (suffix.equals("g")) {
+        return 1024.0 * 1024.0 * 1024.0;
+    } else {
+        return 1.0;
+    }
+}
+
+Wait, but the problem says the suffix can be k, K, m, M, g, G. So the code converts the suffix to lowercase and checks for 'k', 'm', 'g'.
+
+So for example, if the suffix is 'K', it becomes 'k', which is handled.
+
+So the code can proceed.
+
+Now, the code steps:
+
+Read input from stdin. So in Java, using:
+
+BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+String input = reader.lines().collect(Collectors.joining("\n"));
+
+Then, remove commas:
+
+String cleaned = input.replaceAll(",*", "").trim(); // Wait, replace all commas with empty string. So input.replaceAll(",", "");
+
+Wait, yes. So:
+
+cleaned = input.replaceAll(",", "").trim();
+
+Wait, but maybe leading/trailing spaces. So after replacing commas, trim the string.
+
+Then, use a regex to find all matches of the pattern.
+
+So:
+
+Pattern pattern = Pattern.compile("(\\d+\.?\d*|\\.\\d+)([kKmMgG]?)");
+
+Matcher matcher = pattern.matcher(cleaned);
+
+Then, for each match:
+
+double sum = 0;
+
+while (matcher.find()) {
+
+    String numberStr = matcher.group(1);
+
+    String suffix = matcher.group(2);
+
+    double number = Double.parseDouble(numberStr);
+
+    double multiplier = getMultiplier(suffix);
+
+    sum += number * multiplier;
+
+}
+
+Wait, but what about cases where the number is like .5 (0.5)? The regex allows that. So the code can parse it as 0.5.
+
+But what about leading zeros? The code doesn't care, as it's parsed as a double.
+
+Once the sum is calculated, then compute the values in K, M, G.
+
+Then, output the sum (as is?), then the sum converted to K (sum / 1024), formatted to one decimal place.
+
+Wait, the example's first line is 7264621772.8, which is the sum in bytes. So the code outputs the sum as is (bytes), then the sum converted to K (sum / 1024), formatted to one decimal place, then M (sum / (1024*1024)), formatted to one decimal, then G (sum / (1024^3)), formatted to one decimal.
+
+So code:
+
+double sumBytes = sum;
+
+// Output sumBytes with one decimal place? Or as is?
+
+Wait, the example's first line is 7264621772.8, which has one decimal. So the code needs to output the sum as a double with one decimal place.
+
+But wait, the sum is calculated as a double (since the code parses the numbers as doubles and multiplies by multipliers which can be 1024.0, etc.). So sum is a double. So when outputting, format it to have one decimal place.
+
+So:
+
+System.out.printf("%.1f\n", sumBytes);
+
+Then, compute the values for K, M, G.
+
+double k = sumBytes / 1024.0;
+
+double m = sumBytes / (1024.0 * 1024.0);
+
+double g = sumBytes / (1024.0 * 1024.0 * 1024.0);
+
+Then, format each to one decimal place.
+
+So:
+
+System.out.printf("%.1f k\n", k);
+
+System.out.printf("%.1f M\n", m);
+
+System.out.printf("%.1f G\n", g);
+
+Wait, but in the example output, the K line is "7094357.2 k", which is sumBytes / 1024.0 = 7264621772.8 / 1024 = 7094357.2 (exactly). Then M is 7094357.2 / 1024 = 6928.1 (exactly). G is 6928.1 / 1024 = 6.765... which rounds to 6.8.
+
+So the code must use the same sum for all calculations. So the code should compute the sum in bytes, then compute K, M, G from that sum.
+
+So the code steps:
+
+sum is the total in bytes.
+
+k = sum / 1024.0 → K.
+
+m = sum / (1024 * 1024) → M.
+
+g = sum / (1024 * 1024 * 1024) → G.
+
+Then, format each to one decimal place.
+
+Now, code structure:
+
+Read input, process, sum, output.
+
+Now, code:
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        // Read input
+        StringBuilder input = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                input.append(line);
+            }
+        }
+        // Remove commas
+        String cleaned = input.toString().replace(',', '').trim();
+        // Compile the regex pattern
+        Pattern pattern = Pattern.compile("(\\d+\.?\d*|\\.\\d+)([kKmMgG]?)");
+        Matcher matcher = pattern.matcher(cleaned);
+        double sum = 0.0;
+        while (matcher.find()) {
+            String numberStr = matcher.group(1);
+            String suffix = matcher.group(2);
+            double number = Double.parseDouble(numberStr);
+            double multiplier = 1.0;
+            // Determine multiplier based on suffix
+            suffix = suffix.toLowerCase();
+            if (suffix.equals("k")) {
+                multiplier = 1024.0;
+            } else if (suffix.equals("m")) {
+                multiplier = 1024.0 * 1024.0;
+            } else if (suffix.equals("g")) {
+                multiplier = 1024.0 * 1024.0 * 1024.0;
+            }
+            sum += number * multiplier;
+        }
+        // Output the results
+        System.out.printf("%.1f\n", sum);
+        double k = sum / 1024.0;
+        System.out.printf("%.1f k\n", k);
+        double m = sum / (1024.0 * 1024.0);
+        System.out.printf("%.1f M\n", m);
+        double g = sum / (1024.0 * 1024.0 * 1024.0);
+        System.out.printf("%.1f G\n", g);
+    }
+}
+
+Wait, but in the code above, the suffix is matched as group 2. So for example, in "1.5G", group 1 is "1.5", group 2 is "G". Then, suffix is converted to lowercase, so "g", and multiplier is 1024^3.
+
+Yes.
+
+Testing the example input:
+
+Input after removing commas is "1.5G 2K 3M 4.2G 500000K 600M".
+
+Processing each token:
+
+1.5G → group1: "1.5", group2: "G" → suffix is "g" → multiplier 1024^3 → 1.5 * 1024^3 = 1,610,612,736.
+
+2K → group1: "2", group2: "K" → suffix "k" → multiplier 1024 → 2*1024=2048.
+
+3M → group1: "3", group2: "M" → suffix "m" → multiplier 1024^2 → 3*1024^2=3,145,728.
+
+4.2G → group1: "4.2", group2: "G" → suffix "g" → multiplier 1024^3 → 4.2 * 1024^3 = 4,509,715,660.8.
+
+500000K → group1: "500000", group2: "K" → suffix "k" → multiplier 1024 → 500000 * 1024 = 512,000,000.
+
+600M → group1: "600", group2: "M" → suffix "m" → multiplier 1024^2 → 600 * 1024^2 = 629,145,600.
+
+Summing all these gives 1,610,612,736 + 2048 = 1,610,614,784 + 3,145,728 = 1,613,760,512 + 4,509,715,660.8 = 6,123,476,172.8 + 512,000,000 = 6,635,476
 
