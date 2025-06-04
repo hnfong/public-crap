@@ -427,6 +427,28 @@ class ChatMLTemplateMixin:
     def extra_gguf_options(self):
         return ["-r", "<|im_end|>"]
 
+class HomunculusNothinkTemplateMixin:
+    def templated_prompt(self):
+        if self.system_message():
+            return f"""
+<|im_start|>system
+{self.system_message()}<|im_end|>
+<|im_start|>user
+{self.prompt()} /nothink<|im_end|>
+<|im_start|>assistant
+            """.strip() + "\n"
+        else:
+            return f"""
+<|im_start|>user
+{self.prompt()} /nothink<|im_end|>
+<|im_start|>assistant
+            """.strip() + "\n"
+
+
+class LongContextChatMLTemplateMixin(ChatMLTemplateMixin):
+    def extra_gguf_options(self):
+        return ["-r", "<|im_end|>", "-c", "9216"]
+
 class QwenTemplateMixin(ChatMLTemplateMixin):
     def system_message(self):
         # https://www.reddit.com/r/LocalLLaMA/comments/1gpwrq1/how_to_use_qwen25coderinstruct_without/
@@ -452,6 +474,10 @@ class Qwen3TemplateMixin:
     def system_message(self):
         # https://www.reddit.com/r/LocalLLaMA/comments/1gpwrq1/how_to_use_qwen25coderinstruct_without/
         return "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."
+
+class NemotronQwen3Reasoning:
+    def templated_prompt(self):
+        return f"""<｜User｜>{self.prompt()}<｜Assistant｜><think>"""
 
 class InstructionTemplateMixin:
     def templated_prompt(self):
@@ -498,10 +524,17 @@ class Phi3TemplateMixin:
 
 class Phi4TemplateMixin:
     def templated_prompt(self):
-        return f"""<|system|>{self.system_message()}<|end|><|user|>{self.prompt()}<|end|><|assistant|>"""
+        return f"""<|im_start|>system<|im_sep|>{self.system_message()}<|im_end|><|im_start|>user<|im_sep|>{self.prompt()}<|im_end|><|im_start|>assistant<|im_sep|>"""
 
     def extra_gguf_options(self):
-        return ["-r", "<|end|>"]
+        return ["-r", "<|im_end|>"]
+
+class Phi4ReasoningTemplateMixin:
+    def templated_prompt(self):
+        return f"""<|im_start|>system<|im_sep|>You are Phi, a language model trained by Microsoft to help users. Your role as an assistant involves thoroughly exploring questions through a systematic thinking process before providing the final precise and accurate solutions. This requires engaging in a comprehensive cycle of analysis, summarizing, exploration, reassessment, reflection, backtracing, and iteration to develop well-considered thinking process. Please structure your response into two main sections: Thought and Solution using the specified format: <think> {{Thought section}} </think> {{Solution section}}. In the Thought section, detail your reasoning process in steps. Each step should include detailed considerations such as analysing questions, summarizing relevant findings, brainstorming new ideas, verifying the accuracy of the current steps, refining any errors, and revisiting previous steps. In the Solution section, based on various attempts, explorations, and reflections from the Thought section, systematically present the final solution that you deem correct. The Solution section should be logical, accurate, and concise and detail necessary steps needed to reach the conclusion. Now, try to solve the following question through the above guidelines:<|im_end|><|im_start|>user<|im_sep|>{self.prompt()}<|im_end|><|im_start|>assistant<|im_sep|>"""
+
+    def extra_gguf_options(self):
+        return ["-r", "<|im_end|>", "-c", "9216"]
 
 class ZephyrTemplateMixin:
     def templated_prompt(self):
@@ -591,11 +624,15 @@ class CommandRPlusTemplateMixin:
 
 
 NAME_MATCH_OVERRIDE = [
+    # More specific first
+    ("Nemotron-Research-Reasoning-Qwen", NemotronQwen3Reasoning),
+    ("phi-4-reasoning", Phi4ReasoningTemplateMixin),
+
     ("Athene-V2", ChatMLTemplateMixin),
     ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
     ("DeepSeek-V2.5", DeepSeekV25Mixin),
     ("DeepSeek-R1", DeepSeekR1DistillMixin),  # Distills, basically
-    ("Mimo", ChatMLTemplateMixin),
+    ("Mimo", LongContextChatMLTemplateMixin),
     ("Mistral-Large-Instruct", Mistral3InstructTemplate),
     ("Mistral-Small", Mistral3InstructTemplate),
     ("miqu-", Mistral3InstructTemplate),
@@ -626,6 +663,7 @@ NAME_MATCH_OVERRIDE = [
     ("TheDrummer_Valkyrie", Llama3TemplateMixin),
     ("Devstral-", DevstralTemplateMixin),
     ("Falcon3-Mamba-7B", ChatMLTemplateMixin),
+    ("Homunculus-", HomunculusNothinkTemplateMixin),
 ]
 
 FIM_MATCH_OVERRIDE = [
