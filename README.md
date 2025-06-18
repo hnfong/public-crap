@@ -7,6 +7,8 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2025
 
+- [23-點解食禁果咁撚大鑊](writings/2025/23-點解食禁果咁撚大鑊.md)
+- [22-無為而無不為](writings/2025/22-無為而無不為.md)
 - [21-罪疚、時間、自由](writings/2025/21-罪疚、時間、自由.md)
 - [20-《展拓香港界址專條》只係一份歷史文件，不再具有任何現實意義](writings/2025/20-《展拓香港界址專條》只係一份歷史文件_CM_不再具有任何現實意義.md)
 - [19-醫學期刊話自己客觀中立](writings/2025/19-醫學期刊話自己客觀中立.md)
@@ -353,6 +355,9 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [奇異食譜：響17溝可樂](recipes/奇異食譜_CL_響17溝可樂.md)
 - [仿水煮魚](recipes/仿水煮魚.md)
 - [Duck Leg Carbonara](recipes/Duck_Leg_Carbonara.md)
+
+## Prompts
+
 
 ## Outline
 
