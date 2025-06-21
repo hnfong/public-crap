@@ -583,23 +583,19 @@ class DeepSeekV25Mixin:
     def extra_gguf_options(self):
         return ["-c", "2048"] # We don't have enough RAM for 4096
 
-class MistralInstructTemplate(ChatMLTemplateMixin):
-    # "chat_template": "{%- if messages[0]['role'] == 'system' %}\n    {%- set system_message = messages[0]['content'] %}\n    {%- set loop_messages = messages[1:] %}\n{%- else %}\n    {%- set loop_messages = messages %}\n{%- endif %}\n\n{{- bos_token }}\n{%- for message in loop_messages %}\n    {%- if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}\n        {{- raise_exception('After the optional system message, conversation roles must alternate user/assistant/user/assistant/...') }}\n    {%- endif %}\n    {%- if message['role'] == 'user' %}\n        {%- if loop.last and system_message is defined %}\n            {{- '[INST] ' + system_message + '\\n\\n' + message['content'] + '[/INST]' }}\n        {%- else %}\n            {{- '[INST] ' + message['content'] + '[/INST]' }}\n        {%- endif %}\n    {%- elif message['role'] == 'assistant' %}\n        {{- ' ' + message['content'] + eos_token}}\n    {%- else %}\n        {{- raise_exception('Only user and assistant roles are supported, with the exception of an initial optional system message!') }}\n    {%- endif %}\n{%- endfor %}\n",
+class Mistral3InstructTemplate:
     def templated_prompt(self):
         # wtf? If we really believe the chat_template above, this is the result. But it doesn't work.
         # return f"""\n    \n\n\n<s>\n\n    \n    \n        \n            [INST] {self.prompt()}[/INST]\n        \n    \n        """
-        return f"""<s>[INST] {self.prompt()}[/INST] """
+        return f"""[SYSTEM_PROMPT]{self.system_message()}[/SYSTEM_PROMPT]\n[INST]{self.prompt()}[/INST]"""
 
-        # Funny enough, the ChatMLTemplateMixin also works...
-
-class Mistral3InstructTemplate(ChatMLTemplateMixin):
-    # "chat_template": "{%- if messages[0]['role'] == 'system' %}\n    {%- set system_message = messages[0]['content'] %}\n    {%- set loop_messages = messages[1:] %}\n{%- else %}\n    {%- set loop_messages = messages %}\n{%- endif %}\n\n{{- bos_token }}\n{%- for message in loop_messages %}\n    {%- if (message['role'] == 'user') != (loop.index0 % 2 == 0) %}\n        {{- raise_exception('After the optional system message, conversation roles must alternate user/assistant/user/assistant/...') }}\n    {%- endif %}\n    {%- if message['role'] == 'user' %}\n        {%- if loop.last and system_message is defined %}\n            {{- '[INST] ' + system_message + '\\n\\n' + message['content'] + '[/INST]' }}\n        {%- else %}\n            {{- '[INST] ' + message['content'] + '[/INST]' }}\n        {%- endif %}\n    {%- elif message['role'] == 'assistant' %}\n        {{- ' ' + message['content'] + eos_token}}\n    {%- else %}\n        {{- raise_exception('Only user and assistant roles are supported, with the exception of an initial optional system message!') }}\n    {%- endif %}\n{%- endfor %}\n",
+class OpenBuddyTemplate:
     def templated_prompt(self):
-        # wtf? If we really believe the chat_template above, this is the result. But it doesn't work.
-        # return f"""\n    \n\n\n<s>\n\n    \n    \n        \n            [INST] {self.prompt()}[/INST]\n        \n    \n        """
-        return f"""<s>[SYSTEM_PROMPT]{self.system_message()}[/SYSTEM_PROMPT][INST]{self.prompt()}[/INST]"""
-
-        # Funny enough, the ChatMLTemplateMixin also works...
+        return f"""
+<|role|>system<|says|>{self.system_message()}<|end|>
+<|role|>user<|says|>{self.prompt()}<|end|>
+<|role|>assistant<|says|>
+""".strip()
 
 class Llama3TemplateMixin:
     def templated_prompt(self):
@@ -627,6 +623,7 @@ NAME_MATCH_OVERRIDE = [
     # More specific first
     ("Nemotron-Research-Reasoning-Qwen", NemotronQwen3Reasoning),
     ("phi-4-reasoning", Phi4ReasoningTemplateMixin),
+    ("OpenBuddy-", OpenBuddyTemplate),
 
     ("Athene-V2", ChatMLTemplateMixin),
     ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
