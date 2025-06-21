@@ -464,6 +464,10 @@ Computer technology related.
 - https://www.reddit.com/r/LocalLLaMA/comments/1ggmsmo/smollm2_the_new_best_small_models_for_ondevice/ - Small models
 - https://www.reddit.com/r/LocalLLaMA/comments/1g03rdn/hidden_gem_happzy2633qwen257binsv3_is_an/ - Early reasoning model that came before DeepSeek-R1
 - https://www.reddit.com/r/LocalLLaMA/comments/1khwxal/the_great_quant_wars_of_2025/ - Quantization and benchmarks
+- https://github.com/Anemll/Anemll
+  - https://www.reddit.com/r/LocalLLaMA/comments/1lfpkyv/qwen3_for_apple_neural_engine/
+    - """Noted, but comparisons are tough, because “it depends”. If you solely focused on single token inference on high end Ultra or MAX, MLX is better choice solely due to memory b/w. However for wider range of devices ANE provides lower energy and consistent performance on most popular devices like iPhones, Mac Air and iPads. Never the less we’ll be adding comparison section soon. Some initial work is here https://github.com/Anemll/anemll-bench"""
+
 
 
 ### Toys
@@ -487,6 +491,8 @@ Computer technology related.
 ### Interesting AI Use Cases And Applications
 
 - https://www.reddit.com/r/LocalLLaMA/comments/1gjfajq/i_got_laid_off_so_i_have_to_start_applying_to_as/ -- Reads the CV and automatically tries to answer questions in forms.
+- https://github.com/ideaweaver-ai/DeepSeek-Children-Stories-15M-model
+  - https://www.reddit.com/r/LocalLLaMA/comments/1lfeein/project_deepseekbased_15mparameter_model_for/
 
 
 

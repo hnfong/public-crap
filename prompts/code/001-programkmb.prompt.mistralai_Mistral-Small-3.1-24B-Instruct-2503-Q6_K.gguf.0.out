@@ -1,27 +1,41 @@
 ```java
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SizeSumCalculator {
+public class NumberSumCalculator {
+
+    private static final Pattern NUMBER_PATTERN = Pattern.compile(
+        "(\\d+(\\.\\d+)?|\\d{1,3}(,\\d{3})*)([kKmMgG])?"
+    );
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder input = new StringBuilder();
-        while (scanner.hasNextLine()) {
-            input.append(scanner.nextLine()).append(" ");
-        }
-        scanner.close();
 
-        String inputString = input.toString();
-        Pattern pattern = Pattern.compile("(\\d+(?:[.,]\\d+)?[kKmMgG]?)|(\\d+(?:[.,]\\d+)?)");
-        Matcher matcher = pattern.matcher(inputString);
+        try {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                input.append(line).append(" ");
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+            return;
+        }
 
         double totalSum = 0.0;
+        Matcher matcher = NUMBER_PATTERN.matcher(input.toString());
 
         while (matcher.find()) {
-            String numberStr = matcher.group();
+            String numberStr = matcher.group(1);
+            String suffix = matcher.group(4);
+
             double value = parseNumber(numberStr);
+            if (suffix != null) {
+                value = convertToBaseValue(value, suffix.toLowerCase());
+            }
             totalSum += value;
         }
 
@@ -32,23 +46,20 @@ public class SizeSumCalculator {
     }
 
     private static double parseNumber(String numberStr) {
-        numberStr = numberStr.replace(",", "");
-        double value = Double.parseDouble(numberStr.replaceAll("[kKmMgG]", ""));
-        char suffix = Character.toUpperCase(numberStr.charAt(numberStr.length() - 1));
+        return Double.parseDouble(numberStr.replace(",", ""));
+    }
 
+    private static double convertToBaseValue(double value, String suffix) {
         switch (suffix) {
-            case 'K':
-                value *= 1024;
-                break;
-            case 'M':
-                value *= 1024 * 1024;
-                break;
-            case 'G':
-                value *= 1024 * 1024 * 1024;
-                break;
+            case "k":
+                return value * 1024;
+            case "m":
+                return value * 1024 * 1024;
+            case "g":
+                return value * 1024 * 1024 * 1024;
+            default:
+                return value;
         }
-
-        return value;
     }
 }
 ``` [end of text]
