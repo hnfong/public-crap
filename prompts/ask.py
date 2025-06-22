@@ -597,6 +597,16 @@ class OpenBuddyTemplate:
 <|role|>assistant<|says|>
 """.strip()
 
+class OlmoTemplate:
+    def templated_prompt(self):
+        return f"""
+<|system|>
+{self.system_message()}
+<|user|>
+{self.prompt()}
+<|assistant|>
+""".strip() + "\n"
+
 class Llama3TemplateMixin:
     def templated_prompt(self):
         return f"""
@@ -624,7 +634,9 @@ NAME_MATCH_OVERRIDE = [
     ("Nemotron-Research-Reasoning-Qwen", NemotronQwen3Reasoning),
     ("phi-4-reasoning", Phi4ReasoningTemplateMixin),
     ("OpenBuddy-", OpenBuddyTemplate),
+    ("Arcee-SuperNova-v1-", Llama3TemplateMixin),
 
+    ("OLMo-2-", OlmoTemplate),
     ("Athene-V2", ChatMLTemplateMixin),
     ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
     ("DeepSeek-V2.5", DeepSeekV25Mixin),

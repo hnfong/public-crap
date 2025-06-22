@@ -1,0 +1,70 @@
+```java
+import java.util.Scanner;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
+public class SumConverter {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        StringBuilder input = new StringBuilder();
+        while (scanner.hasNextLine()) {
+            input.append(scanner.nextLine()).append('\n');
+        }
+        String data = input.toString().trim();
+        String[] lines = data.split("\\r?\\n");
+        long totalSum = 0;
+        DecimalFormat df = new DecimalFormat("#.0");
+        NumberFormat nfKb = new DecimalFormat("#.0");
+        nfKb.setMaximumFractionDigits(1);
+        NumberFormat nfMb = new DecimalFormat("#.0");
+        nfMb.setMaximumFractionDigits(1);
+        NumberFormat nfGb = new DecimalFormat("#.0");
+        nfGb.setMaximumFractionDigits(1);
+
+        for (String line : lines) {
+            line = line.trim();
+            if (!line.isEmpty()) {
+                String[] parts = line.split("\\s*,[\\s]*");
+                for (String part : parts) {
+                    if (part.matches("\\d+(?:,\\d{3})*[\\d]+([kgmG]{1,2})?")) {
+                        String numberStr = part.replaceAll(",", "");
+                        String suffix = part.matches("\\d+(?:,\\d{3})*[\\d]+([kgmG]{1,2})") ?
+                                part.substring(numberStr.length()) : "";
+                        long value = 0;
+                        if ("k".equalsIgnoreCase(suffix) || "K".equalsIgnoreCase(suffix)) {
+                            value = Long.parseLong(numberStr) * 1024;
+                        } else if ("m".equalsIgnoreCase(suffix) || "M".equalsIgnoreCase(suffix)) {
+                            value = Long.parseLong(numberStr) * 1024 * 1024;
+                        } else if ("g".equalsIgnoreCase(suffix) || "G".equalsIgnoreCase(suffix)) {
+                            value = Long.parseLong(numberStr) * 1024 * 1024 * 1024;
+                        } else {
+                            value = Long.parseLong(numberStr);
+                        }
+                        totalSum += value;
+                        switch (suffix.toLowerCase()) {
+                            case "k":
+                                nfKb.format(value, nfKb.format(totalSum / 1024));
+                                break;
+                            case "m":
+                                nfMb.format(value, nfMb.format(totalSum / (1024 * 1024)));
+                                break;
+                            case "g":
+                                nfGb.format(value, nfGb.format(totalSum / (1024 * 1024 * 1024)));
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println(totalSum);
+        System.out.println(df.format(totalSum) + " k" + (totalSum / 1024 > 0 ? "s" : ""));
+        System.out.println(nfMb.format(totalSum / (1024 * 1024)) + " M" + (totalSum / (1024 * 1024) > 0 ? "s" : ""));
+        System.out.println(nfGb.format(totalSum / (1024 * 1024 * 1024)) + " G" + (totalSum / (1024 * 1024 * 1024) > 0 ? "s" : ""));
+    }
+}
+```
+
+This program reads a string from standard input, extracts numbers with optional suffixes (k, K, m, M, g, G), converts them to their base values, calculates their sum, and prints the total sum as well as the sum in kilobytes (K), megabytes (M), and gigabytes (G) to one decimal place. It handles numbers with commas as thousand separators and supports both lowercase and uppercase suffixes. The output matches the example output provided. [end of text]
+
+
