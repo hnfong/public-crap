@@ -573,6 +573,9 @@ class DeepSeekR1DistillMixin:
         else:
             return f"""<｜begin▁of▁sentence｜><｜User｜>{self.prompt()}<｜Assistant｜>"""
 
+    def extra_gguf_options(self):
+        return ["-c", "8192"]
+
 class DeepSeekV25Mixin:
     def templated_prompt(self):
         if self.system_message():
@@ -583,11 +586,24 @@ class DeepSeekV25Mixin:
     def extra_gguf_options(self):
         return ["-c", "2048"] # We don't have enough RAM for 4096
 
+class DeepSeekV3Mixin:
+    def templated_prompt(self):
+        if self.system_message():
+            return f"""{self.system_message()}<｜User｜>{self.prompt()}<｜Assistant｜>"""
+        else:
+            return f"""<｜User｜>{self.prompt()}<｜Assistant｜>"""
+
 class Mistral3InstructTemplate:
     def templated_prompt(self):
         # wtf? If we really believe the chat_template above, this is the result. But it doesn't work.
         # return f"""\n    \n\n\n<s>\n\n    \n    \n        \n            [INST] {self.prompt()}[/INST]\n        \n    \n        """
         return f"""[SYSTEM_PROMPT]{self.system_message()}[/SYSTEM_PROMPT]\n[INST]{self.prompt()}[/INST]"""
+
+class DotsLLMTemplate:
+    def templated_prompt(self):
+        return f"""<|system|>{self.system_message()}<|endofsystem|><|userprompt|>{self.prompt()}<|endofuserprompt|><|response|>"""
+    def extra_gguf_options(self):
+        return ["-r", "<|endofresponse|>"]
 
 class OpenBuddyTemplate:
     def templated_prompt(self):
@@ -635,11 +651,13 @@ NAME_MATCH_OVERRIDE = [
     ("phi-4-reasoning", Phi4ReasoningTemplateMixin),
     ("OpenBuddy-", OpenBuddyTemplate),
     ("Arcee-SuperNova-v1-", Llama3TemplateMixin),
+    ("dots.llm", DotsLLMTemplate),
 
     ("OLMo-2-", OlmoTemplate),
     ("Athene-V2", ChatMLTemplateMixin),
     ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
     ("DeepSeek-V2.5", DeepSeekV25Mixin),
+    ("DeepSeek-V3-", DeepSeekV3Mixin),
     ("DeepSeek-R1", DeepSeekR1DistillMixin),  # Distills, basically
     ("Mimo", LongContextChatMLTemplateMixin),
     ("Mistral-Large-Instruct", Mistral3InstructTemplate),

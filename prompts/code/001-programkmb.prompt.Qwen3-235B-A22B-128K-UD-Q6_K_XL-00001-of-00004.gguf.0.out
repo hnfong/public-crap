@@ -1,0 +1,67 @@
+<think>
+
+</think>
+
+```java
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+public class SuffixNumberSum {
+    private static final Map<Character, Double> SUFFIX_FACTORS = Map.of(
+        'K', 1024.0,
+        'M', 1024.0 * 1024.0,
+        'G', 1024.0 * 1024.0 * 1024.0
+    );
+
+    public static void main(String[] args) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            StringBuilder inputBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                inputBuilder.append(line).append(" ");
+            }
+            String input = inputBuilder.toString();
+
+            double totalBytes = extractAndSumValues(input);
+
+            System.out.printf("%.1f%n", totalBytes);
+            System.out.printf("%.1f k%n", totalBytes / SUFFIX_FACTORS.get('K'));
+            System.out.printf("%.1f M%n", totalBytes / SUFFIX_FACTORS.get('M'));
+            System.out.printf("%.1f G%n", totalBytes / SUFFIX_FACTORS.get('G'));
+
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+        }
+    }
+
+    private static double extractAndSumValues(String input) {
+        double sum = 0.0;
+        Pattern pattern = Pattern.compile("(\\d+(?:,\\d+)*(?:\\.\\d+)?)\\s*([kKmMgG])?");
+        Matcher matcher = pattern.matcher(input);
+
+        while (matcher.find()) {
+            String numberStr = matcher.group(1);
+            char suffix = matcher.group(2) != null ? Character.toUpperCase(matcher.group(2).charAt(0)) : ' ';
+            
+            double number = parseNumberWithCommas(numberStr);
+            double factor = 1.0;
+            if (suffix == 'K') factor = SUFFIX_FACTORS.get('K');
+            else if (suffix == 'M') factor = SUFFIX_FACTORS.get('M');
+            else if (suffix == 'G') factor = SUFFIX_FACTORS.get('G');
+
+            sum += number * factor;
+        }
+
+        return sum;
+    }
+
+    private static double parseNumberWithCommas(String str) {
+        str = str.replaceAll(",", "");
+        return Double.parseDouble(str);
+    }
+}
+``` [end of text]
+
+
