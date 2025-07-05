@@ -652,6 +652,7 @@ NAME_MATCH_OVERRIDE = [
     ("OpenBuddy-", OpenBuddyTemplate),
     ("Arcee-SuperNova-v1-", Llama3TemplateMixin),
     ("dots.llm", DotsLLMTemplate),
+    ("jan-nano-", LongContextChatMLTemplateMixin),
 
     ("OLMo-2-", OlmoTemplate),
     ("Athene-V2", ChatMLTemplateMixin),
@@ -934,7 +935,7 @@ if __name__ == "__main__":
                         m_params = [opt[1] for opt in opt_list if opt[0] == '-M']
                         for m_param in m_params:
                             conditional_options = m_param.split(",")
-                            if conditional_options[0] in model:
+                            if conditional_options[0] in model or conditional_options[0] == '*':
                                 this_cmd += conditional_options[1:]
 
                     if verbosity > 0:
