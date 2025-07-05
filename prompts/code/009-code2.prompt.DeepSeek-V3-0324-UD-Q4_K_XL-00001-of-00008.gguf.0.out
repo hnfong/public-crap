@@ -1,0 +1,205 @@
+Performing a binary search directly on a text file is more complex than in-memory binary search because you can't directly access arbitrary lines in constant time. However, you can achieve O(log(n)) operations by using file seeking and reading strategies. Here's how you can do it:
+
+### Approach
+1. **File Size and Line Lengths**: Since lines can vary in length, you can't directly compute the position of a line. Instead, you'll need to read the file in chunks and manage positions.
+2. **Binary Search on File**: 
+   - Use `low` and `high` pointers to represent the start and end of the search range in bytes.
+   - At each step, compute the `mid` byte position, then read forward until you find a newline to get the full line starting at or after `mid`.
+   - Compare the line with the target to adjust `low` or `high`.
+3. **Handling Midpoint**: 
+   - When you seek to `mid`, you might land in the middle of a line. You need to read until the next newline to get the start of the next line.
+   - The line you read is the one that starts at or after `mid`, which becomes your comparison point.
+
+### Solution Code
+```python
+def binary_search_file(file_path, target):
+    with open(file_path, 'r') as file:
+        low = 0
+        file.seek(0, 2)  # Move to end to get file size
+        high = file.tell()
+        
+        while low < high:
+            mid = (low + high) // 2
+            file.seek(mid)
+            # Move to the start of the next line unless we're at the beginning
+            if mid > 0:
+                file.readline()  # This moves to the start of the next line
+            line = file.readline()
+            if not line:
+                # Handle case where mid is at the end of the file
+                break
+            current = line.strip()
+            if current < target:
+                low = mid + 1
+            else:
+                high = mid
+        
+        # After loop, low is the insertion point; check if the line is the target
+        file.seek(low)
+        if low > 0:
+            file.readline()  # Move to start of the line at low
+        line = file.readline()
+        if line:
+            current = line.strip()
+            if current == target:
+                return low
+        return low
+```
+
+Wait, but this approach may have some issues. Let me think again.
+
+Actually, the correct approach involves:
+
+1. Initialize low and high as 0 and file size (in bytes).
+2. While low < high:
+   - mid = (low + high) // 2
+   - Seek to mid.
+   - Read a line to get the current line (which starts after the newline following mid).
+   - Compare current line with target.
+   - Adjust low or high accordingly.
+3. After the loop, low is the insertion point. Check if the line at low is the target.
+
+But the problem is that when you seek to mid, you might be in the middle of a line. So you need to read the rest of the line (which is discarded) and then the next line is the one to compare.
+
+Here's a corrected version:
+
+```python
+def binary_search_file(file_path, target):
+    with open(file_path, 'rb') as file:
+        low = 0
+        file.seek(0, 2)  # Seek to end to get file size
+        high = file.tell()
+        
+        while low < high:
+            mid = (low + high) // 2
+            file.seek(mid)
+            # Read the rest of the line to ensure we're at the start of a new line
+            file.readline()
+            line = file.readline()
+            if not line:
+                break  # EOF
+            current = line.decode('utf-8').strip()
+            if current < target:
+                low = mid + 1
+            else:
+                high = mid
+        
+        # Now, find the line at low to check if it's the target
+        file.seek(low)
+        file.readline()  # Move to start of the line
+        line = file.readline()
+        if line:
+            current = line.decode('utf-8').strip()
+            if current == target:
+                return low
+        return low
+```
+
+Wait, but the insertion point should be the index where the target would be inserted to maintain order. The position in bytes may not directly translate to line numbers. But the problem asks for the position (in terms of bisect_left), which is the line number where the target would be inserted.
+
+But the initial approach returns the byte position, which isn't the line number. So perhaps the function should return the line number.
+
+But the problem statement says "position of the target, or the insertion point (as in 'bisect_left')". It's unclear whether this refers to the byte position or the line index.
+
+Assuming it's the line index (since bisect_left returns an index), the function needs to count the number of lines before the insertion point.
+
+But counting lines up to a certain byte position is O(n) in the worst case, which would violate the O(log n) constraint.
+
+So perhaps the problem expects the byte position as the insertion point.
+
+Alternatively, perhaps the function should return the line itself or its position in the file.
+
+Given the ambiguity, perhaps the initial approach is acceptable.
+
+But let's think differently: the binary search should find the line where the target is or where it should be inserted, and return the line number (index) as bisect_left would.
+
+To achieve this in O(log n) time, we need to perform binary search based on line positions.
+
+But without random access to lines, this is challenging.
+
+An alternative is to perform binary search on byte positions, and for each mid, count the number of lines up to that point. But counting lines is O(n), which is not acceptable.
+
+Thus, the only feasible way is to return the byte position where the target would be inserted, which may not be very useful.
+
+Given the constraints, perhaps the problem expects the byte position.
+
+So the initial solution may be acceptable.
+
+But let's look for a better way.
+
+Another approach is to precompute the starting byte positions of each line, but that requires O(n) time and space, which is not allowed.
+
+Given that, perhaps the problem is to perform binary search on the file's lines, treating it as a sorted list, and return the line's position (index) if found, or the insertion point.
+
+But without O(1) access to lines, this is not possible in O(log n) time.
+
+Thus, the only way is to use the byte positions and return the byte position where the target would be inserted.
+
+So the function would return the byte position, which is the point where the target would be inserted in the file's byte sequence.
+
+This seems to be the only feasible solution under O(log n) operations.
+
+Thus, the initial solution is probably what's expected.
+
+Here's the final function:
+
+```python
+def binary_search_file(file_path, target):
+    with open(file_path, 'rb') as file:
+        low = 0
+        file.seek(0, 2)  # Seek to end to get file size
+        high = file.tell()
+        
+        while low < high:
+            mid = (low + high) // 2
+            file.seek(mid)
+            # Read the rest of the line to ensure we're at the start of a new line
+            file.readline()
+            line_start = file.tell()
+            line = file.readline()
+            if not line:
+                break  # EOF
+            current = line.decode('utf-8').strip()
+            if current < target:
+                low = line_start + len(line)
+            else:
+                high = mid
+        
+        # Now, find the line at low to check if it's the target
+        file.seek(low)
+        file.readline()  # Move to start of the line
+        line_start = file.tell()
+        line = file.readline()
+        if line:
+            current = line.decode('utf-8').strip()
+            if current == target:
+                return line_start
+        return low
+```
+
+Wait, this may not work correctly. Let me think of an example.
+
+Suppose the file has lines:
+
+apple
+banana
+cherry
+
+Target is "banana".
+
+Initial low=0, high=file size (say, 20 bytes).
+
+Mid is 10. Seek to 10. Suppose it's in the middle of "banana". Readline reads the rest of the line, then the next line is "cherry".
+
+Compare "cherry" with "banana". "cherry" > "banana", so high becomes 10.
+
+Next iteration: mid=5. Seek to 5. Suppose it's in the middle of "apple\nba...". Readline moves to start of "banana". Readline reads "banana".
+
+Compare "banana" with target. They are equal. So high becomes 5.
+
+Next iteration: mid=2. Seek to 2. Readline moves to start of next line. Suppose it's "apple\n", so next line is "banana".
+
+Compare "banana" == target. So high becomes 2.
+
+Next iteration: mid=1. Seek to 1. Readline moves
+

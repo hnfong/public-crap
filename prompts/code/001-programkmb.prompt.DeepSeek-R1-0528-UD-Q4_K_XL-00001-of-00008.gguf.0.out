@@ -1,0 +1,606 @@
+<think>
+We are going to read the entire input from standard input.
+ Steps:
+ 1. Read all lines from standard input and combine into one string.
+ 2. Use a regex to find all numbers that may have:
+      - Optional commas as thousand separators (we'll remove them)
+      - A decimal part (optional)
+      - An optional suffix (k, K, m, M, g, G)
+ 3. For each matched string:
+      - Remove commas.
+      - Separate the numeric part and the suffix.
+      - Convert the numeric part to a double.
+      - Multiply by the factor corresponding to the suffix:
+          k or K: 1024
+          m or M: 1024 * 1024
+          g or G: 1024 * 1024 * 1024
+          no suffix: 1
+ 4. Sum all the converted values (in base units, i.e., bytes).
+ 5. Convert the total sum to kilobytes (divide by 1024), megabytes (divide by 1024^2), and gigabytes (divide by 1024^3).
+ 6. Format the outputs:
+      - Total sum as a double with one decimal place? But note: the example output for total sum has one decimal place.
+      - However, the example total sum is 7264621772.8, which is one decimal place.
+      - The other outputs: one decimal place for K, M, G.
+
+ Important: The example input has multiple lines and commas as thousand separators.
+
+ Let's design the regex for the numbers:
+   We are looking for:
+      [optional sign]? [digits with possible commas and decimal] [optional space]? [optional suffix]
+
+   But note: the example input has "1.5G", "2K,", "3M,", "4.2G", "500,000K", "600M"
+
+   We can try: 
+        Pattern pattern = Pattern.compile("[-+]?[\\d,]+(?:\\.\\d+)?\\s*[kKmMgG]?\\b");
+
+   However, note that the example input has commas and the numbers might be adjacent to non-alphanumeric characters (like commas, spaces, etc.)
+
+   But the requirement says: "extracts all numbers followed by optional suffixes". So the suffix must be one of the letters and must be immediately after (with optional whitespace?).
+
+   Let's adjust: We want to capture the entire number including the decimal and commas, and then the suffix if present.
+
+   We can do: 
+        Pattern pattern = Pattern.compile("\\b[-+]?[\\d,]+(?:\\.\\d+)?\\s*[kKmMgG]?\\b");
+
+   However, the example input has "1.5G, 2K," - note the comma after the number. The word boundary might break at the comma? But we want to capture the number including the suffix and then ignore the comma.
+
+   Alternatively, we can capture without the word boundary and then check that we are capturing the entire number. But note that the numbers might be adjacent to other non-word characters.
+
+   Let's try a different approach: capture the number that may have commas and decimal, and then an optional suffix (which is a letter) that must be at the end of the token. But note that the suffix is optional.
+
+   We can do: 
+        Pattern pattern = Pattern.compile("[-+]?\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?\\s*[kKmMgG]?|[-+]?\\d+\\.\\d+\\s*[kKmMgG]?|[-+]?\\d+\\s*[kKmMgG]?");
+
+   This is too complicated. Instead, we can do:
+
+        Pattern pattern = Pattern.compile("[-+]?\\d{1,3}(?:,\\d{3})*(?:\\.\\d*)?\\s*[kKmMgG]?|[-+]?\\d*\\.\\d+\\s*[kKmMgG]?|[-+]?\\d+\\s*[kKmMgG]?");
+
+   But note: the requirement says the number can have commas as thousand separators. We can also remove the commas and then parse.
+
+   Alternatively, we can use a simpler regex that captures any sequence of digits, commas, and a decimal point, and then an optional suffix. We'll remove the commas when parsing.
+
+   Let's use: 
+        Pattern pattern = Pattern.compile("[-+]?[\\d,]+(?:\\.\\d+)?\\s*[kKmMgG]?\\b");
+
+   But note: the example input has "500,000K" - this will be matched. However, the word boundary at the end might be broken by the comma? Actually, the comma is inside the number. We don't want to break at the comma.
+
+   We can try without the word boundary and instead use:
+
+        Pattern pattern = Pattern.compile("[-+]?[\\d,]+(?:\\.\\d+)?\\s*[kKmMgG]?");
+
+   But then we might capture too much? For example, if there is a word like "hello100K", it would capture "100K". But the requirement says "numbers" - we assume they are separate tokens? The example input has commas and spaces separating them.
+
+   Since the problem says "extracts all numbers", we can rely on the fact that the numbers are separated by non-digit characters. We'll use:
+
+        Pattern pattern = Pattern.compile("[-+]?[\\d,]+(?:\\.\\d+)?\\s*[kKmMgG]?\\b");
+
+   But note: the example input has "1.5G, 2K," - the comma after the number is not part of the word. The word boundary at the end will match at the comma? Actually, the word boundary is between a word char (the suffix) and a non-word char (the comma). So it should work.
+
+   However, what about a number without a suffix? Like "500" in the input? The example doesn't have one, but the requirement says "optional suffix". So we must handle numbers without suffix.
+
+   Let's test the regex on the example input:
+
+        "1.5G" -> matches: "1.5G" (with word boundary at the end of G, then comma is non-word so boundary exists)
+        "2K," -> matches "2K" (because the comma is non-word, so boundary is at the end of K? Actually, the regex has \b at the end, so it will match the token ending at K and then the comma is not included.
+
+   But what about "500,000K"? The regex will match "500,000K" because the commas are inside and the K is at the end. Then we remove commas and parse.
+
+   However, note that the regex might also match "000K" as a part of "500,000K" if we are not careful? Actually, the regex is greedy and will match the entire sequence.
+
+   Steps for each match:
+      - Remove commas from the entire matched string? But note: the suffix is a letter. We can split the suffix by checking the last character.
+
+   How to parse a matched string?
+      - Check the last character: if it is one of [kKmMgG], then use that as the suffix and take the substring without that suffix. Also, there might be whitespace between the number and the suffix? The regex allows optional whitespace. So we should trim the substring and then check the last non-whitespace character.
+
+   Alternatively, we can break the matched string into two parts: the number string (which may have commas and decimal) and the suffix. We can do:
+
+        String s = matchedString.trim();
+        char lastChar = s.charAt(s.length()-1);
+        if (Character.isLetter(lastChar)) {
+            suffix = lastChar;
+            numberString = s.substring(0, s.length()-1).trim();
+        } else {
+            suffix = null;
+            numberString = s;
+        }
+
+   But note: what if the number is negative? Then the last character might be a letter? We are checking the last character. Also, what if the number has no suffix? Then the last character is a digit or a decimal point? We don't want to remove a digit.
+
+   Alternatively, we can use:
+
+        String numStr = matchedString.trim();
+        String suffixStr = "";
+        if (!numStr.isEmpty()) {
+            char last = numStr.charAt(numStr.length()-1);
+            if (last == 'k' || last == 'K' || last == 'm' || last == 'M' || last == 'g' || last == 'G') {
+                suffixStr = String.valueOf(last);
+                numStr = numStr.substring(0, numStr.length()-1).trim();
+            }
+        }
+
+   Then we remove commas from numStr and parse as double.
+
+   But note: the number might have a negative sign? We have to preserve that.
+
+   Example: "-1,000.5K" -> becomes numStr = "-1000.5", suffixStr = "K"
+
+   Then we convert to double and multiply by factor.
+
+   Factors:
+        k, K -> 1024
+        m, M -> 1024*1024
+        g, G -> 1024*1024*1024
+
+   Then add to the total.
+
+   After processing all, we have the total in base units (bytes).
+
+   Then we convert:
+        totalKB = totalBytes / 1024.0;
+        totalMB = totalBytes / (1024.0 * 1024.0);
+        totalGB = totalBytes / (1024.0 * 1024.0 * 1024.0);
+
+   Format each to one decimal place.
+
+   Print:
+        totalBytes (with one decimal place? The example output has one decimal place for the total: 7264621772.8)
+        Then the others: one decimal place.
+
+   But note: the example output for the total is 7264621772.8, which is one decimal place.
+
+   However, the total might be an integer? We should format to one decimal place regardless.
+
+   We can use: 
+        System.out.printf("%.1f%n", totalBytes);
+        System.out.printf("%.1f k%n", totalKB);
+        System.out.printf("%.1f M%n", totalMB);
+        System.out.printf("%.1f G%n", totalGB);
+
+   But note: the example output has the units in lowercase for k, uppercase for M and G? The example output:
+
+        7094357.2 k
+        6928.1 M
+        6.8 G
+
+   So we output "k" for kilobytes, "M" for megabytes, "G" for gigabytes.
+
+   However, the problem says: "prints the total sum as well as the sum in kilobytes (K), megabytes (M), and gigabytes (G)" - note the example uses lowercase k for kilobytes? But the example output uses lowercase k. The problem says "kilo=1024", and the suffix in input can be k or K. But for output, we are to use k, M, G? The example output uses:
+
+        k for kilobytes? Actually, the example output uses "k" (lowercase) for kilobytes, but the problem says "kilobytes (K)"? 
+
+   Let me check the example output: 
+        7094357.2 k
+
+   So we output lowercase k for kilobytes? But the problem says "kilobytes (K)" in the description. However, the example output uses lowercase.
+
+   We'll follow the example output: use "k" for kilobytes, "M" for megabytes, "G" for gigabytes.
+
+   Steps:
+
+        totalBytes = 0.0
+
+        Read entire input into a string.
+
+        Pattern pattern = Pattern.compile("[-+]?[\\d,]+(?:\\.\\d+)?\\s*[kKmMgG]?\\b");
+
+        Matcher matcher = pattern.matcher(input);
+
+        while (matcher.find()) {
+            String token = matcher.group().trim();
+            // Now, check the last character for suffix
+            char lastChar = token.charAt(token.length()-1);
+            String numPart;
+            char suffixChar = 0;
+            if (Character.isLetter(lastChar)) {
+                suffixChar = lastChar;
+                numPart = token.substring(0, token.length()-1).trim();
+            } else {
+                numPart = token;
+            }
+
+            // Remove commas from numPart
+            numPart = numPart.replaceAll(",", "");
+            double value = Double.parseDouble(numPart);
+
+            // Multiply by factor based on suffixChar
+            switch (suffixChar) {
+                case 'k':
+                case 'K':
+                    value *= 1024;
+                    break;
+                case 'm':
+                case 'M':
+                    value *= 1024 * 1024;
+                    break;
+                case 'g':
+                case 'G':
+                    value *= 1024 * 1024 * 1024;
+                    break;
+                default:
+                    // no multiplication
+            }
+
+            totalBytes += value;
+        }
+
+        // Now, compute the representations
+        double totalKB = totalBytes / 1024.0;
+        double totalMB = totalBytes / (1024.0 * 1024.0);
+        double totalGB = totalBytes / (1024.0 * 1024.0 * 1024.0);
+
+        // Format to one decimal place
+        System.out.printf("%.1f%n", totalBytes);
+        System.out.printf("%.1f k%n", totalKB);
+        System.out.printf("%.1f M%n", totalMB);
+        System.out.printf("%.1f G%n", totalGB);
+
+   But note: the example input has multiple lines. We are reading the entire input as a string.
+
+   However, what if the input is huge? We assume it's not too big.
+
+   Also, what about numbers without a decimal? Double.parseDouble can handle integers.
+
+   Let's test with the example input:
+
+        Input: "1.5G, 2K,\n3M, and 4.2G\n500,000K and 600M"
+
+        We expect: 
+            1.5G -> 1.5 * 1024^3 = 1.5 * 1073741824 = 1610612736
+            2K -> 2 * 1024 = 2048
+            3M -> 3 * 1024*1024 = 3145728
+            4.2G -> 4.2 * 1024^3 = 4.2 * 1073741824 = 4509715660.8
+            500,000K -> 500000 * 1024 = 512000000
+            600M -> 600 * 1024*1024 = 629145600
+
+        Sum = 1610612736 + 2048 + 3145728 + 4509715660.8 + 512000000 + 629145600
+
+        Let me compute step by step:
+
+          1610612736
+          + 2048 -> 1610614784
+          + 3145728 -> 1613760512
+          + 4509715660.8 -> 6123476172.8
+          + 512000000 -> 6635476172.8
+          + 629145600 -> 7264621772.8
+
+        So the total is 7264621772.8
+
+        Then:
+          k: 7264621772.8 / 1024 = 7094357.2 (exactly? 7264621772.8 / 1024 = 7094357.2 exactly? Let me check: 7094357.2 * 1024 = 7094357.2 * 1024 = 7264621772.8 -> yes)
+
+        M: 7264621772.8 / (1024*1024) = 7264621772.8 / 1048576 = 6928.1 (rounded to one decimal place? Let me compute: 7264621772.8 / 1048576 = 6928.1 approximately)
+
+        G: 7264621772.8 / (1024^3) = 7264621772.8 / 1073741824 ≈ 6.8
+
+        So the example output is correct.
+
+   However, note: the example output for M is 6928.1 and for G is 6.8.
+
+   We are using double for the total. The numbers can be large, but double has enough precision for these.
+
+   But note: the input might have negative numbers? The regex allows a minus sign.
+
+   We'll code accordingly.
+
+   Let's write the complete program.
+
+   We must handle the entire input.
+
+   One more thing: what if the token ends with a space and then a non-alphanumeric? The word boundary in the regex should handle that.
+
+   We'll write the program accordingly.
+
+   Code structure:
+
+        import java.util.*;
+        import java.util.regex.*;
+
+        public class NumberSum {
+            public static void main(String[] args) {
+                Scanner scanner = new Scanner(System.in);
+                scanner.useDelimiter("\\A"); // to read entire input
+                String input = scanner.hasNext() ? scanner.next() : "";
+
+                Pattern pattern = Pattern.compile("[-+]?[\\d,]+(?:\\.\\d+)?\\s*[kKmMgG]?\\b");
+                Matcher matcher = pattern.matcher(input);
+
+                double totalBytes = 0.0;
+
+                while (matcher.find()) {
+                    String token = matcher.group().trim();
+                    // ... process token ...
+                    char lastChar = token.charAt(token.length()-1);
+                    String numStr;
+                    char suffix = 0;
+                    if (Character.isLetter(lastChar)) {
+                        suffix = lastChar;
+                        numStr = token.substring(0, token.length()-1).trim();
+                    } else {
+                        numStr = token;
+                    }
+
+                    // Remove commas
+                    numStr = numStr.replace(",", "");
+                    try {
+                        double value = Double.parseDouble(numStr);
+                        switch (suffix) {
+                            case 'k': case 'K': value *= 1024; break;
+                            case 'm': case 'M': value *= 1024 * 1024; break;
+                            case 'g': case 'G': value *= 1024 * 1024 * 1024; break;
+                            // default: no change
+                        }
+                        totalBytes += value;
+                    } catch (NumberFormatException e) {
+                        // Skip if parsing fails? But the regex should have matched a number.
+                        // We'll ignore this token.
+                    }
+                }
+
+                // Now compute the representations
+                double totalKB = totalBytes / 1024.0;
+                double totalMB = totalBytes / (1024.0 * 1024.0);
+                double totalGB = totalBytes / (1024.0 * 1024.0 * 1024.0);
+
+                // Format to one decimal place
+                System.out.printf("%.1f%n", totalBytes);
+                System.out.printf("%.1f k%n", totalKB);
+                System.out.printf("%.1f M%n", totalMB);
+                System.out.printf("%.1f G%n", totalGB);
+            }
+        }
+
+   But note: the example input has a comma after the token? The regex uses \b to avoid including the comma. We tested that.
+
+   However, what if the token is at the end of the string? The word boundary still matches.
+
+   Let me test with a small example: "1K" -> matches. "1K," -> matches "1K" (without the comma) because the comma is non-word and the \b is at the end of the K.
+
+   But what about a token that is just a number without suffix and at the end? "100" -> matches.
+
+   What about a negative number? "-100K" -> matches.
+
+   What about a number with a plus? The regex allows plus, but the example doesn't have. We'll allow it.
+
+   We'll run the example input through this program.
+
+   However, note: the example input has "1.5G, 2K," - the token "2K," is matched as "2K" (without the comma). Then the next token is "3M" and then "4.2G", etc.
+
+   We are using scanner to read the entire input. That should be fine.
+
+   But note: the input might be large? We are reading the entire input at once. If the input is very large, we might run into memory issues. However, the problem does not specify size constraints, and we are only storing the string and the total.
+
+   We'll assume the input is not too big.
+
+   Let's run the example:
+
+        Input: "1.5G, 2K,\n3M, and 4.2G\n500,000K and 600M"
+
+        We expect the tokens: 
+            "1.5G", "2K", "3M", "4.2G", "500,000K", "600M"
+
+        Processing:
+
+            "1.5G": 
+                lastChar = 'G' -> suffix = 'G'
+                numStr = "1.5" -> remove commas -> "1.5" -> double: 1.5
+                multiply by 1024^3: 1.5 * 1073741824 = 1610612736
+
+            "2K":
+                lastChar = 'K' -> suffix = 'K'
+                numStr = "2" -> 2 * 1024 = 2048
+
+            "3M":
+                lastChar = 'M' -> 3 * 1024*1024 = 3145728
+
+            "4.2G":
+                4.2 * 1024^3 = 4509715660.8
+
+            "500,000K":
+                remove commas: "500000" -> 500000 * 1024 = 512000000
+
+            "600M":
+                600 * 1024*1024 = 629145600
+
+        Sum = 1610612736 + 2048 + 3145728 + 4509715660.8 + 512000000 + 629145600 = 7264621772.8
+
+   So the program should output:
+
+        7264621772.8
+        7094357.2 k
+        6928.1 M
+        6.8 G
+
+   But note: the formatting for the total is "%.1f", which will round to one decimal place. The total is 7264621772.8 -> exactly one decimal place.
+
+   However, what if the total has more than one decimal? We are rounding to one decimal.
+
+   We'll trust the formatting.
+
+   Let's write the code accordingly.
+
+   One more corner: what if the token has multiple decimal points? The regex only allows one (because of the non-capturing group for the decimal part). So it should be safe.
+
+   We'll write the program.
+
+   Note: We must only use java.* packages. We are using java.util and java.util.regex.
+
+   We'll close the scanner? It's reading from System.in, and we are at the end. But it's good practice to close.
+
+   Alternatively, we can use try-with-resources.
+
+   Let me adjust:
+
+        try (Scanner scanner = new Scanner(System.in)) {
+            ... 
+        }
+
+   But note: closing System.in might not be necessary and sometimes not desired. Since we are reading the entire input, we can close it.
+
+   However, if we close System.in, then we cannot read from it again. But the program ends.
+
+   Alternatively, we can avoid closing? The program is small.
+
+   We'll use try-with-resources to avoid resource leaks.
+
+   Code:
+
+        import java.util.Scanner;
+        import java.util.regex.Matcher;
+        import java.util.regex.Pattern;
+
+        public class NumberSum {
+            public static void main(String[] args) {
+                try (Scanner scanner = new Scanner(System.in)) {
+                    String input = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+
+                    Pattern pattern = Pattern.compile("[-+]?[\\d,]+(?:\\.\\d+)?\\s*[kKmMgG]?\\b");
+                    Matcher matcher = pattern.matcher(input);
+
+                    double totalBytes = 0.0;
+
+                    while (matcher.find()) {
+                        String token = matcher.group().trim();
+                        if (token.isEmpty()) {
+                            continue;
+                        }
+                        char lastChar = token.charAt(token.length() - 1);
+                        String numStr;
+                        char suffix = 0; // 0 means no suffix
+                        if (Character.isLetter(lastChar)) {
+                            suffix = lastChar;
+                            numStr = token.substring(0, token.length() - 1).trim();
+                        } else {
+                            numStr = token;
+                        }
+
+                        // Remove commas
+                        numStr = numStr.replace(",", "");
+                        try {
+                            double value = Double.parseDouble(numStr);
+                            switch (suffix) {
+                                case 'k':
+                                case 'K':
+                                    value *= 1024;
+                                    break;
+                                case 'm':
+                                case 'M':
+                                    value *= 1024 * 1024;
+                                    break;
+                                case 'g':
+                                case 'G':
+                                    value *= 1024 * 1024 * 1024;
+                                    break;
+                                // default: no multiplication
+                            }
+                            totalBytes += value;
+                        } catch (NumberFormatException e) {
+                            // Ignore malformed number? The regex should have matched a number, but just in case.
+                        }
+                    }
+
+                    double totalKB = totalBytes / 1024.0;
+                    double totalMB = totalBytes / (1024.0 * 1024.0);
+                    double totalGB = totalBytes / (1024.0 * 1024.0 * 1024.0);
+
+                    System.out.printf("%.1f%n", totalBytes);
+                    System.out.printf("%.1f k%n", totalKB);
+                    System.out.printf("%.1f M%n", totalMB);
+                    System.out.printf("%.1f G%n", totalGB);
+                }
+            }
+        }
+
+   Let's test with a small input: "1K" -> 1024 bytes -> outputs:
+        1024.0
+        1.0 k
+        0.0 M   -> 1024/(1024*1024) = 0.0009765625 -> rounded to 0.0? But we want one decimal: 0.0 M -> that's acceptable? 
+        But the example output for M is 6928.1, so we are rounding to one decimal.
+
+   However, 0.0009765625 rounded to one decimal is 0.0.
+
+   But what if we have 1500 bytes? 
+        totalBytes = 1500
+        totalKB = 1500/1024 ≈ 1.4648 -> 1.5 k (rounded to one decimal) -> 1.5 k
+
+   We are using printf which rounds to one decimal.
+
+   This should be acceptable.
+
+   We'll run the example and hope it matches.
+
+   Note: the example output for M is 6928.1, which is 7264621772.8 / (1024*1024) = 6928.1 (exactly? or rounded). Let me compute:
+
+        7264621772.8 / 1048576 = 6928.10009765625 -> rounded to one decimal: 6928.1
+
+   So it's correct.
+
+   We'll output the code as below.
+</think>
+```java
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class NumberSum {
+    public static void main(String[] args) {
+        try (Scanner scanner = new Scanner(System.in)) {
+            String input = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+
+            Pattern pattern = Pattern.compile("[-+]?[\\d,]+(?:\\.\\d+)?\\s*[kKmMgG]?\\b");
+            Matcher matcher = pattern.matcher(input);
+
+            double totalBytes = 0.0;
+
+            while (matcher.find()) {
+                String token = matcher.group().trim();
+                if (token.isEmpty()) {
+                    continue;
+                }
+                char lastChar = token.charAt(token.length() - 1);
+                String numStr;
+                char suffix = 0;
+                if (Character.isLetter(lastChar)) {
+                    suffix = lastChar;
+                    numStr = token.substring(0, token.length() - 1).trim();
+                } else {
+                    numStr = token;
+                }
+
+                numStr = numStr.replace(",", "");
+                try {
+                    double value = Double.parseDouble(numStr);
+                    switch (suffix) {
+                        case 'k':
+                        case 'K':
+                            value *= 1024;
+                            break;
+                        case 'm':
+                        case 'M':
+                            value *= 1024 * 1024;
+                            break;
+                        case 'g':
+                        case 'G':
+                            value *= 1024 * 1024 * 1024;
+                            break;
+                    }
+                    totalBytes += value;
+                } catch (NumberFormatException e) {
+                    // Ignore malformed number
+                }
+            }
+
+            double totalKB = totalBytes / 1024.0;
+            double totalMB = totalBytes / (1024.0 * 1024.0);
+            double totalGB = totalBytes / (1024.0 * 1024.0 * 1024.0);
+
+            System.out.printf("%.1f%n", totalBytes);
+            System.out.printf("%.1f k%n", totalKB);
+            System.out.printf("%.1f M%n", totalMB);
+            System.out.printf("%.1f G%n", totalGB);
+        }
+    }
+}
+``` [end of text]
+
+
