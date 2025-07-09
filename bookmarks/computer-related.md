@@ -4,6 +4,7 @@ Computer technology related.
 
 ## Metalinks
 
+- ☆ https://github.com/public-apis/public-apis
 - https://github.com/pfalcon/awesome-python-compilers - Retrospective of Python compilation efforts
 - https://github.com/daturkel/learning-papers landmark papers in machine learning
 - https://github.com/trickest/cve Almost every publicly available CVE PoC.
