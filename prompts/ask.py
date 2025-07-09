@@ -18,6 +18,7 @@ Options:
 -P args:           Pass through arguments to llama.cpp
 -C context:        Set the context for the prompt (not very useful)
 -c size:           Set context size prompt (default: model default)
+-d size:           Dynamic context size = prompt tokens+size (max is specified by -c)
 -t temperature:    Set the temperature (default: 0.3)
 -f file:           Input prompt file (can be a glob)
 -o file:           Output file (can contain {n}, {m}, {f} for round, model, and file)
@@ -35,6 +36,7 @@ Options:
 import datetime
 import getopt
 import glob
+import re
 import os
 import shutil
 import subprocess
@@ -729,7 +731,7 @@ if __name__ == "__main__":
         if inspect.isclass(obj):
             if issubclass(obj, Preset) and obj != Preset:
                 PRESETS[obj.name] = obj
-    opt_list, args = getopt.getopt(sys.argv[1:], "DqhkP:C:c:t:f:o:p:m:n:x:gX:T:M:F:v")
+    opt_list, args = getopt.getopt(sys.argv[1:], "DqhkP:C:c:d:t:f:o:p:m:n:x:gX:T:M:F:v")
     verbosity = opt_list.count(('-v', ''))
     opts = dict(opt_list)
 
@@ -937,6 +939,31 @@ if __name__ == "__main__":
                             conditional_options = m_param.split(",")
                             if conditional_options[0] in model or conditional_options[0] == '*':
                                 this_cmd += conditional_options[1:]
+
+                    if opts.get("-d"):
+                        with tempfile.TemporaryFile() as tok_stderr:
+                            # Dynamically set the context size. But we need the user context size as a maximum value
+                            LLAMA_TOKENIZER = os.path.dirname(LLAMA_CPP_PATH) + os.path.sep + "llama-tokenize"
+                            tokenize_cmd = [LLAMA_TOKENIZER, "-m", model, "-f", temp_prompt_file.name, "--show-count", "--log-disable", "--ids"]
+                            tok_p = subprocess.Popen(tokenize_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=tok_stderr)
+                            tok_stdout, _ = tok_p.communicate()
+                            tok_stderr.seek(0)
+                            tok_stderr = tok_stderr.read()
+                            tok_success = False
+                            if tok_p.returncode == 0:
+                                tok_m = re.search(r"Total number of tokens: (\d+)", tok_stdout.decode("utf-8", errors="replace"))
+                                if tok_m:
+                                    this_cmd += ["-c", "%d" % min(int(opts.get("-c") or 2147483647), int(tok_m.group(1)) + int(opts.get("-d")))]
+                                    tok_success = True
+
+                            if not tok_success:
+                                sys.stderr.write("Error: cannot determine number of tokens in prompt!\n")
+                                sys.stderr.write("Command: %s\n" % str(tokenize_cmd))
+                                sys.stderr.write("Exit code: %d\n" % tok_p.returncode)
+                                sys.stderr.write("Output: %s\n" % tok_stdout.decode("utf-8", errors="replace"))
+                                sys.stderr.write("Stderr: %s\n" % tok_stderr.decode("utf-8", errors="replace"))
+                                sys.exit(1)
+
 
                     if verbosity > 0:
                         print("Original prompt file: ", prompt_file)
