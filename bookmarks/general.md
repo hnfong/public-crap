@@ -215,6 +215,15 @@
 ### Biology
 
 - https://jsomers.net/e-coli-chemotaxis/
+- https://www.journalofscience.net/html/MjY4a2FsYWk=
+  - ARE ANTS (HYMENOPTERA, FORMICIDAE) CAPABLE OF SELF RECOGNITION?
+    - Journal of Science
+    - Volume/Issue/Year: 5, 7, 2015
+    - Author: Marie-Claire Cammaerts
+    - Author: Roger Cammaerts
+    - Abstract: In front of a mirror, and consequently of their reflection view, ants behaved otherwise than when in front of nestmates seen through a glass. Seeing nestmates through a glass, ants behaved as usual, i.e. without taking close notice of them. In front of a mirror, they rapidly moved their head and antennae, to the right and the left, touched the mirror, went away from it and stopped, cleaning then sometimes their legs and antennae. As long as they could not see themselves in a mirror, ants with a blue dot painted on their clypeus did not try to remove it. Set in front of a mirror, ants with such a blue dot on their clypeus tried to clean themselves, while ants with a brown painted dot â€’ of the same color as that of their cuticle â€’ on their clypeus and ants with a blue dot on their occiput did not clean themselves. Very young ants did not present such behavior. Contrary to the other kinds of marking, a blue dot on the clypeus induced aggressiveness in nestmates. The front part of the head is thus an essential species specific character for leading to acceptance. Although further experiments are required, preferentially on ants and social hymenoptera with an excellent visual perception, our observations suggest that some ants can recognize themselves when confronted with their reflection view, this potential ability not necessary implicating some self awareness.
+
+
 
 ### Physics
 
@@ -330,9 +339,10 @@
 - https://news.ycombinator.com/item?id=39947530 - The Horror Story of the Shaken Baby Syndrome
 - ☆ https://en.wikipedia.org/wiki/Aphantasia - the inability to create mental imagery
 
-## Jokes
+## Funny
 
 - http://giphy.com/gifs/unit-test-integration-3o7rbPDRHIHwbmcOBy - 404 Not Found
+- https://www.youtube.com/watch?v=Zf_125ApDvw - Nerdy Professor Shocks High School by Speaking Gen Alpha Slang
 
 ## Music
 
