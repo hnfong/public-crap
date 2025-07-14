@@ -1010,9 +1010,6 @@ if __name__ == "__main__":
                                 # results.
 
                             print(outs_s)
-    else:
-        if sys.stdout.isatty():
-            print(ggg)
 else:
     print(__name__)
 

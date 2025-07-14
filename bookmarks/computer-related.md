@@ -751,6 +751,9 @@ Computer technology related.
 - https://papereditor.app/dev - 9 years of Apple text editor solo dev
 - https://loglog.games/blog/leaving-rust-gamedev/
 
+## C/C++
+
+- https://clang.llvm.org/docs/BoundsSafety.html
 
 ## Python
 
