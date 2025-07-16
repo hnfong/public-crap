@@ -1,0 +1,124 @@
+Intended purpose  
+The function is a (very) naïve attempt at a quick-sort style partition:  
+it splits the input list into three parts  
+- every element ≤ pivot (first element)  
+- the pivot itself  
+- every element > pivot  
+and then concatenates them back together.  
+The result is therefore the list sorted in non-decreasing order.
+
+Review of the Python code  
+1. Correctness  
+   – It works only for lists of comparable, hashable objects.  
+   – It is **not** a full quick-sort because it never recurses on the two
+     sub-lists; it merely returns the single-level partition, so the output
+     is **not** sorted for inputs longer than two elements.  
+   – The base-case `len(a) <= 1: return a` is fine.
+
+2. Efficiency  
+   – Two full passes over the tail of the list (`a[1:]`) are made; one is
+     enough.  
+   – List-comprehensions allocate two intermediate lists; a single pass
+     with one list would be cheaper.  
+   – Slicing (`a[1:]`) copies the tail once more.
+
+3. Style / clarity  
+   – The name `s` is meaningless.  
+   – No type hints, no doc-string.  
+   – The pivot is always the first element, which is bad for already
+     sorted data (O(n²) behaviour in a real quick-sort).  
+   – The function mutates nothing, so it could be written more clearly.
+
+4. Other remarks  
+   – The function is not stable (relative order of equal elements is not
+     preserved).  
+   – It returns a new list, leaving the original untouched, which is fine
+     for pure Python but may be unexpected for large inputs.
+
+A corrected, idiomatic Rust version  
+Here is a full, in-place, recursive quick-sort that fixes the above
+issues.  It uses the median-of-three pivot to avoid the worst case and
+works for any type that implements `Ord`.
+
+```rust
+/// In-place quick-sort (recursive) for any slice of `T: Ord`.
+/// The relative order of equal elements is *not* preserved (unstable).
+pub fn quick_sort<T: Ord>(a: &mut [T]) {
+    fn partition<T: Ord>(a: &mut [T]) -> usize {
+        let len = a.len();
+        if len < 2 {
+            return 0;
+        }
+
+        // median-of-three pivot to reduce worst-case probability
+        let mid = len / 2;
+        if a[mid] < a[0] {
+            a.swap(0, mid);
+        }
+        if a[len - 1] < a[0] {
+            a.swap(0, len - 1);
+        }
+        if a[mid] < a[len - 1] {
+            a.swap(mid, len - 1);
+        }
+        let pivot_index = len - 1;
+
+        let mut i = 0;
+        for j in 0..len - 1 {
+            if a[j] <= a[pivot_index] {
+                a.swap(i, j);
+                i += 1;
+            }
+        }
+        a.swap(i, pivot_index);
+        i
+    }
+
+    fn recurse<T: Ord>(a: &mut [T]) {
+        if a.len() > 1 {
+            let p = partition(a);
+            let (left, right) = a.split_at_mut(p);
+            recurse(&mut left[..p]);   // elements < pivot
+            recurse(&mut right[1..]);  // elements > pivot
+        }
+    }
+
+    recurse(a);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn already_sorted() {
+        let mut v = vec![1, 2, 3, 4, 5];
+        quick_sort(&mut v);
+        assert_eq!(v, [1, 2, 3, 4, 5]);
+    }
+
+    #[test]
+    fn reverse() {
+        let mut v = vec![5, 4, 3, 2, 1];
+        quick_sort(&mut v);
+        assert_eq!(v, [1, 2, 3, 4, 5]);
+    }
+
+    #[test]
+    fn random() {
+        let mut v = vec![3, 1, 4, 1, 5, 9, 2, 6];
+        quick_sort(&mut v);
+        assert_eq!(v, [1, 1, 2, 3, 4, 5, 6, 9]);
+    }
+}
+```
+
+The Rust version  
+- sorts the slice in place (no extra allocations except the recursion
+  stack),  
+- uses a single scan for partitioning,  
+- chooses a better pivot,  
+- has clear names and documentation,  
+- is generic over any ordered type. [end of text]
+
+
