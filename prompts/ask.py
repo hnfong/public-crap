@@ -408,6 +408,15 @@ class QwenFimMixin:
     def has_postprocess(self):
         return True
 
+class KimiTemplateMixin:
+    def templated_prompt(self):
+        return f"""
+<|im_system|>system<|im_middle|>{self.system_message()}<|im_end|><|im_user|>user<|im_middle|>{self.prompt()}<|im_end|><|im_assistant|>assistant<|im_middle|>
+        """.strip() + "\n"
+
+    def extra_gguf_options(self):
+        return ["-r", "<|im_end|>"]
+
 
 class ChatMLTemplateMixin:
     def templated_prompt(self):
@@ -655,6 +664,7 @@ NAME_MATCH_OVERRIDE = [
     ("Arcee-SuperNova-v1-", Llama3TemplateMixin),
     ("dots.llm", DotsLLMTemplate),
     ("jan-nano-", LongContextChatMLTemplateMixin),
+    ("Kimi-K2-", KimiTemplateMixin),
 
     ("OLMo-2-", OlmoTemplate),
     ("Athene-V2", ChatMLTemplateMixin),
