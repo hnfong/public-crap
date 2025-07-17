@@ -208,6 +208,8 @@ Computer technology related.
 - https://mithril.js.org/index.html - Small Compact Library to create single page webapps (comments by HN in https://news.ycombinator.com/item?id=43550317 )
 - https://github.com/bionicles/tree_plus - Use tree_plus to Summarize huge codebases easily; Autogenerate API documentation; Create ideal LLM prompts
 - https://github.com/ChartsCSS/charts.css - Charts.css is an open source CSS framework for data visualization.
+- https://github.com/oven-sh/bun - JavaScript runtime designed as a drop-in replacement for Node.js
+- https://github.com/sharkdp/hexyl - hexyl is a hex viewer for the terminal.
 
 
 
@@ -490,6 +492,7 @@ Computer technology related.
 - https://dt.plumbing/ - dt: duck tape for your unix pipes
 - https://github.com/susam/fxyt - FXYT is a tiny canvas colouring language that consists of 36 simple stack-based commands
 - http://fractaljourney.blogspot.com/
+- https://ofrak.com/tetris/ - The game is like Tetris, but the blocks are ARM assembly instructions.
 
 ### Interesting AI Use Cases And Applications
 
@@ -634,6 +637,7 @@ Computer technology related.
 
 ## Graphics, Design, etc.
 
+- ☆ https://github.com/githubnext/monaspace/ - The Monaspace type system is a monospaced type superfamily with some modern tricks up its sleeve.
 - https://dribbble.com - Discover the world’s top designers & creatives Dribbble is the leading destination to find & showcase creative work and home to the world's best design professionals.
 - http://my-free-vector-art.com/ - Free vector art
 - http://www.makeuseof.com/tag/free-fonts-sites-where-find-them/ - The 11 Best Free Font Websites for Free Fonts Online
@@ -693,6 +697,7 @@ Computer technology related.
 - ☆ http://www.bloomberg.com/graphics/2015-paul-ford-what-is-code/ - A super long, informative and (useless for software professionals) article on everything about code and software. Good intro to outsiders if they are willing to read.
 - ☆ https://killedbygoogle.com/
 - ☆ https://mtlynch.io/solo-developer-year-5/
+- ☆ https://ericsink.com/Browser_Wars.html - "For the development of IE 4.0, a new Program Manager appeared.  His name was Scott Isaacs and I started seeing him at the HTML standards group meetings.  At one of those meetings we sat down for a talk which was a major turning point for me and for Spyglass.  Scott told me that the IE team had over 1,000 people."
 - http://joyofandroid.com/how-to-downgrade-samsung-galaxy-s3-easily/ - How To Downgrade Samsung Galaxy S3 Easily: We Found The Answer - JoyofAndroid
 - https://lists.debian.org/debian-ctte/2013/12/msg00234.html - init system other points, and conclusion
 - http://veertu.com - OSX app store native virtualization
