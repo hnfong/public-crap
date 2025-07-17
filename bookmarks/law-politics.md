@@ -22,6 +22,8 @@
  - https://asialawportal.com/why-2022-will-be-a-defining-year-in-lawyer-remuneration-in-hong-kong/ - remuneration in Hong Kong in 2022
 - https://www.zhonghuadiancang.com/lishizhuanji/13014/#:~:text=%E6%B1%89%E4%BB%A3%E7%BA%82%E8%BE%91%E7%9A%84%E6%A1%88%E4%BE%8B,%E6%97%B6%E6%9C%9F%E7%9A%84%E6%A1%88%E4%BE%8B22%E4%BB%B6%E3%80%82 奏谳书 汉代纂辑的案例汇编。1983年湖北江陵张家山247号汉墓发掘出土。全书共227支简,包括春秋至西汉时期的案例22件。 “谳”[yàn]的意思是议罪，《汉书·刑法志》云：“县道官疑狱者，各谳所属二千石官，二千石官以其罪名当报之。所不能决者，皆移廷尉，廷尉亦当报之。廷尉所不能决，谨具为奏，傅所当比律令以闻。”
 
+- https://www.bbc.com/news/uk-scotland-glasgow-west-60198140 - Captain Sir Tom Moore tweeter found guilty of ‘grossly offensive’ message
+
 # Politics
 
 - ‘Lay peers in appeals to the House of Lords’ (1949) 65 LQR 22
@@ -43,6 +45,7 @@
 
 # Big Tech
 
+- ☆ https://youtu.be/nONHwzt7fCk?si=tD-9-EoVK5pj7ih5&t=448 - Zuckerberg: "basically these people from the Biden Administration would call up our team and like scream at them and curse"
 - https://arstechnica.com/information-technology/2021/05/twitters-latest-robo-nag-will-flag-harmful-language-before-you-post/ - Twitter’s latest robo-nag will flag “harmful” language before you post | Ars Technica
 - https://arstechnica.com/science/2021/08/if-youtubes-algorithms-radicalize-people-its-hard-to-tell-from-the-data/ - If YouTube’s algorithms radicalize people, it’s hard to tell from the data | Ars Technica
 - https://arstechnica.com/tech-policy/2021/04/algorithms-were-under-fire-at-a-senate-hearing-on-social-media/ - Algorithms were under fire at a Senate hearing on social media | Ars Technica

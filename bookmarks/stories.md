@@ -107,6 +107,7 @@
 ### Interesting / Fun stories
 
 - https://www.youtube.com/watch?v=oAgGirY-GUQ - Divorce Expert interview from "The Diary of a CEO"
+- https://lihkg.com/thread/3886836/page/1 - "今年23歲，香港長大，宜家係美國陸軍 Cavalry"
 
 
 
