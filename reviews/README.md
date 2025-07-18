@@ -12,6 +12,7 @@ That said, I'll also put reviews here for things that I've used for a lifetime.
 
 ## Software
 
+- [llm](software/llm.md)
 - [vim](software/vim.md)
 
 ## Food
