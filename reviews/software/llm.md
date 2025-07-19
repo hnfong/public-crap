@@ -46,6 +46,9 @@ This shows how regardless of fancy benchmarks, the best model is the one that pe
 - DeepSeek R1 was all the hype. And for good reason. It was up there as one of the best leading models including proprietary ones. As of mid 2025, I think this is still the best model for Cantonese writing.
   - Bought the maxxed out M3 Ultra with 512GB RAM for R1. In retrospect, the Chinese models kept rolling out, so I guess it was a good buy.
 - DeepSeek's coder and lite (circa v2.5) models were unremarkable.
+  - I had a hilariously disastrous chat log with DeepSeek v2 lite-chat where I:
+    1. Asked it to write in Cantonese - It initially replied in Cantonese, saying that it can only Mandarin and English. Thereafter, it only replied in Mandarin.
+    2. I asked it who was the latest PM of UK. This was all in Chinese. (Correct answer: Rishi Sunak) It said its knowledge cutoff was 2023 and it was Boris Johnson (he served until 2022). I asked it wasn't it Liz Truss? It said, uh... actually the PM is Rishi Sunak (!!!!).
 
 ## Phi
 
