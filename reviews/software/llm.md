@@ -40,8 +40,8 @@ This shows how regardless of fancy benchmarks, the best model is the one that pe
 ## DeepSeek
 
 - DeepSeek v1 was unremarkable.
-- I forgot what I thought of DeepSeek v2. I probably didn't have the vRAM to run it...
-- DeepSeek v2.5 was one of the best models at the time for Cantonese. It wasn't perfect, but it was better than basically all models except Gemini for dealing with Cantonese especially Cantonese writing. It was also unfortunately a huge model. I found a UD GGUF quant by somebody on r/LocalLLama/. Unfortunately the author seems to have unlisted/deleted the huggingface repo. Sadge.
+- DeepSeek v2 impressed me with its Cantonese writing ability. At the time it was probably the best Cantonese writing model.
+- DeepSeek v2.5 continued to be remarkably great at Cantonese. It wasn't perfect, but it was better than basically all models except Gemini for dealing with Cantonese especially Cantonese writing. It was also unfortunately a huge model. I found a UD-iq2_xxs GGUF quant by somebody on r/LocalLLama/. Unfortunately the author seems to have unlisted/deleted the huggingface repo. Sadge.
 - DeepSeek v3 could basically generate perfect Cantonese. Also it was huge.
 - DeepSeek R1 was all the hype. And for good reason. It was up there as one of the best leading models including proprietary ones. As of mid 2025, I think this is still the best model for Cantonese writing.
   - Bought the maxxed out M3 Ultra with 512GB RAM for R1. In retrospect, the Chinese models kept rolling out, so I guess it was a good buy.
