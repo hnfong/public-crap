@@ -58,3 +58,20 @@ This shows how regardless of fancy benchmarks, the best model is the one that pe
 ## dots.llm1
 
 I haven't had the chance to thoroughly review this yet unfortunately.
+
+## Mistral series
+
+- Mixtral 8x7B was the OG MoE model. It was pretty good for the time (late 2023)
+- Mistral 7B was also pretty good for the time (late 2023).
+  - The dolphin finetunes were quite good. I used them quite a bit when they were still fresh.
+- Miqu was pretty interesting, but obviously it couldn't be used in any serious manner.
+- Mistral's later models weren't really that remarkable after that.
+  - I haven't had particularly good results with Codestral and Devstral. At best they felt like on par with the other ~30B models (Gemma,Qwen).
+
+## qwen2.5-7b-ins-v3
+
+This isn't a qwen model per-se. It was uploaded by somebody, without a model card, to huggingface, and the only real info about the model was in a r/LocalLLaMA/ post: https://www.reddit.com/r/LocalLLaMA/comments/1g03rdn/hidden_gem_happzy2633qwen257binsv3_is_an/
+
+The model is nothing special these days, but at the time of its upload (I hesitate to call it "release") in around Sep 2024, it was basically one of the first reasoning models to exist. Reasoning models were still a new thing, and the only other offering out there was OpenAI's o1 preview model (which did not give you the reasoning tokens). DeepSeek R1 had not been released yet, neither had Qwen's qwq.
+
+It's interesting how glimpse of "real" history like this is often lost to popular narrative. Anyways.
