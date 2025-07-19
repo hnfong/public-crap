@@ -74,4 +74,6 @@ This isn't a qwen model per-se. It was uploaded by somebody, without a model car
 
 The model is nothing special these days, but at the time of its upload (I hesitate to call it "release") in around Sep 2024, it was basically one of the first reasoning models to exist. Reasoning models were still a new thing, and the only other offering out there was OpenAI's o1 preview model (which did not give you the reasoning tokens). DeepSeek R1 had not been released yet, neither had Qwen's qwq.
 
+Of course its actual performance (quality) was pretty meh, given that it probably was fine-tuned from qwen2.5 7b base (per the name), but it was definitely doing the reasoning just like all the other models we know in 2025.
+
 It's interesting how glimpse of "real" history like this is often lost to popular narrative. Anyways.
