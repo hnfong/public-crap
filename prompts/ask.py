@@ -417,6 +417,17 @@ class KimiTemplateMixin:
     def extra_gguf_options(self):
         return ["-r", "<|im_end|>"]
 
+class ErnieTemplateMixin:
+    def templated_prompt(self):
+        return f"""
+<|begin_of_sentence|>{self.system_message()}
+User: {self.prompt()}
+Assistant:
+        """.strip() + " "
+
+    def extra_gguf_options(self):
+        return ["-r", "<|im_end|>"]
+
 
 class ChatMLTemplateMixin:
     def templated_prompt(self):
@@ -665,6 +676,7 @@ NAME_MATCH_OVERRIDE = [
     ("dots.llm", DotsLLMTemplate),
     ("jan-nano-", LongContextChatMLTemplateMixin),
     ("Kimi-K2-", KimiTemplateMixin),
+    ("ERNIE-4.5", ErnieTemplateMixin),
 
     ("OLMo-2-", OlmoTemplate),
     ("Athene-V2", ChatMLTemplateMixin),
