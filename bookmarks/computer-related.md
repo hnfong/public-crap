@@ -759,6 +759,8 @@ Computer technology related.
 ## C/C++
 
 - https://clang.llvm.org/docs/BoundsSafety.html
+- https://github.com/endrazine/wcc - WCC is a collection of compilation tools to perform binary black magic on the GNU/Linux and other POSIX platforms
+  - example use case: https://news.ycombinator.com/item?id=44645644 - statically link against an so file
 
 ## Python
 
