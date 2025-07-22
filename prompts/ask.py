@@ -476,6 +476,27 @@ class QwenTemplateMixin(ChatMLTemplateMixin):
         # https://www.reddit.com/r/LocalLLaMA/comments/1gpwrq1/how_to_use_qwen25coderinstruct_without/
         return "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."
 
+class Qwen3InstructTemplateMixin:
+    # XXX: added /nothink to disable thinking by default
+    def templated_prompt(self):
+        if self.system_message():
+            return f"""
+<|im_start|>system
+{self.system_message()}<|im_end|>
+<|im_start|>user
+{self.prompt()}<|im_end|>
+<|im_start|>assistant
+            """.strip() + "\n"
+        else:
+            return f"""
+<|im_start|>user
+{self.prompt()} /nothink<|im_end|>
+<|im_start|>assistant
+            """.strip() + "\n"
+    def system_message(self):
+        # https://www.reddit.com/r/LocalLLaMA/comments/1gpwrq1/how_to_use_qwen25coderinstruct_without/
+        return "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."
+
 class Qwen3TemplateMixin:
     # XXX: added /nothink to disable thinking by default
     def templated_prompt(self):
@@ -670,6 +691,7 @@ class CommandRPlusTemplateMixin:
 NAME_MATCH_OVERRIDE = [
     # More specific first
     ("Nemotron-Research-Reasoning-Qwen", NemotronQwen3Reasoning),
+    ("Qwen3-235B-A22B-Instruct", Qwen3InstructTemplateMixin),
     ("phi-4-reasoning", Phi4ReasoningTemplateMixin),
     ("OpenBuddy-", OpenBuddyTemplate),
     ("Arcee-SuperNova-v1-", Llama3TemplateMixin),
