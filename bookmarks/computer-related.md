@@ -30,7 +30,7 @@ Computer technology related.
 - ☆ https://betterdev.blog/minimal-safe-bash-script-template/
 - ☆ https://www.matuzo.at/blog/html-boilerplate/
 - ☆ https://soatok.blog/2022/12/29/what-we-do-in-the-etc-shadow-cryptography-with-passwords/
-- ☆ https://www.cs251.com/ - Great Ideas in Theoretical Computer Science
+- ☆ https://www.cs251.com/ - Great Ideas in Theoretical Computer Science (CMU lectures)
 - ☆ https://www.youtube.com/watch?v=mZck0N_T9Cs - And this year's Turing Award goes to... Nisan–Wigderson PRNG
 - http://pubs.opengroup.org/onlinepubs/000095399/ - POSIX Specification
 - http://www.unicode.org/cgi-bin/UnihanRSIndex.pl?radical=159&minstrokes=4&maxstrokes=6&useutf8=true - Unihan Radical-Stroke Index for Radical #159
