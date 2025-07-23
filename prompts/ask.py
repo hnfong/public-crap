@@ -692,6 +692,7 @@ NAME_MATCH_OVERRIDE = [
     # More specific first
     ("Nemotron-Research-Reasoning-Qwen", NemotronQwen3Reasoning),
     ("Qwen3-235B-A22B-Instruct", Qwen3InstructTemplateMixin),
+    ("Qwen3-Coder-480B-A35B-Instruct", Qwen3InstructTemplateMixin),
     ("phi-4-reasoning", Phi4ReasoningTemplateMixin),
     ("OpenBuddy-", OpenBuddyTemplate),
     ("Arcee-SuperNova-v1-", Llama3TemplateMixin),
