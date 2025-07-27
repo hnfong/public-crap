@@ -497,6 +497,10 @@ class Qwen3InstructTemplateMixin:
         # https://www.reddit.com/r/LocalLLaMA/comments/1gpwrq1/how_to_use_qwen25coderinstruct_without/
         return "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."
 
+class Qwen3ThinkingTemplateMixin(Qwen3InstructTemplateMixin):
+    def extra_gguf_options(self):
+        return ["-r", "<|im_end|>", "-c", "9216"]
+
 class Qwen3TemplateMixin:
     # XXX: added /nothink to disable thinking by default
     def templated_prompt(self):
@@ -692,6 +696,7 @@ NAME_MATCH_OVERRIDE = [
     # More specific first
     ("Nemotron-Research-Reasoning-Qwen", NemotronQwen3Reasoning),
     ("Qwen3-235B-A22B-Instruct", Qwen3InstructTemplateMixin),
+    ("Qwen3-235B-A22B-Thinking", Qwen3ThinkingTemplateMixin),
     ("Qwen3-Coder-480B-A35B-Instruct", Qwen3InstructTemplateMixin),
     ("phi-4-reasoning", Phi4ReasoningTemplateMixin),
     ("OpenBuddy-", OpenBuddyTemplate),
