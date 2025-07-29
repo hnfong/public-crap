@@ -691,6 +691,50 @@ class CommandRPlusTemplateMixin:
     def templated_prompt(self):
         return f"""<|START_OF_TURN_TOKEN|><|SYSTEM_TOKEN|>{self.system_message()}<|END_OF_TURN_TOKEN|><|START_OF_TURN_TOKEN|><|USER_TOKEN|>{self.prompt()}<|END_OF_TURN_TOKEN|><|START_OF_TURN_TOKEN|><|CHATBOT_TOKEN|><|END_OF_TURN_TOKEN|><|START_OF_TURN_TOKEN|><|CHATBOT_TOKEN|>"""
 
+class MlxArgumentConverter:
+
+    @staticmethod
+    def _extract_argument(haystack, needle, subsequent):
+        ret = []
+        keep = 0
+        for arg in haystack:
+            if arg == needle or keep > 0:
+                ret.append(arg)
+                if keep == 0:
+                    keep = subsequent
+                else:
+                    keep -= 1
+                    if keep <= 0:
+                        break
+        return ret
+
+    # Hackish way to convert llama-cli arguments to mlx_lm.generate arguments
+    def mlx_generate_arguments_from_llama_args(self, args):
+        # We might need to manually add the start of whatever token though!
+        mlx_args = ["mlx_lm.generate", "--ignore-chat-template"]
+        mlx_args += MlxArgumentConverter._extract_argument(args, "--temp", 1)
+
+        # It's unclear whether we should be using --max-tokens or --max-kv-size, the latter seems to imply rotating whatever, so maybe don't do that.
+        mlx_args += ["--max-tokens", MlxArgumentConverter._extract_argument(args, "-c", 1)[-1]]
+
+        mlx_args += ["--model", MlxArgumentConverter._extract_argument(args, "-m", 1)[-1].replace("--", "/").split(".mlx")[0]]
+
+        mlx_args += ["--prompt", "-"]  # Feed it through stdin, hopefully it works.
+
+        return mlx_args
+
+class GLM45TemplateMixin(MlxArgumentConverter):
+    def templated_prompt(self):
+        return f"""
+[gMASK]<sop>
+<|system|>
+{self.system_message()}
+<|user|>
+{self.prompt()}
+/nothink
+<|assistant|>
+<think></think>
+""".strip()
 
 NAME_MATCH_OVERRIDE = [
     # More specific first
@@ -705,6 +749,8 @@ NAME_MATCH_OVERRIDE = [
     ("jan-nano-", LongContextChatMLTemplateMixin),
     ("Kimi-K2-", KimiTemplateMixin),
     ("ERNIE-4.5", ErnieTemplateMixin),
+
+    ("GLM-4.5", GLM45TemplateMixin),
 
     ("OLMo-2-", OlmoTemplate),
     ("Athene-V2", ChatMLTemplateMixin),
@@ -1017,15 +1063,25 @@ if __name__ == "__main__":
 
                     if verbosity > 0:
                         print("Original prompt file: ", prompt_file)
-                        print(this_cmd)
 
                     if "-D" in opts:
                         # Dry run only
                         continue
 
-                    stderr_output = b""
                     with tempfile.TemporaryFile() as temp_stderr:
-                        p = subprocess.Popen(this_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=temp_stderr)
+                        stderr_output = b""
+                        if isinstance(cp, MlxArgumentConverter):
+                            mlx_cmd = cp.mlx_generate_arguments_from_llama_args(this_cmd)
+                            if verbosity > 0:
+                                print(mlx_cmd)
+                            temp_prompt_file.seek(0) # Reset to zero hopefully it can be read.
+                            p = subprocess.Popen(mlx_cmd, stdin=temp_prompt_file, stdout=subprocess.PIPE, stderr=temp_stderr)
+
+                        else:
+                            if verbosity > 0:
+                                print(this_cmd)
+                            p = subprocess.Popen(this_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=temp_stderr)
+
                         if '-o' not in opts and not cp.has_postprocess():
                             while dat := p.stdout.read(1):
                                 sys.stdout.buffer.write(dat)
