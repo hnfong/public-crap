@@ -244,7 +244,8 @@ def compile_and_run_java(env_info, result_file):
             # XXX: this won't work in a recent version of java since security
             # manager is deprecated (and removed in recent versions). We will
             # have to figure out how to sandbox, but let's do this for now.
-            output = subprocess.check_output(["java", "-Djava.security.manager", "-cp", temp_dir, class_name], stderr=subprocess.DEVNULL, stdin=stdin_f, text=True)
+            # output = subprocess.check_output(["java", "-Djava.security.manager", "-cp", temp_dir, class_name], stderr=subprocess.DEVNULL, stdin=stdin_f, text=True)
+            output = subprocess.check_output(["java", "-cp", temp_dir, class_name], stderr=subprocess.DEVNULL, stdin=stdin_f, text=True)
             verbose_print(output)
         except Exception as e:
             # print(f"Execution failed: {e}")

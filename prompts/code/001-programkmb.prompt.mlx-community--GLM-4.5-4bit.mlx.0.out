@@ -1,0 +1,85 @@
+==========
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Main {
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder inputBuilder = new StringBuilder();
+        String line;
+
+        try {
+            while ((line = reader.readLine()) != null) {
+                inputBuilder.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+            System.exit(1);
+        }
+
+        String input = inputBuilder.toString();
+        double totalBytes = 0.0;
+
+        // Regex to find numbers with optional commas and optional suffixes (k, K, m, M, g, G)
+        // It handles numbers like 1.5G, 2K, 3M, 4.2G, 500,000K, 600M
+        Pattern pattern = Pattern.compile("(?i)([0-9,]+(?:\\.[0-9]+)?)\\s*([kKmMgG]?)");
+        Matcher matcher = pattern.matcher(input);
+
+        // Use a NumberFormat that can parse numbers with commas
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+
+        while (matcher.find()) {
+            String numberStr = matcher.group(1);
+            String suffix = matcher.group(2);
+
+            try {
+                // Parse the number string (e.g., "1,000.5" -> 1000.5)
+                Number number = numberFormat.parse(numberStr);
+                double value = number.doubleValue();
+
+                // Apply the suffix multiplier
+                switch (suffix.toUpperCase()) {
+                    case "K":
+                        value *= 1024;
+                        break;
+                    case "M":
+                        value *= 1024 * 1024;
+                        break;
+                    case "G":
+                        value *= 1024 * 1024 * 1024;
+                        break;
+                    default: // No suffix, assume bytes
+                        break;
+                }
+                totalBytes += value;
+            } catch (ParseException e) {
+                // This should not happen with the regex, but good to handle
+                System.err.println("Warning: Could not parse number '" + numberStr + "'. Skipping.");
+            }
+        }
+
+        // Format the output to one decimal place
+        DecimalFormat df = new DecimalFormat("#.#");
+        df.setMinimumFractionDigits(1);
+        df.setMaximumFractionDigits(1);
+
+        // Print the results
+        System.out.println(df.format(totalBytes));
+        System.out.println(df.format(totalBytes / 1024) + " k");
+        System.out.println(df.format(totalBytes / (1024.0 * 1024.0)) + " M");
+        System.out.println(df.format(totalBytes / (1024.0 * 1024.0 * 1024.0)) + " G");
+    }
+}
+```
+==========
+Prompt: 257 tokens, 159.848 tokens-per-sec
+Generation: 634 tokens, 21.309 tokens-per-sec
+Peak memory: 199.304 GB
