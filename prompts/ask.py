@@ -46,6 +46,9 @@ import tempfile
 LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or shutil.which('llama-cli') or os.path.expanduser("~/projects/llama.gguf/llama-cli")
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
+def model_glob(abbr):
+    return glob.glob(f"{MODELS_PATH}/*{abbr}*.gguf")
+
 DEFAULT_MODEL = "gemma-3-12b-it"
 DEFAULT_CODE_INSTRUCT_MODEL = "Qwen3-8B-"
 DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5.1-Coder-7B-Instruct"  # FIM
@@ -166,7 +169,7 @@ model = gemma-2-9b
             for i, preset in enumerate(presets, 1):
                 question = config[preset]['question']
                 # print(f"{i}. {preset}: {question[:30]}")
-                print(f"{i}. \033[1m{preset}\033[0m: {question[:30]}")
+                print(f"{i}. \033[1m{preset}\033[0m: {question[:100]}")
                 choices[i] = config[preset]['question']
                 models[i] = config[preset].get('model') # OK to be None
 
@@ -183,14 +186,25 @@ model = gemma-2-9b
                     print(f"{abc}. " + qqq)
                     choices[abc] = qqq
 
-            user_input = input("Choose a preset (or type a custom question): ")
-            if user_input.isdigit() and 1 <= int(user_input) <= len(presets):
-                self._user_question = choices[int(user_input)]
-                self._override_model = models[int(user_input)]
-            elif user_input.strip() in choices.keys():
-                self._user_question = choices[user_input.strip()]
-            else:
-                self._user_question = user_input
+            print(f"m. input custom model")
+
+            while True:
+                user_input = input("Choose a preset (or type a custom question): ")
+                if user_input.isdigit() and 1 <= int(user_input) <= len(presets):
+                    self._user_question = choices[int(user_input)]
+                    self._override_model = models[int(user_input)]
+                elif user_input.strip() == "m": # mode to choose model
+                    self._override_model = input("Model: ")
+                    if (temp_glob := model_glob(self._override_model)):
+                        print(f"Selecting model: {temp_glob[0]}")
+                    else:
+                        print("Warning: Cannot find suitable model")
+                    continue
+                elif user_input.strip() in choices.keys():
+                    self._user_question = choices[user_input.strip()]
+                else:
+                    self._user_question = user_input
+                break # continue is for looping the model choice logic
 
             # If the user inputs a single number, replace it with the preset value instead
             if self._user_question.isdigit() and 1 <= int(self._user_question) <= len(presets):
@@ -899,7 +913,7 @@ if __name__ == "__main__":
 
     if preset is CodeGenerationPreset:
         # Force template to be code completion
-        model = glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf")[0]
+        model = model_glob(model_name)[0]
         for model_substring, tm in FIM_MATCH_OVERRIDE:
             if model_substring.lower() in model.lower():
                 overrideTemplateMixIn = tm
@@ -937,7 +951,7 @@ if __name__ == "__main__":
     cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", ModelPlaceholder]
 
     assert_count = 0
-    ggg = glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf")
+    ggg = model_glob(model_name)
     for model in ggg or [model_name]:
         if '-of-000' in model and '01-of-000' not in model:
             # Only use the first shard
@@ -995,7 +1009,7 @@ if __name__ == "__main__":
                     if '-m' not in opts: # allow overriding the model if the user did not specify it.
                         if cp.override_model() is not None:
                             try:
-                                try_model = glob.glob(f"{MODELS_PATH}/*{cp.override_model()}*.gguf")[0]
+                                try_model = model_glob(cp.override_model())[0]
                                 if not os.path.isfile(try_model):
                                     raise Exception(try_model + " exists but is not a file?!")
                                 model = try_model
