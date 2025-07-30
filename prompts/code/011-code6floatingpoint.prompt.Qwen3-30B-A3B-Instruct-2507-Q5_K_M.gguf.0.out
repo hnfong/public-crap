@@ -1,0 +1,332 @@
+Let's analyze each question carefully under the assumption of **IEEE 754 floating-point arithmetic** (specifically double-precision, which is what Python uses for `float`).
+
+---
+
+### **Q1. What (if any) is the eventual output of the following Python program?**
+
+```python
+import math
+x = 0.0
+while x < math.inf:
+    x += 1.0
+print(x)
+```
+
+#### **Analysis:**
+
+- `x` starts at `0.0`.
+- In each iteration, `x += 1.0` — so we're adding 1.0 repeatedly.
+- The loop continues as long as `x < math.inf`.
+- Eventually, `x` will grow to a very large number.
+
+But here's the key: **IEEE 754 double-precision floating-point numbers have a finite range**.
+
+- The maximum finite value is approximately `1.7976931348623157e+308`.
+- Once `x` reaches a value where adding `1.0` no longer changes it (due to **loss of precision**), the loop may **never terminate** — but we must check whether `x < math.inf` still holds.
+
+However, **even if `x` stops increasing**, as long as `x < inf`, the loop continues.
+
+But when does `x` stop increasing?
+
+- In double-precision, once `x` is large enough that `x + 1.0 == x` (due to insufficient precision), then `x += 1.0` has **no effect**.
+- This happens when `x` is so large that the **next representable floating-point number after `x`** is more than 1.0 away — i.e., when the **machine epsilon** is smaller than the step size.
+
+For double-precision:
+- The **spacing between consecutive floating-point numbers** around `x` is `2^(floor(log2(x)) - 52)` (since there are 52 bits in the mantissa).
+- When `x` is around `2^52 ≈ 4.5e15`, the spacing becomes **1.0**, so adding 1.0 still changes the value.
+- But when `x` exceeds `2^53 ≈ 9.0e15`, the spacing becomes **2.0**, so adding 1.0 **no longer changes** `x`.
+
+So:
+- When `x` reaches about `2^53`, adding `1.0` has **no effect**.
+- But `x` is still less than `inf`, so the loop condition `x < math.inf` remains `True`.
+- The loop will **run forever**, because `x` never increases beyond that point, and the condition never becomes false.
+
+#### ✅ **Conclusion for Q1:**
+> The program **never terminates** — it runs **indefinitely** (infinite loop).  
+> Therefore, **there is no output** — `print(x)` is never reached.
+
+> **Answer: The program runs forever (infinite loop), so no output is produced.**
+
+---
+
+### **Q2. What (if any) is the eventual output of the following Python program? Is it different from the results above?**
+
+```python
+import math
+x = 1.0
+while x < math.inf:
+    x = x * 1.001
+print(x)
+```
+
+#### **Analysis:**
+
+- `x` starts at `1.0`.
+- In each iteration: `x = x * 1.001` → exponential growth.
+- The loop continues while `x < inf`.
+
+Now, will this loop terminate?
+
+- Since `x` is multiplied by `1.001` each time, it grows **exponentially**.
+- Eventually, `x` will exceed the maximum finite double-precision value (`~1.8e308`).
+- When `x` becomes so large that `x * 1.001` overflows, **IEEE 754 defines that overflow results in `inf`**.
+
+So:
+- At some point, `x` becomes large enough that `x * 1.001` exceeds `1.7976931348623157e+308`.
+- Then `x` becomes `inf`.
+- Once `x` becomes `inf`, the condition `x < math.inf` becomes `False` (since `inf < inf` is `False`).
+- So the loop terminates.
+- Then `print(x)` executes, and outputs `inf`.
+
+#### ✅ **Conclusion for Q2:**
+> The loop **does terminate** because `x` eventually overflows to `inf`, making the condition `x < math.inf` false.
+> So `print(x)` is executed, and outputs `inf`.
+
+> **Answer: The output is `inf`.**
+
+> **Is it different from Q1?**  
+> Yes — **Q1 runs forever (no output)**, while **Q2 outputs `inf`**.
+
+> ✅ **Yes, it is different.**
+
+---
+
+### **Q3. Consider the following program:**
+
+```python
+import math
+x = 0.0
+inc = float(input("Enter a number"))
+while x < math.inf:
+    x += inc
+print("Done")
+```
+
+> **Are there inputs that will lead to the output "Done"? Give at least 2 examples of such inputs if possible.**
+
+#### **Analysis:**
+
+We want the loop to **eventually terminate**, so that `print("Done")` is executed.
+
+The loop condition is `x < math.inf`. It will terminate **only if** `x` eventually becomes `inf` (or `+inf`) **before** the loop gets stuck in a non-increasing state.
+
+But `x += inc` will:
+- Increase `x` by `inc` each time.
+- If `inc > 0`, then `x` increases monotonically.
+- If `inc == 0.0`, then `x` stays at `0.0` → loop never terminates.
+- If `inc < 0`, then `x` decreases → `x < inf` is still true forever → loop never terminates.
+
+So we must have `inc > 0` for any chance of termination.
+
+But even with `inc > 0`, the loop may **never terminate** if:
+- `inc` is so small that `x` increases **infinitely slowly**, but never reaches `inf` — but that’s not possible because `x` increases without bound (if `inc > 0`), so it will eventually overflow.
+
+Wait — **can `x` overflow to `inf`?**
+
+Yes — **if `inc > 0`**, then `x` increases by a fixed positive amount each time.
+
+Eventually, `x` will grow large enough that `x + inc` overflows to `inf`.
+
+But **when does that happen?**
+
+- The maximum finite value is about `1.8e308`.
+- So if `inc` is **positive**, then eventually `x` will exceed `1.8e308`, and `x += inc` will result in `inf`.
+
+But: **what if `inc` is so small that `x` increases very slowly, but never reaches `inf`?**
+
+No — even if `inc` is tiny (e.g., `1e-300`), as long as `inc > 0`, `x` will eventually grow beyond `1.8e308` after enough iterations.
+
+But: **will the loop terminate before overflow?**
+
+Yes — because once `x` becomes large enough that `x + inc` overflows, `x` becomes `inf`, and then `x < math.inf` becomes `False`, so the loop exits.
+
+So **any positive `inc`** will eventually cause `x` to overflow to `inf`, and the loop will terminate.
+
+But wait — what about **very small `inc`**?
+
+Let’s test with `inc = 1e-300`:
+
+- `x` starts at `0.0`
+- After `N` steps: `x = N * 1e-300`
+- We need `N * 1e-300 > 1.8e308` → `N > 1.8e608`
+- That’s a **huge number of iterations**, but **finite**.
+
+So in theory, the loop will terminate — but in practice, it would take **infeasibly long**.
+
+But the question is **not about practicality**, it's about **whether the program eventually outputs "Done"**.
+
+So **yes**, for **any positive `inc`**, the loop will eventually terminate (after a finite number of steps), because:
+- `x` increases by a fixed positive amount each time.
+- The sequence `x = inc * n` will eventually exceed the maximum finite floating-point number.
+- Then `x += inc` will become `inf`.
+- Then `x < math.inf` becomes `False`, loop exits.
+
+But: **what if `inc` is so small that `x` never increases beyond a certain point due to precision loss?**
+
+Wait — that’s not the case here. We are adding a **fixed positive `inc`** each time.
+
+But in floating-point arithmetic, **if `inc` is smaller than the spacing at `x`**, then `x += inc` may have **no effect**.
+
+Ah — this is critical.
+
+#### **Key Insight:**
+
+- If `inc` is **too small** compared to the current value of `x`, then `x + inc` may **not change `x`** due to **loss of precision**.
+- For example, if `x` is `1e308`, and `inc = 1e-10`, then `x + inc == x` (because the next representable number after `1e308` is much farther apart).
+- So if `inc` is **less than the spacing** at `x`, then `x += inc` does nothing.
+
+But in our loop, `x` starts at `0.0` and increases.
+
+So the **first time** `x` becomes large enough that `inc` is smaller than the spacing, then `x += inc` will **no longer change `x`**.
+
+Then `x` gets stuck at that value, and `x < math.inf` remains `True` → **infinite loop**.
+
+So the loop **only terminates** if `x` eventually **overflows to `inf`** **before** getting stuck.
+
+But if `inc` is **too small**, then `x` will **get stuck** at some finite value (due to precision loss), and never reach `inf`.
+
+So the **key is**: for the loop to terminate, `inc` must be **large enough** that `x` increases **fast enough** to **overflow** before precision loss stops the progress.
+
+#### **When does `x` get stuck?**
+
+- The spacing between floating-point numbers around `x` is `eps * |x|`, where `eps ≈ 2.2e-16` (machine epsilon for double).
+- So if `inc < eps * |x|`, then `x + inc` may not change `x`.
+- But `x` grows linearly: `x = n * inc`
+- So at step `n`, `x = n * inc`
+- The spacing at that point is about `eps * n * inc`
+- So if `inc < eps * n * inc`, i.e., `1 < eps * n`, then `inc` is smaller than spacing → `x += inc` has no effect.
+
+So when `n > 1 / eps ≈ 4.5e15`, then `inc` is smaller than spacing → `x` stops increasing.
+
+So if `inc` is **too small**, then after about `4.5e15` iterations, `x` gets stuck.
+
+But if `inc` is **large enough** that `x` reaches `inf` **before** `n > 1/eps`, then it will overflow and terminate.
+
+So we need:
+- `x = n * inc` reaches `inf` before `n > 1/eps`
+
+But `inf` is reached when `n * inc > 1.8e308`
+
+So we need:
+- `n * inc > 1.8e308`
+- But `n` must be **less than** `1 / eps ≈ 4.5e15` for `inc` to still be effective.
+
+So:
+- `inc > 1.8e308 / n`
+- To have `n < 4.5e15`, we need:
+  - `inc > 1.8e308 / 4.5e15 ≈ 4e14`
+
+So if `inc > 4e14`, then even at `n = 4.5e15`, `x = n * inc > 4.5e15 * 4e14 = 1.8e308` → overflow occurs **before** precision loss stops the loop.
+
+But if `inc < 4e14`, then `x` may get stuck **before** reaching `inf`.
+
+Wait — actually, the threshold is **not** exactly `4e14`, but let's think differently.
+
+Let’s suppose `inc` is **large enough** that `x` increases fast enough to **overflow** before the precision loss kicks in.
+
+So the **maximum number of steps before precision loss** is about `1 / eps ≈ 2^53 ≈ 9e15` (since at `x ≈ 2^53`, spacing becomes 1.0).
+
+But we need `x = n * inc > 1.8e308`
+
+So:
+- `n > 1.8e308 / inc`
+- But we need `n < 2^53 ≈ 9e15` for `inc` to still be effective (i.e., not lost in precision)
+
+So:
+- `1.8e308 / inc < 9e15`
+- → `inc > 1.8e308 / 9e15 ≈ 2e14`
+
+So if `inc > 2e14`, then `x` will overflow **before** precision loss stops the loop.
+
+If `inc < 2e14`, then `x` will get stuck at some finite value (due to precision loss), and the loop will **never terminate**.
+
+But wait — what if `inc` is **exactly** `1e15`? Then:
+- `n > 1.8e308 / 1e15 = 1.8e153` → huge number of steps
+- But `n` must be less than `2^53 ≈ 9e15` for `inc` to still be effective
+- But `1.8e153 > 9e15`, so `inc` is **too small** to cause overflow before precision loss?
+
+Wait — this is backwards.
+
+Let’s clarify:
+
+- The **step size** `inc` must be **large enough** that `x` increases **faster** than the spacing grows.
+- But spacing grows with `x`, so if `inc` is **too small**, then `x` will grow slowly, and eventually `inc` becomes smaller than the spacing → no progress.
+
+So the **critical condition** is: **can `x` reach `inf` before `inc` becomes smaller than the spacing?**
+
+But `x` increases by `inc` each time, so:
+- After `n` steps: `x = n * inc`
+- Spacing at `x` is about `eps * x = eps * n * inc`
+- We need `inc >= spacing` → `inc >= eps * n * inc` → `1 >= eps * n` → `n <= 1/eps ≈ 4.5e15`
+
+So if `n > 1/eps`, then `inc < spacing` → `x += inc` has no effect.
+
+So the **maximum number of effective steps** is about `4.5e15`.
+
+So to reach `inf`, we need:
+- `x = n * inc > 1.8e308`
+- With `n <= 4.5e15`
+
+So:
+- `inc > 1.8e308 / 4.5e15 ≈ 4e14`
+
+Therefore:
+- If `inc > 4e14`, then even at `n = 4.5e15`, `x = 4.5e15 * inc > 4.5e15 * 4e14 = 1.8e308` → overflow occurs → loop terminates.
+- If `inc <= 4e14`, then `x` will get stuck at some finite value (before `n = 4.5e15`) → infinite loop.
+
+But wait — what if `inc` is **very large**, like `1e308`?
+
+Then:
+- `x = 0.0`
+- `x += inc` → `x = 1e308`
+- Next: `x += inc` → `x = 2e308` → **overflow to `inf`**
+- Then `x < math.inf` becomes `False` → loop exits.
+
+So **any `inc` such that `inc > 1.8e308 / 2`** will cause overflow in **2 steps**.
+
+But even smaller `inc` can work — as long as `inc > 4e14`.
+
+#### ✅ **Conclusion for Q3:**
+
+Yes, there **are** inputs that lead to output `"Done"`.
+
+They are **positive `inc` values large enough** that `x` overflows to `inf` **before** precision loss stops the loop.
+
+#### **Examples:**
+
+1. `inc = 1e15`  
+   - After 2 steps: `x = 2e15` → still small  
+   - But eventually, `x` will grow to `~1.8e308`  
+   - But `inc = 1e15` is much larger than `4e14`, so it will overflow before precision loss → loop terminates → `"Done"` printed.
+
+2. `inc = 1e308`  
+   - Step 1: `x = 1e308`  
+   - Step 2: `x = 2e308` → **overflows to `inf`**  
+   - Loop exits → `"Done"` printed.
+
+3. `inc = 5e14` (just above threshold)  
+   - `5e14 > 4e14` → will overflow before precision loss → terminates.
+
+4. `inc = 1e14` → **too small** → will get stuck → infinite loop → no output.
+
+#### ✅ **Answer for Q3:**
+
+Yes, there are inputs that lead to the output `"Done"`.
+
+**Examples:**
+- `inc = 1e15`
+- `inc = 1e308`
+
+These are large enough that `x` increases fast enough to **overflow to `inf`** before floating-point precision prevents further progress.
+
+---
+
+### ✅ Final Answers:
+
+**Q1:** The program runs forever (infinite loop) — **no output** is produced.
+
+**Q2:** The output is `inf`. Yes, it is different from Q1 — Q1 never terminates, Q2 does.
+
+**Q3:** Yes, there are inputs that lead to "Done". Examples: `1e15`, `1e308`. [end of text]
+
+

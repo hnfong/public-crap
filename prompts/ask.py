@@ -162,16 +162,23 @@ model = gemma-2-9b
         if self._user_question is None:
             # Read user-defined preset questions from ~/.config/ask/presets.ini using configparser
             config = configparser.ConfigParser()
-            config.read(os.path.expanduser("~/.config/ask/presets.ini"))
+            ini_path = "~/.config/ask/presets.ini"
+            config.read(os.path.expanduser(ini_path))
             presets = config.sections()
             choices = {}
             models = {}
             for i, preset in enumerate(presets, 1):
-                question = config[preset]['question']
-                # print(f"{i}. {preset}: {question[:30]}")
-                print(f"{i}. \033[1m{preset}\033[0m: {question[:100]}")
-                choices[i] = config[preset]['question']
-                models[i] = config[preset].get('model') # OK to be None
+                if preset == "defaults":
+                    if "model" in config[preset]:
+                        self._override_model = config[preset]["model"]
+                    continue
+
+                try:
+                    choices[i] = config[preset]['question']
+                    print(f"{i}. \033[1m{preset}\033[0m: {choices[i][:100]}")
+                    models[i] = config[preset].get('model') # OK to be None
+                except KeyError:
+                    print(f"Error in {ini_path} at section {preset}")
 
             cache_dir = os.path.expanduser("~/.cache/ask")
             os.makedirs(cache_dir, exist_ok=True)
@@ -753,6 +760,7 @@ class GLM45TemplateMixin(MlxArgumentConverter):
 NAME_MATCH_OVERRIDE = [
     # More specific first
     ("Nemotron-Research-Reasoning-Qwen", NemotronQwen3Reasoning),
+    ("Qwen3-30B-A3B-Instruct", Qwen3InstructTemplateMixin),
     ("Qwen3-235B-A22B-Instruct", Qwen3InstructTemplateMixin),
     ("Qwen3-235B-A22B-Thinking", Qwen3ThinkingTemplateMixin),
     ("Qwen3-Coder-480B-A35B-Instruct", Qwen3InstructTemplateMixin),

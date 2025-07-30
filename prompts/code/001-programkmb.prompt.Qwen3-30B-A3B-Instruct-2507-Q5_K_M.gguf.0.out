@@ -1,0 +1,76 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class NumberSumConverter {
+    private static final Pattern NUMBER_PATTERN = Pattern.compile(
+        "([0-9]+(?:,[0-9]{3})*(?:\\.[0-9]+)?)([kKmMgG])?"
+    );
+    
+    private static final double KILO = 1024.0;
+    private static final double MEGA = KILO * KILO;
+    private static final double GIGA = KILO * MEGA;
+    
+    public static void main(String[] args) {
+        StringBuilder input = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                input.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+            return;
+        }
+        
+        String text = input.toString().trim();
+        if (text.isEmpty()) {
+            System.out.println("0.0");
+            System.out.println("0.0 k");
+            System.out.println("0.0 M");
+            System.out.println("0.0 G");
+            return;
+        }
+        
+        double totalBytes = 0.0;
+        Matcher matcher = NUMBER_PATTERN.matcher(text);
+        
+        while (matcher.find()) {
+            String numberStr = matcher.group(1);
+            String suffix = matcher.group(2);
+            
+            // Remove commas and convert to double
+            double number = Double.parseDouble(numberStr.replace(",", ""));
+            
+            // Apply suffix multiplier
+            double multiplier = 1.0;
+            if (suffix != null) {
+                switch (suffix.toUpperCase()) {
+                    case "K":
+                        multiplier = KILO;
+                        break;
+                    case "M":
+                        multiplier = MEGA;
+                        break;
+                    case "G":
+                        multiplier = GIGA;
+                        break;
+                }
+            }
+            
+            totalBytes += number * multiplier;
+        }
+        
+        // Print results with one decimal place
+        System.out.printf("%.1f%n", totalBytes);
+        System.out.printf("%.1f k%n", totalBytes / KILO);
+        System.out.printf("%.1f M%n", totalBytes / MEGA);
+        System.out.printf("%.1f G%n", totalBytes / GIGA);
+    }
+}
+``` [end of text]
+
+
