@@ -498,7 +498,6 @@ class QwenTemplateMixin(ChatMLTemplateMixin):
         return "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."
 
 class Qwen3InstructTemplateMixin:
-    # XXX: added /nothink to disable thinking by default
     def templated_prompt(self):
         if self.system_message():
             return f"""
@@ -511,7 +510,7 @@ class Qwen3InstructTemplateMixin:
         else:
             return f"""
 <|im_start|>user
-{self.prompt()} /nothink<|im_end|>
+{self.prompt()}<|im_end|>
 <|im_start|>assistant
             """.strip() + "\n"
     def system_message(self):
@@ -765,6 +764,7 @@ NAME_MATCH_OVERRIDE = [
     ("Qwen3-235B-A22B-Instruct", Qwen3InstructTemplateMixin),
     ("Qwen3-235B-A22B-Thinking", Qwen3ThinkingTemplateMixin),
     ("Qwen3-Coder-480B-A35B-Instruct", Qwen3InstructTemplateMixin),
+    ("Qwen3-Coder-30B-A3B-Instruct", Qwen3InstructTemplateMixin),
     ("phi-4-reasoning", Phi4ReasoningTemplateMixin),
     ("OpenBuddy-", OpenBuddyTemplate),
     ("Arcee-SuperNova-v1-", Llama3TemplateMixin),
