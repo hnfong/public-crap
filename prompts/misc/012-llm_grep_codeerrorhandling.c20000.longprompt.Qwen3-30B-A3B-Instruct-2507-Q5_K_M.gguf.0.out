@@ -1,0 +1,1292 @@
+44:class DefinitionError(ValueError):
+---
+45:    pass
+---
+46:class AmbiguousPronunciationError(DefinitionError):
+---
+47:    pass
+---
+48:class InvalidJyutPingError(DefinitionError):
+---
+49:    pass
+---
+50:class IllegalCharacterError(DefinitionError):
+---
+51:    def __init__(self, value):
+---
+52:        self.errorMsg = value
+---
+53:    def __str__(self):
+---
+54:        return repr(self.errorMsg)
+---
+55:
+---
+56:class MissingItemError(DefinitionError):
+---
+57:    pass
+---
+58:
+---
+59:class InvalidLangCodeFormat(ValueError):
+---
+60:    pass
+---
+61:
+---
+149:    "pos": pos_valid,
+---
+150:    "label": label_valid,
+---
+151:    "ref": re.compile(r'^https?://[^\s]+'),
+---
+152:    "img": re.compile(r'^https?://[^\s]+'),
+---
+153:}
+---
+154:
+---
+155:
+---
+156:re_tag = re.compile(r'[(（](' + "|".join(list(RECOGNIZED_TAGS.keys()) + list(TAG_ALIASES.keys())) + r')[:：]([^)）]+)[）)]', flags=re.IGNORECASE)
+---
+157:re_line = re.compile(r'(' + re_tag.pattern + r'\s*)+(?P<explanations>.+)', flags=re.DOTALL | re.IGNORECASE)
+---
+158:
+---
+159:class MultilingualDefinition():
+---
+160:    """A collection of very similar explanations"""
+---
+161:    def __init__(self, s, unknown_pos=False, raise_on_error=False):
+---
+162:        """Parses the string s and constructs the Definition."""
+---
+163:        def_str = s.strip()
+---
+164:        self._tags = collections.OrderedDict()
+---
+165:
+---
+166:        m = re_line.match(def_str)
+---
+167:        self._is_stub = (m is None) or (m.group(0) != def_str)
+---
+168:        if self._is_stub:
+---
+169:            items_str = def_str
+---
+170:        else:
+---
+171:            try:
+---
+172:                items_str = re_tag.sub("", m.group("explanations")).strip()
+---
+173:                import types
+---
+174:                tags = {}
+---
+175:                for k, v in re_tag.findall(def_str):
+---
+176:                    k = k.lower()
+---
+177:
+---
+178:                    if k in TAG_ALIASES:
+---
+179:                        k = TAG_ALIASES[k]
+---
+180:
+---
+181:                    if k not in RECOGNIZED_TAGS:
+---
+182:                        raise ValueError("Unknown tag: %s" % k)
+---
+183:
+---
+184:                    validator = TAG_VALIDATION.get(k)
+---
+185:                    v = v.strip()
+---
+186:                    if isinstance(validator, types.FunctionType):
+---
+187:                        v = validator(v)
+---
+188:                    else:
+---
+189:                        if validator is not None and not validator.match(v):
+---
+190:                            errmsg = "Tag '%s' cannot have value '%s'" % (k, v)
+---
+191:                            raise ValueError(errmsg)
+---
+192:
+---
+193:                    if k not in tags:
+---
+194:                        tags[k] = set()  # Use set to dedupe entries
+---
+195:                    tags[k].add(v)
+---
+196:
+---
+197:                for tag in sorted(tags.keys()):
+---
+198:                    if not hasattr(tags[tag], "__iter__"):
+---
+199:                        raise ValueError("tags should be a dictionary of lists!")
+---
+200:                    self._tags[tag] = sorted(tags[tag])
+---
+201:
+---
+202:                for req_tag in REQUIRED_TAGS:
+---
+203:                    if req_tag not in tags:
+---
+204:                        if req_tag == "pos" and unknown_pos:
+---
+205:                            self._tags["pos"] = set([pos_valid("---")])
+---
+206:                        else:
+---
+207:                            errmsg = "Required tag '%s' not found for '%s': '%s'!" % (req_tag, self, items_str)
+---
+208:                            raise ValueError(errmsg)
+---
+209:            except ValueError as e:
+---
+210:                import dj
+---
+211:                items_str = def_str
+---
+212:                self._is_stub = True
+---
+213:
+---
+214:                 # XXX: this is a bit hackish for clearing any possible
+---
+215:                 # changes in self._tags before the exception was thrown
+---
+216:                self._tags = collections.OrderedDict()
+---
+217:
+---
+218:                if raise_on_error:
+---
+219:                    raise e
+---
+220:                else:
+---
+221:                    dj.DEBUG("Got error: %s when parsing '%s'" % (e, def_str))
+---
+222:
+---
+223:        self._item_list = []
+---
+224:        for explanation in items_str.split(ITEMS_SEPARATOR):
+---
+225:            try:
+---
+226:                self._item_list.append(MultilingualExplanationAndExamples(explanation))
+---
+227:            except ValueError as e:
+---
+228:                import dj
+---
+229:                dj.DEBUG("Got error: %s when parsing '%s'" % (e, explanation))
+---
+230:                if raise_on_error:
+---
+231:                    raise e
+---
+232:        if len(self._item_list) == 0:
+---
+233:            if raise_on_error:
+---
+234:                raise ValueError("No valid item to parse")
+---
+235:            else:
+---
+236:                dj.DEBUG("Got error: no valid item when parsing '%s'" % explanation)
+---
+237:
+---
+238:    def first(self):
+---
+239:        if len(self._item_list) > 0:
+---
+240:            return self._item_list[0]
+---
+241:        else:
+---
+242:            return MultilingualExplanationAndExamples("")
+---
+243:
+---
+244:    def has_label(self, k):
+---
+245:        # TODO: convert to canonical form
+---
+246:        return ("label" in self._tags) and (k in self._tags["label"])
+---
+247:
+---
+248:    # TODO: we probably want to implement the whole shebang of dictionary functions.
+---
+249:
+---
+250:    def is_stub(self):
+---
+251:        return self._is_stub
+---
+252:
+---
+253:    def tag(self, k):
+---
+254:        """returns a list, may be empty"""
+---
+255:        x = self._tags.get(k)
+---
+256:        return x if x is not None else []
+---
+257:
+---
+258:    def serialize(self):
+---
+259:        """Returns the serialized string in canonical form"""
+---
+260:        ret = []
+---
+261:        for tag in TAG_ORDER:
+---
+262:            values = self._tags.get(tag)
+---
+263:            if values:
+---
+264:                for v in values:
+---
+265:                    ret.append('({k}:{v})'.format(k=tag, v=v))
+---
+266:
+---
+267:        for item in self._item_list:
+---
+268:            ret.append("\n")
+---
+269:            ret.append(item.serialize())
+---
+270:            ret.append("\n")
+---
+271:            ret.append(ITEMS_SEPARATOR)
+---
+272:
+---
+273:        if ret[-1] == ITEMS_SEPARATOR:
+---
+274:            assert ret.pop() == ITEMS_SEPARATOR
+---
+275:
+---
+276:        return "".join(ret).strip()
+---
+277:
+---
+278:    def json(self):
+---
+279:        """Returns an object fit for converting to JSON. Consists of lists and dicts of strings."""
+---
+280:        tags = []
+---
+281:        for tag in TAG_ORDER:
+---
+282:            values = self._tags.get(tag)
+---
+283:            if values:
+---
+284:                for v in values:
+---
+285:                    tags.append({tag: v})
+---
+286:
+---
+287:        items = [ item.json() for item in self._item_list ]
+---
+288:        ret = { "tags": tags, "items": items }
+---
+289:        return ret
+---
+290:
+---
+291:
+---
+292:    def tags(self):
+---
+293:        return self._tags
+---
+294:
+---
+295:    def shortened_pos(self):
+---
+296:        # Returns the shortest latin representation of pos, if available.
+---
+297:        try:
+---
+298:            return [short_pos(pos) for pos in self._tags["pos"]]
+---
+299:        except Exception as e:
+---
+300:            import dj
+---
+301:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+---
+302:            return ""
+---
+303:
+---
+304:    def filtered_sim(self):
+---
+305:        from . import models
+---
+306:        sims = self.tag("sim")
+---
+307:        ret = []
+---
+308:        for sim in sims:
+---
+309:            if models.Word.objects.filter(writtenform__representation=sim).count() > 0:
+---
+310:                ret.append(sim)
+---
+311:
+---
+312:        return ret
+---
+313:
+---
+314:    def items(self):
+---
+315:        return self._item_list
+---
+316:
+---
+317:    def check_problems(self, word_id = 0):
+---
+318:        """Runs a ad-hoc, best-effort check and returns a list of human
+---
+319:        readable problems. This functions makes assumptions about availability
+---
+320:        of data files, makes network calls etc."""
+---
+321:        import json
+---
+322:
+---
+323:        def list_subproblems(subject, pronunciations):
+---
+324:            from lib import common
+---
+325:            problems = []
+---
+326:            for wrchar, jyutping in subject:
+---
+327:                if not common.is_cjk(wrchar):
+---
+328:                    continue
+---
+329:                if jyutping not in pronunciations[wrchar]:
+---
+330:                    problems.append((wrchar, jyutping))
+---
+331:            return problems
+---
+332:
+---
+333:        def grammar_check(text):
+---
+334:            import urllib.request as req
+---
+335:            import urllib.parse as parse
+---
+336:
+---
+337:            # Don't check short phrases
+---
+338:            if (len(text.split(" ")) < 4):
+---
+339:                return []
+---
+340:            print("Making query to languagetool.org", text)
+---
+341:            data = parse.urlencode({'text':text, 'language':'auto'})
+---
+342:            q = req.urlopen(req.Request("https://api.languagetool.org/v2/check", method='POST', data=data.encode("utf-8")))
+---
+343:            resp_data = json.loads(q.read())
+---
+344:            print(resp_data)
+---
+345:            return resp_data["matches"]
+---
+346:
+---
+347:        problems = []
+---
+348:        try:
+---
+349:            with open("lists/charlist.json") as f:
+---
+350:                char_pronunciations = json.loads(f.read())
+---
+351:
+---
+352:                for item in self.items():
+---
+353:                    for multilingual_example in item.multilingual_examples():
+---
+354:                        for example in multilingual_example.translations():
+---
+355:                            if example.lang == 'yue' and example.pronunciation != '':
+---
+356:                                rm = example.ruby_match
+---
+357:                                if sub_problems := list_subproblems(rm, char_pronunciations):
+---
+358:                                    problems.append((rm, str(sub_problems)))
+---
+359:                            if example.lang == 'eng':
+---
+360:                                problems.extend(grammar_check(example.text))
+---
+361:
+---
+362:        except Exception as e:
+---
+363:            import dj
+---
+364:            dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))
+---
+365:        if self.has_label("gpt"):
+---
+366:            problems.append("請刪除 (label:gpt)")
+---
+367:
+---
+368:        return problems
+---
+369:
+---
+370:class InvalidLangCodeFormat(ValueError):
+---
+371:    pass
+---
+372:
+---
+373:_g_lang_force_strict = False
+---
+374:def set_lang_force_strict(flag=True):
+---
+375:    """This is a global setting, not intended to be used except for standalone
+---
+376:    programs"""
+---
+377:    global _g_lang_force_strict
+---
+378:    _g_lang_force_strict = flag
+---
+379:
+---
+380:def choplang(raw, strict=False):
+---
+381:    from lib import iso639
+---
+382:    if len(raw) > 4:
+---
+383:        lc = ""
+---
+384:        if raw[3] == ":":
+---
+385:            lc = raw[:3]
+---
+386:            raw = raw[4:]
+---
+387:        elif raw[2] == ":":
+---
+388:            lc = iso639.two_to_three(raw[:2])
+---
+389:            raw = raw[3:]
+---
+390:
+---
+391:        if lc is not None and lc.lower() in iso639.supported_language_set():
+---
+392:            return (lc.lower(), raw)
+---
+393:
+---
+394:    if strict or _g_lang_force_strict:
+---
+395:        raise InvalidLangCodeFormat("Invalid form")
+---
+396:
+---
+397:    guess = common.guess_language(raw)
+---
+398:    if guess == common.CHINESE:
+---
+399:        guess = "yue"
+---
+400:    else:
+---
+401:        guess = iso639.two_to_three(guess)
+---
+402:
+---
+403:    return (guess, raw)
+---
+404:
+---
+405:def looks_like_jyutping(s):
+---
+406:    from lib import cantonese
+---
+407:    s = s.split(" ")
+---
+408:    k = sum([cantonese.is_valid_jyutping_form(w.strip(",!;?.")) for w in s])
+---
+409:    return (k * 1.0 / len(s)) > 0.7
+---
+410:
+---
+411:class MultilingualFormat(object):
+---
+412:    """A single example sentence, in different languages"""
+---
+413:    def __init__(self, raw):
+---
+414:        object.__init__(self)
+---
+415:        self._raw_multilingual_example = raw
+---
+416:        try:
+---
+417:            self._translations = MultilingualFormat.parse(raw, self.CONSTRUCTOR)
+---
+418:            self._originally_had_lang_code = True
+---
+419:        except InvalidLangCodeFormat:
+---
+420:            self._translations = [self.CONSTRUCTOR(raw.strip())]
+---
+421:            self._originally_had_lang_code = False
+---
+422:
+---
+423:        # XXX: A bit hackish but who cares...
+---
+424:        self.is_probably_phrase = False
+---
+425:
+---
+426:        if self.CONSTRUCTOR == Example:
+---
+427:            for t in self._translations:
+---
+428:                if t.lang == "yue" and not common.looks_like_a_sentence(t.text):
+---
+429:                    self.is_probably_phrase = True
+---
+430:                    break
+---
+431:
+---
+432:    @staticmethod
+---
+433:    def parse(raw, constructor):
+---
+434:        ret = []
+---
+435:        raw = raw.strip()
+---
+436:
+---
+437:        # If the first line is not a proper lang: line, then it means the whole
+---
+438:        # thing is botched. It will raise an exception to be caught
+---
+439:        choplang(raw, strict=True)
+---
+440:
+---
+441:        cur = []
+---
+442:        for line in raw.splitlines():
+---
+443:            line = line.strip()
+---
+444:            try:
+---
+445:                choplang(line, strict=True)
+---
+446:                # If it doesn't throw value error, that means this is a new
+---
+447:                # language with proper lang: prefix line
+---
+448:                if cur:
+---
+449:                    ret.append(constructor("\n".join(cur)))
+---
+450:                    cur = []
+---
+451:            except ValueError:
+---
+452:                pass
+---
+453:
+---
+454:            cur.append(line)
+---
+455:
+---
+456:        if cur:
+---
+457:            ret.append(constructor("\n".join(cur)))
+---
+458:
+---
+459:        lang_order = {"zho": -3, "yue": -2, "eng": -1 }
+---
+460:        ret.sort(key=lambda x: lang_order.get(x.lang) or 0)
+---
+461:        return ret
+---
+462:
+---
+463:    def serialize(self):
+---
+464:        return "\n".join([e.serialize(include_lang_code=self._originally_had_lang_code) for e in self._translations])
+---
+465:
+---
+466:    def json(self):
+---
+467:        # XXX: here we are sort of "abusing" the serialization, using
+---
+468:        # include_lang_code=False to get the "raw content" without implementing
+---
+469:        # a new method. It's more natural to specify e.text here instead, but
+---
+470:        # in case of Example it does not include the jyutping.
+---
+471:        return { e.lang : e.serialize(include_lang_code=False) for e in self._translations }
+---
+472:
+---
+473:    def translations(self):
+---
+474:        return self._translations
+---
+475:
+---
+476:
+---
+477:class Example(object):
+---
+478:    def __init__(self, raw):
+---
+479:        object.__init__(self)
+---
+480:        self.lang, self.text, self.pronunciation = Example.parse(raw)
+---
+481:
+---
+482:    @staticmethod
+---
+483:    def parse(raw):
+---
+484:        raw = raw.strip()
+---
+485:        if len(raw) == 0:
+---
+486:            raise MissingItemError("Example string missing")
+---
+487:
+---
+488:        pronunciation = ""
+---
+489:        # See whether we have a jyutping at the end
+---
+490:        open_brace = raw.rfind("(")
+---
+491:        if raw[-1] == ")" and open_brace != -1:
+---
+492:            jyutping = raw[open_brace+1:-1].strip()
+---
+493:            if looks_like_jyutping(jyutping):
+---
+494:                pronunciation = jyutping
+---
+495:                raw = raw[:open_brace].strip()
+---
+496:
+---
+497:        lang, nolang = choplang(raw)
+---
+498:        nolang = nolang.strip()
+---
+499:        return (lang, nolang.strip(), pronunciation.strip())
+---
+500:
+---
+501:    def serialize(self, include_lang_code=True):
+---
+502:        ret = [self.lang, ":", self.text] if include_lang_code else [self.text]
+---
+503:
+---
+504:        if self.pronunciation:
+---
+505:            ret.append(" (")
+---
+506:            ret.append(self.pronunciation)
+---
+507:            ret.append(")")
+---
+508:
+---
+509:        return "".join(ret)
+---
+510:
+---
+511:    def html(self, limit = float('infinity')):
+---
+512:        return format_explanation_and_example(self.text, limit)
+---
+513:
+---
+514:    _RUBY_STRIP_PUNCTUATIONS = re.compile(r'[.,?:"]')
+---
+515:
+---
+516:    @functools.cached_property
+---
+517:    def ruby_match(self):
+---
+518:        return zilib.ruby_match_zipped(self.text, self._RUBY_STRIP_PUNCTUATIONS.sub('', self.pronunciation))
+---
+519:
+---
+520:    def ruby_match_html(self, custom_formatter):
+---
+521:        output = []
+---
+522:        output.append("<ruby>")
+---
+523:        for item, p in self.ruby_match:
+---
+524:            if item.strip() == '' and not p:
+---
+525:                continue
+---
+526:
+---
+527:            output.append("<rb>")
+---
+528:
+---
+529:            if custom_formatter:
+---
+530:                item = custom_formatter(item)
+---
+531:            output.append(item)
+---
+532:            output.append("</rb>")
+---
+533:
+---
+534:            output.append("<rt>")
+---
+535:            output.append(p)
+---
+536:            output.append("</rt>")
+---
+537:
+---
+538:        output.append("</ruby>")
+---
+539:        return "".join(output)
+---
+540:
+---
+541:
+---
+542:    def ruby_html(self):
+---
+543:        import dj
+---
+544:
+---
+545:        def formatter(s):
+---
+546:            return format_explanation_and_example(s)
+---
+547:        try:
+---
+548:            return dj.mark_safe(self.ruby_match_html(formatter))
+---
+549:        except Exception as e:
+---
+550:            dj.ERROR(f"Can't format as ruby text! {self.text} {self.pronunciation} {e}")
+---
+551:            # Fallback to something reasonable
+---
+552:            return self.html() + " (" + self.pronunciation + ")"
+---
+553:
+---
+554:    def ruby_info(self):
+---
+555:        import json
+---
+556:        return json.dumps(self.ruby_match)
+---
+557:
+---
+558:class MultilingualExample(MultilingualFormat):
+---
+559:    CONSTRUCTOR = Example
+---
+560:
+---
+561:class Explanation(object):
+---
+562:    def __init__(self, raw):
+---
+563:        object.__init__(self)
+---
+564:        self.lang, self.text = choplang(raw.strip())
+---
+565:        self.text = self.text.strip()
+---
+566:
+---
+567:    def serialize(self, include_lang_code=True):
+---
+568:        ret = [self.lang, ":", self.text] if include_lang_code else [self.text]
+---
+569:        return "".join(ret)
+---
+570:
+---
+571:    def html(self, limit = float('infinity')):
+---
+572:        return format_explanation_and_example(self.text, limit)
+---
+573:
+---
+574:def lang_match(internal, external):
+---
+575:    if external == 'zh-hk': # FIXME: this should be yue
+---
+576:        external = 'yue'
+---
+577:    if external == 'en' or external.startswith('en-'):
+---
+578:        external = 'eng'
+---
+579:    return internal == external
+---
+580:
+---
+581:class MultilingualExplanation(MultilingualFormat):
+---
+582:    CONSTRUCTOR = Explanation
+---
+583:
+---
+584:    def html(self, limit = float('infinity')):
+---
+585:        selected = self._translations[0]
+---
+586:        for tran in self._translations:
+---
+587:            if lang_match(tran.lang, get_current_language()):
+---
+588:                selected = tran
+---
+589:                break
+---
+590:        return selected.html(limit)
+---
+591:
+---
+592:class MultilingualExplanationAndExamples(object):
+---
+593:    """A single unit of explanation and examples, with potentially multiple languages"""
+---
+594:    def __init__(self, raw):
+---
+595:        object.__init__(self)
+---
+596:        self._raw = raw
+---
+597:
+---
+598:        cur_block = []          # list of lines
+---
+599:        self.explanation = None # list of explanation strings
+---
+600:        self.examples = []      # list of examples
+---
+601:        self.phrases = []       # list of "combo phrases" (but not sentences)
+---
+602:
+---
+603:        explanation_str = raw.strip()
+---
+604:        if explanation_str.startswith("<explanation>"):
+---
+605:            explanation_str = explanation_str[13:].strip()
+---
+606:
+---
+607:        mode = 0  # 0 = explanation, 1 = examples
+---
+608:
+---
+609:        for line in explanation_str.splitlines():
+---
+610:            line = line.strip()
+---
+611:            if line == "<eg>":
+---
+612:                if mode == 0:
+---
+613:                    self.explanation = MultilingualExplanation("\n".join(cur_block))
+---
+614:                    mode = 1
+---
+615:                else:
+---
+616:                    eg = MultilingualExample("\n".join(cur_block))
+---
+617:                    if eg.is_probably_phrase:
+---
+618:                        self.phrases.append(eg)
+---
+619:                    else:
+---
+620:                        self.examples.append(eg)
+---
+621:
+---
+622:                cur_block = []
+---
+623:                continue
+---
+624:
+---
+625:            cur_block.append(line)
+---
+626:
+---
+627:        if mode == 0:
+---
+628:            self.explanation = MultilingualExplanation("\n".join(cur_block))
+---
+629:            mode = 1
+---
+630:        else:
+---
+631:            eg = MultilingualExample("\n".join(cur_block))
+---
+632:            if eg.is_probably_phrase:
+---
+633:                self.phrases.append(eg)
+---
+634:            else:
+---
+635:                self.examples.append(eg)
+---
+636:
+---
+637:    def multilingual_explanation(self):
+---
+638:        return self.explanation
+---
+639:
+---
+640:    def multilingual_examples(self):
+---
+641:        return self.examples
+---
+642:
+---
+643:    def multilingual_phrases(self):
+---
+644:        return self.phrases
+---
+645:
+---
+646:    def html_explanation(self, limit = float('infinity')):
+---
+647:        return self.explanation.html(limit)
+---
+648:
+---
+649:    def serialize(self):
+---
+650:        ret = []
+---
+651:        if self.examples or self.phrases:
+---
+652:            # Don't append "explanation" unless needed.
+---
+653:            ret.append("<explanation>")
+---
+654:
+---
+655:        ret.append(self.explanation.serialize())
+---
+656:
+---
+657:        for e in self.phrases:
+---
+658:            ret.append("<eg>")
+---
+659:            ret.append(e.serialize())
+---
+660:
+---
+661:        for e in self.examples:
+---
+662:            ret.append("<eg>")
+---
+663:            ret.append(e.serialize())
+---
+664:
+---
+665:        return "\n".join(ret)
+---
+666:
+---
+667:    def json(self):
+---
+668:        return {
+---
+669:            "explanation": self.explanation.json(),
+---
+670:            "example_phrases": [e.json() for e in self.phrases],
+---
+671:            "example_sentences": [e.json() for e in self.examples],
+---
+672:        }
+---
+673:
+---
+674:    _RE_MEASURE = re.compile(r'[(（]量詞[:：][^)）]+[)）]')
+---
+675:    def measure_word(self):
+---
+676:        # XXX: as of writing `_()` is a fake function. However we don't really
+---
+677:        # need to translate anything yet.
+---
+678:        for t in self.explanation.translations():
+---
+679:            m = self._RE_MEASURE.search(t.text)
+---
+680:            if m:
+---
+681:                return (m.group(0).
+---
+682:                    replace('量詞', _("measure word")).
+---
+683:                    replace("（", "(").replace("）", ")").
+---
+684:                    replace("：", ":").replace(":", ": ").
+---
+685:                    replace("／", " / ")
+---
+686:                    )
+---
+687:
+---
+688:        return ""
+---
+689:
+---
+690:
+---
+691:# TODO: Unit tests.
+---
+692:def parse_written_form_and_pronunciation(s):
+---
+693:    """Sample input: '唔係詞:m4 hai6 ci4:ng4 hai6 ci4,樣本:joeng6 bun2' """
+---
+694:    # TODO: We probably also want to check whether the pronunciations are in
+---
+695:    # canonical jyutping format (well, we have a list of pronunciation mp3s, we
+---
+696:    # can just check against those if needed)
+---
+697:    for item in ["/", "\\"]:
+---
+698:        if s.find(item) > -1:
+---
+699:            raise IllegalCharacterError('Pronunciation cannot contain slashes or backslashes; if you want to add a different written/spoken form, add a separate form instead (i.e. 咖喱:gaa3 lei1,咖哩:gaa3 lei1)')
+---
+700:
+---
+701:    from lib import cantonese
+---
+702:    while s[-1] == ",": s = s[:-1]  # Remove trailing commas
+---
+703:    ret = []
+---
+704:    for x in s.split(","):
+---
+705:        t = x.strip().split(":")
+---
+706:        wr = t[0].strip()
+---
+707:        if len(t) > 1:
+---
+708:            try:
+---
+709:                item = (wr, [cantonese.canonicalize_jyutping(y.strip(), allow_exceptions=True, raise_on_error=True) for y in t[1:]])
+---
+710:                if item not in ret:
+---
+711:                    ret.append(item)
+---
+712:            except ValueError:
+---
+713:                raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+---
+714:        else:
+---
+715:            auto_pronounce = "!" + zilib.get_ping3jam1(wr)
+---
+716:            ret.append((wr, [auto_pronounce]))
+---
+717:    return ret
+---
+718:
+---
+719:def encode_written_form_and_pronunciation(l):
+---
+720:    """Sample input: the output of parse_written_form_and_pronunciation()"""
+---
+721:    return ",".join([ x[0] + ":" + ":".join(x[1]) for x in l ])
+---
+722:
+---
+723:
+---
+724:def format_explanation_and_example(explanation_str, limit = float('infinity')):
+---
+725:    """Formats the explanation"""
+---
+726:    import dj
+---
+727:    from zidin import models
+---
+728:    # Find all #xxx and convert into links
+---
+729:    # Not very efficient but N is expected to be small
+---
+730:    # TODO: Unit test this
+---
+731:
+---
+732:    # XXX: line breaks may be converted to <br /> AFTER we return. So,
+---
+733:    # *** DO NOT INSERT EXTRA LINE BREAKS to avoid messing up the format.
+---
+734:    if explanation_str.startswith("ref:"):
+---
+735:        return "【字典工程進行中】"
+---
+736:
+---
+737:    html = html_py.escape(explanation_str)
+---
+738:    idx = -1
+---
+739:    additional_length = 0  # The additional length added by the HTML and stuff
+---
+740:    while True:
+---
+741:        idx = html.find("#", idx + 1)
+---
+742:        if idx == -1: break
+---
+743:
+---
+744:        length = len(html)
+---
+745:
+---
+746:        premature_break = False
+---
+747:        for term_idx in range(idx + 1, length):
+---
+748:            if not common.is_cjk(html[term_idx]) and html[term_idx] not in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz":
+---
+749:                premature_break = True
+---
+750:                break
+---
+751:
+---
+752:        if not premature_break:
+---
+753:            term_idx += 1
+---
+754:
+---
+755:        if term_idx >= limit:
+---
+756:            break
+---
+757:
+---
+758:        eat_leading_space = int(idx != 0 and html[idx - 1] == " " and ((idx < 2) or common.is_cjk(html[idx - 2])))
+---
+759:        eat_trailing_space = int(term_idx + 1 < length and html[term_idx] == " " and ((len(html) <= term_idx + 1) or common.is_cjk(html[term_idx + 1])))
+---
+760:
+---
+761:        if models.Word.objects.filter(writtenform__representation=html[idx+1:term_idx]).count() > 0:
+---
+762:            html = (
+---
+763:                html[:idx - eat_leading_space] +
+---
+764:                # probably want to do a reverse URL here instead?
+---
+765:                '<a href="/zidin/' + urllib.parse.quote(html[idx+1:term_idx].encode("utf-8")) + '">' + html[idx+1:term_idx] + '</a>' +
+---
+766:                html[term_idx + eat_trailing_space:]
+---
+767:            )
+---
+768:
+---
+769:        additional_length += len(html) - length
+---
+770:
+---
+771:    if limit + additional_length < len(html):
+---
+772:        html = util.find_until(html, limit + additional_length, "。")
+---
+773:
+---
+774:    ## XXX: Be very careful about XSS here.
+---
+775:    return dj.mark_safe(html.strip())
+--- [end of text]
+
+
