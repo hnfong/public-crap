@@ -1,0 +1,781 @@
+<think>
+We are looking for lines that are comments. In shell scripts, comments start with a '#' and are not part of a command (like in a string or after a command).
+ However, note that in shell, a '#' starts a comment only when it is at the beginning of a line or after whitespace and not within a string.
+
+ But note: the problem says "only if the line has something that matches the given query/description", and the query is "all lines with comments".
+
+ Important: We are to output the line (with line number) only if the line obviously has a comment.
+
+ How to interpret:
+ - In shell, a comment is a '#' that is not inside a string and is at the start of a comment (so after any leading whitespace, and not part of a command).
+
+ However, note that the problem says: "Only trigger when the input obviously matches the query, i.e. not tangentially related."
+
+ So we are to look for lines that are primarily comments? Or lines that contain a comment?
+
+ But note: the example input is a shell script.
+
+ Let's break down:
+
+ - Line 4: "# Save the path to ./download_check script" -> obviously a comment.
+ - Line 6: ... but note: line 6 is: `download_check_path=$(dirname "$script_path")/download_check`
+   This line does not have a comment. The '#' in the string? Actually, no: the string is in double quotes and the '#' is inside the command substitution? 
+   But wait: the line does not have a '#' at all? Actually, let me check:
+
+   Line 6: `download_check_path=$(dirname "$script_path")/download_check`
+
+   There is no '#' in this line. So it's not a comment.
+
+ - However, note that in shell, a comment starts with a '#' that is not inside quotes and is at the beginning of a token (after whitespace).
+
+ But the problem says: "all lines with comments". So we are to output any line that has a comment, even if it's at the end of a command?
+
+ Example: 
+   `echo "hello" # this is a comment` -> this line has a comment.
+
+ However, the problem says: "Only trigger when the input obviously matches the query". So we should consider:
+
+   - Lines that start with a '#' (with optional whitespace) are comments.
+   - Lines that have a '#' that is not inside quotes and is after a command (so the rest of the line is a comment) are also comments.
+
+ But note: the problem says "all lines with comments", meaning the line contains a comment.
+
+ However, the problem also says: "not tangentially related". So we must be cautious.
+
+ How about:
+
+   - We'll consider a line to have a comment if there is a '#' that is not inside a string (single or double quoted) and not escaped.
+
+ But note: the problem says "obviously matches". So we can do a simple rule:
+
+   - If the line has a '#' that is not within quotes and not escaped, and it is either at the beginning of the line (after whitespace) or after a command (so after a non-comment part), then it's a comment.
+
+ However, the problem does not require us to parse the shell script perfectly. It says "obviously".
+
+ So let's look at the input:
+
+   Line 4: starts with '#' -> comment.
+   Line 15: starts with '#' -> comment.
+   Line 20: starts with '#' -> comment.
+   Line 29: starts with '#' -> comment.
+   Line 38: starts with '#' -> comment.
+   Line 47: empty line? Actually, line 47 is: `47:`
+        But wait, the input shows: 
+          47:
+          48:# Download and build utf8proc
+
+        So line 47 is empty? Actually, the input says: 
+          47:
+          48:# Download and build utf8proc
+
+        So line 47 is just a colon? Actually, the input format is:
+
+          line_number:content
+
+        So line 47 is: `47:` meaning the content is empty? Actually, the input shows:
+
+          47:
+          48:# Download and build utf8proc
+
+        So line 47 is an empty line? But note: the input says "47:" and then the next line is "48:...".
+
+        How is the input given? The input is:
+
+          1:#!/bin/bash
+          2:set -ex
+          3:
+          4:# Save the path to ./download_check script
+          ...
+
+        So line 3 is empty? Actually, line 3 is `3:` meaning the content is empty.
+
+        Now, is an empty line a comment? No.
+
+        But note: in shell, an empty line is not a comment.
+
+        However, what about a line that has only whitespace and then a '#'? That is a comment.
+
+        But in our input, we have:
+
+          Line 3: empty -> no comment.
+          Line 7: empty -> no comment.
+          Line 14: empty -> no comment.
+          Line 19: empty -> no comment.
+          Line 28: empty -> no comment.
+          Line 37: empty -> no comment.
+          Line 46: empty -> no comment.
+          Line 47: empty -> no comment.
+          Line 64: empty -> no comment.
+
+        Now, what about lines that have a comment at the end?
+
+        Looking at the input, I don't see any line that has a command followed by a comment. All the comments are on their own line.
+
+        But let's check:
+
+          Line 5: `5:script_path=$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$0")`
+          This line has a '#' inside a single-quoted string? Actually, no: the string is in single quotes: `'import os,sys; ...'` and there is no '#' in that string.
+
+          However, note: the string has a semicolon and other characters, but no '#'.
+
+          But what if there was a '#' inside a string? Then it wouldn't be a comment.
+
+        Since the problem says "obviously", we can do:
+
+          - If the line has a '#' that is not inside quotes and not escaped, and it is either at the beginning (after whitespace) or after a command (so the rest of the line is a comment), then we output.
+
+        However, the problem says: "Only trigger when the input obviously matches the query". So if we are not sure, skip.
+
+        Given the input, we can see:
+
+          Lines that start with '#' (with optional whitespace) are clearly comments.
+
+          Lines that have a '#' in the middle of a command (like inside quotes) are not comments.
+
+        How about:
+
+          Line 24: `24:CFLAGS="-Wno-int-conversion" ./configure --prefix="$prefix" --with-internal-glib`
+
+          This line does not have a '#' -> skip.
+
+        But note: what if a line has a '#' inside a string? Example:
+
+          `echo "This is a # comment inside string"`
+
+          This line does not have a comment (the '#' is part of the string).
+
+        However, the problem says "obviously", so we can skip such lines because they are not obviously comments.
+
+        So our rule:
+
+          We'll output a line if:
+            - The line contains a '#' that is not inside quotes (we don't have to parse perfectly, but we can do a simple state machine? but the problem says "obviously")
+            - However, the problem says: "not tangentially related", so we want to avoid false positives.
+
+        Given the constraints, and since the input is a shell script and the comments are all at the beginning of the line (with optional whitespace), we can do:
+
+          - If the line has a '#' that is the first non-whitespace character, then it's a comment.
+
+        But note: what about:
+
+          `   # this is a comment`
+
+          This is a comment.
+
+        However, what about:
+
+          `echo hello # this is a comment`
+
+          This is also a comment, but the problem says "obviously". In this case, the '#' is not at the beginning, but it is a comment.
+
+        But in the given input, there are no such lines. All the comments are on their own line.
+
+        However, the problem does not specify that the comments are only at the beginning. So we must consider both.
+
+        But note: the problem says "all lines with comments". So if a line has a comment (anywhere, as long as it's a valid comment), we output.
+
+        How to check without a full parser?
+
+        We can do:
+
+          - Skip if the '#' is inside quotes (but we don't want to do a full parse).
+
+        Alternatively, the problem says "obviously". So if the '#' is at the beginning (after whitespace) then it's obvious. If it's in the middle, it might be less obvious? But in shell, if it's not in quotes and not escaped, then it's a comment.
+
+        However, the problem says: "Only trigger when the input obviously matches the query".
+
+        So we can be conservative:
+
+          We'll output a line if:
+            - The line has a '#' that is either:
+                a) at the very beginning, or
+                b) after some whitespace and then a '#' and then non-whitespace (so it's not part of a command) OR
+                c) after a command (so there is non-whitespace before the '#') but then we have to check that the '#' is not in quotes.
+
+        But without a parser, it's hard.
+
+        Given the context of the problem (a shell script that we can see) and the fact that the input is provided, we can manually inspect.
+
+        Looking at the input:
+
+          Line 4: "# Save the path to ./download_check script" -> obvious comment.
+          Line 15: "# This is a script to build and install tmux on macOS without homebrew." -> obvious.
+          Line 20: "# Download and build pkg-config" -> obvious.
+          Line 29: "# Download and build ncurses" -> obvious.
+          Line 38: "# Download and build libevent" -> obvious.
+          Line 48: "# Download and build utf8proc" -> obvious.
+          Line 56: "# Download and build tmux" -> obvious.
+
+        Are there any other lines that have a comment?
+
+          Line 3: empty -> no.
+          Line 5: has a string with a semicolon but no '#' -> no.
+          Line 6: no '#' -> no.
+          Line 8: `8:function download_and_check() {` -> no '#' -> no.
+          ... and so on.
+
+        What about line 24? It has a string: `-Wno-int-conversion` -> no '#' in that string.
+
+        So in this input, the only lines with comments are the ones that start with '#' (after optional whitespace, but in this input they are at the beginning of the line).
+
+        However, note: the input format for the lines includes the line number and colon. But the content of the line is after the colon.
+
+        How the input is given:
+
+          "1:#!/bin/bash"
+
+        So the content of line 1 is "#!/bin/bash", which is a shebang, not a comment? 
+
+        But note: in shell, the shebang line is not a comment. However, it starts with '#' but it's a special case.
+
+        The problem says: "all lines with comments". The shebang line is not a comment. It's an interpreter directive.
+
+        How do we know? 
+
+          - The shebang line must be the first line and starts with "#!".
+
+        So we should not consider the shebang as a comment.
+
+        Therefore, line 1: `#!/bin/bash` -> not a comment.
+
+        Similarly, line 2: `set -ex` -> no comment.
+
+        So we skip line 1.
+
+        Now, what about:
+
+          Line 3: empty -> skip.
+
+        So the lines we want are:
+
+          4, 15, 20, 29, 38, 48, 56.
+
+        But wait, line 47 is empty? and line 48 is a comment.
+
+        Also, note line 65: `65:ln -sf "$prefix"/bin/tmux ~/bin/tmux` -> no comment.
+
+        However, let me check the input again:
+
+          Line 47: `47:`
+          Line 48: `48:# Download and build utf8proc`
+
+        So line 48 is a comment.
+
+        Now, what about line 64? It's empty.
+
+        So the comment lines are:
+
+          4, 15, 20, 29, 38, 48, 56.
+
+        But wait, there's also:
+
+          Line 6: `6:download_check_path=$(dirname "$script_path")/download_check`
+
+          This line does not have a '#'? Actually, it does not.
+
+        However, note: the string `$(dirname ...)` has a closing parenthesis and then `/download_check`. There is no '#' in that.
+
+        So we are safe.
+
+        But what about line 5? 
+
+          `5:script_path=$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$0")`
+
+          There is a '#' inside the single quotes? Actually, no: the string is `'import os,sys; ...'` and there is no '#' in that string.
+
+        Therefore, we output:
+
+          4:# Save the path to ./download_check script
+          15:# This is a script to build and install tmux on macOS without homebrew.
+          20:# Download and build pkg-config
+          29:# Download and build ncurses
+          38:# Download and build libevent
+          48:# Download and build utf8proc
+          56:# Download and build tmux
+
+        However, note: the problem says "output the line (together with line number)".
+
+        The input format for each line is: `line_number:content`
+
+        So we output exactly as:
+
+          4:# Save the path to ./download_check script
+          15:# This is a script to build and install tmux on macOS without homebrew.
+          ... etc.
+
+        And after each line of output, we emit "---".
+
+        Important: if no lines match, output empty. But here we have matches.
+
+        Let's write the output:
+
+          4:# Save the path to ./download_check script
+          ---
+          15:# This is a script to build and install tmux on macOS without homebrew.
+          ---
+          20:# Download and build pkg-config
+          ---
+          29:# Download and build ncurses
+          ---
+          38:# Download and build libevent
+          ---
+          48:# Download and build utf8proc
+          ---
+          56:# Download and build tmux
+          ---
+
+        But note: the problem says "after each line of output, also emit a '---'", meaning after each matching line we output the line and then "---".
+
+        However, the example output format: 
+
+          For every matching line, output:
+            [line_number]:[content]
+            ---
+
+        So we output 7 lines of content and 7 separators.
+
+        But note: the problem says "Don't explain. Just output as if you're a command line program called 'semantic_grep'."
+
+        So we output only the matching lines and the separators.
+
+        One more thing: the problem says "If no lines match just give empty response." -> but we have matches.
+
+        Let's code the logic for this specific input:
+
+          We'll go through each line (from the input provided as a string with line numbers and content).
+
+          For each line in the input (which is given as "line_number:content"):
+
+            - Extract the content (the part after the colon).
+            - Check if the content is a comment.
+
+          How to check for comment in the content:
+
+            - Skip if the content is empty.
+            - Skip if the content starts with "#!" (shebang) -> but note: the shebang is only on the first line? but we are checking per line.
+            - Otherwise, if the content has a '#' that is not inside quotes? -> but we don't want to overcomplicate.
+
+          Given the problem says "obviously", and in this input all comments are at the beginning (with no leading non-whitespace) and are not shebang, we can do:
+
+            - If the content starts with '#' and the next character is not '!' (to avoid shebang) OR if the content has leading whitespace and then '#' and then non-whitespace (but note: a comment can be just '#' and then nothing? but that's still a comment) -> but the problem says "obviously".
+
+          However, note: a line that is just "#" is a comment? Yes.
+
+          But in our input, we don't have that.
+
+          So for simplicity, we can say:
+
+            - If the content has a '#' that is the first non-whitespace character, and it is not part of a shebang (i.e., if the first non-whitespace is '#' and the next character is not '!', or if the '#' is at the very beginning and the next is not '!', but note: shebang must be at the very beginning of the file? but we are per line) -> actually, shebang is only valid on the first line, but we are checking per line.
+
+          However, the problem says "obviously", so we can skip the shebang by:
+
+            - If the line is the first line and starts with "#!" -> skip.
+
+          But note: the input we are processing is not the raw file but with line numbers. The first line of the input (as given) is line 1: `1:#!/bin/bash`
+
+          So for line 1, the content is "#!/bin/bash", which starts with "#!".
+
+          How about:
+
+            We'll check the content:
+
+              - If the content starts with "#!" -> skip (because it's a shebang, not a comment).
+              - Else, if the content has any '#' that is not inside quotes? -> but we don't want to do that.
+
+          Alternatively, we can do:
+
+            - If the content has a '#' that is not inside quotes and not escaped, and it is either at the beginning (after whitespace) or after a command, then it's a comment.
+
+          But without a parser, we can do a simple rule:
+
+            - Skip if the '#' is inside quotes? We can try to see if there are quotes, but it's messy.
+
+          Given the problem says "obviously", and in the provided input all the comments are at the beginning of the line (with no leading non-whitespace) and are not shebang, we can do:
+
+            - If the content, after stripping leading whitespace, starts with '#' and the next character (if exists) is not '!' -> then it's a comment.
+
+          Why? Because:
+
+            - Shebang: starts with "#!" -> we skip.
+            - Other comments: start with '#' and then something else (like space or text) -> we take.
+
+          But note: what about a line that is just "#!"? That would be a shebang? But in the middle of the file? Actually, in shell, a shebang is only recognized at the very beginning of the file. In the middle, "#!" is just a comment? 
+
+          However, the problem says "obviously", so if we see "#!" in the middle, it's still a comment? But the problem says "comments", and in shell, any '#' that is not a shebang (and shebang only at the beginning) is a comment.
+
+          But note: the problem does not specify the language, but the input is a shell script.
+
+          However, the problem says: "Only trigger when the input obviously matches the query".
+
+          So for safety, we can say:
+
+            - If the line (content) has a '#' that is the first non-whitespace character, and the line is not the first line of the entire file? -> but wait, we don't have the context of the entire file? Actually, we are processing line by line and we know the line number.
+
+          But note: the input we are given has line numbers. The first line of the input (as provided) is line 1.
+
+          So:
+
+            - For line 1: if it starts with "#!" -> skip.
+            - For any line: if after stripping leading whitespace, the first character is '#' and (the line is not line 1 OR the line is line 1 but it doesn't start with "#!"? Actually, line 1 that starts with "#!" is shebang, so skip) -> but wait, if line 1 starts with "#!" we skip, but if line 1 starts with just '#' then it's a comment.
+
+          However, in our input, line 1 is shebang.
+
+          So rule:
+
+            - If the content, after stripping leading whitespace, starts with '#' and (the line number is not 1 OR the content does not start with "#!") -> but wait, if line 1 starts with "# comment", that would be a comment? Actually, no: because the shebang must be exactly at the beginning without space. So if there's space, then it's not a shebang.
+
+          Actually, the shebang must be the very first two characters of the file. So:
+
+            - Only if the entire file starts with "#!" (without any space) then it's a shebang.
+
+          But we are processing per line. For line 1:
+
+            - If the content starts with "#!" -> skip (because it's shebang, not a comment).
+            - Otherwise, if the content starts with '#' (after optional whitespace) then it's a comment.
+
+          However, note: the shebang must be at the very beginning of the file, so if there is any space at the beginning of line 1, then it's not a shebang.
+
+          Example:
+
+            "   #! /bin/bash" -> this is a comment, not a shebang.
+
+          So we cannot rely solely on the content of line 1 without context.
+
+          Given the complexity, and since the problem says "obviously", we can do:
+
+            - We'll consider a line to be a comment if, after removing leading whitespace, it starts with '#' and the next character (if exists) is not '!' OR if the next character is '!' but there is whitespace after (so it's not a shebang) -> but wait, shebang requires no space between '#' and '!'.
+
+          Actually, the shebang specification: the first two bytes must be "#!".
+
+          So:
+
+            - If the line is the first line of the file (line number 1) and the content starts with "#!" (without any space) -> skip.
+            - Otherwise, if the content (after stripping leading whitespace) starts with '#' -> then it's a comment.
+
+          But note: what if the first line has leading space? Then it's not a shebang, so it's a comment.
+
+          However, in practice, shebang must be at the very beginning. So:
+
+            - For line 1: if the content starts with "#!" (with no leading space) -> skip.
+            - For any line: if after stripping leading whitespace, the content starts with '#' -> then it's a comment.
+
+          But wait: what about a line that is:
+
+            `echo "hello" # comment`
+
+          After stripping leading whitespace, it starts with 'e', not '#'. So we wouldn't catch it.
+
+          How to catch that?
+
+          We would have to look for a '#' that is not inside quotes and not escaped, and that is either at the beginning (after whitespace) or after a command.
+
+          Without a parser, it's hard. But the problem says "obviously", so if the '#' is not at the beginning (after whitespace) then it might not be obvious? 
+
+          However, in the given input, there are no such lines. So for this specific input, we can rely on the comment being at the beginning.
+
+          But the problem says: "all lines with comments", so we should try to catch both.
+
+          However, the problem also says: "Only trigger when the input obviously matches the query".
+
+          So if a line has a '#' in the middle, it might be less obvious? But in shell, it's standard that a '#' starts a comment unless in quotes.
+
+          Given the constraints of the problem (and that we are to act as a command line tool), and the fact that the input is provided, we can do:
+
+            We'll output a line if:
+
+              - The content contains a '#' that is not inside quotes (we'll assume that if there are no quotes around the '#', then it's a comment) -> but this is error prone.
+
+          Alternatively, we can use a simpler rule for this exercise:
+
+            Since the input is small and we can see it, and the problem says "obviously", we'll output:
+
+              - Any line where the content has a '#' that is either:
+                  * at the beginning (after optional whitespace) and not part of a shebang (for line 1), OR
+                  * after a command (so there is non-whitespace before the '#') but then we have to check that the '#' is not in quotes.
+
+          But without a parser, we can do:
+
+            - If the '#' appears after a space and not after a backslash (escaped) and not inside quotes? -> too complex.
+
+          Given the problem's context and the fact that the example input only has comments at the beginning, and the problem says "obviously", we'll assume that comments are only at the beginning of the line (after whitespace) and not shebang.
+
+          So:
+
+            Step 1: Skip if the line content is empty.
+            Step 2: Strip leading whitespace from the content.
+            Step 3: 
+                - If the stripped content starts with '#' and (the line number is not 1 OR the stripped content does not start with "#!") -> then it's a comment.
+                - But note: what if the stripped content is exactly "#" or "#!" but not at the beginning of the file? 
+                    * For line number != 1: 
+                         - If it starts with "#", then it's a comment (even if it's "#!" because in the middle of the file, "#!" is just a comment).
+                    * For line number 1:
+                         - If it starts with "#!" -> skip (shebang)
+                         - If it starts with "#" but not "#!" -> comment.
+
+          However, the shebang is only for the first line and only if it's exactly at the beginning (without space). But we stripped leading space, so:
+
+            For line 1: 
+                stripped_content = content.strip()
+                if stripped_content starts with "#!": skip
+                else if stripped_content starts with "#": comment
+
+          For other lines:
+                if stripped_content starts with "#": comment
+
+          But note: what about a line that is:
+
+                line 2: "   #! not a shebang"
+
+            After stripping: "#! not a shebang" -> starts with "#!" -> but it's not the first line, so we consider it a comment? 
+
+            Actually, in shell, this is a comment. The "#!" in the middle is just part of the comment.
+
+          So:
+
+            For any line that is not line 1: if the stripped content starts with "#", then it's a comment.
+
+            For line 1: 
+                if stripped content starts with "#!" -> skip (because it's shebang, not a comment)
+                else if stripped content starts with "#" -> comment
+
+          However, note: the shebang must be the very first thing in the file. So if line 1 has leading space, then it's not a shebang. But we stripped the space, so:
+
+            Example line 1: "   #! /bin/bash" -> stripped becomes "#! /bin/bash", which starts with "#!" -> but because of the space, it's not a shebang? 
+
+            Actually, the kernel requires the shebang to be the first two bytes. So if there's space, it's not a shebang.
+
+          Therefore, the rule for line 1:
+
+            - Only if the original content (without stripping) starts with "#!" (at the very beginning, no space) then it's shebang.
+
+          But we don't have the original without the line number? Actually, the input we are processing is:
+
+            "1:#!/bin/bash"
+
+          So the content for line 1 is "#!/bin/bash", which starts with "#!".
+
+          How about:
+
+            "1:   #! /bin/bash"
+
+          Then the content is "   #! /bin/bash", which after stripping becomes "#! /bin/bash", but the original has space at the beginning -> so it's not a shebang.
+
+          Therefore, we cannot rely on stripping for the shebang check.
+
+          Given the complexity, and since the problem says "obviously", and in practice comments at the beginning of the line (after whitespace) are obvious, and shebang is a special case only for the first line without space, we can do:
+
+            For line 1:
+                if the content starts with "#!" (without any space) -> skip.
+                else if the content has a '#' that is the first non-space character -> comment.
+
+            For other lines:
+                if the content has a '#' that is the first non-space character -> comment.
+
+          How to check "first non-space character is '#'":
+
+            We can do: 
+                content.lstrip().startswith('#')
+
+          And for line 1, we also check: if the content starts with "#!" (without space) -> skip.
+
+          But note: if line 1 has content: "#! /bin/bash", then lstrip() would remove space? but if there's no space, then lstrip() of "#! ..." is "#! ...", which starts with '#' -> but we want to skip.
+
+          So:
+
+            For line 1:
+                if content.startswith('#!'): skip
+                else if content.lstrip().startswith('#'): comment
+
+            For other lines:
+                if content.lstrip().startswith('#'): comment
+
+          However, what if line 1 has: "   #! /bin/bash"?
+                content.startswith('#!') -> false, because it starts with space.
+                content.lstrip().startswith('#') -> true -> so we would output it as a comment? 
+                But it is a comment? Yes, because the shebang must be at the very beginning.
+
+          So that's correct.
+
+          Now, what about a line that has a command and then a comment? 
+
+            Example: "echo hello # comment"
+
+            For this line, content.lstrip() starts with 'e', not '#', so we skip.
+
+          But we want to catch that? 
+
+          The problem says "all lines with comments", so we should.
+
+          However, the problem also says "obviously". Is it obvious that the '#' is a comment? Yes, because it's not in quotes and not escaped.
+
+          But without a parser, we cannot be sure.
+
+          Given the problem's context and the fact that the input provided does not have any such line, and the problem says "obviously", we might skip them to avoid false positives.
+
+          But the problem says: "Only trigger when the input obviously matches the query".
+
+          So if we see a '#' that is not at the beginning (after whitespace) but is after a command, it might be obvious? 
+
+          However, it's also possible that the '#' is inside a string. Example:
+
+            echo "hello # world"
+
+          This line has a '#' but it's not a comment.
+
+          So to be safe, we only output lines where the comment is at the beginning (after whitespace) because that is obviously a comment.
+
+          Lines with trailing comments are not as obvious because they might be inside a string.
+
+          Therefore, we'll only consider comments that are at the beginning of the line (after whitespace).
+
+          This matches the input we have.
+
+        Conclusion:
+
+          We'll output a line if:
+
+            - The line number is 1: 
+                  if the content does not start with "#!" (exactly, without space) AND content.lstrip().startswith('#')
+            - The line number is not 1:
+                  if content.lstrip().startswith('#')
+
+          But note: for line 1, if it starts with "#!" we skip, but if it starts with '#' and not "#!" (like "# comment") then we output.
+
+          However, what if line 1 is: "#!comment" (without space)? 
+            - It starts with "#!" -> skip.
+
+          What if line 1 is: "# comment"?
+            - It does not start with "#!" -> and lstrip starts with '#' -> output.
+
+          What if line 1 is: "   # comment"?
+            - It does not start with "#!" (because of the space) -> and lstrip starts with '#' -> output.
+
+          What if line 1 is: "   #! comment"?
+            - It does not start with "#!" (because of the space) -> and lstrip starts with '#' -> output. 
+            - And it is a comment? Yes.
+
+          So the rule is:
+
+            if (line_number == 1 and content.startswith('#!')):
+                skip
+            else:
+                if content.lstrip().startswith('#'):
+                    output
+
+          However, note: what if the content is empty? Then lstrip() is empty -> doesn't start with '#' -> skip.
+
+          This matches.
+
+        Now, apply to the input:
+
+          Line 1: content = "#!/bin/bash" -> starts with "#!" -> skip.
+          Line 2: "set -ex" -> lstrip -> "set -ex" -> doesn't start with '#' -> skip.
+          Line 3: "" -> skip.
+          Line 4: "# Save the path to ./download_check script" -> lstrip -> same -> starts with '#' -> output.
+          Line 5: ... -> doesn't start with '#' -> skip.
+          ...
+          Line 15: "# This is a script ..." -> output.
+          ... and so on.
+
+        So we get the 7 lines we identified.
+
+        Let's code accordingly.
+
+        Steps for each line in the input (which is given as a string of the form "line_number:content"):
+
+          - Split the string at the first colon to get line_number_str and content.
+          - Convert line_number_str to integer.
+          - Check:
+                if line_number == 1 and content starts with "#!": skip.
+                else if content.lstrip().startswith('#'): then output the original line (with the line number and colon and content) and then "---"
+
+        But note: the input we are processing is the entire block from "# START OF INPUT" to "# END OF INPUT", which is provided as:
+
+          "1:#!/bin/bash"
+          "2:set -ex"
+          ...
+
+        However, the problem says: "For every line in the input", meaning the input we are given (the block between START and END).
+
+        How we are given the input? As a string with multiple lines, each line is "line_number:content".
+
+        We'll split the input by newline, and for each line:
+
+          - It has the format: "<number>:<content>"
+
+        But note: the input includes the line numbers already.
+
+        So we don't have to count lines, because the line number is provided.
+
+        Algorithm:
+
+          lines = input_string.splitlines()
+          for line in lines:
+              if line is empty? skip? but the input has line numbers so probably not empty.
+              split the line at the first colon:
+                  parts = line.split(':', 1)
+                  if len(parts) < 2: 
+                      # then there's no colon? but the input has colon, so skip?
+                      continue
+                  line_num = int(parts[0])
+                  content = parts[1]
+
+              if line_num == 1 and content.startswith('#!'):
+                  continue
+              elif content.lstrip().startswith('#'):
+                  # output the original line (which is the string we read, but note: we split and then reassemble? or we can just use the original line string)
+                  # However, we have the original line string: it's the variable `line`
+                  print(line)
+                  print("---")
+
+        But note: the problem says "output the line (together with line number)" -> and the line we are reading already has the line number and colon.
+
+        So we can output the entire `line` string.
+
+        However, what if the line has multiple colons? Example: 
+            "10:echo hello: world # comment"
+
+        But in our input, the line numbers are at the beginning and then one colon.
+
+        So splitting at the first colon is safe.
+
+        But note: the input we are processing is the block that starts with "1:..." and ends with "65:...".
+
+        Let's do it.
+
+        However, the problem says: "Don't explain. Just output as if you're a command line program"
+
+        So we output:
+
+          4:# Save the path to ./download_check script
+          ---
+          15:# This is a script to build and install tmux on macOS without homebrew.
+          ---
+          ... etc.
+
+        Now, let's list the lines that match:
+
+          Line 4: content = "# Save the path to ./download_check script" -> lstrip starts with '#' -> output.
+          Line 15: content = "# This is a script to build and install tmux on macOS without homebrew." -> output.
+          Line 20: output.
+          Line 29: output.
+          Line 38: output.
+          Line 48: output.
+          Line 56: output.
+
+        What about line 3? content = "" -> lstrip is "" -> skip.
+        Line 7: "" -> skip.
+        Line 14: "" -> skip.
+        Line 19: "" -> skip.
+        Line 28: "" -> skip.
+        Line 37: "" -> skip.
+        Line 46: "" -> skip.
+        Line 47: "" -> skip.
+        Line 64: "" -> skip.
+
+        And line 1: skipped because it starts with "#!".
+
+        So 7 lines.
+
+        We output each
+

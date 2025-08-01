@@ -1,0 +1,62 @@
+1:#!/bin/bash
+2:set -ex
+3:
+4:# Save the path to ./download_check script
+5:script_path=$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$0")
+6:download_check_path=$(dirname "$script_path")/download_check
+7:
+8:# This is a script to build and install tmux on macOS without homebrew.
+9:prefix=$HOME/apps/tmux
+10:mkdir -p "$prefix"
+11:cd "$prefix"
+12:
+13:# Download and build pkg-config
+14:download_and_check 'https://pkgconfig.freedesktop.org/releases/pkg-config-0.29.2.tar.gz'
+15:tar zxvf pkg-config-0.29.2.tar.gz
+16:cd pkg-config-0.29.2
+17:CFLAGS="-Wno-int-conversion" ./configure --prefix="$prefix"
+18:make -j 10
+19:make install
+20:cd ..
+21:
+22:# Download and build ncurses
+23:download_and_check 'https://ftp.gnu.org/gnu/ncurses/ncurses-6.5.tar.gz'
+24:tar zxvf ncurses-6.5.tar.gz
+25:cd ncurses-6.5
+26.:/bin/bash
+27:
+28:# Download and build libevent
+29:download_and_check 'https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz'
+30:tar zxvf libevent-2.1.12-stable.tar.gz
+31:cd libevent-2.1.12-stable
+32:CFLAGS="-Wno-int-conversion" ./configure --disable-openssl --prefix="$prefix"
+33:make -j 10
+34:make install
+35:cd ..
+36:
+37:# Download and build utf8proc
+38:download_and_check 'https://github.com/JuliaStrings/utf8proc/releases/download/v2.9.0/utf8proc-2.9.0.tar.gz'
+39:tar zxvf utf8proc-2.9.0.tar.gz
+40:cd utf8proc-2.9.0
+41:make prefix="$prefix"
+42:make install prefix="$prefix"
+43:cd ..
+44:
+45:# Download and build tmux
+46:download_and_check 'https://github.com/tmux/tmux/releases/download/3.5a/tmux-3.5a.tar.gz'
+47:tar zxvf tmux-3.5a.tar.gz
+48:cd tmux-3.5a
+49:PKG_CONFIG="$prefix"/bin/pkg-config ./configure --enable-utf8proc --prefix="$prefix"
+50:make -j 10
+51:make install
+52:cd ..
+53:
+54:# Download and build tmux
+55:download_and_check 'https://github.com/tmux/tmux/releases/download/3.5a/tmux-3.5a.tar.gz'
+56:tar zxvf tmux-3.5a.tar.gz
+57:cd tmux-3.5a
+58:ln -sf "$prefix"/bin/tmux ~/bin/tmux
+59:
+60:# This is a comment explaining the purpose of the script
+61:
+
