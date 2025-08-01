@@ -51,7 +51,7 @@ def model_glob(abbr):
 
 DEFAULT_MODEL = "gemma-3-12b-it"
 DEFAULT_CODE_INSTRUCT_MODEL = "Qwen3-8B-"
-DEFAULT_CODE_GENERATION_MODEL = "Qwen2.5.1-Coder-7B-Instruct"  # FIM
+DEFAULT_CODE_GENERATION_MODEL = "Qwen3-Coder-30B-A3B-Instruct"  # FIM
 
 # Presets
 
@@ -817,6 +817,7 @@ NAME_MATCH_OVERRIDE = [
 
 FIM_MATCH_OVERRIDE = [
     ("Qwen2", QwenFimMixin),
+    ("Qwen3", QwenFimMixin),
     ("codegeex4", CodeGeeX4TemplateMixin),
 ]
 
@@ -929,7 +930,7 @@ if __name__ == "__main__":
                 break
         else:
             if overrideTemplateMixIn is None:
-                print(f"Warning: No template found for {model}, using QwenFimMixin as a fallback")
+                sys.stderr.write(f"Warning: No template found for {model}, using QwenFimMixin as a fallback\n")
                 overrideTemplateMixIn = QwenFimMixin
 
         context = args[0]
