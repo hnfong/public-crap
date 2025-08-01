@@ -473,6 +473,10 @@ Computer technology related.
   - https://www.reddit.com/r/LocalLLaMA/comments/1lfpkyv/qwen3_for_apple_neural_engine/
     - """Noted, but comparisons are tough, because “it depends”. If you solely focused on single token inference on high end Ultra or MAX, MLX is better choice solely due to memory b/w. However for wider range of devices ANE provides lower energy and consistent performance on most popular devices like iPhones, Mac Air and iPads. Never the less we’ll be adding comparison section soon. Some initial work is here https://github.com/Anemll/anemll-bench"""
 
+- https://www.reddit.com/r/LocalLLaMA/comments/1ljw728/neuraltranslate_nahuatl_to_spanish_llm_gemma_3/ - NeuralTranslate: Nahuatl to Spanish LLM! (Gemma 3 27b fine-tune)
+- https://www.reddit.com/r/LocalLLaMA/comments/1m7gwuo/continued_pretraining_of_llama_38b_on_a_new/ - Trying to perform CPT of llama on a new language
+
+
 
 
 ### Toys
