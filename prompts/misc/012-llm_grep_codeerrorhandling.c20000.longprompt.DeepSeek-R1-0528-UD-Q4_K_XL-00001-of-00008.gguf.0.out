@@ -1,0 +1,523 @@
+<think>
+We are looking for lines that obviously relate to error handling. This includes:
+- Defining custom exception classes (subclasses of Exception or similar)
+- Raising exceptions (using `raise`)
+- Catching exceptions (using `try-except` blocks)
+- Any code that handles an error condition (like checking for errors and taking action)
+- Functions that are designed to validate or check for errors
+
+We are not interested in:
+- Import statements (unless they are directly related to error handling, but in this input, we don't see any)
+- Regular expressions or other setup that doesn't involve handling an error
+- Code that is only tangentially related (like a function that might be called in an error case but doesn't handle errors itself)
+
+Let's go through the input line by line:
+
+Line 44: `class DefinitionError(ValueError):` -> This defines a custom exception for definition errors. It's error handling related.
+Line 47: `class AmbiguousPronunciationError(DefinitionError):` -> Another custom exception.
+Line 50: `class InvalidJyutPingError(DefinitionError):` -> Custom exception.
+Line 53: `class IllegalCharacterError(DefinitionError):` -> Custom exception.
+Line 60: `class MissingItemError(DefinitionError):` -> Custom exception.
+
+Line 137-140: 
+```
+137:    for proper_name, aka_set in POS_MAP.items():
+138:        if s in aka_set: return proper_name
+139:
+140:    raise ValueError("Invalid part of speech")
+```
+Here, if the loop doesn't find a match, it raises a ValueError. This is error handling (raising an exception).
+
+Line 142-146:
+```
+142:def label_valid(s):
+143:    s = s.strip().lower()
+144:    for proper_name, aka_set in LABEL_MAP.items():
+145:        if s in aka_set: return proper_name
+146:    raise ValueError("Invalid label name")
+```
+Similarly, raises an exception if label is invalid.
+
+Line 161: `def __init__(self, s, unknown_pos=False, raise_on_error=False):` -> The `raise_on_error` parameter suggests error handling might be inside.
+
+Line 167: `self._is_stub = (m is None) or (m.group(0) != def_str)` -> This is setting a flag, but not directly error handling.
+
+Line 168-169: If it's a stub, then set `items_str` to `def_str`. But no error raised.
+
+Line 171-221: This block is inside a try-except. It's parsing and handling errors.
+
+Specifically:
+Line 182: `raise ValueError("Unknown tag: %s" % k)`
+Line 190: `raise ValueError(errmsg)`
+Line 204: `if req_tag not in tags: ... raise ValueError(errmsg)`
+Line 209: `except ValueError as e: ...` -> This is catching the exception and then either re-raising or logging.
+
+Line 224-236: Another try-except block when parsing explanations.
+
+Line 232: `if raise_on_error: raise e` -> re-raising the exception.
+
+Line 233: `if len(self._item_list) == 0: ... raise ValueError("No valid item to parse")` -> raising an exception.
+
+Line 297-302: 
+```
+297:        try:
+298:            return [short_pos(pos) for pos in self._tags["pos"]]
+299:        except Exception as e:
+300:            import dj
+301:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+302:            return ""
+```
+This catches an exception and logs it.
+
+Line 317-368: `def check_problems(...):` -> This function checks for problems (errors) and returns a list of issues. It includes:
+Line 329: `if not common.is_cjk(wrchar):` -> not error handling per se, but condition.
+Line 329-331: If the character is CJK and the jyutping is not in the list, then record a problem.
+Line 333-346: `grammar_check` function that makes a network call and returns errors from LanguageTool.
+Line 345: `return resp_data["matches"]` -> returning errors.
+Line 362: `except Exception as e: ...` -> catching and logging an exception.
+
+Line 370: `class InvalidLangCodeFormat(ValueError):` -> custom exception.
+
+Line 394-395: `if strict or _g_lang_force_strict: raise InvalidLangCodeFormat("Invalid form")` -> raising an exception.
+
+Line 486: `raise MissingItemError("Example string missing")` -> raising an exception.
+
+Line 493: `if looks_like_jyutping(jyutping):` -> not error handling.
+
+Line 550: `except Exception as e: ...` -> catching an exception and logging.
+
+Line 613: `if mode == 0: ...` -> not error handling.
+
+Line 692-717: `parse_written_form_and_pronunciation` function:
+Line 699: `raise IllegalCharacterError('Pronunciation cannot contain slashes or backslashes; ...')`
+Line 713: `raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)`
+
+Now, let's list the line numbers that we should output:
+
+44, 47, 50, 53, 60, 140, 146, 182, 190, 204, 207, 209, 218, 219, 230, 231, 233, 234, 299, 300, 301, 362, 363, 364, 370, 394, 395, 486, 550, 551, 552, 699, 713
+
+But note: we must output the entire line (with line number) and then a "---" separator.
+
+However, note that some lines are part of a block. We are to output the line only if it has something that matches. We are not outputting the entire block.
+
+But note: the problem says "for every line in the input", so we output the line as it is (with the line number) if that line contains code that obviously relates to error handling.
+
+Let's go through the list:
+
+Line 44: `class DefinitionError(ValueError):` -> output
+Line 47: `class AmbiguousPronunciationError(DefinitionError):` -> output
+Line 50: `class InvalidJyutPingError(DefinitionError):` -> output
+Line 53: `class IllegalCharacterError(DefinitionError):` -> output
+Line 60: `class MissingItemError(DefinitionError):` -> output
+
+Line 140: `    raise ValueError("Invalid part of speech")` -> output
+
+Line 146: `    raise ValueError("Invalid label name")` -> output
+
+Line 182: `                        raise ValueError("Unknown tag: %s" % k)` -> output
+
+Line 190: `                            raise ValueError(errmsg)` -> output
+
+Line 204: `                            raise ValueError(errmsg)` -> output
+
+Line 207: `                            errmsg = "Required tag '%s' not found for '%s': '%s'!" % (req_tag, self, items_str)` -> This line is assigning an error message, but the actual raising is on the next line (208). However, the problem says "the line" so we look at line 207. But note that the raising is on 208? Actually, the code at line 207 is:
+
+207:                            errmsg = "Required tag '%s' not found for '%s': '%s'!" % (req_tag, self, items_str)
+
+And then 208:                            raise ValueError(errmsg)
+
+So we should output line 208? But wait, the input we are given has:
+
+207:                            errmsg = "Required tag '%s' not found for '%s': '%s'!" % (req_tag, self, items_str)
+208:                            raise ValueError(errmsg)
+
+So we should output line 208.
+
+Similarly, line 209: `        except ValueError as e:` -> output
+
+Line 218: `                if raise_on_error:` -> This is part of the except block, but the actual error handling is in the next lines. We should output the entire block? But the instruction says "for every line". We output line 218 because it is part of the error handling (it conditionally re-raises). But note that the condition is on the same line? Actually, line 218 is:
+
+218:                if raise_on_error:
+
+and 219:                    raise e
+
+So we output both 218 and 219? But note: the problem says "if the line has something that matches". Line 218 is a condition for error handling, so we output it.
+
+Similarly, line 230: `            except ValueError as e:` -> output
+
+Line 231: `                import dj` -> This is importing a module for logging, so it's part of error handling? But it's not directly about error handling. However, it's inside the except block. We might consider it as part of the error handling. But the instruction says "only trigger when the input obviously matches". Let's see: the import is only for logging, so it's part of the error handling. We output it.
+
+But note: the next line 232: `                dj.DEBUG("Got error: %s when parsing '%s'" % (e, explanation))` is the actual logging. So we should output 230, 231, 232? But the problem says "every line" that has something that matches. So:
+
+Line 230: `            except ValueError as e:` -> obviously error handling.
+Line 231: `                import dj` -> not obviously error handling? It's just an import. But without it, the logging wouldn't work. However, the instruction says "not tangentially related". So we skip line 231? But note that the import is inside the except block, so it's directly part of the error handling. We'll include it.
+
+But let's compare with the example: the query is "code that relates to error handling". The import is necessary for the error handling (logging) and is inside the except block, so it's directly related.
+
+Similarly, line 233: `        if len(self._item_list) == 0:` -> This is checking for an error condition (no items). Then it raises an exception at 234. So we output 233? But note that the raising is on 234. However, the condition is part of the error handling. We output both 233 and 234.
+
+Line 233: `        if len(self._item_list) == 0:`
+Line 234: `            if raise_on_error:`
+Line 235: `                raise ValueError("No valid item to parse")`
+
+So we output 233, 234, 235? But note that 234 is a condition. We output:
+
+233:        if len(self._item_list) == 0:
+234:            if raise_on_error:
+235:                raise ValueError("No valid item to parse")
+
+But the problem says "every line" that has something that matches. So:
+
+Line 233: condition for error -> output
+Line 234: condition for re-raising -> output
+Line 235: raising the exception -> output
+
+Similarly, line 299: `        try:` -> beginning of a try block, so error handling related? But note: the try block is for error handling. We output it? The instruction says "only trigger when the input obviously matches". The try block is obviously for error handling. So we output line 299.
+
+But note: the try block spans multiple lines. We output every line that is part of the try block? No, we output only the line that has the try, except, or the code that raises/catches. So:
+
+Line 299: `        try:`
+Line 300: `            import dj`
+Line 301: `            dj.DEBUG("Cannot find shortened_pos: %s" % e)`
+Line 302: `            return ""`
+
+But note: the except is on 299? Actually, the code is:
+
+297:        try:
+298:            return [short_pos(pos) for pos in self._tags["pos"]]
+299:        except Exception as e:
+300:            import dj
+301:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+302:            return ""
+
+Wait, the line numbers in the input are:
+
+297:        try:
+298:            return [short_pos(pos) for pos in self._tags["pos"]]
+299:        except Exception as e:
+300:            import dj
+301:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+302:            return ""
+
+So we output:
+297:        try: -> but wait, the try is on 297? But we are at line 297? Actually, the input we are given has:
+
+297:        try:
+298:            return [short_pos(pos) for pos in self._tags["pos"]]
+299:        except Exception as e:
+300:            import dj
+301:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+302:            return ""
+
+So we output:
+297:        try:
+299:        except Exception as e:
+300:            import dj
+301:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+
+But note: the try block itself (line 297) is error handling related? Yes, because it's the start of a try-except.
+
+Similarly, line 362: `        except Exception as e:` -> output
+Line 363: `            import dj` -> output (because it's in the except block and for logging)
+Line 364: `            dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))` -> output
+
+Line 370: `class InvalidLangCodeFormat(ValueError):` -> output
+
+Line 394: `    if strict or _g_lang_force_strict:` -> condition for raising, so output?
+Line 395: `        raise InvalidLangCodeFormat("Invalid form")` -> output
+
+Line 486: `            raise MissingItemError("Example string missing")` -> output
+
+Line 550: `        except Exception as e:` -> output
+Line 551: `            dj.ERROR(f"Can't format as ruby text! {self.text} {self.pronunciation} {e}")` -> output
+Line 552: `            # Fallback to something reasonable` -> This is a comment, but the line also has code? Actually, it's:
+
+552:            return self.html() + " (" + self.pronunciation + ")"
+
+But note: this is the fallback in case of error. So it's part of error handling. We output it.
+
+Line 699: `                raise IllegalCharacterError('Pronunciation cannot contain slashes or backslashes; if you want to add a different written/spoken form, add a separate form instead (i.e. 咖喱:gaa3 lei1,咖哩:gaa3 lei1)')` -> output
+
+Line 713: `                raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)` -> output
+
+Now, let's write the output in the required format: for each matching line, output the line number and the line, then "---".
+
+But note: the input has line numbers at the beginning. We must output the line exactly as it appears (with the same indentation) and the line number.
+
+However, the input has:
+
+1:# -*- coding: utf-8 -*-
+2:
+3:
+4:import collections
+
+So we output the line number and the content without the leading line number? Actually, the problem says: "output the line (together with line number)".
+
+We are to output the line as it is? But note the example input has line numbers at the beginning. We are to output the line number and the content? But the problem says "together with line number", so we can output:
+
+44:class DefinitionError(ValueError):
+---
+47:class AmbiguousPronunciationError(DefinitionError):
+---
+...
+
+But note: the input has the line numbers as part of the content? Actually, the input is given with line numbers at the beginning. We are to treat the content after the line number as the line.
+
+So we output:
+
+44:class DefinitionError(ValueError):
+---
+47:class AmbiguousPronunciationError(DefinitionError):
+---
+50:class InvalidJyutPingError(DefinitionError):
+---
+53:class IllegalCharacterError(DefinitionError):
+---
+60:class MissingItemError(DefinitionError):
+---
+140:    raise ValueError("Invalid part of speech")
+---
+146:    raise ValueError("Invalid label name")
+---
+182:                        raise ValueError("Unknown tag: %s" % k)
+---
+190:                            raise ValueError(errmsg)
+---
+204:                            raise ValueError(errmsg)
+---
+209:        except ValueError as e:
+---
+218:                if raise_on_error:
+---
+219:                    raise e
+---
+230:            except ValueError as e:
+---
+231:                import dj
+---
+232:                dj.DEBUG("Got error: %s when parsing '%s'" % (e, explanation))
+---
+233:        if len(self._item_list) == 0:
+---
+234:            if raise_on_error:
+---
+235:                raise ValueError("No valid item to parse")
+---
+297:        try:
+---
+299:        except Exception as e:
+---
+300:            import dj
+---
+301:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+---
+362:        except Exception as e:
+---
+363:            import dj
+---
+364:            dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))
+---
+370:class InvalidLangCodeFormat(ValueError):
+---
+394:    if strict or _g_lang_force_strict:
+---
+395:        raise InvalidLangCodeFormat("Invalid form")
+---
+486:            raise MissingItemError("Example string missing")
+---
+550:        except Exception as e:
+---
+551:            dj.ERROR(f"Can't format as ruby text! {self.text} {self.pronunciation} {e}")
+---
+552:            return self.html() + " (" + self.pronunciation + ")"
+---
+699:                raise IllegalCharacterError('Pronunciation cannot contain slashes or backslashes; if you want to add a different written/spoken form, add a separate form instead (i.e. 咖喱:gaa3 lei1,咖哩:gaa3 lei1)')
+---
+713:                raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+---
+
+But note: we must be cautious about the exact line numbers. The input we are given has 724 lines. We have listed the lines that we think are error handling.
+
+However, note that the input has:
+
+Line 297: `        try:`
+But in the input, the try is on line 297? Actually, the input we are given has:
+
+297:        try:
+
+So we output that.
+
+But wait, the input also has:
+
+296:    def shortened_pos(self):
+297:        # Returns the shortest latin representation of pos, if available.
+298:        try:
+299:            return [short_pos(pos) for pos in self._tags["pos"]]
+300:        except Exception as e:
+301:            import dj
+302:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+303:            return ""
+
+So the try is on line 298? And except on 300? Then we should adjust:
+
+We output:
+298:        try:
+300:        except Exception as e:
+301:            import dj
+302:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+
+But note: the input we are given in the problem has:
+
+296:    def shortened_pos(self):
+297:        # Returns the shortest latin representation of pos, if available.
+298:        try:
+299:            return [short_pos(pos) for pos in self._tags["pos"]]
+300:        except Exception as e:
+301:            import dj
+302:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+303:            return ""
+
+So we output lines 298, 300, 301, 302.
+
+Similarly, we must double-check all line numbers.
+
+Let me recount the lines we have:
+
+44, 47, 50, 53, 60, 140, 146, 182, 190, 204, 209, 218, 219, 230, 231, 232, 233, 234, 235, 298, 300, 301, 302, 362, 363, 364, 370, 394, 395, 486, 550, 551, 552, 699, 713
+
+But note: the input has:
+
+Line 204: `                            raise ValueError(errmsg)` -> but in the input, that line is:
+
+207:                            errmsg = "Required tag '%s' not found for '%s': '%s'!" % (req_tag, self, items_str)
+208:                            raise ValueError(errmsg)
+
+So we output line 208? But we listed 204? That was a mistake. We should look for the actual raising.
+
+Similarly, line 190 is:
+
+190:                            raise ValueError(errmsg)
+
+But in the input, that line is:
+
+190:                            errmsg = "Tag '%s' cannot have value '%s'" % (k, v)
+
+and then 191:                            raise ValueError(errmsg)
+
+So we should output line 191.
+
+Let me correct:
+
+We found:
+
+Line 182: `                        raise ValueError("Unknown tag: %s" % k)` -> that's line 182 in the input? Actually, the input has:
+
+182:                        raise ValueError("Unknown tag: %s" % k)
+
+So that's correct.
+
+Line 190: `                            errmsg = "Tag '%s' cannot have value '%s'" % (k, v)` -> not raising, so we skip? But then the raising is on 191:
+
+191:                            raise ValueError(errmsg)
+
+So we output 191.
+
+Similarly, line 204: we have:
+
+204:                    if req_tag == "pos" and unknown_pos:
+205:                        self._tags["pos"] = set([pos_valid("---")])
+206:                    else:
+207:                        errmsg = "Required tag '%s' not found for '%s': '%s'!" % (req_tag, self, items_str)
+208:                        raise ValueError(errmsg)
+
+So we output 208.
+
+And line 209: `        except ValueError as e:` -> that's 209.
+
+So the corrected list of lines:
+
+44, 47, 50, 53, 60, 140, 146, 182, 191, 208, 209, 218, 219, 230, 231, 232, 233, 234, 235, 298, 300, 301, 302, 362, 363, 364, 370, 394, 395, 486, 550, 551, 552, 699, 713
+
+But note: the input has:
+
+Line 298:        try:
+Line 300:        except Exception as e:
+Line 301:            import dj
+Line 302:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+
+So we output 298, 300, 301, 302.
+
+Now, let's write the output accordingly.
+</think>
+44:class DefinitionError(ValueError):
+---
+47:class AmbiguousPronunciationError(DefinitionError):
+---
+50:class InvalidJyutPingError(DefinitionError):
+---
+53:class IllegalCharacterError(DefinitionError):
+---
+60:class MissingItemError(DefinitionError):
+---
+140:    raise ValueError("Invalid part of speech")
+---
+146:    raise ValueError("Invalid label name")
+---
+182:                        raise ValueError("Unknown tag: %s" % k)
+---
+191:                            raise ValueError(errmsg)
+---
+208:                        raise ValueError(errmsg)
+---
+209:        except ValueError as e:
+---
+218:                if raise_on_error:
+---
+219:                    raise e
+---
+230:            except ValueError as e:
+---
+231:                import dj
+---
+232:                dj.DEBUG("Got error: %s when parsing '%s'" % (e, explanation))
+---
+233:        if len(self._item_list) == 0:
+---
+234:            if raise_on_error:
+---
+235:                raise ValueError("No valid item to parse")
+---
+298:        try:
+---
+300:        except Exception as e:
+---
+301:            import dj
+---
+302:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+---
+362:        except Exception as e:
+---
+363:            import dj
+---
+364:            dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))
+---
+370:class InvalidLangCodeFormat(ValueError):
+---
+394:    if strict or _g_lang_force_strict:
+---
+395:        raise InvalidLangCodeFormat("Invalid form")
+---
+486:            raise MissingItemError("Example string missing")
+---
+550:        except Exception as e:
+---
+551:            dj.ERROR(f"Can't format as ruby text! {self.text} {self.pronunciation} {e}")
+---
+552:            return self.html() + " (" + self.pronunciation + ")"
+---
+699:                raise IllegalCharacterError('Pronunciation cannot contain slashes or backslashes; if you want to add a different written/spoken form, add a separate form instead (i.e. 咖喱:gaa3 lei1,咖哩:gaa3 lei1)')
+---
+713:                raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+--- [end of text]
+
+
