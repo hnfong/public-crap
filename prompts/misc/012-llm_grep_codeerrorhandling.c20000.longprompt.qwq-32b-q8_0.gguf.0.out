@@ -1,0 +1,437 @@
+<think>
+Okay, I need to find lines in the provided code that relate to error handling. The user specified the query as "code that relates to error handling". Let me go through each line step by step.
+
+Starting from the top, I'll look for keywords like 'Error', 'except', 'try', 'raise', or any custom exceptions. 
+
+Looking at line 44: "class DefinitionError(ValueError):" – that's an exception class. Definitely related to error handling. 
+
+Line 47: "class AmbiguousPronunciationError(DefinitionError):" – another custom error. 
+
+Line 50: "class InvalidJyutPingError(DefinitionError):" – same here. 
+
+Line 53: "class IllegalCharacterError(DefinitionError):" – yes. 
+
+Line 60: "class MissingItemError(DefinitionError):" – another error class. 
+
+Now, looking for places where exceptions are raised or handled. 
+
+In line 139: "raise ValueError("Invalid part of speech")" – this is raising an error, so it's part of error handling. 
+
+Line 146: "raise ValueError("Invalid label name")" – another raise statement. 
+
+Looking further down, in the MultilingualDefinition class, there's a try/except block. Line 166 starts a method where they check for a match. Then line 169: if not a match, it sets _is_stub. But in line 170 onwards, they use re_tag.sub. Then in line 181: if k not in RECOGNIZED_TAGS, they raise ValueError. 
+
+Line 189: if validator doesn't match, raise ValueError with errmsg. 
+
+Line 197: checking if tags are iterable, else raise ValueError. 
+
+Line 202: checking required tags, else raise ValueError. 
+
+Then in line 210: except ValueError as e: they handle the exception, set _is_stub, and log with dj.DEBUG. 
+
+Line 227: another try/except around parsing explanations. 
+
+Line 234: if no valid items, raise ValueError. 
+
+Also, line 236: logging an error with dj.DEBUG. 
+
+Looking further, line 486: in the Explanation class, they call choplang which might raise exceptions. 
+
+In line 696: parse_written_form_and_pronunciation has a try/except around cantonese.canonicalize_jyutping, raising InvalidJyutPingError. 
+
+Line 699: raises IllegalCharacterError. 
+
+So all these lines where exceptions are defined, raised, or handled should be included. 
+
+Now, I need to list each line number and the line itself that matches the query. Only lines that clearly relate to error handling. 
+
+The custom exceptions (lines 44-60) are definitely included. The raise statements (139, 146, 181, 189, 197, 202, 234, 696, 699) are part of error handling. The try/except blocks (like 166-237) involve error handling. 
+
+Wait, but the user wants lines that "obviously" match. So maybe only the lines that define exceptions, raise errors, or have explicit error handling code. 
+
+So compiling all those lines:
+
+44: class DefinitionError(ValueError):
+47: class AmbiguousPronunciationError(DefinitionError):
+50: class InvalidJyutPingError(DefinitionError):
+53: class IllegalCharacterError(DefinitionError):
+56:     def __init__(self, value):
+57:         self.errorMsg = value
+58:         super().__init__(self.errorMsg)  # Wait, line 57-58? Wait, looking back, line 57 is part of IllegalCharacterError's __init__, so line 53-61 are part of the error classes. 
+
+Wait, line 53 is the class, line 54 is __init__, line 57 is __str__? Let me check the code again. 
+
+Looking back at the input:
+
+Lines 44-62:
+
+44:class DefinitionError(ValueError):
+45:    pass
+46:
+47:class AmbiguousPronunciationError(DefinitionError):
+48:    pass
+49:
+50:class InvalidJyutPingError(DefinitionError):
+51:    pass
+52:
+53:class IllegalCharacterError(DefinitionError):
+54:    def __init__(self, value):
+55:        self.errorMsg = value
+56:
+57:    def __str__(self):
+58:        return repr(self.errorMsg)
+59:
+60:class MissingItemError(DefinitionError):
+61:    pass
+
+So line 53 is the class IllegalCharacterError, which inherits from DefinitionError. The __init__ and __str__ are part of that class. So lines 44,47,50,53,60 are the class definitions. 
+
+Then lines 139, 146, 181, 189, 197, 202, 234, 696, 699 are the raise statements. 
+
+Also, in line 210: except ValueError as e: which is handling exceptions. 
+
+Wait, but the user wants code that relates to error handling. So the except blocks are part of error handling. 
+
+So lines like 210, 227, 234, etc. 
+
+But the user's instruction says to output the line only if it obviously matches. So perhaps the lines that define exceptions, raise exceptions, or have try/except blocks. 
+
+So compiling all the lines that are part of exception definitions, raising exceptions, or handling them. 
+
+Now, let me list each line number and the line:
+
+44: class DefinitionError(ValueError):
+47: class AmbiguousPronunciationError(DefinitionError):
+50: class InvalidJyutPingError(DefinitionError):
+53: class IllegalCharacterError(DefinitionError):
+60: class MissingItemError(DefinitionError):
+139: raise ValueError("Invalid part of speech")
+146: raise ValueError("Invalid label name")
+181: raise ValueError("Unknown tag: %s" % k)
+189: raise ValueError(errmsg)
+197: raise ValueError("tags should be a dictionary of lists!")
+202: raise ValueError(errmsg)
+210: except ValueError as e:
+227: except ValueError as e:
+234: raise ValueError("No valid item to parse")
+236: dj.DEBUG("Got error: no valid item when parsing '%s'" % explanation)
+486: raise MissingItemError("Example string missing")
+490: if raw[-1] == ")" and open_brace != -1:
+491: jyutping = raw[open_brace+1:-1].strip()
+492: if looks_like_jyutping(jyutping):
+493: pronunciation = jyutping
+494: raw = raw[:open_brace].strip()
+495: lang, nolang = choplang(raw)
+496: nolang = nolang.strip()
+497: return (lang, nolang.strip(), pronunciation.strip())
+500: @staticmethod
+501: def serialize(self, include_lang_code=True):
+502: ret = [self.lang, ":", self.text] if include_lang_code else [self.text]
+503: if self.pronunciation:
+504: ret.append(" (")
+505: ret.append(self.pronunciation)
+506: ret.append(")")
+507: return "".join(ret)
+508: def html(self, limit = float('infinity')):
+509: return format_explanation_and_example(self.text, limit)
+510: _RUBY_STRIP_PUNCTUATIONS = re.compile(r'[.,?:"]')
+511: @functools.cached_property
+512: def ruby_match(self):
+513: return zilib.ruby_match_zipped(self.text, self._RUBY_STRIP_PUNCTUATIONS.sub('', self.pronunciation))
+514: def ruby_match_html(self, custom_formatter):
+515: output = []
+516: output.append("<ruby>")
+517: for item, p in self.ruby_match:
+518: if item.strip() == '' and not p:
+519: continue
+520: output.append("<rb>")
+521: if custom_formatter:
+522: item = custom_formatter(item)
+523: output.append(item)
+524: output.append("</rb>")
+525: output.append("<rt>")
+526: output.append(p)
+527: output.append("</rt>")
+528: output.append("</ruby>")
+529: return "".join(output)
+530: def ruby_html(self):
+531: import dj
+532: def formatter(s):
+533: return format_explanation_and_example(s)
+534: try:
+535: return dj.mark_safe(self.ruby_match_html(formatter))
+536: except Exception as e:
+537: dj.ERROR(f"Can't format as ruby text! {self.text} {self.pronunciation} {e}")
+538: return self.html() + " (" + self.pronunciation + ")"
+539: def ruby_info(self):
+540: import json
+541: return json.dumps(self.ruby_match)
+542: class MultilingualExample(MultilingualFormat):
+543: CONSTRUCTOR = Example
+544: class Explanation(object):
+545: def __init__(self, raw):
+546: object.__init__(self)
+547: self.lang, self.text = choplang(raw.strip())
+548: self.text = self.text.strip()
+549: def serialize(self, include_lang_code=True):
+550: ret = [self.lang, ":", self.text] if include_lang_code else [self.text]
+551: return "".join(ret)
+552: def html(self, limit = float('infinity')):
+553: return format_explanation_and_example(self.text, limit)
+554: def lang_match(internal, external):
+555: if external == 'zh-hk': # FIXME: this should be yue
+556: external = 'yue'
+557: if external == 'en' or external.startswith('en-'):
+558: external = 'eng'
+559: return internal == external
+560: class MultilingualExplanation(MultilingualFormat):
+561: CONSTRUCTOR = Explanation
+562: def html(self, limit = float('infinity')):
+563: selected = self._translations[0]
+564: for tran in self._translations:
+565: if lang_match(tran.lang, get_current_language()):
+566: selected = tran
+567: break
+568: return selected.html(limit)
+569: class MultilingualExplanationAndExamples(object):
+570: def __init__(self, raw):
+571: object.__init__(self)
+572: self._raw = raw
+573: cur_block = []
+574: self.explanation = None
+575: self.examples = []
+576: self.phrases = []
+577: explanation_str = raw.strip()
+578: if explanation_str.startswith("<explanation>"):
+579: explanation_str = explanation_str[13:].strip()
+580: mode = 0
+581: for line in explanation_str.splitlines():
+582: line = line.strip()
+583: if line == "<eg>":
+584: if mode == .:
+585: self.explanation = MultilingualExplanation("\n".join(cur_block))
+586: mode = 1
+587: else:
+588: eg = MultilingualExample("\n".join(cur_block))
+589: if eg.is_probably_phrase:
+590: self.phrases.append(eg)
+591: else:
+592: self.examples.append(eg)
+593: cur_block = []
+594: continue
+595: cur_block.append(line)
+596: if mode == 0:
+597: self.explanation = MultilingualExplanation("\n".join(cur_block))
+598: mode = 1
+599: else:
+600: eg = MultilingualExample("\n".join(cur_block))
+601: if eg.is_probably_phrase:
+602: self.phrases.append(eg)
+603: else:
+604: self.examples.append(eg)
+605: def multilingual_explanation(self):
+606: return self.explanation
+607: def multilingual_examples(self):
+608: return self.examples
+609: def multilingual_phrases(self):
+610: return self.phrases
+611: def html_explanation(self, limit = float('infinity')):
+612: return self.explanation.html(limit)
+613: def serialize(self):
+614: ret = []
+615: if self.examples or self.phrases:
+616: ret.append("<explanation>")
+617: ret.append(self.explanation.serialize())
+618: for e in self.phrases:
+619: ret.append("<eg>")
+620: ret.append(e.serialize())
+621: for e in self.examples:
+622: ret.append("<eg>")
+623: ret.append(e.serialize())
+624: return "\n".join(ret)
+625: def json(self):
+626: return {
+627: "explanation": self.explanation.json(),
+628: "example_phrases": [e.json() for e in self.phrases],
+629: "example_sentences": [e.json() for e in self.examples],
+630: }
+631: _RE_MEASURE = re.compile(r'[(（]量詞[:：][^)）]+[)）]')
+632: def measure_word(self):
+633: for t in self.explanation.translations():
+634: m = self._RE_MEASURE.search(t.text)
+635: if m:
+636: return (m.group(0).
+637: replace('量詞', _("measure word")).
+638: replace("（", "(").replace("）", ")").
+639: replace("：", ":").replace(":", ": ").
+640: replace("／", " / ")
+641: )
+642: return ""
+643: def parse_written_form_and_pronunciation(s):
+644: for item in ["/", "\\"]:
+645: if s.find(item) > -1:
+646: raise IllegalCharacterError('Pronunciation cannot contain slashes or backslashes; if you want to add a different written/spoken form, add a separate form instead (i.e. 咖喱:gaa3 lei1,咖哩:gaa3 lei1)')
+647: while s[-1] == ",": s = s[:-1]
+648: ret = []
+649: for x in s.split(","):
+650: t = x.strip().split(":")
+651: wr = t[0].strip()
+652: if len(t) > 1:
+653: try:
+654: item = (wr, [cantonese.canonicalize_jyutping(y.strip(), allow_exceptions=True, raise_on_error=True) for y in t[1:]])
+655: if item not in ret:
+656: ret.append(item)
+657: except ValueError:
+658: raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+659: else:
+660: auto_pronounce = "!" + zilib.get_ping3jam1(wr)
+661: ret.append((wr, [auto_pronounce]))
+662: return ret
+663: def encode_written_form_and_pronunciation(l):
+664: return ",".join([ x[0] + ":" + ":".join(x[1]) for x in l ])
+665: def format_explanation_and_example(explanation_str, limit = float('infinity')):
+666: import dj
+667: from zidin import models
+668: if explanation_str.startswith("ref:"):
+669: return "【字典工程進行中】"
+670: html = html_py.escape(explanation_str)
+671: idx = -1
+672: additional_length = 0
+673: while True:
+674: idx = html.find("#", idx + 1)
+675: if idx == -1: break
+676: length = len(html)
+677: premature_break = False
+678: for term_idx in range(idx + 1, length):
+679: if not common.is_cjk(html[term_idx]) and html[term_idx] not in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz":
+680: premature_break = True
+681: break
+682: if not premature_break:
+683: term_idx += 1
+684: if term_idx >= limit:
+685: break
+686: eat_leading_space = int(idx != 0 and html[idx - 1] == " " and ((idx < 2) or common.is_cjk(html[idx - 2])))
+687: eat_trailing_space = int(term_idx + 1 < length and html[term_idx] == " " and ((len(html) <= term_idx + 1) or common.is_cjk(html[term_idx + 1])))
+688: if models.Word.objects.filter(writtenform__representation=html[idx+1:term_idx]).count() > 0:
+689: html = (
+690: html[:idx - eat_leading_space] +
+691: '<a href="/zidin/' + urllib.parse.quote(html[idx+1:term_idx].encode("utf-8")) + '">' + html[idx+1:term_idx] + '</a>' +
+692: html[term_idx + eat_trailing_space:]
+693: )
+694: additional_length += len(html) - length
+695: if limit + additional_length < len(html):
+696: html = util.find_until(html, limit + additional_length, "。")
+697: return dj.mark_safe(html.strip())
+
+Wait, I need to focus on the lines that are part of error handling. Let me re-examine the code again.
+
+Looking back at the input:
+
+Lines 44-62 are the custom exceptions. 
+
+Then in line 139: raise ValueError("Invalid part of speech")
+
+Line 146: raise ValueError("Invalid label name")
+
+Line 181: raise ValueError("Unknown tag: %s" % k)
+
+Line 189: raise ValueError(errmsg)
+
+Line 197: raise ValueError("tags should be a dictionary of lists!")
+
+Line 202: raise ValueError(errmsg)
+
+Line 210: except ValueError as e:
+
+Line 227: except ValueError as e:
+
+Line 234: raise ValueError("No valid item to parse")
+
+Line 236: dj.DEBUG("Got error: no valid item when parsing '%s'" % explanation)
+
+Line 486: raise MissingItemError("Example string missing")
+
+Line 696: raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+
+Line 699: raise IllegalCharacterError('Pronunciation cannot contain...')
+
+Line 536: except Exception as e:
+
+Line 537: dj.ERROR(f"Can't format as ruby text! {self.text} {self.pronunciation} {e}")
+
+Line 236 is a debug message indicating an error, so that's part of error handling.
+
+Also, line 213: self._tags = collections.OrderedDict() inside an except block.
+
+Wait, but the user wants lines that obviously relate to error handling. So the lines that define exceptions, raise exceptions, or handle exceptions (like except blocks) are the ones to include.
+
+So compiling all these lines:
+
+44: class DefinitionError(ValueError):
+47: class AmbiguousPronunciationError(DefinitionError):
+50: class InvalidJyutPingError(DefinitionError):
+53: class IllegalCharacterError(DefinitionError):
+60: class MissingItemError(DefinitionError):
+139: raise ValueError("Invalid part of speech")
+146: raise ValueError("Invalid label name")
+181: raise ValueError("Unknown tag: %s" % k)
+189: raise ValueError(errmsg)
+197: raise ValueError("tags should be a dictionary of lists!")
+202: raise ValueError(errmsg)
+210: except ValueError as e:
+227: except ValueError as e:
+234: raise ValueError("No valid item to parse")
+236: dj.DEBUG("Got error: no valid item when parsing '%s'" % explanation)
+486: raise MissingItemError("Example string missing")
+536: except Exception as e:
+537: dj.ERROR(f"Can't format as ruby text! {self.text} {self.pronunciation} {e}")
+696: raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+699: raise IllegalCharacterError('Pronunciation cannot contain slashes or backslashes; if you want to add a different written/spoken form, add a separate form instead (i.e. 咖喱:gaa3 lei1,咖哩:gaa3 lei1)')
+
+These lines all directly relate to error handling. The debug statements (like line 236 and 537) are part of error logging, so they should be included.
+
+Now, I need to list each of these lines with their line numbers and the line content, separated by "---".
+</think>
+
+44:class DefinitionError(ValueError):
+---
+47:class AmbiguousPronunciationError(DefinitionError):
+---
+50:class InvalidJyutPingError(DefinitionError):
+---
+53:class IllegalCharacterError(DefinitionError):
+---
+60:class MissingItemError(DefinitionError):
+---
+139: raise ValueError("Invalid part of speech")
+---
+146: raise ValueError("Invalid label name")
+---
+181: raise ValueError("Unknown tag: %s" % k)
+---
+189: raise ValueError(errmsg)
+---
+197: raise ValueError("tags should be a dictionary of lists!")
+---
+202: raise ValueError(errmsg)
+---
+210: except ValueError as e:
+---
+227: except ValueError as e:
+---
+234: raise ValueError("No valid item to parse")
+---
+236: dj.DEBUG("Got error: no valid item when parsing '%s'" % explanation)
+---
+486: raise MissingItemError("Example string missing")
+---
+536: except Exception as e:
+---
+537: dj.ERROR(f"Can't format as ruby text! {self.text} {self.pronunciation} {e}")
+---
+696: raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+---
+699: raise IllegalCharacterError('Pronunciation cannot contain slashes or backslashes; if you want to add a different written/spoken form, add a separate form instead (i.e. 咖喱:gaa3 lei1,咖哩:gaa3 lei1)')
+--- [end of text]
+
+
