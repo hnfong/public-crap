@@ -1,0 +1,562 @@
+<think>
+We are going to read the entire input from stdin (multiple lines) and process it.
+ Steps:
+ 1. Read all input as a string (we can read line by line and combine, but note: the input may be multiple lines).
+ 2. We need to extract all numbers that may have:
+    - Optional commas as thousand separators (so we might have to remove commas for the number part)
+    - Optional suffixes (k, K, m, M, g, G) at the end of the number (but note: the number might have a decimal point and commas)
+
+ Approach for extraction:
+   We can use a regular expression to find all tokens that look like numbers with optional suffixes.
+
+   Pattern: 
+     We want to match:
+        [optional sign? but the example doesn't have negative, so we skip sign for simplicity] 
+        [digits, possibly with commas] 
+        [optional decimal part: . followed by digits]
+        [optional suffix: one of k, K, m, M, g, G]
+
+   However, note: the example input has commas as thousand separators. We can remove commas from the number part.
+
+   Let's design a regex to capture the number string (with commas) and the suffix.
+
+   We can try: 
+        (\d{1,3}(?:,\d{3})*\.?\d*|[.,]\d+)([kKmMgG])?
+
+   But note: the example has "500,000K" -> so we have commas in the number.
+
+   Alternatively, we can split the input by non-digit and non-comma and non-decimal point? But that might be messy.
+
+   Better: use a regex that matches:
+        [optional sign] (we'll skip sign because the problem doesn't mention negative) 
+        [digits with commas] (with possible decimal point and fractional part) 
+        [optional suffix]
+
+   We'll use: 
+        (\d{1,3}(?:,\d{3})*\.?\d*|\.\d+)([kKmMgG])?
+
+   However, note: the example has "1.5G", so we have a decimal point at the beginning? Actually, it's "1.5", so we have a digit before the decimal.
+
+   But also note: "500,000K" -> so we have commas.
+
+   Let's break down:
+        - The number part: 
+            Option 1: [digits] (with commas as thousand separators) and then optionally a decimal part.
+            We can have: 
+                [digits] (with commas) -> \d{1,3}(?:,\d{3})*
+                then optionally: \.\d+   (so we have a decimal point and fractional digits)
+
+        But note: we might have a number without integer part? e.g., ".5" -> but the example doesn't have that.
+
+   Since the problem says "numbers", we'll assume they have at least one digit before the decimal if there is a decimal.
+
+   However, to be safe, we can also allow a decimal point at the beginning? But the example doesn't have that.
+
+   Let's stick to the example: they have numbers like "1.5", "2", "3", "4.2", "500,000", "600".
+
+   We'll design the regex to match:
+        (?:\d{1,3}(?:,\d{3})*|\d+)(?:\.\d+)?([kKmMgG])?
+
+   But note: the example "500,000K" -> the number part is "500,000", which is 500000.
+
+   However, the regex above for the integer part: 
+        \d{1,3}(?:,\d{3})* -> matches "500" (which is 3 digits) then a comma and then "000" -> so it matches.
+
+   But note: the entire number might be just a decimal without integer part? The problem doesn't specify, so we'll assume it's not present.
+
+   We'll use: 
+        Pattern pattern = Pattern.compile("(\\d{1,3}(?:,\\d{3})*\\.?\\d*)([kKmMgG])?");
+
+   However, note: the decimal part might be missing? So we have to allow the decimal part to be optional.
+
+   But the above pattern requires a decimal point and then digits? Actually, we have: \.?\d* -> but that would match a decimal point and then zero or more digits.
+
+   Let me adjust: 
+        We want to match:
+          - A sequence of digits (with commas) and then optionally a decimal point and more digits.
+
+        So: (?:\d{1,3}(?:,\d{3})*)(?:\.\d*)?
+
+        But note: the decimal part might be present without the integer part? We'll assume integer part is present.
+
+        Actually, the problem says "numbers", so we'll assume they have at least one digit.
+
+        We'll use: 
+            (?:\d{1,3}(?:,\d{3})*)(?:\.\d*)?([kKmMgG])?
+
+        However, note: the example "2K" -> so the number part is "2", and then suffix.
+
+        But the above pattern would match "2" as the integer part and then no decimal, and then the suffix.
+
+        But note: the pattern for the integer part: \d{1,3}(?:,\d{3})* -> for "2", it matches because \d{1,3} matches "2", and then the rest is empty.
+
+        However, what about "1234"? 
+            It would be: 1234 -> but our pattern: 
+                \d{1,3} matches "123", then we have a leftover "4", which doesn't match the next part (because we require a comma and then 3 digits). 
+            So we need to allow more than 3 digits? Actually, the pattern \d{1,3}(?:,\d{3})* will match:
+                "123" -> then we have "4" left -> doesn't match.
+
+        How to fix? We can change the integer part to: \d+(?:,\d{3})* -> but note: the commas are only every three digits, so the first group can be 1-3 digits, then each group after comma is 3 digits.
+
+        Actually, the standard way: 
+            \d{1,3}(?:,\d{3})*
+
+        This pattern will match:
+            "1" -> matches
+            "12" -> matches
+            "123" -> matches
+            "1,234" -> matches: 1 (1-3 digits) then , and then 234 (3 digits) -> so it matches.
+            "12,345" -> matches: 12 (2 digits) then , and 345 -> matches.
+            "123,456" -> matches.
+
+        But what about "1234"? 
+            It would be: 
+                \d{1,3} matches "123", then we have "4" left -> doesn't match the next part (which requires a comma and then 3 digits). 
+            So it fails.
+
+        How to handle numbers without commas that are more than 3 digits? 
+            We can change the pattern to: 
+                \d{1,3}(?:,\d{3})*\d*   -> but that doesn't help because the leftover "4" is not matched.
+
+        Actually, the pattern for the integer part should be: 
+            \d{1,3}(?:,\d{3})*   -> but this pattern does not match numbers that are more than 3 digits without a comma? 
+            However, the problem says: "numbers with commas as thousand separators", meaning that if there are commas, they are used. But the number might be written without commas? 
+
+        The example input: "500,000K" has commas, but "2K" does not. So we have to handle both.
+
+        We can have two patterns? Or we can allow the integer part to be any sequence of digits (without commas) and then also allow commas? 
+
+        Actually, the problem says: "numbers with commas as thousand separators", meaning that commas are used as thousand separators, but they might not be present.
+
+        So we can have:
+            [digits] (with optional commas) -> so we can remove commas and then parse as a number.
+
+        Therefore, we don't need to worry about the commas in the regex pattern for the number. We can extract the string that has the number (with commas) and then remove the commas and the suffix.
+
+        Plan:
+          - Use a regex to find all tokens that are numbers (with optional commas and optional suffix) but note: the token might be separated by non-digit, non-comma, non-decimal, non-suffix characters.
+
+        We'll use a regex that matches:
+            [optional sign] (we skip sign) 
+            [digits, commas, and decimal point] 
+            [optional suffix]
+
+        But note: the suffix is only one letter at the end.
+
+        We can do: 
+            (\d{1,3}(?:,\d{3})*\.?\d*)([kKmMgG])?
+
+        However, the above pattern does not match numbers without commas that are more than 3 digits? 
+            For "1234", the pattern: 
+                \d{1,3} matches "123", then we have "4" left -> doesn't match the rest (because we require a comma and then 3 digits, but we don't have a comma). 
+            So it fails.
+
+        We need to allow the integer part to be any sequence of digits (with commas as thousand separators) but note: the commas are only used as thousand separators, so the pattern for the integer part should be: 
+            \d+(?:,\d{3})*   -> but note: the first group of digits can be 1-3? Actually, no: the first group can be 1-3, but then the rest must be 3. However, the pattern \d+(?:,\d{3})* would match:
+                "1234" -> \d+ matches "1234", then the next part (?:,\d{3})* doesn't match because there's no comma -> so it matches the whole "1234" as the integer part.
+
+        But wait: the pattern \d+ matches any number of digits. Then we have (?:,\d{3})* which matches zero or more groups of comma and 3 digits. So for "1234", it matches the whole "1234" as the integer part.
+
+        However, what about "1,234"? 
+            \d+ matches "1", then we have a comma and then \d{3} matches "234", so it matches.
+
+        So we can use: 
+            (\d+(?:,\d{3})*)(?:\.(\d*))?([kKmMgG])?
+
+        But note: the decimal part might be present without the integer part? We'll assume integer part is present.
+
+        Actually, the problem says "numbers", so we assume they have at least one digit.
+
+        However, the pattern above for the integer part: \d+(?:,\d{3})* will match "123" and "1,234", but note: the pattern for the integer part does not require the commas to be in the right place? 
+            It will match "12,3" as well? But that's not a valid thousand separator (should be 3 digits after comma). However, the problem says "thousand separators", so we assume they are used correctly.
+
+        We'll assume the input uses commas correctly (i.e., every group after the first is 3 digits). But the problem doesn't say we have to validate, so we'll just remove commas and parse.
+
+        So we can extract the string that has the number (with commas) and then remove the commas and the suffix.
+
+        Steps for each match:
+          - The entire match: we get a string that is the number part (with commas) and possibly a suffix.
+          - We'll split the match into two parts: the number string (with commas) and the suffix (if present).
+
+        How about: 
+            Pattern pattern = Pattern.compile("(\\d+(?:,\\d{3})*)(\\.\\d+)?([kKmMgG])?");
+
+        But note: the decimal part might be optional, and the suffix might be optional.
+
+        However, the pattern above might not match a number without a decimal part? 
+            For "123", it would match: 
+                group1: "123", group2: null, group3: null.
+
+        For "123.45", it would match:
+                group1: "123", group2: ".45", group3: null.
+
+        For "123.45K", it would match:
+                group1: "123", group2: ".45", group3: "K"
+
+        But note: the pattern for the decimal part: (\\.\\d+)? -> so it requires at least one digit after the decimal.
+
+        However, the example "1.5G" -> so we have a decimal part.
+
+        But what about "1."? The problem doesn't specify, so we'll assume that if there's a decimal point, there's at least one digit.
+
+        We'll use the pattern: 
+            Pattern pattern = Pattern.compile("(\\d+(?:,\\d{3})*)(\\.\\d+)?([kKmMgG])?");
+
+        However, note: the pattern for the integer part: \d+(?:,\\d{3})* -> this will match "123" and "1,234", but note: the pattern for the integer part does not allow a decimal point in the integer part? Actually, the decimal part is handled separately.
+
+        But what about a number like "1,234.56"? 
+            The pattern: 
+                group1: "1,234" -> because \d+(?:,\\d{3})* matches "1,234" (the comma and then 3 digits) and then the decimal part: \\.\\d+ matches ".56".
+
+        So it works.
+
+        However, note: the pattern might also match a number that has a decimal point without the integer part? 
+            Example: ".5" -> 
+                group1: \d+ would not match because there's no digit before the decimal -> so it fails.
+
+        We'll assume the input does not have such numbers.
+
+        Now, for each match:
+          - We have the number string (with commas) in group1, and if there's a decimal part, it's in group2 (which is a string starting with '.' and then digits), and the suffix in group3.
+
+        Steps for conversion:
+          - Remove commas from the entire number string (including the integer part and the decimal part? but note: the decimal part doesn't have commas) -> so we remove commas from group1 and then if group2 is present, we combine: group1 + group2.
+          - Then convert that string to a double.
+
+        But note: the decimal part might be missing? Then we just have group1.
+
+        So:
+          String numStr = group1;
+          if (group2 != null) {
+              numStr += group2;
+          }
+          numStr = numStr.replace(",", "");   // remove commas from the entire number string
+
+        Then convert to double.
+
+        Then, if there's a suffix (group3), we convert to base value (in bytes) by:
+          suffix: 
+            'k' or 'K' -> multiply by 1024
+            'm' or 'M' -> multiply by 1024*1024
+            'g' or 'G' -> multiply by 1024*1024*1024
+
+        If no suffix, then it's in bytes.
+
+        Then we add to the total.
+
+        After processing all matches, we have the total in bytes.
+
+        Then we need to output:
+          - The total in bytes (as a double) to one decimal place? But note: the example output is "7264621772.8", which is the total in bytes? Actually, the example output:
+
+          Example output:
+            7264621772.8
+            7094357.2 k
+            6928.1 M
+            6.8 G
+
+          So the first line is the total in bytes (with one decimal place).
+
+          Then:
+            k = total / 1024
+            M = total / (1024*1024)
+            G = total / (1024*1024*1024)
+
+          And we output each of these to one decimal place.
+
+        However, note: the example output for k: 7094357.2 -> which is total in bytes divided by 1024.
+
+        But note: the example input: 
+          1.5G -> 1.5 * (1024^3) = 1.5 * 1073741824 = 1610612736
+          2K -> 2 * 1024 = 2048
+          3M -> 3 * (1024^2) = 3 * 1048576 = 3145728
+          4.2G -> 4.2 * 1073741824 = 4509715660.8
+          500,000K -> 500000 * 1024 = 512000000
+          600M -> 600 * 1048576 = 629145600
+
+          Total = 1610612736 + 2048 + 3145728 + 4509715660.8 + 512000000 + 629145600 = 
+          Let me compute step by step:
+
+          1610612736
+          + 2048 = 1610614784
+          + 3145728 = 1613760512
+          + 4509715660.8 = 6123476172.8
+          + 512000000 = 6635476172.8
+          + 629145600 = 7264621772.8
+
+          So the total in bytes is 7264621772.8.
+
+        Therefore, we output:
+          totalBytes = 7264621772.8
+
+        Then:
+          totalK = totalBytes / 1024 -> 7264621772.8 / 1024 = 7094357.2
+          totalM = totalBytes / (1024*1024) = 7264621772.8 / 1048576 = 6928.1
+          totalG = totalBytes / (1024*1024*1024) = 7264621772.8 / 1073741824 = 6.8
+
+        So we output:
+          totalBytes (with one decimal place)
+          totalK (with one decimal place) and then " k"
+          totalM (with one decimal place) and then " M"
+          totalG (with one decimal place) and then " G"
+
+        Formatting: we must format to one decimal place.
+
+        We'll use:
+          System.out.printf("%.1f\n", totalBytes);
+          System.out.printf("%.1f k\n", totalK);
+          System.out.printf("%.1f M\n", totalM);
+          System.out.printf("%.1f G\n", totalG);
+
+        However, note: the example output has the first line without a unit, then the next lines have the unit.
+
+        But note: the example output:
+          7264621772.8
+          7094357.2 k
+          6928.1 M
+          6.8 G
+
+        So we output the total in bytes as the first line (without unit), then the others with unit.
+
+        Important: We must read from standard input until EOF.
+
+        Steps for the program:
+
+          import java.util.*;
+          import java.util.regex.*;
+
+          public class Main {
+              public static void main(String[] args) {
+                  Scanner scanner = new Scanner(System.in);
+                  StringBuilder input = new StringBuilder();
+                  while (scanner.hasNextLine()) {
+                      input.append(scanner.nextLine()).append("\n");
+                  }
+                  scanner.close();
+
+                  String text = input.toString();
+
+                  // Pattern to match numbers with optional commas and suffix
+                  Pattern pattern = Pattern.compile("(\\d+(?:,\\d{3})*)(\\.\\d+)?([kKmMgG])?");
+                  Matcher matcher = pattern.matcher(text);
+
+                  double totalBytes = 0.0;
+
+                  while (matcher.find()) {
+                      String numPart = matcher.group(1);
+                      String decimalPart = matcher.group(2);
+                      String suffix = matcher.group(3);
+
+                      // Remove commas from numPart
+                      String cleanNum = numPart.replace(",", "");
+                      if (decimalPart != null) {
+                          cleanNum += decimalPart;
+                      }
+
+                      double value = Double.parseDouble(cleanNum);
+
+                      // Convert to base (bytes)
+                      if (suffix != null) {
+                          char suffixChar = suffix.charAt(0);
+                          switch (suffixChar) {
+                              case 'k':
+                              case 'K':
+                                  value *= 1024;
+                                  break;
+                              case 'm':
+                              case 'M':
+                                  value *= 1024 * 1024;
+                                  break;
+                              case 'g':
+                              case 'G':
+                                  value *= 1024 * 1024 * 1024;
+                                  break;
+                          }
+                      }
+                      totalBytes += value;
+                  }
+
+                  // Now output the results
+                  System.out.printf("%.1f\n", totalBytes);
+                  System.out.printf("%.1f k\n", totalBytes / 1024);
+                  System.out.printf("%.1f M\n", totalBytes / (1024 * 1024));
+                  System.out.printf("%.1f G\n", totalBytes / (1024 * 1024 * 1024));
+              }
+          }
+
+        However, note: the example input has a comma after the numbers? But our regex should match the numbers regardless of surrounding commas.
+
+        Let's test with the example input:
+
+          Input: 
+            "1.5G, 2K,\n3M, and 4.2G\n500,000K and 600M"
+
+          We expect to match:
+            "1.5G" -> group1="1", group2=".5", group3="G" -> cleanNum = "1.5" -> value = 1.5 -> then * (1024^3) -> 1.5 * 1073741824 = 1610612736
+            "2K" -> group1="2", group2=null, group3="K" -> cleanNum="2" -> 2 * 1024 = 2048
+            "3M" -> 3 * 1048576 = 3145728
+            "4.2G" -> 4.2 * 1073741824 = 4509715660.8
+            "500,000K" -> group1="500,000", group2=null, group3="K" -> cleanNum = "500000" -> 500000 * 1024 = 512000000
+            "600M" -> 600 * 1048576 = 629145600
+
+          Total = 1610612736 + 2048 + 3145728 + 4509715660.8 + 512000000 + 629145600 = 7264621772.8
+
+        But note: the example input has a comma after "1.5G", so the token "1.5G" is matched, and then the comma is not part of the token.
+
+        However, the regex pattern we have does not require the token to be surrounded by non-digit, so it should match.
+
+        But note: the pattern might also match "500,000" as a token? Yes, and then the 'K' is matched as the suffix.
+
+        One more issue: the pattern might match a number that is part of a larger word? 
+          Example: "abc123" -> the pattern would match "123", but the problem says "numbers", so we assume they are standalone.
+
+        However, the problem says: "extracts all numbers followed by optional suffixes", meaning that the number is a token by itself? But the example input has commas and spaces.
+
+        Our regex will match any occurrence of the pattern in the text, so it should be fine.
+
+        Let's run the example through the regex:
+
+          "1.5G" -> matches: group1="1", group2=".5", group3="G"
+          "2K" -> matches: group1="2", group2=null, group3="K"
+          "3M" -> matches: group1="3", group2=null, group3="M"
+          "4.2G" -> matches: group1="4", group2=".2", group3="G"
+          "500,000K" -> matches: group1="500,000", group2=null, group3="K"
+          "600M" -> matches: group1="600", group2=null, group3="M"
+
+        So it matches.
+
+        However, note: the pattern for the integer part: \d+(?:,\d{3})* -> for "500,000", it matches the whole "500,000" as group1.
+
+        But what about "500,000" without a suffix? Then group3 would be null, and we treat it as bytes.
+
+        Now, let's code accordingly.
+
+        But note: the example input has "500,000K", so the suffix is present.
+
+        One more edge: what if the number has a decimal point and then a suffix? 
+          Example: "1.5G" -> we have group1="1", group2=".5", so we combine to "1.5", which is correct.
+
+        However, what if the number is "1.5.6"? That's not a valid number, but the problem doesn't say. We assume the input is well-formed.
+
+        We'll assume the input numbers are correctly formatted.
+
+        Now, note: the problem says "numbers with commas as thousand separators", so we assume the commas are only in the integer part and not in the fractional part.
+
+        We'll write the program accordingly.
+
+        Let's code accordingly.
+
+        Important: We must use only standard library.
+
+        We'll use Scanner to read the entire input.
+
+        However, note: the input might be large, but the problem doesn't specify, so we read line by line.
+
+        We'll use:
+
+          Scanner scanner = new Scanner(System.in);
+          StringBuilder sb = new StringBuilder();
+          while (scanner.hasNextLine()) {
+              sb.append(scanner.nextLine()).append("\n");
+          }
+
+        Then process the string.
+
+        But note: the problem says "standard input", so we read from System.in.
+
+        We'll write the program as described.
+
+        One more note: the example output has the total in bytes as a float with one decimal place. 
+          However, the total might be an integer? But the example has a fractional part.
+
+        We'll use double for the total.
+
+        Formatting: 
+          System.out.printf("%.1f", totalBytes); -> this will round to one decimal.
+
+        But note: the example output has one decimal place.
+
+        Let's test with the example: 7264621772.8 -> we want to output "7264621772.8", but note: 
+          If we do printf("%.1f", 7264621772.8) -> it will output "7264621772.8"
+
+        However, note: the number is very large, and double might have precision issues? 
+          But the problem says "production-ready", and the numbers are not astronomically large (the example is about 7e9, which is within double precision).
+
+        We'll use double.
+
+        Now, write the code.
+
+        Note: We must not output anything else.
+
+        Let's write the complete program.
+
+        One more note: the problem says "can only import packages in the java.* namespace", so we can import java.util.*, java.util.regex.*.
+
+        We'll do:
+
+          import java.util.*;
+          import java.util.regex.*;
+
+        But note: the problem says "single-file", so we write one class.
+
+        We'll name the class Main.
+
+        Code:
+</think>
+
+import java.util.*;
+import java.util.regex.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        StringBuilder input = new StringBuilder();
+        while (scanner.hasNextLine()) {
+            input.append(scanner.nextLine()).append("\n");
+        }
+        scanner.close();
+        
+        String text = input.toString();
+        Pattern pattern = Pattern.compile("(\\d+(?:,\\d{3})*)(\\.\\d+)?([kKmMgG])?");
+        Matcher matcher = pattern.matcher(text);
+        double totalBytes = 0.0;
+        
+        while (matcher.find()) {
+            String numPart = matcher.group(1);
+            String decimalPart = matcher.group(2);
+            String suffix = matcher.group(3);
+            
+            String cleanNum = numPart.replace(",", "");
+            if (decimalPart != null) {
+                cleanNum += decimalPart;
+            }
+            
+            double value = Double.parseDouble(cleanNum);
+            if (suffix != null) {
+                char suffixChar = suffix.charAt(0);
+                switch (suffixChar) {
+                    case 'k':
+                    case 'K':
+                        value *= 1024;
+                        break;
+                    case 'm':
+                    case 'M':
+                        value *= 1024 * 1024;
+                        break;
+                    case 'g':
+                    case 'G':
+                        value *= 1024 * 1024 * 1024;
+                        break;
+                }
+            }
+            totalBytes += value;
+        }
+        
+        System.out.printf("%.1f\n", totalBytes);
+        System.out.printf("%.1f k\n", totalBytes / 1024);
+        System.out.printf("%.1f M\n", totalBytes / (1024 * 1024));
+        System.out.printf("%.1f G\n", totalBytes / (1024 * 1024 * 1024));
+    }
+} [end of text]
+
+
