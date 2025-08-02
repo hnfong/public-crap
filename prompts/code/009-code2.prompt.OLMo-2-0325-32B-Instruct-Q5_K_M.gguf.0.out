@@ -1,0 +1,64 @@
+To perform a binary search on a text file directly, we need to read the file in chunks and compare the middle element with the target. The key idea is to use file's seek and tell methods to efficiently jump to different positions in the file. We will use bisecting to reduce the search space by half in each step, similar to an in-memory binary search.
+
+Here's how you can implement the `binary_search_file` function in Python:
+
+```python
+def binary_search_file(file_path, target_bytes):
+    with open(file_path, 'rb') as file:
+        file_size = file.tell()  # Get the total size of the file
+        left, right = 0, file_size - 1
+
+        while left <= right:
+            mid = (left + right) // 2
+            mid_pos = file.tell()  # Position at the middle
+            chunk = file.read(min(100, right - mid))  # Read a chunk of data
+            file.seek(mid_pos, 0)  # Go back to the middle position
+
+            # Compare the chunk with the target
+            if chunk.startswith(target_bytes):
+                # If target is found, return the position
+                return mid_pos + len(chunk.lstrip(target_bytes))
+            elif chunk.lower().startswith(target_bytes.lower()):  # Case insensitive search
+                # If target is lexicographically smaller, move right
+                right = mid - 1
+            else:
+                # If target is lexicographically larger, move left
+                left = mid + 1
+
+    # If not found, return the insertion point (bisect_left equivalent)
+    # This is a bit tricky with files, but we can estimate it by assuming
+    # the middle point after the last checked position on the left side
+    if left == mid:
+        return left
+    else:
+        # Adjust for the fact that we might have overshot the insertion point
+        # by one step in the last iteration
+        return left - 1 if chunk.lower().endswith(target_bytes.lower()) else left
+
+
+# Example usage:
+file_path = "myfile.txt"
+target = b"2 by"
+position = binary_search_file(file_path, target)
+print(f"Position of '{target.decode()}' is: {position}")
+```
+
+**Explanation:**
+
+1. **Open the file in binary mode** (`'rb'`) to handle byte comparisons correctly.
+2. **Get the file size** to determine the search space.
+3. **Initialize left and right pointers** to the start and end of the file.
+4. **Perform binary search**:
+   - Calculate the middle position.
+   - Seek to the middle position and read a chunk of data (limited to avoid reading excessively large chunks).
+   - Compare the chunk with the target.
+   - Adjust the search space based on the comparison result.
+5. **Return the position**:
+   - If the target is found, return the position.
+   - If not found, return the insertion point. This is estimated by considering the last checked position and the comparison result.
+
+**Note:** This implementation assumes that the file is sorted and that the target is a prefix of the lines (as typically required for binary search on sorted strings). Also, it performs a case-insensitive search for practical purposes, but this can be adjusted based on specific requirements.
+
+**Important Consideration:** The insertion point estimation in the file context is not as straightforward as in an array due to the variable length of lines. The provided function gives a reasonable approximation by considering the last chunk's end and the target's position within it. For precise insertion points, especially in files with varying line lengths, more sophisticated logic might be needed, potentially involving reading and comparing full lines around the midpoint. [end of text]
+
+

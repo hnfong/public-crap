@@ -1,0 +1,743 @@
+<think>
+We are going to perform a binary search on a text file without reading the entire file into memory.
+ The file is sorted lexicographically by lines.
+ We note that the file is not necessarily of fixed line length, so we cannot do simple arithmetic to jump to a line.
+
+ Steps:
+ 1. We need to find the byte offset of the beginning of a line that is either the target or the insertion point.
+ 2. We will use binary search over the byte offsets in the file.
+
+ However, the challenge is that we cannot jump to an arbitrary byte and know the line boundaries.
+
+ Approach:
+ We can use the following:
+   - We know the start (0) and end (file size) of the file.
+   - We will maintain two pointers: low and high, which are byte offsets (initially 0 and the size of the file).
+   - We will read a "mid" chunk, but we have to adjust to line boundaries.
+
+ How to adjust?
+   - We can seek to a mid point, then read forward until we find a newline (or if we are at the beginning, we are at a line start).
+   - But note: the mid point might be in the middle of a line. We want to start at the beginning of a line.
+
+ So, for a given mid byte offset:
+   - If mid is 0, then we are at the start.
+   - Otherwise, we seek to mid, then read backwards until we find a newline (or from the beginning) to get the start of the line?
+   - Actually, we can do: 
+        seek(mid)
+        then read a chunk and then look for a newline? But we want the beginning of the line that contains mid.
+
+ However, note: we are going to compare the entire line. So we need to read the line from the beginning.
+
+ Alternate approach:
+   - We can do:
+        low = 0
+        high = file_size
+
+        while low < high:
+            mid = (low + high) // 2
+            # Now, we want to get the line that starts at or after mid.
+            # But we can adjust: seek to mid, then if mid is not 0, we might be in the middle of a line.
+            # So we read from mid until the next newline to get the remainder of the line? 
+            # But we want the entire line. Actually, we can read the line from the current position and then note that the line actually starts at the previous newline.
+
+   - Instead, we can do:
+        Seek to mid, then if mid is not 0, we read a few bytes backwards to find the previous newline? But that might be inefficient and we are allowed O(log n) operations.
+
+   - We can do: 
+        We'll define a helper function to read the next whole line from a given offset, but we need the start of the line.
+
+   - Actually, we can do:
+        Seek to mid, then if mid != 0, we read backwards until we hit a newline? But that might be O(n) in the worst case.
+
+   - We need to avoid O(n) per step.
+
+   - Alternate idea: we don't need the entire line for the comparison? Actually, we do because the lines are of arbitrary length.
+
+   - We can do:
+        We'll read the line that starts at the first newline after the beginning of the file? 
+
+   - Actually, we can do:
+        We'll set the file pointer to mid, then read a line. But that line might be partial. Instead, we can:
+            - If mid is 0, then we read the first line.
+            - Else, we read from mid, but then we note that we might be in the middle of a line. So we read from mid until the next newline to get the rest of the line? 
+            - But then we don't have the beginning of the line.
+
+   - We can do: 
+        We'll read the entire line that contains the mid offset. To do that, we can:
+            - Seek to mid, then move backwards until we hit a newline (or the start of the file) to find the start of the line.
+            - Then read the entire line from that start.
+
+   - However, moving backwards one byte at a time might be O(n) per step, which would make the whole algorithm O(n log n). We want O(log n) total.
+
+   - We can avoid that by not reading the entire line? Actually, we don't need the entire line for the comparison? 
+        We can compare the target with the line at the current position? But we don't know the entire line until we read it.
+
+   - Another idea: we can use exponential search to find the beginning of the line? 
+        But that would be O(log n) per step? Then total O((log n)^2). We want O(log n) total.
+
+   - Alternatively, we can note that we are only doing O(log n) steps. And in each step, we might read O(1) lines? 
+        But if we have to read backwards to the beginning of the line, that could be O(n) in the worst case (if the line is very long).
+
+   - We must avoid reading the entire line if the line is long? But note: the problem says "at most O(log n) operations", meaning I/O operations? 
+        Or does it mean O(log n) time? 
+
+   - Clarification: the problem says "using at most O(log(n)) operations". We assume that each read of a byte is an operation? 
+        Then we cannot read a whole line (which might be O(n)) in one step.
+
+   - We need a way to read only a constant number of bytes per step? 
+
+   - Actually, we can do without reading the entire line? 
+        We can compare the target string with the line by reading one byte at a time? 
+        But that would be O(length of line) per step.
+
+   - We need to design an algorithm that does O(log n) I/O operations and each I/O operation is a seek and then reading a constant number of bytes? 
+
+   - Alternatively, we can precompute the starting positions of every line? But that would be O(n) and we are not allowed.
+
+   - We can use the following method:
+
+        low = 0
+        high = file_size (in bytes)
+
+        while low < high:
+            mid = (low + high) // 2
+            # Now, we want to get the start of the line that contains mid, and then read the line from there until the next newline.
+
+            # Step 1: find the start of the line that contains mid.
+            #   We can seek to mid, then read backwards until we hit a newline? But that might be long.
+
+        We can do: 
+            # Instead, we can remember the last known line start? Not really.
+
+        Alternate known method: 
+            We can do a binary search by reading chunks and then adjusting the pointers to line boundaries by reading until the next newline? 
+
+        Standard solution for binary search in a file of lines:
+
+            low_bound = 0
+            high_bound = os.path.getsize(file_path)
+
+            while low_bound < high_bound:
+                mid = (low_bound + high_bound) // 2
+                file.seek(mid)
+                # adjust to the beginning of the line: if mid is not 0, then we are in the middle of a line.
+                # so we read the rest of the line from mid, but we don't know the beginning.
+
+                # Instead, we can read a character at mid and then move backwards? 
+
+            Actually, we can do:
+                file.seek(mid)
+                if mid > 0:
+                    # we read backwards until we find a newline? 
+                    # but we can only read forward? 
+
+            We can do: 
+                file.seek(mid)
+                file.readline()   # this reads from the current position to the end of the line? 
+                but then we don't have the beginning.
+
+        Another known method: 
+            We can do:
+                file.seek(mid)
+                # We don't know if we are at the start of a line, so we read backwards until we hit a newline? 
+                # But we can only read forward? 
+
+            Actually, we can read backwards by seeking backwards? 
+
+        Steps for one iteration:
+
+            mid = (low_bound + high_bound) // 2
+            file.seek(mid)
+
+            # If mid is 0, then we are at the start of a line.
+            # Else, we read backwards until we find a newline? 
+            # But we can do:
+                file.seek(mid)
+                # We read one character backwards? Actually, we can seek to mid-1 and read? 
+
+            We can do:
+                if mid == 0:
+                    start_of_line = 0
+                else:
+                    # seek to mid-1 and then read until we find a newline? 
+                    # Actually, we can read backwards until we hit a newline or the beginning.
+
+            However, reading backwards one byte at a time is O(n) per step.
+
+        We can avoid that by reading a block? But we don't know how far back the newline is.
+
+        Alternatively, we can note that we are only doing O(log n) steps, and the worst-case line length might be long, but the problem doesn't specify.
+
+        But the problem says "at most O(log(n)) operations", meaning we cannot do O(n) per step.
+
+        Therefore, we must avoid reading the entire line.
+
+        Alternate approach: we don't need the entire line? We can compare the target with the line without reading the entire line? 
+
+        How?
+            We can read the line in chunks? But that would be O(length of line) which is O(n).
+
+        We need a different idea.
+
+        Idea: we can use the fact that the file is sorted. We can compare the target with the line at mid by reading the line from the beginning? 
+        But we don't know the beginning.
+
+        We can do a two-pass: 
+            First, we find the start of the line at mid by scanning backwards until a newline? That is O(n) per step.
+
+        We must avoid that.
+
+        Known solution: 
+            We can do binary search without knowing the exact line by reading the file in chunks? 
+
+        Another idea: 
+            We can precompute the line starts by doing a first pass? But that is O(n).
+
+        We are stuck.
+
+        Let me look for known solutions for binary search in a text file.
+
+        Known solution (from the internet) for binary search in a file:
+
+            def binary_search_in_file(file, target):
+                low = 0
+                high = os.path.getsize(file)
+
+                while low < high:
+                    mid = (low + high) // 2
+                    file.seek(mid)
+                    # adjust to the beginning of the line
+                    if mid > 0:
+                        # skip the current line that is incomplete
+                        file.readline()  # this moves to the next line? 
+                        # Actually, we want the beginning of the current line.
+
+                    Actually, a common method is:
+
+                    mid = (low+high)//2
+                    file.seek(mid)
+                    file.readline()  # read the partial line, so that we are at the beginning of the next line?
+                    then the line we want is the next line? 
+
+                    But that doesn't work.
+
+        After research, a common method is:
+
+            low, high = 0, size
+            while low <= high:
+                mid = (low+high)//2
+                file.seek(mid)
+                # if we are not at the beginning, we might be in the middle of a line, so read the rest of the line and then the next line is the one we want?
+                # Actually, we want to get the line that starts after the newline after mid.
+
+                file.readline()  # this reads from mid to the end of the line, so the next line is the one we want to read?
+                line = file.readline()
+                if not line:
+                    # end of file
+                    break
+                # compare line with target
+
+            But this might skip the first line.
+
+        Alternatively, we can do:
+
+            We want to get the line that starts at the first newline after mid? 
+
+            Steps:
+
+                mid = (low+high)//2
+                file.seek(mid)
+
+                if mid > 0:
+                    # read backwards until we find a newline? 
+                    # but we can only read forward? 
+
+        Actually, we can do:
+
+            We'll define a helper to get the start of the line at a given offset.
+
+            def get_line_start(file, offset):
+                if offset == 0:
+                    return 0
+                # We'll seek to offset-1 and then read backwards until we find a newline? 
+                # But we can only read forward? 
+
+                # Instead, we can seek to max(0, offset-100) and then read until we get to offset? 
+                # But that is not reliable if the line is longer than 100.
+
+        We need a robust way.
+
+        After thinking, I found a method that uses:
+
+            file.seek(mid)
+            # We read backwards until we hit a newline by reading one byte at a time? 
+            # Since we are only doing O(log n) steps, and the worst-case line length is O(n), then worst-case total is O(n log n) which is not acceptable.
+
+        But note: the problem says "at most O(log(n)) operations". If we interpret "operations" as disk seeks, then reading a byte is cheap? 
+        However, the problem does not specify. But typically, in external binary search, we count the number of disk accesses (each being a block) and we assume that reading a line is one operation? 
+
+        But the problem says "using at most O(log(n)) operations", and if we read a line of length L, that is L operations? 
+
+        We must assume that reading a byte is an operation? Then we cannot read a long line.
+
+        Alternatively, we can read only up to the length of the target? 
+
+        How?
+
+            We can read the line at the current position in chunks of the length of the target? 
+
+            But we don't know the beginning of the line.
+
+        We can do:
+
+            Step 1: find the start of the line that contains mid.
+                We can do:
+                    pos = mid
+                    while pos > 0:
+                        file.seek(pos-1)
+                        char = file.read(1)
+                        if char == b'\n' or char == b'': 
+                            break
+                        pos -= 1
+                    start_of_line = pos
+
+            Then we read the line from start_of_line until the next newline.
+
+            But the while loop might run O(n) times per step.
+
+        We can do a bounded read: we read a block backwards? But we don't know the block size.
+
+        Given the constraints, we might have to assume that the line length is bounded? But the problem does not say.
+
+        Alternatively, we can use exponential backoff to find the newline backwards:
+
+            steps = 1
+            pos = mid
+            found = False
+            while not found and pos > 0:
+                # read a block of size min(steps, pos) backwards
+                read_start = max(0, pos - steps)
+                file.seek(read_start)
+                block = file.read(pos - read_start)
+                # search backwards in the block for a newline
+                # if we find a newline, then the start of the line is the next byte after the newline
+                # if not, we double steps and continue
+                # ...
+
+            But this is complicated and might be O(log(line_length)) per step? Then total O(log(n) * log(max_line_length)).
+
+        However, the problem does not specify the line length, and we want O(log n) operations.
+
+        After careful thought, I found a method that does not require reading the entire line: 
+
+            We can compare the target with the file content at the mid point without knowing the line boundaries? 
+
+            How?
+
+                We can read a chunk of the file starting at mid of length len(target) (or until newline) and compare that with the target? 
+
+                But if the target is at the beginning of the line, and we are in the middle of the line, then the chunk we read might be from the middle of a line and not comparable.
+
+        We must compare lexicographically by entire lines.
+
+        Therefore, we must know the entire line.
+
+        Given the complexity, and since the problem says "at most O(log(n)) operations", and if we assume that the length of the target line and the line we read is bounded by a constant, then we can read the entire line in O(1) per step? 
+
+        But that is not generally true.
+
+        Alternatively, we can read only until we have enough to compare? 
+
+            We can read from the start of the line (which we find by scanning backwards until newline) until we have read min(len(target), len(line)) and then compare? 
+
+            But finding the start of the line is O(n) per step.
+
+        We are stuck.
+
+        Let me reinterpret the problem: the problem says "using at most O(log(n)) operations". 
+        If by "operations" they mean disk seeks (which are expensive) and reading a contiguous block is one operation, then we can do:
+
+            In each step, we do:
+
+                mid = (low+high)//2
+                # do one seek to mid
+                # then read backwards until newline (which might be many reads) -> but if we consider reading a block as one operation, then we can read the entire block from the beginning of the line to the end of the line in one operation? 
+
+            But we don't know the beginning of the line.
+
+        How about we read a block of size B from mid backwards? We can read from max(0, mid - B) to mid, then search for the last newline in that block. 
+        If we don't find a newline, we double B and read again? 
+
+        This would be O(log(line_length)) per step, and then total O(log(n) * log(line_length)). 
+
+        But the problem says O(log(n)) operations, so if we assume that the line length is bounded by a constant, then it's O(log n). 
+        Or if we assume that the line length is O(n), then it's O(log(n)^2).
+
+        The problem does not specify.
+
+        Given the ambiguity, I will assume that we are allowed to read the entire line in one operation (if we consider reading a block as one operation) and that the line length is not extremely long. 
+        But the problem says "at most O(log(n)) operations", so we must do only O(log n) block reads.
+
+        Therefore, we must avoid reading a whole line if it is long.
+
+        Another idea: we can use the fact that the file is sorted to compare the target with the content at an arbitrary position without the line boundaries? 
+
+        We can do:
+
+            We read a block of size len(target) starting at mid. Then we compare that block with the target.
+
+            If the block is less than the target, then we know that the line containing mid is less than the target? 
+            But that is not necessarily true because the line might be long and the block might be in the middle.
+
+        Example:
+
+            File: 
+                "apple\n"
+                "banana\n"
+
+            mid is at the 'n' in "banana", and we read "nana", and target is "banana", then "nana" < "banana" is false because 'n' > 'b'? 
+
+            Actually, we can compare the block with the target? 
+
+            But if we read "nana" and target is "banana", then we see that 'n' > 'b', so we know that the line at mid is greater than the target? 
+
+            However, the line at mid is "banana", which is greater than the target "banana"? wait, they are equal.
+
+        Actually, we want to compare the entire line. But if we read a block that is at the middle of the line, we don't know the beginning.
+
+        We can try to compare the block with the corresponding part of the target? 
+
+        But the beginning of the line might be before mid.
+
+        This is messy.
+
+        Given the complexity, and since this is an interview-like question, there must be a simpler method.
+
+        I found a known solution online for binary search in a text file:
+
+            low = 0
+            high = os.path.getsize(file_path)
+
+            while low < high:
+                mid = (low + high) // 2
+                f = open(file_path, 'rb')
+                f.seek(mid)
+                # if mid is not 0, then we are in the middle of a line, so read the rest of the line and then the next line is the one we want
+                if mid > 0:
+                    f.readline()  # read and discard the partial line
+                line = f.readline()
+                if not line:
+                    # end of file
+                    high = mid
+                    continue
+                if line < target:  # assuming target is a bytes string
+                    low = f.tell()   # because the next line after this one
+                else:
+                    high = mid
+
+            return low
+
+        But this has issues: 
+            - We open the file in every iteration? That is expensive.
+            - The adjustment: if we are at mid, and we read the partial line (from mid to newline) and then the next line, then we are using the next line as the line at mid? 
+
+        Let me simulate on a small file:
+
+            File: 
+                line1: "apple"
+                line2: "banana"
+
+            target = "banana"
+
+            low=0, high=12 (if we have "apple\nbanana" -> 6+6=12)
+
+            mid = 6 -> seek to 6: which is the beginning of "banana"
+            if mid>0 -> yes, so read the partial line: from 6 we read "banana", which is a whole line? 
+            then we read the next line: which is nothing? 
+
+            Then we set high=6.
+
+            Then mid = (0+6)//2 = 3.
+            seek to 3: which is in the middle of "apple", say at 'l' in "apple" -> "ple"
+            read the partial line: "ple" -> then next line is "banana", which is the line we read.
+
+            Then compare "banana" with target "banana": equal, so set high=3? 
+
+            Then low=0, high=3 -> mid=1, then seek(1), read partial line: from position 1: "pple", then next line: "banana", then compare: equal -> high=1.
+
+            Then low=0, high=1 -> mid=0, then seek(0): read partial line (if mid>0 -> no) so we read the first line: "apple", then compare: "apple" < "banana", so low = tell() which is 6.
+
+            Now low=6, high=1 -> breaks.
+
+        This is not working.
+
+        Another known solution:
+
+            def binary_search_file(file_path, target):
+                low = 0
+                high = os.path.getsize(file_path)
+
+                with open(file_path, 'rb') as f:
+                    while low < high:
+                        mid = (low + high) // 2
+                        f.seek(mid)
+                        # read until next newline to get the full line after mid
+                        f.readline()  # this reads from mid to the end of the current line, so we are at the start of the next line
+                        line = f.readline()  # this is the next complete line after the one that contains mid
+                        if not line:
+                            # we are at the end of the file, so the target must be after mid
+                            low = mid+1
+                        else:
+                            if line < target:
+                                low = f.tell()   # because the target must be after this line
+                            else:
+                                high = mid
+
+                return low
+
+        Let me simulate with the same file: "apple\nbanana", size=12.
+
+        target = b"banana"
+
+        low=0, high=12
+        mid=6: seek(6) -> at 'b' in "banana"
+        readline() -> reads "banana", so we are at position 12.
+        readline() -> returns b'' -> not line, so low = 6+1 = 7.
+
+        Then low=7, high=12 -> mid=9, seek(9) -> beyond 'a' in "banana", readline() from 9: reads 'na' (if there's no newline at the end, then it reads to EOF) -> then next readline is b'' -> low = 10.
+
+        This is not working.
+
+        I found a better known solution from the internet:
+
+            low, high = 0, size
+            while low < high:
+                mid = (low+high)//2
+                file.seek(mid)
+                # read one line to get a complete line starting at or after mid
+                file.readline()  # this might be a partial line, so we discard it to get to a known line boundary
+                line = file.readline()
+                if not line:
+                    high = mid
+                else:
+                    if line < target:
+                        low = file.tell()
+                    else:
+                        high = mid
+
+            return low
+
+        But then how do we get the insertion position? 
+
+        Let me try with the example in the problem:
+
+            File:
+                "1 I go to school\n"
+                "2 by bus\n"
+                "foo bar\n"
+                "hello world\n"
+                "zoo zoo zoo"
+
+            We want to find b"2 by"
+
+            Let's assume the file is:
+
+                s1 = "1 I go to school\n"   # 17 bytes (including newline) -> 17
+                s2 = "2 by bus\n"            # 9 bytes -> total 26
+                s3 = "foo bar\n"             # 8 bytes -> 34
+                s4 = "hello world\n"         # 12 bytes -> 46
+                s5 = "zoo zoo zoo"           # 11 bytes -> 57
+
+            size = 57.
+
+            low=0, high=57
+            mid = 28.
+
+            We seek to 28: which is in the middle of s3: "foo bar\n" -> at position 28: 
+                s3: "foo bar\n" -> positions: 26 to 33 (if we count from 0: 26 is the start of s3)
+                26: 'f', 27: 'o', 28: 'o', ...
+
+            Then we read from 28: the rest of s3: "o bar\n" (if there's a newline) -> then we are at position 34.
+            Then readline() for the next line: s4: "hello world\n", which is 12 bytes -> we read that.
+
+            Compare s4: "hello world\n" with target b"2 by": 
+                'h' > '2', so we set high = 28.
+
+            Then low=0, high=28 -> mid=14.
+            seek(14): in the middle of s1 or s2? 
+                s1: 0-16 (17 bytes: 0 to 16 inclusive) -> 17th byte is the newline? 
+                s2: 17-25: "2 by bus\n" -> 17: '2', ... 
+                So 14 is in s1: "1 I go to school\n": at position 14: 'ol' maybe? 
+
+            Then readline from 14: reads the rest of s1: from 14 to 16: 'ol\n' -> then we are at 17.
+            Then readline: reads s2: "2 by bus\n"
+
+            Compare s2: "2 by bus\n" with target b"2 by": 
+                They are not equal: s2 is "2 by bus\n", target is "2 by". 
+                But lexicographically: 
+                    "2 by" vs "2 by bus": 
+                    They match for "2 by", but then s2 has more. So they are not equal? 
+
+            We are using the entire line for comparison.
+
+            We want to find the insertion point for b"2 by", which should be at the beginning of the line that is >= "2 by".
+
+            In the file, the line "2 by bus" is greater than "2 by" because "2 by" is a prefix? 
+            But in lexicographical order, when comparing two strings, if one is a prefix of the other, the prefix is considered smaller.
+
+            So "2 by" < "2 by bus".
+
+            Therefore, we set high = 14.
+
+            Then low=0, high=14 -> mid=7.
+            seek(7): in s1: "1 I go to school", at position 7: 'o' in "go"?
+            readline from 7: "o to school\n", then next line: s2: "2 by bus\n"
+
+            Compare s2: "2 by bus\n" with target: "2 by" -> "2 by bus" > "2 by", so high=7.
+
+            Then low=0, high=7 -> mid=3.
+            seek(3): in s1, readline from 3: "I go to school\n", then next line: s2 -> compare: s2 > target, so high=3.
+
+            Then low=0, high=3 -> mid=1.
+            seek(1): in s1, readline: from 1: " I go to school\n", then next line: s2 -> compare: s2 > target, so high=1.
+
+            Then low=0, high=1 -> mid=0.
+            seek(0): read the first line: "1 I go to school\n", then next line: s2 -> compare: s2 > target, so high=0.
+
+            Then low=0, high=0 -> break, return 0.
+
+            But the expected return is 17.
+
+        This is not working.
+
+        I found a solution that uses:
+
+            low = 0
+            high = size
+            ans = -1
+            with open(file_path, 'rb') as f:
+                while low < high:
+                    mid = (low + high) // 2
+                    f.seek(mid)
+                    # if mid is not 0, then we are in the middle of a line, so move to the beginning of the next line.
+                    if mid > 0:
+                        # read until we hit a newline, so that we are at the beginning of a line.
+                        # actually, we want to be at the beginning of the line that contains mid.
+                        # but we want to read the line from the beginning.
+                        # Instead, we can: 
+                        f.readline()  # this will read the rest of the line, so we are at the beginning of the next line.
+                        line_start = f.tell()
+                    else:
+                        line_start = 0
+                        f.seek(0)
+
+                    line = f.readline()
+                    if not line:
+                        # end of file
+                        break
+
+                    if line < target:
+                        low = f.tell()
+                    else:
+                        ans = line_start
+                        high = mid
+
+                if ans == -1:
+                    ans = low
+                return ans
+
+        Let me simulate with the example: target = b"2 by"
+
+        low=0, high=57
+        mid=28: seek(28) -> in s3.
+        mid>0 -> readline: from 28: "o bar\n" -> then we are at 34.
+        line_start = 34.
+        readline: s4: "hello world\n" -> compare: "hello world\n" > "2 by", so set ans=34, high=28.
+
+        Then low=0, high=28, mid=14.
+        seek(14) -> in s1.
+        readline: from 14: "ol\n" -> then we are at 17.
+        line_start=17.
+        readline: s2: "2 by bus\n" -> compare: "2 by bus\n" > "2 by", so set ans=17, high=14.
+
+        Then low=0, high=14, mid=7.
+        seek(7) -> in s1.
+        readline: from 7: "o to school\n" -> then at 17.
+        line_start=17.
+        readline: s2: "2 by bus\n" -> > target, so ans=17, high=7.
+
+        Then low=0, high=7, mid=3.
+        seek(3) -> in s1.
+        readline: from 3: "I go to school\n" -> then at 17.
+        line_start=17.
+        readline: s2: "2 by bus\n" -> > target, so ans=17, high=3.
+
+        Then low=0, high=3, mid=1.
+        seek(1) -> in s1.
+        readline: from 1: " I go to school\n" -> then at 17.
+        line_start=17.
+        readline: s2: "2 by bus\n" -> > target, so ans=17, high=1.
+
+        Then low=0, high=1, mid=0.
+        seek(0) -> at beginning.
+        mid==0, so line_start=0, and we seek(0).
+        readline: s1: "1 I go to school\n" -> then compare: s1 < target? 
+            "1 I go to school" < "2 by" -> because '1' < '2', so set low = tell() = 17.
+
+        Then low=17, high=1 -> break, and return ans=17.
+
+        This matches.
+
+        But let me try with a target that is the first line: target = b"1 I go to school"
+
+        low=0, high=57, mid=28.
+        seek(28), readline: "o bar\n", then line_start=34, readline: s4 -> > target, so ans=34, high=28.
+
+        Then low=0, high=28, mid=14.
+        seek(14), readline: "ol\n", then line_start=17, readline: s2 -> > target, so ans=17, high=14.
+
+        Then low=0, high=14, mid=7.
+        seek(7), readline: "o to school\n", then line_start=17, readline: s2 -> > target, so ans=17, high=7.
+
+        ... until high=0, then at mid=0:
+            seek(0), line_start=0, readline: s1 -> compare: s1 == target? 
+            But note: s1 is "1 I go to school\n", and target is "1 I go to school" (without the newline? or with?) 
+
+        The example: 
+            The file has newlines at the end of each line except possibly the last.
+
+        The target is given as b"2 by", which does not have a newline. But the line in the file for "2 by bus" has a newline.
+
+        How should we compare? 
+
+        We are comparing the entire line including the newline? 
+
+        In the example, the target for "2 by" is given without a newline, but the line in the file for "2 by bus" has a newline.
+
+        So when we read the line, we get "2 by bus\n", and we are comparing with b"2 by".
+
+        In lexicographical order, ' ' (space) has ASCII 32, and '\n' has ASCII 10, so '\n' is less than ' '. 
+        But wait: 
+            "2 by" vs "2 by bus\n": 
+            They match for "2 by", then in "2 by bus\n" the next character is ' ' (space) and in the target we have nothing? 
+            Actually, the target is a bytestring: b"2 by", and the line is b"2 by bus\n".
+
+        When comparing two bytestrings, the comparison is done lexicographically, and if one is a prefix of the other, the prefix is considered smaller.
+
+        So b"2 by" < b"2 by bus\n".
+
+        Therefore, the above simulation for the first line: 
+            s1 = b"1 I go to school\n"
+            target = b"1 I go to school"   # without the newline
+
+        Then s1 > target because the newline (ASCII 10) is less than the next character in the target (which doesn't exist, so the target is shorter) -> wait, no:
+
+        When comparing:
+            "1 I go to school\n" and "1 I go to school": 
+            They are equal for the first 16 characters, then the file line has a newline (10) and the target has nothing. 
+            But in Python, when comparing two bytestrings of different lengths, if the common prefix is equal, the shorter one is considered smaller.
+
+        So: 
+            b"abc" < b"abcd"
+           
+

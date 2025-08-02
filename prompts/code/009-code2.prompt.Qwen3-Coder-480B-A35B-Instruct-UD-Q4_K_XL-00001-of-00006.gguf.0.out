@@ -1,0 +1,208 @@
+Looking at this problem, I need to perform a binary search on a file without loading it entirely into memory. The key insight is to work with byte positions and read lines at specific positions.
+
+Let me break down the approach:
+
+1. **Get file size**: Determine the total size to establish search boundaries
+2. **Binary search on byte positions**: Instead of searching array indices, search byte positions
+3. **Find complete lines**: When jumping to a byte position, I need to find the start of the line containing that position
+4. **Compare with target**: Extract and compare the actual line content
+
+Here's my solution:
+
+```python
+def binary_search_file(file_path, target):
+    """
+    Perform binary search on a file to find the byte position of target line
+    or the insertion point.
+    
+    Args:
+        file_path: Path to the text file
+        target: Target string to search for (as bytes)
+    
+    Returns:
+        Byte position of the target line or insertion point
+    """
+    
+    def get_line_at_pos(file, pos):
+        """Get the complete line that contains the byte position 'pos'"""
+        # Move to the position
+        file.seek(pos)
+        
+        # If we're not at the beginning of the file, 
+        # move backwards to find the start of the line
+        if pos > 0:
+            # Move backwards until we find a newline or reach the beginning
+            while pos > 0:
+                file.seek(pos - 1)
+                char = file.read(1)
+                if char == b'\n':
+                    break
+                pos -= 1
+            file.seek(pos)
+        
+        # Now read the complete line
+        line = file.readline()
+        return pos, line.rstrip(b'\n\r')
+    
+    def get_line_starting_at_pos(file, pos):
+        """Get the line that starts exactly at position 'pos'"""
+        file.seek(pos)
+        line = file.readline()
+        return line.rstrip(b'\n\r') if line else b''
+    
+    def find_line_start_pos(file, pos):
+        """Find the starting position of the line containing byte position 'pos'"""
+        if pos <= 0:
+            return 0
+            
+        file.seek(pos)
+        
+        # Move backwards to find the start of the current line
+        while pos > 0:
+            file.seek(pos - 1)
+            char = file.read(1)
+            if char == b'\n':
+                return pos  # Start of the line after the newline
+            pos -= 1
+        return 0  # Beginning of file
+    
+    # Get file size
+    with open(file_path, 'rb') as f:
+        f.seek(0, 2)  # Seek to end
+        file_size = f.tell()
+    
+    if file_size == 0:
+        return 0
+    
+    # Binary search
+    left = 0
+    right = file_size
+    
+    with open(file_path, 'rb') as f:
+        while left < right:
+            mid = (left + right) // 2
+            
+            # Find the start of the line containing the mid position
+            line_start_pos = find_line_start_pos(f, mid)
+            
+            # Get the line starting at that position
+            line_content = get_line_starting_at_pos(f, line_start_pos)
+            
+            # If we're at EOF or empty line, treat appropriately
+            if not line_content and line_start_pos >= file_size:
+                right = mid
+                continue
+            
+            # Compare with target
+            if line_content < target:
+                # Need to search in the latter half
+                # Move past this line
+                next_pos = line_start_pos + len(line_content)
+                # Account for newline characters
+                f.seek(line_start_pos)
+                f.readline()  # Skip the current line
+                next_line_start = f.tell()
+                left = next_line_start
+            elif line_content > target:
+                # Need to search in the first half
+                right = mid
+            else:
+                # Found exact match
+                return line_start_pos
+    
+    # Return insertion point
+    # At this point, left should be at the correct insertion position
+    with open(file_path, 'rb') as f:
+        if left >= file_size:
+            return file_size
+        line_start_pos = find_line_start_pos(f, left)
+        return line_start_pos
+
+# More robust implementation
+def binary_search_file(file_path, target):
+    """
+    Perform binary search on a file to find the byte position of target line
+    or the insertion point.
+    """
+    
+    def get_file_size():
+        with open(file_path, 'rb') as f:
+            f.seek(0, 2)
+            return f.tell()
+    
+    def get_line_starting_at(pos):
+        """Get line content starting exactly at byte position 'pos'"""
+        with open(file_path, 'rb') as f:
+            f.seek(pos)
+            line = f.readline()
+            return line.rstrip(b'\n\r') if line else b''
+    
+    def find_prev_newline(pos):
+        """Find the position of the newline before 'pos', or -1 if none"""
+        if pos <= 0:
+            return -1
+            
+        with open(file_path, 'rb') as f:
+            # Move backwards to find previous newline
+            current_pos = pos - 1
+            while current_pos >= 0:
+                f.seek(current_pos)
+                char = f.read(1)
+                if char == b'\n':
+                    return current_pos
+                current_pos -= 1
+            return -1
+    
+    def find_line_start(pos):
+        """Find the starting position of the line containing byte 'pos'"""
+        prev_newline = find_prev_newline(pos)
+        return prev_newline + 1 if prev_newline >= 0 else 0
+    
+    def get_next_line_start(pos):
+        """Get the starting position of the line after the one starting at 'pos'"""
+        with open(file_path, 'rb') as f:
+            f.seek(pos)
+            line = f.readline()
+            return f.tell()
+    
+    file_size = get_file_size()
+    
+    # Binary search bounds are byte positions
+    left = 0
+    right = file_size
+    
+    while left < right:
+        mid = (left + right) // 2
+        
+        # Find the start of the line containing the mid byte
+        line_start = find_line_start(mid)
+        
+        # Get the content of that line
+        line_content = get_line_starting_at(line_start)
+        
+        if line_content == b'' and line_start >= file_size:
+            # We're past the end of file
+            right = mid
+        elif line_content < target:
+            # Target is in the right half
+            next_line_start = get_next_line_start(line_start)
+            left = next_line_start
+        elif line_content > target:
+            # Target is in the left half
+            right = mid
+        else:
+            # Found exact match
+            return line_start
+    
+    # Return insertion point
+    return left if left < file_size else file_size
+```
+
+Let me trace through the example:
+- File content: "1 I go to school\n2 by bus\nfoo bar\nhello world\nzoo zoo zoo\n"
+- Target: b"2 by"
+- We want to return 17, which is the byte position where "2 by bus" starts
+
+The key insight is that we're doing binary search on byte positions, but we need to ensure we're always comparing complete lines. When we jump to a middle byte position, we first find which line contains that byte, then compare the entire line with our target. [end of text]
+
+

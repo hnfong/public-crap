@@ -1,0 +1,86 @@
+To perform a binary search directly on a text file in **O(log n)** time, we need to treat the file as a sorted list of lines, but without loading the entire file into memory. The key is to use **random access** via `seek()` and `read()` to jump to byte positions and extract lines efficiently.
+
+### Key Challenges:
+- Lines are variable-length, so we can't directly compute the byte offset of the nth line.
+- We need to **find the start and end of a line** when we land in the middle of one.
+- We must handle edge cases like empty lines or EOF.
+
+### Strategy:
+1. **Binary search on byte positions** (not line numbers).
+2. When we `seek()` to a mid-point, we may land in the middle of a line. So we:
+   - Read forward until we find a newline (`\n`) to get the **start of the next line**.
+   - Read that full line and compare it with the target.
+3. Use `bisect_left` logic: if the target is not found, return the byte position where it should be inserted.
+
+---
+
+### Python Implementation
+
+```python
+import os
+
+def binary_search_file(file_path, target):
+    """
+    Perform a binary search on a text file sorted lexicographically.
+    Returns the byte offset where the target line starts, or the insertion point.
+    """
+    target = target.rstrip(b'\n')  # Normalize target
+    with open(file_path, 'rb') as f:
+        left = 0
+        right = os.fstat(f.fileno()).st_size  # File size in bytes
+
+        while left < right:
+            mid = (left + right) // 2
+            f.seek(mid)
+
+            # Ensure we are at the start of a line
+            if mid > 0:
+                f.readline()  # Discard partial line
+
+            line_start = f.tell()
+            line = f.readline()
+            if not line:
+                # EOF reached, treat as empty string
+                line = b''
+
+            line = line.rstrip(b'\n')
+
+            if line < target:
+                left = f.tell()
+            else:
+                right = mid
+
+        return left
+```
+
+---
+
+### Explanation:
+- `left` and `right` are byte offsets.
+- `f.readline()` after `seek(mid)` ensures we always read from the **start of a line**.
+- The loop narrows down the insertion point using standard binary search logic.
+- The final `left` is the **byte offset** where the target line would be inserted (or where it already exists).
+
+---
+
+### Example:
+Given the file:
+
+```
+1 I go to school\n
+2 by bus\n
+foo bar\n
+hello world\n
+zoo zoo zoo\n
+```
+
+- `binary_search_file("myfile.txt", b"2 by")` returns **17**, which is the byte offset of the line `2 by bus`.
+
+---
+
+### Notes:
+- This assumes the file is sorted **lexicographically by full line**.
+- The function returns the **byte offset** of the line (or insertion point), not the line number.
+- It uses **binary search on bytes**, not lines, so it's **O(log n)** in terms of file size, not number of lines — but since lines are roughly evenly distributed, it's effectively **O(log n)** in practice. [end of text]
+
+

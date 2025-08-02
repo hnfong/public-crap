@@ -1,0 +1,65 @@
+==========
+To perform a binary search on a text file directly, we need to efficiently navigate through the file without loading the entire file into memory. The key idea is to use the file's byte positions to jump to different parts of the file and compare the target string with the lines at those positions. Here's a step-by-step approach:
+
+### Approach
+1. **Determine File Size**: First, get the total size of the file in bytes to know the range of possible positions.
+2. **Binary Search Setup**: Initialize the low and high pointers. The low pointer starts at 0 (beginning of the file), and the high pointer starts at the end of the file.
+3. **Binary Search Execution**:
+   - **Mid Calculation**: Compute the mid position between low and high.
+   - **Find Line Start**: From the mid position, move backward to find the start of the current line (to ensure we are comparing complete lines).
+   - **Read Line**: Read the line starting from the found position.
+   - **Comparison**: Compare the target string with the read line.
+   - **Adjust Pointers**: If the target is lexicographically smaller, adjust the high pointer; otherwise, adjust the low pointer.
+4. **Termination**: The loop terminates when the low pointer exceeds the high pointer. The low pointer at this point is the insertion point (bisect_left).
+
+### Solution Code
+```python
+def binary_search_file(file_path, target):
+    with open(file_path, 'rb') as file:
+        file_size = file.seek(0, 2)  # Get the file size by seeking to the end
+        low = 0
+        high = file_size
+        
+        while low < high:
+            mid = (low + high) // 2
+            # Move to mid position and find the start of the current line
+            file.seek(mid)
+            # If mid is not at the start of a line, move to the beginning of the next line
+            if mid > 0:
+                file.seek(mid - 1)
+                char = file.read(1)
+                if char != b'\n':
+                    # Move to the start of the next line
+                    while file.read(1) != b'\n':
+                        if file.tell() == file_size:
+                            break
+                    mid = file.tell()
+            # Now read the line starting at mid
+            line_start = mid
+            line = file.readline()
+            if not line:
+                # Handle case where readline returns empty (e.g., end of file)
+                high = mid
+                continue
+            # Compare the line with the target
+            if line < target:
+                low = mid + len(line)
+            else:
+                high = mid
+        return low
+```
+
+### Explanation
+1. **File Handling**: The file is opened in binary read mode ('rb') to allow byte-level operations.
+2. **Binary Search Initialization**: The initial low and high pointers are set to the start (0) and end (file size) of the file, respectively.
+3. **Mid Calculation**: The mid position is calculated as the average of low and high.
+4. **Finding Line Start**: The code checks if the mid position is at the start of a line. If not, it moves backward to find the beginning of the current line or the start of the next line.
+5. **Reading Line**: The line starting from the found position is read. This line is then compared with the target string.
+6. **Adjusting Pointers**: If the target is lexicographically larger than the current line, the low pointer is moved to the start of the next line. Otherwise, the high pointer is moved to the current mid position.
+7. **Termination**: The loop exits when low exceeds high, at which point low is the insertion point (bisect_left), indicating the position where the target should be inserted to maintain lexicographical order.
+
+This approach efficiently narrows down the search space by half in each iteration, ensuring O(log n) time complexity, where n is the number of lines in the file. The solution handles edge cases such as empty lines or files gracefully by adjusting the pointers appropriately.
+==========
+Prompt: 135 tokens, 112.692 tokens-per-sec
+Generation: 855 tokens, 21.506 tokens-per-sec
+Peak memory: 198.963 GB
