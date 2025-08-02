@@ -1,0 +1,130 @@
+To perform a binary search directly on a text file without loading the entire file into memory, we need to efficiently navigate the file using byte positions. The key idea is to repeatedly divide the file into halves, read the middle line, and compare it with the target to decide which half to search next. This approach ensures that we only read a small portion of the file in each step, keeping the time complexity O(log n).
+
+### Approach
+1. **Initial Setup**: Open the file in binary mode to handle byte positions accurately. Determine the file size to set the initial search boundaries (low and high).
+2. **Binary Search Loop**: While the low pointer is less than the high pointer:
+   - Calculate the middle byte position.
+   - Seek to the middle position and read the line starting from there. However, since lines can vary in length, we might need to adjust the middle position to the start of a line to avoid reading partial lines.
+   - Compare the read line with the target. If the line is less than the target, adjust the low pointer to search the upper half. Otherwise, adjust the high pointer to search the lower half.
+3. **Termination**: When the loop ends, the low pointer will be at the insertion point (as in `bisect_left`), which is the byte position where the target would be inserted to maintain order.
+
+### Solution Code
+```python
+def binary_search_file(file_path, target):
+    with open(file_path, 'rb') as file:
+        file_size = file.seek(0, 2)  # Get the file size
+        file.seek(0)
+        
+        low = 0
+        high = file_size
+        
+        while low < high:
+            mid = (low + high) // 2
+            file.seek(mid)
+            
+            # Skip to the beginning of the next line in case mid is in the middle of a line
+            file.readline()  # This discards the partial line starting at mid
+            current_line = file.readline()
+            
+            # Compare the current line with the target
+            # The target is a bytes object; current_line is bytes read from the file
+            # We need to handle cases where current_line might be empty (end of file)
+            if not current_line:
+                # This means mid was near the end, and the next line is beyond file
+                high = mid
+                continue
+            
+            # Compare current_line (without newline) with target
+            # Strip the newline character if present for comparison
+            line_content = current_line.rstrip(b'\n')
+            
+            if line_content < target:
+                low = mid + len(current_line)  # Move low to the start of the next possible line
+                # Alternatively, low could be set to the position after the current line's start
+                # But more accurately, after reading the line starting at mid, the next possible start is after the line.
+                # However, in the next iteration, mid will be adjusted, and readline will proceed.
+                # So perhaps better to set low to the position after the current line's start (mid + len(partial line up to mid) + len(current_line))
+                # But since we've already read the line starting after mid, the next possible lines are after.
+                # So perhaps low should be set to file.tell() after reading current_line.
+                # Because after readline(), the file pointer is at the start of the next line.
+                # So low = file.tell()
+                # But need to verify.
+                # Alternative approach: after seeking to mid, readline() moves the pointer to the next line's start.
+                # So low should be set to the current file position (file.tell())
+                # Because the next possible lines are after this line.
+                low = file.tell()
+            else:
+                # The target is <= current_line, search left
+                # The high should be set to mid, because the target could be in the left half or at mid's line
+                # But need to adjust high to the start of the current line (mid)
+                # However, since we've already seeked to mid and read the line, the high can be mid.
+                # But to ensure we don't miss the line starting at mid, perhaps high is set to mid.
+                high = mid
+        
+        # After loop, low is the insertion point.
+        # But need to verify if the target exists in the file.
+        # However, the problem states to return the insertion point as in bisect_left.
+        # So return low.
+        
+        # But wait, the initial approach may not correctly handle cases where the target is found.
+        # Let me re-examine the comparison logic.
+        # The correct approach is to find the first position where the line is >= target.
+        # So during the loop, when line_content >= target, we search left (including possibly this line).
+        # Otherwise, search right.
+        # So modifying the loop:
+        
+        # Reset the file pointer to start for a new approach (alternative implementation)
+        # The previous approach may have issues with line boundaries.
+        # Let's try a different method: during each mid calculation, seek to mid, then read lines until we find the line that would contain the target or determine the insertion point.
+        # But this could lead to O(n) time in the worst case.
+        # Alternatively, during each step, after seeking to mid, read the line starting at or after mid, and compare.
+        
+        # Re-defining the approach:
+        # The initial approach may not correctly handle the line boundaries. Let's try to adjust.
+        
+        # Alternative approach:
+        # In each iteration, seek to mid, then read the line starting at that position (or the next line if mid is in the middle).
+        # Then compare the line with the target.
+        # If the line is less than target, the insertion point is after this line. So low becomes the start of the next line.
+        # Else, high becomes mid (the start of the current line).
+        # The start of the next line can be found by file.tell() after reading the current line.
+        
+        # So re-defining the loop:
+        file.seek(0)
+        low = 0
+        high = file_size
+        
+        while low < high:
+            mid = (low + high) // 2
+            file.seek(mid)
+            # Discard the partial line if any
+            file.readline()
+            current_line = file.readline()
+            if not current_line:
+                # No more lines, insertion point is at the end
+                high = mid
+                continue
+            line_content = current_line.rstrip(b'\n')
+            if line_content < target:
+                # The target would be inserted after this line. So low is the start of the next line.
+                # The start of the next line is file.tell()
+                low = file.tell()
+            else:
+                # The target is <= line_content, search left (including possibly this line)
+                high = mid
+        
+        # After loop, low is the insertion point.
+        # But need to verify if the target exists in the file. However, the problem doesn't require checking existence.
+        return low
+```
+
+Wait, but the initial approach may have some issues. For example, when the file is seeked to mid, and readline() is called, it reads until the next newline. So the current_line is the line starting after mid (if mid was in the middle of a line). But the comparison is between this line and the target. 
+
+But the problem is that the target could be in a line that starts before mid. For instance, if the target is in a line that starts at position 10, and mid is 15 (in the middle of the next line), then the code would read the line starting after 15, compare it to the target, and possibly set high to 15, missing the target's line.
+
+This suggests that the initial approach may not correctly handle cases where the target's line starts before the mid position. 
+
+To fix this, perhaps during each iteration, we need to find the line that contains the mid position or starts near it, and then compare. But this requires more careful handling.
+
+An alternative approach is inspired by the standard bisect module's bisect_left for lists. For each step,
+
