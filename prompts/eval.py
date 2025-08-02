@@ -128,37 +128,14 @@ def safe_wrapper(f, arg, expected):
         return False
 
 def semi_safe_exec(path):
-    with open(path) as f:
-        content = f.read()
-
-    start_idx = content.find("```python")
-    if start_idx != -1:
-        # We already have found the start, however, sometimes the llm will just give me more test cases and crap that we don't need
-        more_python_blocks = content[start_idx+1:].find("```python")
-        if more_python_blocks != -1:
-            content = content[:more_python_blocks+start_idx]
-    else:
-        start_idx = content.find("```")
-
-    end_idx = content.rfind("```")
-
-    if start_idx == -1:
-        start_idx = 0
-
-    code = content[start_idx:end_idx]
-    if code.startswith("```python"):
-        code = code[9:]
-    elif code.startswith("```"):
-        code = code[3:]
-
-    # print("---------")
-    # print(code)
+    content = read_outfile_contents(path) # This strips away [end of text] and <think>
+    code = extract_language_block("python", content)
 
     def noop(*args, **kwargs):
         pass
 
     def restricted_import(name, globals=None, locals=None, fromlist=(), level=0):
-        if name == "math":
+        if name in ("math",):
             return __import__(name, globals, locals, fromlist, level)
         raise ImportError(f"Import of '{name}' is not allowed.")
 
@@ -194,7 +171,7 @@ def extract_language_block(lang, content):
         return content
 
     if "```" + lang in content:
-        return content.split("```" + lang)[-1].split("```")[0]
+        return content.split("```" + lang)[1].split("```")[0]
     else:
         splitter = content.split("```")
         # Just see which segment has the most semicolons. It's probably right unless it's python, in which case add some parentheses.
@@ -205,6 +182,47 @@ def compare_output_with_sample(env_info, output):
     sample_set = set([line.strip() for line in open(sample_output).readlines() if line != ""])
     output_set = set([line.strip() for line in output.strip().split("\n") if line != ""])
     return int(len(output_set & sample_set) / len(sample_set) * 100)
+
+def compile_and_run_python(env_info, result_file):
+    """
+    Here, we don't actually compile the code, but we run it by providing a main
+    program that also handles the test cases. The outer program only needs to
+    provide the environment info, which includes the module name, main program
+    name, and the number of test cases. The main program is expected to handle
+    the test cases and assert (with non-zero exit code) if the output is not as
+    expected.
+    """
+    import tempfile
+    import shutil
+    import subprocess
+    #! COMPILE_AND_RUN({"lang": "python", "module":"test009", "main": "test009main", "cases": 10})
+    print(env_info)
+    content = read_outfile_contents(result_file) # This strips away [end of text] and <think>
+    content = extract_language_block("python", content)
+    with tempfile.TemporaryDirectory() as temp_dir:
+        python_file_path = os.path.join(temp_dir, f"{env_info['module']}.py")
+        # Write content to the python file
+        with open(python_file_path, "w") as python_file:
+            python_file.write(content)
+
+        temp_dir_main = os.path.join(temp_dir, env_info['main'])
+
+        # Copy the main program to temp_dir
+        main_file = f"{env_info['main']}.py"
+        if os.path.exists(main_file):
+            shutil.copy(main_file, temp_dir_main, follow_symlinks=True)
+        else:
+            raise IOError(f"Cannot find {main_file}")
+
+        successful_cases = 0
+        for case_i in range(env_info['cases']):
+            try:
+                subprocess.run(["python3", temp_dir_main, str(case_i)], check=True, stderr=subprocess.DEVNULL, timeout=env_info.get("timeout") or 1)
+                successful_cases += 1
+            except Exception as e:
+                print(f"Execution failed for {result_file} case {case_i}: {e}")
+
+        return 100.0 * successful_cases / env_info['cases']
 
 def compile_and_run_java(env_info, result_file):
     import os
@@ -262,6 +280,8 @@ def compile_and_run(env_info, result_file):
     print(f"Compile and run: {result_file}...")
     if env_info.get("lang") == "java":
         return compile_and_run_java(env_info, result_file)
+    if env_info.get("lang") == "python":
+        return compile_and_run_python(env_info, result_file)
     else:
         raise Exception(f"Unsupported language in {env_info} when evaluating {result_file}")
 
