@@ -775,6 +775,7 @@ NAME_MATCH_OVERRIDE = [
 
     ("GLM-4.5", GLM45TemplateMixin),
 
+    ("SmallThinker-", ChatMLTemplateMixin),
     ("OLMo-2-", OlmoTemplate),
     ("Athene-V2", ChatMLTemplateMixin),
     ("DeepSeek-V2-Lite", DeepSeekV2LiteMixin),
