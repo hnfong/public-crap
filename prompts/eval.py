@@ -351,7 +351,10 @@ def evaluate_prompt_files():
                 model_name = os.path.basename(out_file)[len(base_prompt_path):].lstrip('.').split(".gguf")[0]
                 ctx = semi_safe_exec(out_file)
                 if ctx:
-                    results.append((sum(tc_results := [safe_wrapper(ctx[test.func_name], test.args, test.expected) for test in python_tests_info]) * 100.0 / len(python_tests_info), "".join(str(int(x)) for x in tc_results), model_name, out_file))
+                    try:
+                        results.append((sum(tc_results := [safe_wrapper(ctx[test.func_name], test.args, test.expected) for test in python_tests_info]) * 100.0 / len(python_tests_info), "".join(str(int(x)) for x in tc_results), model_name, out_file))
+                    except KeyError:
+                        results.append((-1, "", model_name, out_file))
                 else:
                     results.append((-1, "", model_name, out_file))
 
