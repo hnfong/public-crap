@@ -755,6 +755,8 @@ class GPTOSSTemplateMixin:
 <|start|>system<|message|>{self.system_message()}<|end|><|start|>user<|message|>{self.prompt()}<|end|><|start|>assistant
 """.strip()
 
+    def extra_gguf_options(self):
+        return ["-c", "8192"]
 
 class GLM45TemplateMixin(MlxArgumentConverter):
     def templated_prompt(self):
