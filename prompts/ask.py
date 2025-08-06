@@ -749,6 +749,13 @@ class HuanyuanTemplateMixin:
 {self.system_message()}<|extra_4|>/no_think {self.prompt()}<|extra_0|>
 """.strip()
 
+class GPTOSSTemplateMixin:
+    def templated_prompt(self):
+        return f"""
+<|start|>system<|message|>{self.system_message()}<|end|><|start|>user<|message|>{self.prompt()}<|end|><|start|>assistant
+""".strip()
+
+
 class GLM45TemplateMixin(MlxArgumentConverter):
     def templated_prompt(self):
         return f"""
@@ -780,6 +787,7 @@ NAME_MATCH_OVERRIDE = [
     ("ERNIE-4.5", ErnieTemplateMixin),
 
     ("GLM-4.5", GLM45TemplateMixin),
+    ("gpt-oss", GPTOSSTemplateMixin),
 
     ("Hunyuan-", HuanyuanTemplateMixin),
     ("SmallThinker-", ChatMLTemplateMixin),

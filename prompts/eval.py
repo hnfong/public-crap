@@ -161,8 +161,8 @@ TestCase = collections.namedtuple('TestCase', ['func_name', 'args', 'expected'])
 def read_outfile_contents(path):
     with open(path, 'r') as f_out:
         content = f_out.read().replace('[end of text]', '')
-        content = content.split("/think>")[-1]
-        if '<think>' in content:
+        content = content.split("/think>")[-1].split("<|start|>assistant<|channel|>final<|message|>")[-1]
+        if '<think>' in content or '<|channel|>analysis<|message|>' in content:
             content = ""  # did not complete thinking
         return content
 
