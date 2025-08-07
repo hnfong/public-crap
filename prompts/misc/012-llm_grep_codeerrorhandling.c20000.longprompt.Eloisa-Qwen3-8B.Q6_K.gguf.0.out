@@ -1,0 +1,170 @@
+<think>
+Okay, let's tackle this query. The user wants me to perform a semantic "grep" on the provided input code, specifically looking for lines that relate to error handling. The query is "code that relates to error handling," so I need to identify lines that define exceptions, handle errors, or include error-related logic.
+
+First, I'll scan through the input code line by line. I'm looking for keywords like "Exception," "try," "except," "raise," or any class definitions that inherit from exceptions. Also, any functions that might handle errors or validate inputs could be relevant.
+
+Starting from line 44, I see the definition of `DefinitionError` which is a subclass of `ValueError`. That's definitely related to error handling. Then, there are several other exception classes like `AmbiguousPronunciationError`, `InvalidJyutPingError`, `IllegalCharacterError`, and `MissingItemError`, all inheriting from `DefinitionError`. These are all custom exceptions, so they directly relate to error handling.
+
+Further down, in line 160, there's a class `MultilingualDefinition` with an `__init__` method that includes a try-except block. This block catches `ValueError` exceptions, which are used for invalid inputs, and logs errors using `dj.DEBUG`. This is another instance of error handling.
+
+Additionally, in line 317, there's a method `check_problems` that includes a try-except block to handle exceptions during problem checking. It also uses `dj.ERROR` for logging, which is part of error handling.
+
+I should also check for any other error-related code. For example, the `parse_written_form_and_pronunciation` function might raise exceptions, but the code doesn't explicitly show that. However, the presence of exception classes and their usage in the codebase indicates a focus on error handling.
+
+Lines that define exceptions or handle exceptions with try-except blocks are the primary matches. I need to ensure that the lines I select are directly related and not tangentially related. For instance, lines importing modules or defining classes that aren't exceptions shouldn't be included unless they're part of the error handling logic.
+
+After reviewing all the lines, the relevant ones are those defining the exception classes and the `MultilingualDefinition` class's error handling in its `__init__` method. The `check_problems` method's error handling is also relevant.
+
+I'll compile these lines, making sure each is numbered and followed by "---" as specified. If there are no matches, I should return an empty response, but in this case, there are several matches.
+</think>
+
+44:class DefinitionError(ValueError):
+---
+45:    pass
+---
+46:
+47:class AmbiguousPronunciationError(DefinitionError):
+---
+48:    pass
+---
+49:
+50:class InvalidJyutPingError(DefinitionError):
+---
+51:    pass
+---
+52:
+53:class IllegalCharacterError(DefinitionError):
+---
+54:    def __init__(self, value):
+55:        self.errorMsg = value
+56:
+57:    def __str__(self):
+58:        return repr(self.errorMsg)
+---
+59:
+60:class MissingItemError(DefinitionError):
+---
+61:    pass
+---
+62:
+160:class MultilingualDefinition():
+---
+161:    """A collection of very similar explanations"""
+162:    def __init__(self, s, unknown_pos=False, raise_on_error=False):
+163:        """Parses the string s and constructs the Definition."""
+164:        def_str = s.strip()
+165:        self._tags = collections.OrderedDict()
+166:
+167:        m = re_line.match(def_str)
+168:        self._is_stub = (m is None) or (m.group(0) != def_str)
+169:        if self._is_stub:
+170:            items_str = def_str
+171:        else:
+172:            try:
+173:                items_str = re_tag.sub("", m.group("explanations")).strip()
+174:                import types
+175:                tags = {}
+176:                for k, v in re_tag.findall(def_str):
+177:                    k = k.lower()
+178:
+179:                    if k in TAG_ALIASES:
+180:                        k = TAG_ALIASES[k]
+181:
+182:                    if k not in RECOGNIZED_TAGS:
+183:                        raise ValueError("Unknown tag: %s" % k)
+184:
+185:                    validator = TAG_VALIDATION.get(k)
+186:                    v = v.strip()
+187:                    if isinstance(validator, types.FunctionType):
+188:                        v = validator(v)
+189:                    else:
+190:                        if validator is not None and not validator.match(v):
+191:                            errmsg = "Tag '%s' cannot have value '%s'" % (k, v)
+192:                            raise ValueError(errmsg)
+193:
+194:                    if k not in tags:
+195:                        tags[k] = set()  # Use set to dedupe entries
+196:                    tags[k].add(v)
+197:
+198:                for tag in sorted(tags.keys()):
+199:                    if not hasattr(tags[tag], "__iter__"):
+200:                        raise ValueError("tags should be a dictionary of lists!")
+201:                    self._tags[tag] = sorted(tags[tag])
+202:
+203:                for req_tag in REQUIRED_TAGS:
+204:                    if req_tag not in tags:
+205:                        if req_tag == "pos" and unknown_pos:
+206:                            self._tags["pos"] = set([pos_valid("---")])
+207:                        else:
+208:                            errmsg = "Required tag '%s' not found for '%s': '%s'!" % (req_tag, self, items_str)
+209:                            raise ValueError(errmsg)
+210:            except ValueError as e:
+211:                import dj
+212:                items_str = def_str
+213:                self._is_stub = True
+214:
+215:                 # XXX: this is a bit hackish for clearing any possible
+216:                 # changes in self._tags before the exception was thrown
+217:                self._tags = collections.OrderedDict()
+218:
+219:                if raise_on_error:
+220:                    raise e
+221:                else:
+222:                    dj.DEBUG("Got error: %s when parsing '%s'" % (e, def_str))
+---
+223:
+317:    def check_problems(self, word_id = 0):
+---
+318:        """Runs a ad-hoc, best-effort check and returns a list of human
+319:        readable problems. This functions makes assumptions about availability
+320:        of data files, makes network calls etc."""
+321:        import json
+322:
+323:        def list_subproblems(subject, pronunciations):
+324:            from lib import common
+325:            problems = []
+326:            for wrchar, jyutping in subject:
+327:                if not common.is_cjk(wrchar):
+328:                    continue
+329:                if jyutping not in pronunciations[wrchar]:
+330:                    problems.append((wrchar, jyutping))
+331:            return problems
+332:
+333:        def grammar_check(text):
+334:            import urllib.request as req
+335:            import urllib.parse as parse
+336:
+337:            # Don't check short phrases
+338:            if (len(text.split(" ")) < 4):
+339:                return []
+340:            print("Making query to languagetool.org", text)
+341:            data = parse.urlencode({'text':text, 'language':'auto'})
+342:            q = req.urlopen(req.Request("https://api.languagetool.org/v2/check", method='POST', data=data.encode("utf-8")))
+343:            resp_data = json.loads(q.read())
+344:            print(resp_data)
+345:            return resp_data["matches"]
+346:
+347:        problems = []
+348:        try:
+349:            with open("lists/charlist.json") as f:
+350:                char_pronunciations = json.loads(f.read())
+351:
+352:                for item in self.items():
+353:                    for multilingual_example in item.multilingual_examples():
+354:                        for example in multilingual_example.translations():
+355:                            if example.lang == 'yue' and example.pronunciation != '':
+356:                                rm = example.ruby_match
+357:                                if sub_problems := list_subproblems(rm, char_pronunciations):
+358:                                    problems.append((rm, str(sub_problems)))
+359:                            if example.lang == 'eng':
+360:                                problems.extend(grammar_check(example.text))
+361:
+362:        except Exception as e:
+363:            import dj
+364:            dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))
+365:        if self.has_label("gpt"):
+366:            problems.append("請刪除 (label:gpt)")
+367:
+368:        return problems [end of text]
+
+
