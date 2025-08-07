@@ -1,0 +1,98 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class NumberParser {
+    private static final double KILOBYTE = 1024.0;
+    private static final double MEGABYTE = KILOBYTE * KILOBYTE;
+    private static final double GIGABYTE = KILOBYTE * KILOBYTE * KILOBYTE;
+    
+    private static final Pattern NUMBER_PATTERN = Pattern.compile(
+        "(-?\\d+(,\\d+)*(\\.\\d+)?|\\d+(,\\d+)*(\\.\\d+)?)([kKmMgG])?"
+    );
+    
+    public static void main(String[] args) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringBuilder input = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                input.append(line).append("\n");
+            }
+            
+            List<Double> values = extractAndParseValues(input.toString());
+            double total = values.stream().mapToDouble(Double::doubleValue).sum();
+            
+            System.out.printf("%.0f\n", total);
+            System.out.printf("%.1f k\n", total / KILOBYTE);
+            System.out.printf("%.1f M\n", total / MEGABYTE);
+            System.out.printf("%.1f G\n", total / GIGABYTE);
+            
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+        }
+    }
+    
+    private static List<Double> extractAndParseValues(String input) {
+        List<Double> values = new ArrayList<>();
+        
+        // Replace commas in numbers with empty string to handle thousand separators
+        String cleaned = input.replaceAll(",", "");
+        
+        Matcher matcher = NUMBER_PATTERN.matcher(cleaned);
+        while (matcher.find()) {
+            String numberPart = matcher.group(1);
+            String suffix = matcher.group(2);
+            
+            // Remove any commas from the number part
+            String numStr = numberPart.replaceAll(",", "");
+            
+            // Parse the number
+            double value = parseNumber(numStr);
+            
+            // Apply suffix if present
+            if (suffix != null && !suffix.isEmpty()) {
+                value = applySuffix(value, suffix);
+            }
+            
+            values.add(value);
+        }
+        
+        return values;
+    }
+    
+    private static double parseNumber(String numStr) {
+        try {
+            // Handle negative numbers
+            if (numStr.startsWith("-")) {
+                return -Double.parseDouble(numStr.substring(1));
+            }
+            return Double.parseDouble(numStr);
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
+    
+    private static double applySuffix(double value, String suffix) {
+        switch (suffix.toUpperCase()) {
+            case "K":
+            case "k":
+                return value * KILOBYTE;
+            case "M":
+            case "m":
+                return value * MEGABYTE;
+            case "G":
+            case "g":
+                return value * GIGABYTE;
+            default:
+                return value;
+        }
+    }
+}
+``` [end of text]
+
+

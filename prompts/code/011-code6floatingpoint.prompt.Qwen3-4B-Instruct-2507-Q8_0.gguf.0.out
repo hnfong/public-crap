@@ -1,0 +1,258 @@
+Let's analyze each question **assuming IEEE 754 floating-point arithmetic**, which is the standard for floating-point representation in most modern computers (including Python's `float`).
+
+---
+
+### **Q1. What (if any) is the eventual output of the following Python program?**
+
+```python
+import math
+x = 0.0
+while x < math.inf:
+    x += 1.0
+print(x)
+```
+
+#### **Analysis:**
+
+- We start with `x = 0.0`.
+- In each iteration, we add `1.0` to `x`.
+- The loop continues as long as `x < math.inf`.
+- In IEEE 754 floating-point arithmetic, **the number of representable values between 0 and infinity is finite**.
+- The key point: **floating-point numbers have finite precision** — specifically, double-precision (`float`) has about 15–17 significant decimal digits.
+
+#### **What happens?**
+
+- The value of `x` increases by 1.0 each time.
+- However, due to **finite precision**, once `x` becomes large enough, **the addition of 1.0 will no longer change the value** — because the next representable number above `x` is more than 1.0 away.
+- This is known as **"floating-point underflow" or "precision loss"**.
+- Eventually, `x` will reach a value where `x + 1.0 == x` due to **rounding** — i.e., the step size becomes too large to represent.
+
+But more importantly: **the loop condition `x < math.inf` will never be false** — because `x` will never reach infinity.
+
+However, **the loop will eventually stop because of overflow or precision limits** — but in reality, **the loop will run until `x` becomes so large that `x + 1.0` is not distinguishable from `x`**.
+
+But here's the catch: **the loop condition is `x < math.inf`**, which is always true for any finite `x`. So the loop will **never terminate** due to the condition.
+
+But in practice, **due to finite precision**, the value of `x` will eventually **stop changing** — i.e., `x += 1.0` has no effect.
+
+So, the loop will **run indefinitely**, but the value of `x` will **converge to a value just below the maximum representable finite number**.
+
+In IEEE 754 double-precision (`float`), the maximum finite value is approximately:
+
+> **1.7976931348623157e+308**
+
+So, `x` will eventually reach a value like `1.7976931348623157e+308`, and then `x += 1.0` will **not change `x`** — because the next representable number is much larger.
+
+Thus, the loop will **continue forever**, but the value of `x` will **stop changing**.
+
+So, when we finally print `x`, it will be **the largest finite number that can be represented** — because adding 1.0 to it doesn't change it.
+
+#### ✅ Final Answer (Q1):
+
+> The program **does not terminate** due to the loop condition, but due to **floating-point precision limits**, the value of `x` eventually stops changing. The final printed value will be **the largest finite floating-point number representable in IEEE 754 double precision**, which is approximately:
+>
+> **1.7976931348623157e+308**
+>
+> So, the output is:
+>
+> ```
+> 1.7976931348623157e+308
+> ```
+
+> ⚠️ Note: The loop does not terminate due to the condition, but due to precision, the value stabilizes.
+
+---
+
+### **Q2. What (if any) is the eventual output of the following Python program? Is it different from the results above?**
+
+```python
+import math
+x = 1.0
+while x < math.inf:
+    x = x * 1.001
+print(x)
+```
+
+#### **Analysis:**
+
+- We start with `x = 1.0`.
+- In each iteration, we multiply `x` by `1.001`.
+- This is a **geometric sequence**: `x = (1.001)^n` after `n` iterations.
+- Since `1.001 > 1`, the value grows exponentially.
+- In floating-point arithmetic, **each multiplication is subject to rounding errors**.
+- The value grows until it reaches the **maximum finite value** in IEEE 754 double precision: ~1.7976931348623157e+308.
+
+Eventually, `x` will exceed this value, and the next multiplication will **overflow** — but in IEEE 754, **overflow results in infinity**.
+
+So, when `x` becomes greater than the maximum finite value, `x * 1.001` will **overflow to infinity**.
+
+But the loop condition is `x < math.inf`, so when `x` becomes `inf`, the loop **terminates**.
+
+But what happens when `x` becomes `inf`?
+
+- After the multiplication that causes overflow, `x` becomes `inf`.
+- Then, the loop condition `x < math.inf` becomes `inf < inf`, which is **false**.
+- So the loop exits.
+
+But **what is printed?** The value of `x` just before or after the overflow?
+
+Let’s trace:
+
+- `x` grows exponentially: `x = (1.001)^n`
+- After a finite number of steps, `x` will exceed the maximum finite value.
+- The multiplication that pushes it over will result in `x = inf`.
+
+So, after that multiplication, `x` becomes `inf`.
+
+Then, the loop condition is checked: `inf < inf` → **False**, so the loop exits.
+
+Then, `print(x)` outputs `inf`.
+
+#### ✅ Final Answer (Q2):
+
+> The program eventually outputs:
+>
+> ```
+> inf
+> ```
+>
+> This is **different** from Q1, where the output was a finite number (the largest representable finite value).
+>
+> In Q1, the value **stabilized** due to precision limits (no change from adding 1.0).
+> In Q2, the value **grows exponentially** and eventually **overflows to infinity**.
+
+---
+
+### **Q3. Consider the following program:**
+
+```python
+import math
+x = 0.0
+inc = float(input("Enter a number"))
+while x < math.inf:
+    x += inc
+print("Done")
+```
+
+> Are there inputs that will lead to the output "Done"? Give at least 2 examples of such inputs if possible.
+
+#### **Analysis:**
+
+We are to determine whether there exist values of `inc` such that the loop terminates and prints `"Done"`.
+
+The loop runs as long as `x < math.inf`.
+
+- If `inc > 0`: `x` increases without bound → eventually `x` will exceed any finite value → will **never** reach `inf` in the condition? Actually, it will eventually reach a point where `x` becomes so large that `x + inc` is not representable — but **it will keep growing**.
+- However, due to **finite precision**, when `x` becomes large, adding `inc` may have **no effect** — i.e., `x += inc` becomes `x` again.
+- So, if `inc` is **too small**, the loop may **never terminate** because `x` grows slowly and eventually stops changing due to precision limits.
+
+But the key is: **does the loop ever terminate?**
+
+The loop terminates only when `x >= math.inf`, which is **impossible** — because `math.inf` is not a finite number.
+
+So, the loop condition `x < math.inf` is **always true** for any finite `x`.
+
+Therefore, the loop will **only terminate** if `x` becomes **infinite** — which can happen only if `x += inc` eventually causes overflow.
+
+So, **the loop terminates only if `x` overflows to infinity** — which happens when `x` becomes so large that `x + inc` overflows.
+
+This can happen only if:
+
+- `inc > 0` and the value of `x` grows beyond the maximum finite value.
+
+So, for **positive `inc`**, the value of `x` will eventually grow beyond the maximum finite value, and the next addition will cause overflow → `x` becomes `inf`.
+
+Then, the loop condition `x < math.inf` becomes `inf < inf` → **false**, so the loop exits.
+
+Thus, **"Done" is printed**.
+
+But what about **negative `inc`**?
+
+- If `inc < 0`, then `x` decreases.
+- Eventually, `x` will become negative and keep decreasing.
+- But the loop condition is `x < math.inf` — which is **always true** for any finite `x`.
+- So, the loop will **never terminate** — because `x` will keep decreasing, but it will never reach `inf` (it goes to negative infinity).
+- So, the loop runs forever.
+
+What about `inc = 0`?
+
+- Then `x += 0` → `x` stays at `0.0`.
+- So `x` is always `0.0`, and `0.0 < inf` → loop continues forever.
+- So, loop never terminates.
+
+#### ✅ So, when does the loop terminate?
+
+Only when `inc > 0` and the value of `x` eventually overflows to infinity.
+
+But **does this happen for all positive `inc`**?
+
+- Yes, **eventually**, because even a very small positive `inc` will grow exponentially (in terms of number of steps) and eventually exceed the maximum finite value.
+
+For example:
+
+- `inc = 1e-100` → very small, but still positive → after a huge number of steps, `x` will grow to `inf`.
+
+Even though it's very slow, **in finite time**, the value will eventually exceed the maximum finite value due to exponential growth.
+
+So, **any positive `inc`** will eventually cause overflow → loop terminates.
+
+#### Examples of inputs that lead to "Done":
+
+1. `inc = 1.0` → grows quickly → overflows → prints "Done"
+2. `inc = 1e-100` → very small, but still positive → after many iterations, overflows → prints "Done"
+
+#### ❌ What about `inc = 0` or `inc < 0`?
+
+- `inc = 0`: loop runs forever → no output
+- `inc < 0`: `x` decreases → loop never ends → no output
+
+#### ✅ Final Answer (Q3):
+
+> Yes, there are inputs that will lead to the output "Done".
+>
+> **Examples:**
+> - `inc = 1.0`
+> - `inc = 1e-100`
+>
+> These are **positive values**. For any positive `inc`, the value of `x` will eventually grow beyond the maximum finite value in IEEE 754 double precision, causing overflow to infinity. Once `x` becomes `inf`, the loop condition `x < math.inf` fails, and the loop terminates, printing "Done".
+>
+> However, if `inc ≤ 0`, the loop will **never terminate** (either stays constant or decreases), so "Done" will not be printed.
+
+---
+
+### ✅ Final Answers (Summarized):
+
+---
+
+**Q1:**  
+The program outputs approximately:  
+```
+1.7976931348623157e+308
+```  
+This is the largest finite floating-point number in IEEE 754 double precision. The loop does not terminate due to the condition, but due to precision limits, `x` stops changing.
+
+---
+
+**Q2:**  
+The program outputs:  
+```
+inf
+```  
+This is different from Q1. In Q1, the value stabilizes at a finite maximum; in Q2, the value grows exponentially and overflows to infinity.
+
+---
+
+**Q3:**  
+Yes, there are inputs that lead to "Done".  
+Examples:  
+- `inc = 1.0`  
+- `inc = 1e-100`  
+
+These are **positive values**. For any positive `inc`, the value of `x` will eventually overflow to infinity, terminating the loop.  
+For `inc ≤ 0`, the loop will not terminate.
+
+--- 
+
+✅ All questions answered under IEEE 754 floating-point assumptions. [end of text]
+
+
