@@ -755,6 +755,9 @@ class GPTOSSTemplateMixin:
 <|start|>system<|message|>{self.system_message()}<|end|><|start|>user<|message|>{self.prompt()}<|end|><|start|>assistant
 """.strip()
 
+    def system_message(self):
+        return "You are ChatGPT, a large language model trained by OpenAI. Knowledge cutoff: 2024-06. Current date: 2025-08-07. Reasoning: low"
+
     def extra_gguf_options(self):
         return ["-c", "8192"]
 
