@@ -1,0 +1,119 @@
+To perform a binary search directly on a file without reading the entire file into memory, we need to efficiently navigate through the file by seeking to different byte positions and reading chunks of data around those positions to compare with the target. The challenge is that the file is structured as lines, and each line may have variable length.
+
+### Approach
+1. **Understanding the Problem**: The file is sorted lexicographically by lines. We need to find the byte position of the target line (if it exists) or the position where it would be inserted (like `bisect_left`). The lines are separated by newline characters (`\n`), which are typically one byte each (in UTF-8 or ASCII).
+
+2. **Binary Search in a File**:
+   - We cannot directly index by line number because lines are variable-length. Instead, we work with byte offsets.
+   - The idea is to use binary search over the byte range of the file. We maintain two pointers: `low` (start of the file) and `high` (end of the file).
+   - At each step, we compute a mid-point byte offset. However, since we are dealing with lines, we cannot break in the middle of a line. Therefore, when we seek to a mid-point, we may need to read until the next newline to get a complete line (or the beginning of the next line).
+   - Alternatively, we can ensure that we always start at the beginning of a line. One common method is to:
+        - Seek to the mid-point.
+        - Read a chunk of data (if necessary) to move to the start of the next line (unless we are at the beginning of the file).
+   - Actually, we want to compare lines. So at each step, we need to read a line at the mid-point to compare with the target.
+
+3. **Algorithm Details**:
+   - Let `low = 0` (beginning of file) and `high = file_size` (end of file).
+   - While `low < high`:
+        - mid = (low + high) // 2
+        - Seek to `mid`. If `mid` is not 0, we might be in the middle of a line. So we read until the next newline (or until we have a complete line) to get the start of the next line. Actually, we can:
+            - If `mid` is not 0, we read a chunk from `mid` until we hit a newline. Then the next byte is the start of a new line.
+        - However, a simpler idea is to always read a line from the current position. But if we are in the middle of a line, we might get a partial line. Instead, we can:
+            - Seek to `mid`.
+            - If `mid` is not 0, we discard the current partial line by reading until the next newline. Then the position after the newline is the start of a line.
+        - But note: we might be at the beginning of the file, so we don't need to discard.
+
+   - Alternatively, we can do:
+        - Let `mid = (low + high) // 2`
+        - Seek to `mid`
+        - If `mid != 0`, then we read one line (which might be partial) and discard it. Then the next position is the start of a full line.
+        - Then we read one full line from that position.
+   - However, this might be inefficient if we read too many lines. But since we are only reading one line per iteration, and we do O(log n) iterations, it is acceptable.
+
+4. **Implementation Plan**:
+   - Open the file in binary mode.
+   - Get the file size.
+   - Initialize `low = 0`, `high = file_size`.
+   - While `low < high`:
+        - mid = (low + high) // 2
+        - Seek to `mid`.
+        - If `mid > 0`:
+            - Read until we get to the next newline (so that we are at the start of a line). But note: if we are exactly at the start of a line, then we don't need to skip. However, if `mid` is not 0, it is likely in the middle of a line.
+        - Actually, we can call a function `read_line_from_current(file)` that returns the next line from the current position. But if we are in the middle of a line, we want to skip to the next line. So:
+            - If `mid != 0`, we read a line without processing (to skip the partial line) and then remember the position (which is the start of the next line).
+        - Then we read one line from that position (call it `current_line`).
+        - Compare `current_line` with `target` (as bytes).
+        - If `current_line < target`, then set `low = mid + 1` (actually, we need to set `low` to the position after the end of the current line? But wait, we are comparing lines, and the file is sorted by lines).
+        - Actually, we are comparing the line we just read with the target. If the line is less than the target, we need to search the right half. Otherwise, the left half.
+
+   - However, the above might not be exactly correct because the `mid` we computed is a byte offset, and after skipping to the next line, the actual start of the line we read is greater than `mid`.
+
+5. **Correct Approach**:
+   - We want to always be at the beginning of a line when we read a line for comparison.
+   - So at each step:
+        - mid = (low + high) // 2
+        - Seek to `mid`.
+        - If `mid != 0`, we skip the current partial line by reading until the next newline. Then the position after the newline is the start of a line. Let this position be `start_of_line`.
+        - Read a line from `start_of_line`.
+        - Compare that line with the target.
+        - If the line is less than the target, then we set `low =` the position after the end of this line (i.e., the start of the next line). But actually, we should set `low = start_of_line + len(line)`? Not exactly, because we are working with bytes.
+        - Alternatively, we can set `low = start_of_line + len(line) + 1` (including the newline)? But wait, the line we read includes the newline? Actually, when reading in binary mode, `file.readline()` returns the line including the newline character.
+
+   - Actually, we can avoid storing too many positions by using the byte offsets correctly.
+
+6. **Alternative Efficient Approach** (from known implementations):
+   - A common method is to:
+        - low = 0
+        - high = file_size
+        - while low < high:
+            mid = (low + high) // 2
+            file.seek(mid)
+            if mid != 0:
+                file.readline()  # skip partial line
+            pos = file.tell()   # start of the next line
+            line = file.readline()
+            if not line:
+                # reached EOF
+                break
+            if line < target:
+                low = file.tell()   # because we are after the line we just read
+            else:
+                high = mid
+
+   - But this might not work exactly because when we set `high = mid`, we are going to the left half, but the `mid` might be in the middle of a line.
+
+7. **Revised Plan**:
+   - We'll use:
+        low = 0
+        high = file_size
+        while low < high:
+            mid = (low + high) // 2
+            file.seek(mid)
+            if mid != 0:
+                file.readline()   # skip to next line
+            start = file.tell()   # start of the line we will compare
+            line = file.readline()
+            if line == b'':
+                # reached end of file
+                break
+            if line < target:
+                low = file.tell()   # we are at the end of the line we read, which is the start of the next line.
+            else:
+                high = mid
+
+        return low
+
+   - However, consider the case when the target is at the beginning: we might get stuck.
+
+8. **Testing with Example**:
+   - File content (with byte positions for each line):
+        "1 I go to school\n"   (0 to 17, including newline: length=18)
+        "2 by bus\n"           (18 to 26: length=9)
+        "foo bar\n"            (27 to 34: length=8)
+        "hello world\n"        (35 to 46: length=12)
+        "zoo zoo zoo"          (47 to 58: no newline at end? Actually, the last line might not have a newline.
+
+   - We need to be careful with the last line.
+
+   - Let's search for
+

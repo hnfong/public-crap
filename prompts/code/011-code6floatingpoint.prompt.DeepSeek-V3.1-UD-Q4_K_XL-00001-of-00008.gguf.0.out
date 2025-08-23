@@ -1,0 +1,92 @@
+Let's analyze each question step by step, considering IEEE 754 floating point representation.
+
+### Q1:
+```python
+import math
+x = 0.0
+while x < math.inf:
+    x += 1.0
+print(x)
+```
+
+In IEEE 754 double-precision (which Python uses for floats), there is a maximum finite value. However, adding 1.0 repeatedly to a large number may eventually reach a point where the increment does not change the value due to the limited precision.
+
+Specifically, as `x` becomes very large, the gap between consecutive representable floats becomes larger than 1.0. When this happens, `x + 1.0` will round to `x` (due to rounding to the nearest representable value). This is called "stalling" or "stagnation".
+
+The gap between consecutive floats at a value `x` is approximately `x * 2**(-52)` for double-precision (since the mantissa has 53 bits including the implicit leading bit, so the relative precision is about 2^-52).
+
+We need to find when `1.0 < (x * 2**(-52)) / 2`? Actually, for rounding to occur, the increment must be less than half the gap? Actually, the condition for `x + 1.0 == x` is when 1.0 is smaller than the gap between consecutive floats at `x`, and the rounding mode (round to nearest) will round to `x` if the increment is less than half the gap? But wait: if we have `x` and we add `d`, then the exact sum is `x + d`. The next representable number after `x` is `x + gap`. So if `d < gap/2`, then `x + d` is closer to `x` than to `x + gap`, so it rounds to `x`. However, if `d >= gap/2`, it might round to `x + gap`? But in this case, `d=1.0`, so we need when `1.0 < gap/2`? Actually, no: the rounding condition is that if the absolute error is less than half the gap, it rounds to the nearest. But for `x + 1.0` to be exactly representable, we need that 1.0 is at least half the gap? Actually, let's think carefully.
+
+The gap at `x` is `gap = x * 2**(exponent - 52)`? More precisely, if `x` is in the range [2^k, 2^(k+1)), the gap between consecutive floats is `2^(k-52)`.
+
+So for large `x`, the gap becomes larger than 1.0. When the gap is greater than 2.0, then adding 1.0 will always round to `x` (because the exact result is closer to `x` than to `x + gap`? Actually, if the gap is `g`, then the next float after `x` is `x + g`. The exact value of `x + 1.0` is between `x` and `x + g`. The distance to `x` is 1.0, and to `x+g` is `g - 1.0`. So if `1.0 < g - 1.0` (i.e., `g > 2.0`), then `x+1.0` is closer to `x` than to `x+g`, so it rounds to `x`. If `g <= 2.0`, it might round to `x+g` if `1.0 >= g/2`? Actually, the rounding rule is round to nearest, ties to even.
+
+But in practice, we can compute the threshold when adding 1.0 no longer changes the value.
+
+The largest integer that can be represented exactly in double-precision is 2^53 (because 2^53 has a mantissa that fits exactly, and 2^53+1 is not representable). Actually, integers up to 2^53 are exactly representable. So when `x` is less than 2^53, adding 1.0 will work correctly. When `x` is exactly 2^53, it is representable. Then 2^53 + 1 is not representable: the exact value is halfway between 2^53 and the next float? The next float after 2^53 is 2^53 + 2 (because the gap at 2^53 is 2.0). So 2^53 + 1 is exactly halfway. According to IEEE 754, it rounds to the number with an even least significant bit (which is 2^53, since the last bit of 2^53 is 0). So 2^53 + 1 rounds to 2^53.
+
+Therefore, when `x` becomes 2^53, then `x += 1.0` will not change `x`. So the loop will become infinite? Actually, no: because when `x` is 2^53, we add 1.0 and it remains 2^53. So the condition `x < math.inf` is true (since 2^53 is finite), and we keep adding 1.0 without changing `x`. So the loop runs forever.
+
+But wait: is 2^53 exactly representable? Yes. And math.inf is infinity. So 2^53 < math.inf is true. So the loop never exits.
+
+Therefore, the program will run indefinitely and never print anything. So there is no output.
+
+However, let me confirm: starting from 0.0, we add 1.0 each time. Eventually, we reach 2^53. Then adding 1.0 gives 2^53 again. So we are stuck at 2^53. So the loop is infinite.
+
+So for Q1, the program does not terminate. Hence, no output.
+
+### Q2:
+```python
+import math
+x = 1.0
+while x < math.inf:
+    x = x * 1.001
+print(x)
+```
+
+Here, we are multiplying by 1.001 each time. This is a geometric progression. Since 1.001 > 1, it will eventually exceed any finite number. However, we must consider if it reaches infinity exactly.
+
+In IEEE 754, there is overflow: when a calculation exceeds the maximum finite value, it rounds to infinity.
+
+So we need to see if repeated multiplication by 1.001 will eventually cause overflow.
+
+The maximum finite double is about 1.8e308. So we need to see how many steps are required to go from 1.0 to beyond 1.8e308.
+
+The number of steps n such that 1.0 * (1.001)^n >= 1.8e308.
+
+Solve: (1.001)^n >= 1.8e308
+
+Take log: n * log(1.001) >= log(1.8e308)
+
+log(1.001) ≈ 0.0009995 (natural log) or log10(1.001) ≈ 0.000434 (base 10)
+
+Using base 10: log10(1.8e308) = log10(1.8) + 308 ≈ 0.2553 + 308 = 308.2553
+
+So n >= 308.2553 / log10(1.001) ≈ 308.2553 / 0.000434 ≈ 710,000 (approximately)
+
+So after about 710,000 iterations, x will become so large that it overflows to infinity. Actually, when it exceeds the maximum finite value, it becomes infinity.
+
+Then the condition `x < math.inf` becomes false (since math.inf is infinity, and x is infinity, so not less). So the loop breaks, and it prints x which is infinity.
+
+Therefore, the output is `inf`.
+
+So for Q2, the output is `inf`.
+
+### Q3:
+```python
+import math
+x = 0.0
+inc = float(input("Enter a number"))
+while x < math.inf:
+    x += inc
+print("Done")
+```
+
+The question: are there inputs that will lead to the output "Done"? Give at least 2 examples.
+
+For the loop to terminate, we must eventually have `x >= math.inf`. Since we start at 0.0 and add `inc` repeatedly, this can happen in two ways:
+
+1. If `inc` is positive infinity: then after the first addition, `x = 0.0 + inf = inf`, so the condition `x < math.inf` is false, and we break and print "Done".
+
+2.
+
