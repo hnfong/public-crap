@@ -7,6 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2025
 
+- [24-The Hive Mind](writings/2025/24-The Hive Mind.md)
 - [23-點解食禁果咁撚大鑊](writings/2025/23-點解食禁果咁撚大鑊.md)
 - [22-無為而無不為](writings/2025/22-無為而無不為.md)
 - [21-罪疚、時間、自由](writings/2025/21-罪疚、時間、自由.md)
@@ -325,9 +326,6 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [A layman's rant on infinity](writings/0000-2013/A_layman's_rant_on_infinity.md)
 - [A Meditation on Cups](writings/0000-2013/A_Meditation_on_Cups.md)
 
-## Transcripts
-
-
 ## Stream
 
 - [AI](stream/AI.md)
@@ -335,6 +333,19 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [2023-06](stream/2023-06.md)
 - [2022-04](stream/2022-04.md)
 - [2022-03](stream/2022-03.md)
+
+## Reviews
+
+
+### Software
+
+- [vim](reviews/software/vim.md)
+- [llm](reviews/software/llm.md)
+- [genimage](reviews/software/genimage.md)
+
+### Food
+
+- [condiments](reviews/food/condiments.md)
 
 ## Recipes
 
@@ -348,16 +359,12 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [蘿蔔糕 take 2](recipes/蘿蔔糕_take_2.md)
 - [薯仔鳩炒咸肉](recipes/薯仔鳩炒咸肉.md)
 - [益力多 Gin](recipes/益力多_Gin.md)
-- [生酮生活](recipes/生酮生活.md)
 - [炒紅米飯](recipes/炒紅米飯.md)
 - [油](recipes/油.md)
 - [東洋咖喱意粉](recipes/東洋咖喱意粉.md)
 - [奇異食譜：響17溝可樂](recipes/奇異食譜_CL_響17溝可樂.md)
 - [仿水煮魚](recipes/仿水煮魚.md)
 - [Duck Leg Carbonara](recipes/Duck_Leg_Carbonara.md)
-
-## Prompts
-
 
 ## Outline
 

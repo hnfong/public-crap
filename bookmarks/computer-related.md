@@ -592,6 +592,7 @@ Computer technology related.
 - ☆ https://perma.cc/ - Perma.cc helps scholars, journals, courts, and others create permanent records of the web sources they cite
 - ☆ https://www.metaculus.com/home/ - https://www.metaculus.com/questions/ - Predictive Bets / Predictive Markets
 - ☆ https://news.ycombinator.com/item?id=39012544 - Where can I find good legal documents?
+- ☆ https://menial.co.uk/base/ - macOS SQLite viewer/editor
 - https://shipfa.st/tools/logo-fast - lazy way to make nice logos
 - http://sumome.com/ - Sumo. FREE email capture tool (Newsletter)
 - https://hootsuite.com/ - Social Media Management startup company
