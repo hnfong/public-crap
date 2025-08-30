@@ -8,7 +8,7 @@ You can spot agents of the hive mind very easily. They do not to reason with the
 
 It’s obvious in many cases that the hive mind is simply wrong. Yet it is futile to try to convince those agents of this obvious fact, because you are not engaging with an intelligent mind, in the same way you do not speak to a mouth or a finger.
 
-It's not that I believe people are zombies. Most people in fact have a certain level of free will. The problem is that the hive of mind takes over like a parasite when people are not aware -- during the emotional lash outs; the shit talking; the trolling; the amusement towards brain-rot ideas...
+It's not that I believe people are zombies. Most people in fact have a certain level of free will. The problem is that the hive mind takes over like a parasite when people are not aware -- during the emotional lash outs; the shit talking; the trolling; the amusement towards brain-rot ideas...
 
 How do normal people become part of the hive mind? Masquerading one's persona and taking on anonymous identities lead to a different perception of "self" at least temporarily, and that allows a different mental state to settle in, making it vulnerable to the hive minds' parasitic attachment.
 
