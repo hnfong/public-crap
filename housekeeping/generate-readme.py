@@ -76,7 +76,7 @@ root_node = {}
 for root, directories, files in os.walk("."):
     for fn in files:
         if "/." in root: continue
-        if fn.endswith(".md"):
+        if fn.endswith(".md") and fn != "README.md":
             insert(root_node, root.lstrip("./").split("/"), fn)
 
 print("# 散彈一號公廁 (shotgun1 public crap)")
