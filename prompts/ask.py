@@ -846,7 +846,7 @@ FIM_MATCH_OVERRIDE = [
 ]
 
 
-def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:", extra_args_prefix=" ARGS:"):
+def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:", extra_args_prefix=" ARGS:", user_prompt=None):
     lines = []
     system = []
     extra_args = []
@@ -860,8 +860,18 @@ def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:", e
 
                 continue
             lines.append(line)
+
+    content = "".join(lines)
+    if user_prompt:
+        if len(content) < 1024 * 8:
+            user_final = user_prompt + "\n```\n" + content + "\n```\n"
+        else:
+            user_final = user_prompt + "\n```\n" + content + "\n```\n" + user_prompt
+    else:
+        user_final = content
+
     return {
-        "user": "".join(lines),
+        "user": user_final,
         "system": "".join(system).strip(),
         "extra_args": extra_args
         }
@@ -893,6 +903,8 @@ if __name__ == "__main__":
             user_prompt = opts.get("-f")
         else:
             prompt_globs = sorted(glob.glob(opts.get("-f")))
+            if args:
+                user_prompt = " ".join(args)
     elif args:
         user_prompt = " ".join(args)
     else:
@@ -1009,11 +1021,11 @@ if __name__ == "__main__":
 
         class CurrentPromptTemplate(overrideTemplateMixIn, preset):
             pass
-        for prompt_file in [None,] + prompt_globs:
+        for prompt_file in prompt_globs or [None,]:
             if prompt_file is None:
                 prompt = {"user":user_prompt}
             else:
-                prompt = read_prompt_file(prompt_file, ignore_prefix=opts.get("-x") or "#!")
+                prompt = read_prompt_file(prompt_file, ignore_prefix=opts.get("-x") or "#!", user_prompt=user_prompt)
 
             if prompt.get("user") is None:
                 continue

@@ -2,6 +2,8 @@
 
 ## Actual stories
 
+- ☆ https://abcnews.go.com/Health/Wellness/teen-girl-vagina-pregnant-sperm-survival-oral-sex/story?id=9732562
+  - 
 - ☆ https://www.youtube.com/watch?v=eoC_YA0RB3g - Aubrey Marcus podcast with Matias De Stefano & Robert Grant
 - https://www.youtube.com/watch?v=0zMDMtv5XwY Darryl Anka (Bashar) - Buddha at the Gas Pump Interview
 - https://www.youtube.com/watch?v=DyNwxRMgJbY https://www.youtube.com/watch?v=wUEIabIunMo Interview s Darryl Anka & Bashar
@@ -101,6 +103,7 @@
 - https://www.mdpi.com/2673-3943/5/1/2 - Personality Changes Associated with Organ Transplants
 - https://en.wikipedia.org/wiki/John_Titor - John Titor and TimeTravel_0 are pseudonyms used in communications and on internet forums between 1998 and 2001 by an individual claiming to be an American military time traveler from the year 2036
 - https://thereader.mitpress.mit.edu/aldous-huxleys-deep-reflection/ 
+- https://zh.wikipedia.org/wiki/%E6%9C%97%E5%98%8E%E6%8B%89%E5%A7%86
 
 
 
@@ -228,3 +231,12 @@
 
 - https://en.wikipedia.org/wiki/Hitobashira
 - https://en.wikipedia.org/wiki/Fuji_(planchette_writing)
+
+
+## Mysterious Coincidences
+
+- https://en.wikipedia.org/wiki/Suchir_Balaji
+- https://en.wikipedia.org/wiki/John_Barnett_(whistleblower)
+- https://www.npr.org/2024/05/02/1248693512/boeing-whistleblower-josh-dean-dead
+- https://en.wikipedia.org/wiki/Mike_Lynch_(businessman)
+  - On 6 June 2024, Lynch and Chamberlain were found not guilty of all charges.[34] Chamberlain died on 20 August 2024, three days after he was hit by a car while out jogging in Stretham.
