@@ -24,6 +24,11 @@
 - https://restofworld.org/newsletters/world/ - (Rest of) world in your inbox - Rest of World
 - https://skylikesun.blogspot.com/ - Azure Mulo-小湛的地球人生與靈界觀察日誌
 
+## Useful Online Tools
+
+- https://www.usgs.gov/programs/earthquake-hazards
+- https://www.windy.com/ - Wind/Weather/Typhoon/Satellite Maps
+
 ## Small funs
 
 - http://www.dogbunnypuzzle.com/
