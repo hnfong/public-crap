@@ -93,6 +93,7 @@ Computer technology related.
 
 ## Open Source Tools
 
+- ☆ https://streamlit.io/playground
 - ☆ https://github.com/enigo-rs/enigo?tab=readme-ov-file - Cross platform input simulation in Rust
   - https://news.ycombinator.com/item?id=42158311
 - ☆ http://sourcehut.org - sth like github but created by OSS maniacs
@@ -210,6 +211,9 @@ Computer technology related.
 - https://github.com/ChartsCSS/charts.css - Charts.css is an open source CSS framework for data visualization.
 - https://github.com/oven-sh/bun - JavaScript runtime designed as a drop-in replacement for Node.js
 - https://github.com/sharkdp/hexyl - hexyl is a hex viewer for the terminal.
+- https://fastapi.tiangolo.com/ (async framework more lightweight/efficient than django)
+- https://github.com/wader/fq
+- https://github.com/mypyc/mypyc
 
 
 

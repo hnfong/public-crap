@@ -234,6 +234,7 @@
 
 - ☆ https://en.wikipedia.org/wiki/Limits_of_computation - Fundamental physical limitations to computation
 - ☆ https://en.wikipedia.org/wiki/Consistent_histories - Seems to be a interpretation of Quantum Mechanics that postulate that the past can be probabilistic?
+- ☆ https://scottaaronson.blog/?p=9138 https://arxiv.org/abs/2509.07255 - Demonstrating an unconditional separation between quantum and classical information resources
 - https://aeon.co/essays/shut-up-and-calculate-does-a-disservice-to-quantum-mechanics - ‘Shut up and calculate’ does a disservice to quantum mechanics | Aeon Essays
 - https://en.wikipedia.org/wiki/Born_rule
 - https://www.feynmanlectures.caltech.edu/I_toc.html - 403 Forbidden
