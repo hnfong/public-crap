@@ -50,7 +50,7 @@ def model_glob(abbr):
     return glob.glob(f"{MODELS_PATH}/*{abbr}*.gguf")
 
 DEFAULT_MODEL = "gemma-3-12b-it"
-DEFAULT_CODE_INSTRUCT_MODEL = "Qwen3-8B-"
+DEFAULT_CODE_INSTRUCT_MODEL = "Qwen3-30B-A3B-Instruct"
 DEFAULT_CODE_GENERATION_MODEL = "Qwen3-Coder-30B-A3B-Instruct"  # FIM
 
 # Presets
@@ -774,6 +774,12 @@ class GLM45TemplateMixin(MlxArgumentConverter):
 <think></think>
 """.strip()
 
+class LingTemplateMixin:
+    def templated_prompt(self):
+        return f"""
+<role>SYSTEM</role>{self.system_message()}<|role_end|><role>HUMAN</role>{self.prompt()}<|role_end|><role>ASSISTANT</role>
+""".strip()
+
 NAME_MATCH_OVERRIDE = [
     # More specific first
     ("Nemotron-Research-Reasoning-Qwen", NemotronQwen3Reasoning),
@@ -795,6 +801,7 @@ NAME_MATCH_OVERRIDE = [
     ("GLM-4.5", GLM45TemplateMixin),
     ("gpt-oss", GPTOSSTemplateMixin),
 
+    ("Ling-", LingTemplateMixin),
     ("Hunyuan-", HuanyuanTemplateMixin),
     ("SmallThinker-", ChatMLTemplateMixin),
     ("OLMo-2-", OlmoTemplate),

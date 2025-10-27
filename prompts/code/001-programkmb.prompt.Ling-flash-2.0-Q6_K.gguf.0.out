@@ -1,0 +1,71 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class SumSizeParser {
+    private static final Pattern SIZE_PATTERN = Pattern.compile("([\\d,]+(?:\\.\\d+)?)([kKmMgG]?)");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.0");
+
+    public static void main(String[] args) throws IOException {
+        StringBuilder inputBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                inputBuilder.append(line).append("\n");
+            }
+        }
+
+        String input = inputBuilder.toString();
+        List<String> tokens = new ArrayList<>();
+        Matcher matcher = SIZE_PATTERN.matcher(input);
+        while (matcher.find()) {
+            tokens.add(matcher.group(0));
+        }
+
+        double totalBytes = 0.0;
+
+        for (String token : tokens) {
+            Matcher m = SIZE_PATTERN.matcher(token.trim());
+            if (m.matches()) {
+                String numberStr = m.group(1).replace(",", "");
+                String suffix = m.group(2).toLowerCase();
+
+                double value;
+                try {
+                    value = Double.parseDouble(numberStr);
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+
+                switch (suffix) {
+                    case "k": value *= 1024; break;
+                    case "m": value *= 1024 * 1024; break;
+                    case "g": value *= 1024 * 1024 * 1024; break;
+                    case "": break;
+                    default: continue;
+                }
+
+                totalBytes += value;
+            }
+        }
+
+        System.out.println(totalBytes);
+
+        double kb = totalBytes / 1024.0;
+        double mb = kb / 1024.0;
+        double gb = mb / 1024.0;
+
+        System.out.println(DECIMAL_FORMAT.format(kb) + " k");
+        System.out.println(DECIMAL_FORMAT.format(mb) + " M");
+        System.out.println(DECIMAL_FORMAT.format(gb) + " G");
+    }
+}
+``` [end of text]
+
+
