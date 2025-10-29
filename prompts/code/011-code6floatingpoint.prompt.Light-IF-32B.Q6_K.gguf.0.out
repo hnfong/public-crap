@@ -1,0 +1,135 @@
+# IEEE 754 Floating Point Questions
+
+## Q1: Program with x = 0.0 and x += 1.0
+
+The program:
+```python
+import math
+x = 0.0
+while x < math.inf:
+    x += 1.0
+print(x)
+```
+
+**Analysis:**
+- This program starts with x = 0.0
+- It increments x by 1.0 in each iteration
+- The loop continues while x is less than infinity
+
+**IEEE 754 Consideration:**
+- For double-precision floats (which Python uses), there's a limit to the range of representable numbers
+- Eventually, x will reach a value where adding 1.0 doesn't change it (when x is large enough that 1.0 is smaller than the machine epsilon for that magnitude)
+
+**Eventually:**
+- When x becomes large enough, adding 1.0 will have no effect on x (since 1.0 is smaller than the smallest representable difference at that magnitude)
+- The loop will continue indefinitely because x will never reach infinity
+- Wait, no! Actually, there's a more important point: when x becomes so large that adding 1.0 doesn't change it, the loop will still run forever because x will never reach infinity
+
+Wait, no! Let's think again: The loop condition is `x < math.inf`. For any finite x, this is true. The loop will run until x becomes infinity.
+
+But wait! When will x become infinity? That's when adding 1.0 to x causes an overflow.
+
+In IEEE 754, the maximum finite value for a double-precision float is approximately 1.8 × 10^308.
+
+When x reaches that value, adding 1.0 will result in infinity.
+
+So the program will eventually reach a point where x is the maximum finite value, add 1.0 to it, and x becomes infinity.
+
+Then the loop condition `x < math.inf` will be false, and the loop will exit.
+
+**Answer to Q1:** The program will eventually print `inf` (infinity).
+
+---
+
+## Q2: Program with x = 1.0 and x = x * 1.001
+
+The program:
+```python
+import math
+x = 1.0
+while x < math.inf:
+    x = x * 1.001
+print(x)
+```
+
+**Analysis:**
+- This program starts with x = 1.0
+- It multiplies x by 1.001 in each iteration
+- The loop continues while x is less than infinity
+
+**IEEE 754 Consideration:**
+- Unlike addition, multiplication can eventually overflow to infinity
+- The question is: will this program ever reach infinity?
+
+**Key Difference from Q1:**
+- In Q1, we were adding a fixed value (1.0) to x, which eventually becomes too small to change x when x is large
+- In Q2, we're multiplying x by a fixed factor (1.001) each time, so x grows exponentially
+
+**Eventually:**
+- The exponential growth will eventually reach the maximum finite value for a double-precision float
+- At that point, multiplying by 1.001 will cause an overflow to infinity
+- Then the loop will exit
+
+**But wait!** There's a nuance: when x becomes large enough, multiplying by 1.001 might not change x enough to overflow immediately. But since we're multiplying by a factor greater than 1, x will eventually grow to infinity.
+
+**Answer to Q2:** The program will eventually print `inf` (infinity). This is the same result as Q1, but the path to infinity is different (exponential growth vs. linear growth).
+
+---
+
+## Q3: Program with User Input Increment
+
+The program:
+```python
+import math
+x = 0.0
+inc = float(input("Enter a number"))
+while x < math.inf:
+    x += inc
+print("Done")
+```
+
+**Question:** Are there inputs that will lead to the output "Done"?
+
+**Analysis:**
+- The loop will exit when x is no longer less than infinity, i.e., when x is infinity
+- So we need to find inputs for `inc` such that adding it repeatedly to 0.0 will eventually cause x to become infinity
+
+**Possible Inputs:**
+
+1. **inc = 1.0**:
+   - This is the same as Q1, but with x starting at 0.0
+   - Eventually, x will reach the maximum finite value, add 1.0, and become infinity
+   - The loop will exit, and "Done" will be printed
+
+2. **inc = 1.0e300**:
+   - This is a very large number
+   - Adding it to x even once will make x very large
+   - Adding it again will cause an overflow to infinity
+   - The loop will run twice: first x = 1.0e300, then x = 2.0e300, which is still finite, then x = 3.0e300, which will overflow to infinity
+   - The loop will exit, and "Done" will be printed
+
+3. **inc = 0.0**:
+   - Wait! No, this won't work. Adding 0.0 to x will never change x, so x will stay at 0.0 forever, and the loop will run indefinitely
+
+4. **inc = -1.0**:
+   - Wait! No, this will make x decrease, but since we're adding a negative number, x will go to -infinity, but the loop condition is `x < math.inf`, which is always true for finite x
+   - So the loop will run forever
+
+**Examples of inputs that will lead to "Done":**
+- inc = 1.0
+- inc = 1.0e300
+- inc = 1000.0
+
+**Answer to Q3:** Yes, there are inputs that will lead to the output "Done". Examples include 1.0 and 1.0e300.
+
+---
+
+## Final Answers:
+
+**Q1:** The program will eventually print `inf` (infinity).
+
+**Q2:** The program will eventually print `inf` (infinity). This is the same result as Q1, but the path to infinity is exponential growth instead of linear growth.
+
+**Q3:** Yes, there are inputs that will lead to the output "Done". Examples include 1.0 and 1.0e300. [end of text]
+
+

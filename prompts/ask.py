@@ -470,6 +470,34 @@ class ChatMLTemplateMixin:
     def extra_gguf_options(self):
         return ["-r", "<|im_end|>"]
 
+class NoThinkingChatMLTemplateMixin:
+    def templated_prompt(self):
+        if self.system_message():
+            return f"""
+<|im_start|>system
+{self.system_message()}<|im_end|>
+<|im_start|>user
+{self.prompt()}<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+            """.strip() + "\n"
+        else:
+            return f"""
+<|im_start|>system
+You are a helpful assistant.<|im_end|>
+<|im_start|>user
+{self.prompt()}<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+            """.strip() + "\n"
+
+    def extra_gguf_options(self):
+        return ["-r", "<|im_end|>"]
+
 class HomunculusNothinkTemplateMixin:
     def templated_prompt(self):
         if self.system_message():
@@ -801,6 +829,7 @@ NAME_MATCH_OVERRIDE = [
     ("GLM-4.5", GLM45TemplateMixin),
     ("gpt-oss", GPTOSSTemplateMixin),
 
+    ("Light-IF", NoThinkingChatMLTemplateMixin),
     ("Ling-", LingTemplateMixin),
     ("Hunyuan-", HuanyuanTemplateMixin),
     ("SmallThinker-", ChatMLTemplateMixin),
