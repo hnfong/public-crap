@@ -1,0 +1,70 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class NumberSumCalculator {
+    private static final BigDecimal KILO = BigDecimal.valueOf(1024);
+    private static final BigDecimal MEGA = KILO.multiply(KILO);
+    private static final BigDecimal GIGA = MEGA.multiply(KILO);
+    private static final Pattern NUMBER_PATTERN = Pattern.compile(
+        "([+-]?\\d+(?:,\\d+)*(?:\\.\\d+)?)\\s*([kKmMgG]?)"
+    );
+
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder input = new StringBuilder();
+        String line;
+
+        try {
+            while ((line = reader.readLine()) != null) {
+                input.append(line).append(" ");
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+            System.exit(1);
+        }
+
+        BigDecimal total = BigDecimal.ZERO;
+        Matcher matcher = NUMBER_PATTERN.matcher(input);
+
+        while (matcher.find()) {
+            String numberStr = matcher.group(1).replace(",", "");
+            String suffix = matcher.group(2).toLowerCase();
+
+            try {
+                BigDecimal value = new BigDecimal(numberStr);
+                if (suffix.isEmpty()) {
+                    total = total.add(value);
+                } else if (suffix.equals("g")) {
+                    total = total.add(value.multiply(GIGA));
+                } else if (suffix.equals("m")) {
+                    total = total.add(value.multiply(MEGA));
+                } else if (suffix.equals("k")) {
+                    total = total.add(value.multiply(KILO));
+                } else {
+                    total = total.add(value);
+                }
+            } catch (NumberFormatException e) {
+                // Skip invalid numbers
+            }
+        }
+
+        System.out.println(total.stripTrailingZeros().toPlainString());
+
+        BigDecimal totalK = total.divide(KILO, 1, RoundingMode.HALF_UP);
+        BigDecimal totalM = total.divide(MEGA, 1, RoundingMode.HALF_UP);
+        BigDecimal totalG = total.divide(GIGA, 1, RoundingMode.HALF_UP);
+
+        System.out.println(totalK.stripTrailingZeros().toPlainString() + " k");
+        System.out.println(totalM.stripTrailingZeros().toPlainString() + " M");
+        System.out.println(totalG.stripTrailingZeros().toPlainString() + " G");
+    }
+}
+``` [end of text]
+
+
