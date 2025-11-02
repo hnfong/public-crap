@@ -236,6 +236,7 @@ Computer technology related.
 
 - ☆ https://agi.safe.ai/ - Humanity's Last Exam is a challenging, multi-modal benchmark designed to rigorously test the limits of large language models across a broad range of subjects.
 - ☆ https://evjang.com/2021/10/23/generalization.html
+- ☆ https://www.notcheckmark.com/2025/07/rethinking-cli-interfaces-for-ai/
 - https://towardsdatascience.com/choosing-the-right-gpu-for-deep-learning-on-aws-d69c157d8c86 - Choosing the right GPU for deep learning on AWS | by Shashank Prasanna | Towards Data Science
 - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/install-nvidia-driver.html - Install NVIDIA drivers on Linux instances - Amazon Elastic Compute Cloud
 - https://github.com/openai/gpt-2/blob/master/src/model.py
@@ -315,7 +316,7 @@ Computer technology related.
 - https://www.reddit.com/r/LocalLLaMA/comments/1d1bnql/awesome_prompting_techniques/
 - https://huggingface.co/blog/rlhf
 - https://arxiv.org/abs/2205.14135 - FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness
-
+- https://arxiv.org/abs/2509.04664 - Why Language Models Hallucinate
 
 ### Libraries / Tools
 
@@ -330,6 +331,7 @@ Computer technology related.
 - https://www.reddit.com/r/LocalLLaMA/comments/1bv3hl4/anythingllm_an_opensource_allinone_ai_desktop_app/
 - https://coral.ai/products/accelerator/ - A USB accessory that brings accelerated ML inferencing to existing systems.
 - https://github.com/exo-explore/exo - Run your own AI cluster at home with everyday devices. Maintained by exo labs.
+- https://github.com/foldl/chatllm.cpp - Alternative to Llama.cpp with support for some models that llama.cpp don't support
 
 
 ### RAG
@@ -642,6 +644,8 @@ Computer technology related.
 - https://news.ycombinator.com/item?id=39604961 RAG on codebases that actually works
   - (1) Instead of directly embedding code, we parse the AST of the codebase, recursively generate docstrings for each node in the tree, and then embed the docstrings. (2) Alongside vector similarity search and keyword search, we do “agentic search” where an agent reviews the relevance of the search results, and scans the source code to follow references that might lead to something important. Then it returns the relevant sources.
 - https://observablehq.com/product - Observable offers a modern way to create and host powerful, performant data apps. Use Markdown, JavaScript and SQL, Python, R, or any other language you choose.
+- https://sandstorm.org/ - Sandstorm is an open source platform for self-hosting web apps
+
 
 
 
