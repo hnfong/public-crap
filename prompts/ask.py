@@ -774,7 +774,13 @@ class MlxArgumentConverter:
 class HuanyuanTemplateMixin:
     def templated_prompt(self):
         return f"""
-{self.system_message()}<|extra_4|>/no_think {self.prompt()}<|extra_0|>
+<|startoftext|>{self.system_message()}<|extra_4|>{self.prompt()}<|extra_0|>
+""".strip()
+
+class HuanyuanNoThinkTemplateMixin:
+    def templated_prompt(self):
+        return f"""
+<|startoftext|>{self.system_message()}<|extra_4|>/no_think {self.prompt()}<|extra_0|>
 """.strip()
 
 class GPTOSSTemplateMixin:
@@ -831,7 +837,8 @@ NAME_MATCH_OVERRIDE = [
 
     ("Light-IF", NoThinkingChatMLTemplateMixin),
     ("Ling-", LingTemplateMixin),
-    ("Hunyuan-", HuanyuanTemplateMixin),
+    ("Hunyuan-MT", HuanyuanTemplateMixin),
+    ("Hunyuan-", HuanyuanNoThinkTemplateMixin),
     ("SmallThinker-", ChatMLTemplateMixin),
     ("OLMo-2-", OlmoTemplate),
     ("Athene-V2", ChatMLTemplateMixin),
