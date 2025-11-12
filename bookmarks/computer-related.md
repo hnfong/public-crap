@@ -93,7 +93,8 @@ Computer technology related.
 
 ## Open Source Tools
 
-- ☆ https://streamlit.io/playground
+- ☆ https://pyautogui.readthedocs.io/en/latest/ - PyAutoGUI lets your Python scripts control the mouse and keyboard to automate interactions with other applications. The API is designed to be simple. PyAutoGUI works on Windows, macOS, and Linux
+- ☆ https://streamlit.io/playground - A faster way to build and share data apps Turn your data scripts into shareable web apps in minutes. All in pure Python. No front‑end experience required.
 - ☆ https://github.com/enigo-rs/enigo?tab=readme-ov-file - Cross platform input simulation in Rust
   - https://news.ycombinator.com/item?id=42158311
 - ☆ http://sourcehut.org - sth like github but created by OSS maniacs
@@ -214,8 +215,8 @@ Computer technology related.
 - https://fastapi.tiangolo.com/ (async framework more lightweight/efficient than django)
 - https://github.com/wader/fq
 - https://github.com/mypyc/mypyc
-
-
+- https://github.com/flonatel/pipexec - Build a network of processes and connecting pipes - and have them act like a single process.
+- https://github.com/chearon/dropflow - Dropflow is a CSS layout engine // It has a high quality text layout implementation // You can use it to generate PDFs or images on the backend with Node and node-canvas or render rich, wrapped text to a canvas in the browser
 
 
 #### Json
@@ -227,7 +228,6 @@ Computer technology related.
 - https://github.com/jhspetersson/fselect
 - https://news.ycombinator.com/item?id=40864541
 - https://news.ycombinator.com/item?id=41482661
-
 
 
 ## Machine Learning
