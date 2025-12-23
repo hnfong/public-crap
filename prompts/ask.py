@@ -43,7 +43,7 @@ import subprocess
 import sys
 import tempfile
 
-LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or shutil.which('llama-cli') or os.path.expanduser("~/projects/llama.gguf/llama-cli")
+LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or shutil.which('llama-completion') or os.path.expanduser("~/projects/llama.gguf/llama-completion")
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
 def model_glob(abbr):
@@ -976,7 +976,7 @@ if __name__ == "__main__":
         model_name = DEFAULT_CODE_GENERATION_MODEL
     cmd_args = []
     cmd_args.append("--no-escape")  # llama.cpp just doesn't do sane defaults...
-    cmd_args.append("-no-cnv")  # llama.cpp just doesn't do sane defaults...
+    cmd_args.append("--no-conversation")  # llama.cpp just doesn't do sane defaults...
     cmd_args.append("--no-display-prompt")  # llama.cpp just doesn't do sane defaults...
     assert temperature >= 0
     cmd_args.append("--temp")
