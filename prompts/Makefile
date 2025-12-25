@@ -1,12 +1,12 @@
 # Find our models in the Downloads folder.
-MODELS=$(shell cd ~/Downloads; ls *.gguf test_models/*.gguf; echo test_models/split_ggufs/*00001-of-*gguf )
+MODELS=$(shell cd ~/Downloads; ls *.gguf test_models/*.gguf; ls test_models/split_ggufs/*00001-of-*gguf )
 
 # Replace / with ---
 VMODELS=mlx-community---Qwen2.5-VL-7B-Instruct-4bit mlx-community---InternVL3-8B-6bit mlx-community---Qwen2.5-VL-32B-Instruct-4bit mlx-community---gemma-3-12b-it-qat-6bit mlx-community---GLM-4.5V-5bit
 
 MLXLM_MODELS=mlx-community--GLM-4.5-4bit mlx-community--GLM-4.5-Air-4bit
 
-LONG_CTX_MODELS=$(shell cd ~/Downloads/; ls *.gguf test_models/*.gguf test_models/split_ggufs/*00001-of-*gguf | grep -iE 'SuperNova-Medius|Meta-Llama-3.1-8B-Instruct|Llama-3.2-3B-Instruct|gemma-3-4b-it|gemma-3-12b-it|gemma-3-27b-it|qwq|Qwen3-8B|jan-nano-128k|DeepSeek-R1-0528|Qwen3-30B-A3B-Instruct')
+LONG_CTX_MODELS=$(shell cd ~/Downloads/; ls *.gguf test_models/*.gguf test_models/split_ggufs/*00001-of-*gguf | grep -iE 'SuperNova-Medius|Meta-Llama-3.1-8B-Instruct|Llama-3.2-3B-Instruct|gemma-3-4b-it|gemma-3-12b-it|gemma-3-27b-it|qwq|Qwen3-8B|jan-nano-128k|DeepSeek-R1-0528|Qwen3-30B-A3B-Instruct|QwenLong')
 
 # For each model
 TARGETS=$(foreach model,$(MODELS),__DONE__.$(model))

@@ -1,0 +1,96 @@
+### What the command does (step by step)
+
+1. **cat wowfanfic.txt**
+   - Reads the entire fan‑fiction file and prints it to stdout.
+
+2. **perl -ne '@a = split(/\s/); foreach (@a) { print $_ . "\n"; }'**
+   - `-n` reads the input line by line.
+   - `@a = split(/\s/)` splits each line on any whitespace (spaces, tabs, newlines).
+   - The `foreach` loop prints each token on its own line.
+   - **Result:** a stream of all words (and any other whitespace‑separated tokens) from the file, one per line.
+
+3. **sort**
+   - Sorts the tokens alphabetically (lexicographically).
+
+4. **uniq -c**
+   - Collapses consecutive identical tokens and prefixes each group with its count.
+   - **Result:** lines like `42 the` or `7 Arthas`.
+
+5. **sort -n**
+   - Sorts the output of `uniq -c` numerically by the leading count.
+   - **Result:** the least frequent tokens appear first, the most frequent later.
+
+6. **tail -n 20**
+   - Keeps the last 20 lines of the sorted list.
+   - **Result:** the 20 most frequent tokens in the file.
+
+### What you will see
+
+The final output will be 20 lines, each looking like:
+
+```
+<count> <token>
+```
+
+where `<count>` is the number of times `<token>` appears in the file, and `<token>` is a word (or other whitespace‑separated token) from your fan‑fiction.
+
+Because the tokens are sorted by frequency, the last line will be the single most frequent token, the second‑last the second most frequent, and so on.
+
+### Example (illustrative)
+
+If your file contained:
+
+```
+Arthas and Arthas fought the Lich King.
+The Lich King was Arthas.
+```
+
+The command would produce something like:
+
+```
+1 Arthas.
+1 fought
+1 Lich
+1 King.
+1 was
+2 Arthas
+2 the
+```
+
+After the final `sort -n | tail -n 20`, you’d see the top frequencies (if there were more tokens).
+
+### Linguistic principles that shape the output
+
+- **Tokenization by whitespace:** The Perl script splits on any whitespace, so punctuation attached to words (e.g., `Arthas.`, `King.`) is treated as part of the token. This is a crude form of tokenization and will inflate counts for variants like `the` vs. `the,` vs. `the.`.
+
+- **Case sensitivity:** By default, `sort` and `uniq` are case‑sensitive. So `The` and `the` are different tokens. If your text has proper nouns and common nouns with the same spelling but different capitalization, they will be counted separately.
+
+- **Morphology and inflection:** Words like `run`, `runs`, `running`, `ran` are treated as distinct tokens. The command does not perform stemming or lemmatization, so it will not group these together.
+
+- **Stop words and function words:** In most English texts, the most frequent tokens are function words (articles, prepositions, pronouns, auxiliary verbs) such as `the`, `and`, `of`, `to`, `a`, `in`, `that`, `is`, `was`, `he`, `for`, etc. These often dominate the frequency list unless your fan‑fiction is unusually terse or stylized.
+
+- **Content words:** If your story is heavy on character names or repeated phrases, those may appear among the top tokens. For example, if you mention `Arthas` or `Sylvanas` many times, they could be near the top.
+
+- **Repetition and style:** Fan‑fiction often repeats character names, dialogue tags, or favorite phrases. The command will surface those repetitions.
+
+### How to get a cleaner word list (optional)
+
+If you want to count only alphabetic words and ignore case and punctuation, you could preprocess the text:
+
+```bash
+cat wowfanfic.txt \
+  | tr 'A-Z' 'a-z' \
+  | tr -cs 'a-z' '\n' \
+  | sort | uniq -c | sort -n | tail -n 20
+```
+
+- `tr 'A-Z' 'a-z'` converts to lowercase.
+- `tr -cs 'a-z' '\n'` replaces any non‑letter with a newline and squeezes repeats, giving one word per line.
+
+This will give a more linguistically meaningful frequency list.
+
+### Bottom line
+
+Running the command will output the 20 most frequent whitespace‑separated tokens in your fan‑fiction, along with their counts. Expect to see common English function words at the top unless your text is highly stylized or repetitive with specific names or phrases. [end of text]
+
+

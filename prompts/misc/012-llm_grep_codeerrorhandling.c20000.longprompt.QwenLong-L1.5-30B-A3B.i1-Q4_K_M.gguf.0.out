@@ -1,0 +1,696 @@
+<think>
+We are given a query: "code that relates to error handling"
+ We are to scan the input (a code file with line numbers) and output only the lines that obviously relate to error handling.
+ We must output the line number and the line, and then a "---" after each such line.
+
+ Steps:
+ 1. We'll go through each line of the input (with line numbers).
+ 2. We'll check if the line contains code that obviously relates to error handling.
+ 3. We are to ignore lines that are tangentially related.
+
+ What does "error handling" typically mean in code?
+   - Defining exception classes (like `class MyError(Exception): ...`)
+   - Raising exceptions (like `raise ValueError(...)`)
+   - Catching exceptions (like `try: ... except ...: ...`)
+   - Handling errors in a function (like validating input and raising an error if invalid)
+
+ However, note the instruction: "Only trigger when the input obviously matches the query, i.e. not tangentially related."
+
+ Let's look for:
+   - Lines that define exception classes (with `class ...Error(...):`)
+   - Lines that raise exceptions (with `raise ...`)
+   - Lines that catch exceptions (with `except ...:`)
+
+ But note: the input is a Python code file.
+
+ We'll scan the lines and check for these patterns.
+
+ Important: We must not output lines that are about error handling in a tangential way (e.g., a comment that says "error handling" but the code isn't about it, or a variable named "error" that isn't used for error handling).
+
+ Let's go through the input line by line:
+
+ Line 1: # -*- coding: utf-8 -*- -> not error handling
+ Line 2: -> empty
+ Line 3: -> empty
+ Line 4: import collections -> not error handling
+ Line 5: import functools -> not error handling
+ Line 6: import html as html_py -> not error handling
+ Line 7: import re -> not error handling
+ Line 8: import urllib.request, urllib.error, urllib.parse -> note: `urllib.error` is an error module, but the import is just a normal import. However, the import itself is not about error handling in the code. We are looking for code that relates to error handling (i.e., using the errors). So we skip.
+ Line 9: from lib import util, common -> not error handling
+ Line 10: import zilib -> not error handling
+ Line 11: -> empty
+ Line 12: TAG_ALIASES = { ... } -> not error handling
+ ... (we skip until we see something)
+
+ We are going to look for:
+   - `class ...Error(...):` (like `class DefinitionError(ValueError):`)
+   - `raise ...` (like `raise ValueError("Invalid part of speech")`)
+   - `except ...:` (like `except ValueError as e:`)
+
+ Let's check:
+
+ Line 44: class DefinitionError(ValueError): -> This is an exception class. So we output this line.
+ Line 45:     pass -> This is the body of the class, but it's just a pass. However, the class definition is the key. We output the class definition line.
+
+ But note: the instruction says "output the line (together with line number)".
+
+ So for line 44: "class DefinitionError(ValueError):"
+
+ However, note that the line number is 44.
+
+ Let's check other lines:
+
+ Line 47: class AmbiguousPronunciationError(DefinitionError): -> This is another exception class. So we output line 47.
+
+ Line 49: class InvalidJyutPingError(DefinitionError): -> Another exception class. Output line 49.
+
+ Line 52: class IllegalCharacterError(DefinitionError): -> Another exception class. Output line 52.
+
+ Now, let's check for `raise`:
+
+ Line 54:         self.errorMsg = value -> This is inside the __init__ of IllegalCharacterError, but it's not a raise. So skip.
+
+ Line 55:         self.errorMsg = value -> same as above? Actually, line 54 and 55 are the same? Wait, the input shows:
+
+54:    def __init__(self, value):
+55:        self.errorMsg = value
+
+ But note: the error class is defined, but the `raise` is not here.
+
+ We need to look for `raise` statements.
+
+ Line 140:     raise ValueError("Invalid part of speech") -> This is a raise. So we output line 140.
+
+ Line 145:         if s in aka_set: return proper_name -> not a raise
+ Line 146:     raise ValueError("Invalid label name") -> This is a raise. Output line 146.
+
+ Line 191:             errmsg = "Tag '%s' cannot have value '%s'" % (k, v)
+ Line 192:             raise ValueError(errmsg) -> This is a raise. Output line 192.
+
+ Line 207:                     errmsg = "Required tag '%s' not found for '%s': '%s'!" % (req_tag, self, items_str)
+ Line 208:                     raise ValueError(errmsg) -> This is a raise. Output line 208.
+
+ Line 219:                 if raise_on_error:
+ Line 220:                     raise e -> This is a raise. Output line 220.
+
+ Line 229:                 dj.DEBUG("Got error: %s when parsing '%s'" % (e, explanation))
+ Line 230:                 if raise_on_error:
+ Line 231:                     raise e -> This is a raise. Output line 231.
+
+ Line 233:             if raise_on_error:
+ Line 234:                 raise ValueError("No valid item to parse") -> This is a raise. Output line 234.
+
+ Line 236:                 dj.DEBUG("Got error: no valid item when parsing '%s'" % explanation)
+ Line 237: -> not a raise
+
+ Line 362:         except Exception as e:
+ Line 363:             import dj
+ Line 364:             dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e))) -> This is logging an exception, but not raising. So we don't output.
+
+ However, note: the instruction says "code that relates to error handling". Logging an exception is part of error handling, but the instruction says "obviously matches". We are to be strict.
+
+ But note: the instruction says "Only trigger when the input obviously matches the query, i.e. not tangentially related."
+
+ The logging line (364) is about handling an exception (by logging it), so it is error handling. However, the instruction says "obviously matches". We have to be cautious.
+
+ But let's compare with the examples we have: we are outputting the exception class definitions and the `raise` statements. The logging is also a form of error handling.
+
+ However, the problem says: "Only trigger when the input obviously matches the query". The logging line is clearly about handling an error (the exception). So we might consider it.
+
+ But note: the instruction says "code that relates to error handling", and logging an error is a common part of error handling.
+
+ However, let's see what the problem says: "not tangentially related". The logging line is directly about handling an error (the exception). So we should output it.
+
+ But wait: the problem says "obviously matches". We have to be consistent. We are already outputting the `raise` statements and the exception classes. The logging is also a key part.
+
+ However, note that the problem says "code that relates to error handling", and the logging line is code that handles an error (by logging it). So we output it.
+
+ But let's check the exact line: 
+   364:             dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))
+
+ However, note: the problem says "Only trigger when the input obviously matches the query". We have to be careful not to overdo it.
+
+ Let's see if there are other lines that might be considered:
+
+ Line 365:         if self.has_label("gpt"):
+ Line 366:             problems.append("請刪除 (label:gpt)") -> This is not error handling, it's a problem check.
+
+ Now, let's list the lines we have so far:
+
+ 44: class DefinitionError(ValueError):
+ 47: class AmbiguousPronunciationError(DefinitionError):
+ 49: class InvalidJyutPingError(DefinitionError):
+ 52: class IllegalCharacterError(DefinitionError):
+ 140:     raise ValueError("Invalid part of speech")
+ 146:     raise ValueError("Invalid label name")
+ 192:                     raise ValueError(errmsg)
+ 208:                     raise ValueError(errmsg)
+ 220:                     raise e
+ 231:                     raise e
+ 234:                 raise ValueError("No valid item to parse")
+ 364:             dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))
+
+ But wait: line 364 is a call to `dj.ERROR`, which is logging. Is that considered "error handling"? Yes, because it's handling the exception by logging it.
+
+ However, note: the problem says "code that relates to error handling". The logging is a form of error handling.
+
+ But let's check the problem statement: it says "error handling", which typically includes:
+   - Raising errors
+   - Catching errors
+   - Logging errors
+   - Recovering from errors
+
+ So we should include the logging.
+
+ However, note: the problem says "obviously matches". The logging line is obviously about handling an error (the exception).
+
+ But wait: the problem says "Only trigger when the input obviously matches the query, i.e. not tangentially related." 
+   - The logging line is directly about an exception, so it's obvious.
+
+ However, let's see if there are more:
+
+ Line 362:         except Exception as e: -> This is the start of an exception handler. So we should output this line too.
+
+ So we add line 362.
+
+ Now, let's check for other `except` lines? We have:
+
+ Line 362:         except Exception as e:
+
+ But note: the problem says "code that relates to error handling", and the `except` line is the beginning of an error handler.
+
+ So we output line 362.
+
+ Now, let's check for other `raise` and exception classes.
+
+ We have:
+
+ Line 370: class InvalidLangCodeFormat(ValueError):
+ Line 371:     pass
+
+ So we output line 370.
+
+ Also, note that in the `choplang` function, there is:
+
+ Line 394:     if strict or _g_lang_force_strict:
+ Line 395:         raise InvalidLangCodeFormat("Invalid form")
+
+ So we output line 395.
+
+ Now, let's list all the lines we have:
+
+ 44: class DefinitionError(ValueError):
+ 47: class AmbiguousPronunciationError(DefinitionError):
+ 49: class InvalidJyutPingError(DefinitionError):
+ 52: class IllegalCharacterError(DefinitionError):
+ 140:     raise ValueError("Invalid part of speech")
+ 146:     raise ValueError("Invalid label name")
+ 192:                     raise ValueError(errmsg)
+ 208:                     raise ValueError(errmsg)
+ 220:                     raise e
+ 231:                     raise e
+ 234:                 raise ValueError("No valid item to parse")
+ 362:         except Exception as e:
+ 364:             dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))
+ 370: class InvalidLangCodeFormat(ValueError):
+ 395:         raise InvalidLangCodeFormat("Invalid form")
+
+ But wait: line 395 is inside a function. We output the line as it is.
+
+ However, note: the problem says "output the line (together with line number)".
+
+ Now, let's check if we missed any:
+
+ In the `parse_written_form_and_pronunciation` function:
+
+ Line 712:                 ret.append(item)
+ Line 713:             except ValueError:
+ Line 714:                 raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+
+ So we have a `raise InvalidJyutPingError` at line 714.
+
+ We should output line 714.
+
+ Also, note that `InvalidJyutPingError` is already defined at line 49, but the raise is at line 714.
+
+ So we add line 714.
+
+ Now, let's check for other `raise`:
+
+ In the `choplang` function, we have:
+
+ Line 395:         raise InvalidLangCodeFormat("Invalid form")
+
+ We already have that.
+
+ Also, in the `parse_written_form_and_pronunciation` function, we have:
+
+ Line 713:                 raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+
+ So we have line 714? Actually, the line number for the raise is 714.
+
+ But note: the input shows:
+
+713:             except ValueError:
+714:                 raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+
+ So we output line 714.
+
+ Now, let's check for other exception classes:
+
+ We have:
+   DefinitionError
+   AmbiguousPronunciationError
+   InvalidJyutPingError
+   IllegalCharacterError
+   InvalidLangCodeFormat
+
+ We have output all of them.
+
+ Now, let's check for `raise` in other places:
+
+ In the `MultilingualDefinition` class, we have:
+
+ Line 209:             except ValueError as e:
+ Line 210:                 import dj
+ Line 211:                 items_str = def_str
+ Line 212:                 self._is_stub = True
+ Line 213: 
+ Line 214:                  # XXX: this is a bit hackish for clearing any possible
+ Line 215:                  # changes in self._tags before the exception was thrown
+ Line 216:                 self._tags = collections.OrderedDict()
+ Line 217: 
+ Line 218:                 if raise_on_error:
+ Line 219:                     raise e
+ Line 220:                 else:
+ Line 221:                     dj.DEBUG("Got error: %s when parsing '%s'" % (e, def_str))
+ Line 222: 
+ Line 223:         self._item_list = []
+ ... and then we have the `raise e` at line 219 and 220? Actually, line 219 is the `raise e` and line 220 is `else`.
+
+ We already output line 219 (which is the `raise e`).
+
+ Similarly, in the `MultilingualDefinition` class, we have:
+
+ Line 227:             except ValueError as e:
+ Line 228:                 import dj
+ Line 229:                 dj.DEBUG("Got error: %s when parsing '%s'" % (e, explanation))
+ Line 230:                 if raise_on_error:
+ Line 231:                     raise e
+ Line 232:         if len(self._item_list) == 0:
+ ... so we output line 231.
+
+ Now, let's check for other `raise`:
+
+ In the `choplang` function, we have:
+
+ Line 395:         raise InvalidLangCodeFormat("Invalid form")
+
+ We have that.
+
+ Also, in the `choplang` function, we have:
+
+ Line 397:     guess = common.guess_language(raw)
+ Line 398:     if guess == common.CHINESE:
+ Line 399:         guess = "yue"
+ Line 400:     else:
+ Line 401:         guess = iso639.two_to_three(guess)
+ Line 402: 
+ Line 403:     return (guess, raw)
+
+ This is not error handling.
+
+ Now, let's check for `except`:
+
+ We have:
+   Line 362:         except Exception as e:
+   Line 209:             except ValueError as e:
+   Line 227:             except ValueError as e:
+
+ So we have three `except` lines. We output line 362, and we also output the other two? But note: the problem says "code that relates to error handling", and the `except` lines are part of error handling.
+
+ However, the problem says "obviously matches". The `except` line is obviously about error handling.
+
+ So we should output all `except` lines that are part of an exception handler.
+
+ But note: the problem says "Only trigger when the input obviously matches the query". The `except` line is the key line for the handler.
+
+ So we output:
+
+ 209:             except ValueError as e:
+ 227:             except ValueError as e:
+ 362:         except Exception as e:
+
+ However, wait: the problem says "output the line (together with line number)". So we output the line as it appears.
+
+ But note: the input has:
+
+209:             except ValueError as e:
+227:             except ValueError as e:
+362:         except Exception as e:
+
+ So we output these three lines.
+
+ Now, let's compile the complete list:
+
+ 44: class DefinitionError(ValueError):
+ 47: class AmbiguousPronunciationError(DefinitionError):
+ 49: class InvalidJyutPingError(DefinitionError):
+ 52: class IllegalCharacterError(DefinitionError):
+ 140:     raise ValueError("Invalid part of speech")
+ 146:     raise ValueError("Invalid label name")
+ 192:                     raise ValueError(errmsg)
+ 208:                     raise ValueError(errmsg)
+ 209:             except ValueError as e:
+ 220:                     raise e
+ 227:             except ValueError as e:
+ 231:                     raise e
+ 234:                 raise ValueError("No valid item to parse")
+ 362:         except Exception as e:
+ 364:             dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))
+ 370: class InvalidLangCodeFormat(ValueError):
+ 395:         raise InvalidLangCodeFormat("Invalid form")
+ 714:                 raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+
+ But note: the problem says "Only trigger when the input obviously matches the query, i.e. not tangentially related."
+
+ We must be cautious: are there any lines we included that are not obviously about error handling?
+
+ Let's check:
+
+ - The exception class definitions: obviously about error handling.
+ - The `raise` statements: obviously about error handling.
+ - The `except` lines: obviously about error handling.
+ - The `dj.ERROR` call: obviously about error handling (logging an error).
+
+ However, note: the problem says "code that relates to error handling", and we are including the logging. But the problem says "obviously matches", and the logging is a clear part of error handling.
+
+ But note: the problem says "Only trigger when the input obviously matches the query". We are including the logging line. However, the problem might be interpreted as only the code that is about raising or defining errors, but the logging is also a standard part of error handling.
+
+ We'll include it.
+
+ Now, let's write the output in the required format:
+
+ For each matching line, output:
+   <line_number>: <line_content>
+   ---
+
+ So for line 44:
+   44:class DefinitionError(ValueError):
+   ---
+
+ But note: the problem says "output the line (together with line number) only", meaning we output the line number and the line as it appears in the input.
+
+ However, note: the input has the line number at the beginning of the line? Actually, the input is given with line numbers. But the problem says "for every line in the input", and the input includes the line numbers.
+
+ But the problem says: "output the line (together with line number)".
+
+ So we output the line number as given in the input, and then the line content (without the line number? or with the line number?).
+
+ Wait, the input is:
+
+1:# -*- coding: utf-8 -*-
+2:
+...
+
+ So the line number is part of the input. But the problem says "output the line (together with line number)".
+
+ How should we output? The problem says: "output the line (together with line number)".
+
+ So we output the line number and then the line content as it appears in the input (which includes the line number?).
+
+ But note: the input we are given is a text that has the line numbers. However, the problem says "for every line in the input", meaning the input we are given (which has the line numbers). So when we output, we should output the line number and the entire line (including the line number) as it appears in the input? Or just the line number and the content without the line number?
+
+ Let me read the problem: "output the line (together with line number)".
+
+ The example input has the line number at the beginning. So if we output the line as it appears, then we would output:
+
+44:class DefinitionError(ValueError):
+
+ But note: the input line 44 is:
+
+44:class DefinitionError(ValueError):
+
+ So we output:
+
+44:class DefinitionError(ValueError):
+---
+
+ However, the problem says: "output the line (together with line number)". So we output the line number and the line content (which in the input includes the line number). But that would be redundant.
+
+ But the problem does not specify whether to output the line number as a separate token or as part of the line.
+
+ Since the input includes the line number, and the problem says "together with line number", we output the line number and then the line content (which in the input has the line number). However, that would duplicate the line number.
+
+ Alternatively, the problem might mean: output the line number (as a number) and then the line content (without the line number). But the problem says "output the line (together with line number)".
+
+ Let me see the example: the input is given with line numbers. The problem says "for every line in the input", so the line we are considering is the entire line including the line number.
+
+ But note: the problem says "output the line (together with line number)". So we output the line as it appears in the input (which includes the line number) and then the separator.
+
+ However, the problem says "together with line number", meaning we are to include the line number in the output. So we output the entire line (which has the line number at the beginning) and then the separator.
+
+ But wait: the input we are given is:
+
+1:# -*- coding: utf-8 -*-
+2:
+...
+
+ So the line 44 is "44:class DefinitionError(ValueError):".
+
+ Therefore, we output:
+
+44:class DefinitionError(ValueError):
+---
+
+ However, the problem says "output the line (together with line number)", so we are outputting the line as it is (which includes the line number). That is acceptable.
+
+ But note: the problem says "for every line in the input", meaning we are to output the line as it appears in the input (with the line number). So we output the entire line.
+
+ So we output:
+
+44:class DefinitionError(ValueError):
+---
+47:class AmbiguousPronunciationError(DefinitionError):
+---
+49:class InvalidJyutPingError(DefinitionError):
+---
+52:class IllegalCharacterError(DefinitionError):
+---
+140:    raise ValueError("Invalid part of speech")
+---
+146:    raise ValueError("Invalid label name")
+---
+192:                    raise ValueError(errmsg)
+---
+208:                    raise ValueError(errmsg)
+---
+209:            except ValueError as e:
+---
+220:                    raise e
+---
+227:            except ValueError as e:
+---
+231:                    raise e
+---
+234:                raise ValueError("No valid item to parse")
+---
+362:        except Exception as e:
+---
+364:            dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))
+---
+370:class InvalidLangCodeFormat(ValueError):
+---
+395:        raise InvalidLangCodeFormat("Invalid form")
+---
+714:                raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+---
+
+ However, note: the problem says "Only trigger when the input obviously matches the query, i.e. not tangentially related."
+
+ We must double-check if we included any line that is not obviously about error handling.
+
+ Let's check line 364: 
+   "dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))"
+
+ This is logging an exception. It is clearly about error handling.
+
+ But note: the problem says "code that relates to error handling", and this is a standard way of handling errors (logging). So it's included.
+
+ Now, let's check if we missed any:
+
+ In the `choplang` function, we have:
+
+ Line 395:         raise InvalidLangCodeFormat("Invalid form")
+
+ We have that.
+
+ Also, note that in the `parse_written_form_and_pronunciation` function, we have:
+
+ Line 714:                 raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+
+ We have that.
+
+ Now, let's check for other exception classes: we have all the ones we found.
+
+ But note: the problem says "code that relates to error handling", and we have included:
+
+   - All exception class definitions.
+   - All `raise` statements (including the ones that raise specific exceptions and the ones that re-raise).
+   - All `except` lines (the ones that catch exceptions).
+   - The logging of an exception.
+
+ We think we have them all.
+
+ However, note: the problem says "Only trigger when the input obviously matches the query". We are including the `except` lines. But the `except` line is the beginning of the handler, so it's obviously about error handling.
+
+ Now, let's write the output.
+
+ Important: The problem says "If no lines match just give empty response."
+
+ We have lines, so we output the list.
+
+ But note: the problem says "after each line of output, also emit a '---' to separate it from your next output."
+
+ So we output each matching line (with the line number and the entire line as in the input) and then a "---".
+
+ However, note: the problem says "output the line (together with line number)", so we output the entire line as it appears in the input (which includes the line number). So we output the line exactly as in the input.
+
+ But wait: the input has the line number at the beginning. So for line 44, the input line is "44:class DefinitionError(ValueError):", so we output that.
+
+ Now, let's write the output.
+
+ But note: the problem says "Don't explain. Just output as if you're a command line program called 'semantic_grep'."
+
+ So we output only the matching lines (each on its own line) followed by "---", and nothing else.
+
+ Let's list the lines we are going to output in order (by line number):
+
+ 44
+ 47
+ 49
+ 52
+ 140
+ 146
+ 192
+ 208
+ 209
+ 220
+ 227
+ 231
+ 234
+ 362
+ 364
+ 370
+ 395
+ 714
+
+ Now, we output:
+
+44:class DefinitionError(ValueError):
+---
+47:class AmbiguousPronunciationError(DefinitionError):
+---
+49:class InvalidJyutPingError(DefinitionError):
+---
+52:class IllegalCharacterError(DefinitionError):
+---
+140:    raise ValueError("Invalid part of speech")
+---
+146:    raise ValueError("Invalid label name")
+---
+192:                    raise ValueError(errmsg)
+---
+208:                    raise ValueError(errmsg)
+---
+209:            except ValueError as e:
+---
+220:                    raise e
+---
+227:            except ValueError as e:
+---
+231:                    raise e
+---
+234:                raise ValueError("No valid item to parse")
+---
+362:        except Exception as e:
+---
+364:            dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))
+---
+370:class InvalidLangCodeFormat(ValueError):
+---
+395:        raise InvalidLangCodeFormat("Invalid form")
+---
+714:                raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+---
+
+ However, note: the problem says "Only trigger when the input obviously matches the query, i.e. not tangentially related."
+
+ We must be cautious: is the line 364 really about error handling? Yes, because it's logging an exception.
+
+ But note: the problem says "error handling", and logging is a part of it.
+
+ However, let's consider: the problem might be interpreted as only the code that is about raising or defining errors, but the problem statement does not specify. The problem says "error handling", which is a broad term.
+
+ We'll include it.
+
+ Now, let's check if we have any duplicates? We don't.
+
+ But note: the problem says "for every line in the input", so we output each matching line exactly as it appears.
+
+ We are confident in our list.
+
+ However, note: the problem says "Only trigger when the input obviously matches the query". We have included the `except` lines. But the problem says "code that relates to error handling", and the `except` line is the key line for the handler. So it's obvious.
+
+ We output the list.
+
+ But note: the problem says "after each line of output, also emit a '---' to separate it from your next output."
+
+ So we output each line and then a "---", and then the next line and then a "---", etc.
+
+ Now, we write the output.
+
+ Important: We must not output anything else.
+
+ Let's write it.
+</think>
+
+44:class DefinitionError(ValueError):
+---
+47:class AmbiguousPronunciationError(DefinitionError):
+---
+49:class InvalidJyutPingError(DefinitionError):
+---
+52:class IllegalCharacterError(DefinitionError):
+---
+140:    raise ValueError("Invalid part of speech")
+---
+146:    raise ValueError("Invalid label name")
+---
+192:                    raise ValueError(errmsg)
+---
+208:                    raise ValueError(errmsg)
+---
+209:            except ValueError as e:
+---
+220:                    raise e
+---
+227:            except ValueError as e:
+---
+231:                    raise e
+---
+234:                raise ValueError("No valid item to parse")
+---
+362:        except Exception as e:
+---
+364:            dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))
+---
+370:class InvalidLangCodeFormat(ValueError):
+---
+395:        raise InvalidLangCodeFormat("Invalid form")
+---
+714:                raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+--- [end of text]
+
+
