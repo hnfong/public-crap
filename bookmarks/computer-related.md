@@ -317,6 +317,7 @@ Computer technology related.
 - https://huggingface.co/blog/rlhf
 - https://arxiv.org/abs/2205.14135 - FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness
 - https://arxiv.org/abs/2509.04664 - Why Language Models Hallucinate
+- https://en.wikipedia.org/wiki/Universal_approximation_theorem
 
 ### Libraries / Tools
 
