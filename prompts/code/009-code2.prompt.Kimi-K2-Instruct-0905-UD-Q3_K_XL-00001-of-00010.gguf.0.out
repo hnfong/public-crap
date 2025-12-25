@@ -1,0 +1,85 @@
+To do a binary-search on a **text** file we have to treat it as a sequence of **lines**, but we can only jump to byte offsets (`seek`).  
+The key observation is:
+
+- The file is already sorted line-by-line (lexicographically).  
+- We can **seek** to any byte offset in O(1).  
+- After the seek we must **synchronise** to the beginning of the next complete line (because we may have landed in the middle of a line).  
+- Once we have a whole line we can compare it with the target.  
+- The usual binary-search indices (0 … n-1) are replaced by byte offsets 0 … file_size-1.
+
+Algorithm (classic binary search on byte ranges):
+
+1. `lo = 0`, `hi = file_size` (one past the last byte).  
+2. While `lo < hi`:  
+   a. `mid = (lo + hi) // 2`  
+   b. `seek(mid)`; read until the next `'\n'` to get a full line; that line is our *candidate*.  
+   c. Compare the candidate with the target.  
+   d. If candidate == target ⇒ we found it; return the byte offset of the **start** of that line.  
+   e. If candidate < target ⇒ the answer lies to the right: `lo = mid + 1`.  
+   f. Else ⇒ the answer lies to the left: `hi = mid`.  
+3. When the loop ends, `lo` is the **insertion point** (same semantics as `bisect_left`).  
+   If we never found an exact match we return `lo`.
+
+Complexities  
+- Each iteration does one `seek` and reads at most one extra line ⇒ O(log(file_size)) **seeks**.  
+- Total I/O is O(log(file_size) · average_line_length), which is optimal for a disk-resident file.
+
+Python implementation
+---------------------
+
+```python
+import os
+
+def binary_search_file(file_path: str, target: bytes) -> int:
+    """
+    Return the byte offset of the first line >= target.
+    If an exact match exists, that offset is returned (bisect_left semantics).
+    """
+    with open(file_path, 'rb') as f:
+        size = os.fstat(f.fileno()).st_size
+        lo, hi = 0, size
+
+        while lo < hi:
+            mid = (lo + hi) // 2
+
+            # ----- synchronise to line start -----
+            f.seek(mid)
+            # discard the (possibly partial) line we landed in
+            f.readline()          # now we are at the beginning of the next line
+            # remember where that next line starts
+            line_start = f.tell()
+            line = f.readline()     # read the whole line
+
+            # ----- compare -----
+            if line.rstrip(b'\r\n') == target:
+                return line_start   # exact hit
+            if line < target:
+                lo = line_start + len(line)   # move right
+            else:
+                hi = mid                        # move left
+
+        return lo   # insertion point
+```
+
+Quick sanity check on the example file
+--------------------------------------
+
+File contents (hex offsets shown):
+
+```
+0000  31 20 49 20 67 6f 20 74  6f 20 73 63 68 6f 6f 6c   1 I go to school
+0011  0a 32 20 62 79 20 62 75  73 0a 66 6f 6f 20 62 61   .2 by bus.foo ba
+0021  72 0a 68 65 6c 6c 6f 20  77 6f 72 6c 64 0a 7a 6f   r.hello world.zo
+0031  6f 20 7a 6f 6f 20 7a 6f  6f 0a                     o zoo zoo.
+```
+
+Line “2 by bus” starts at byte 17 (`0x11`).  
+Calling
+
+```python
+binary_search_file("myfile.txt", b"2 by bus")
+```
+
+returns `17`, exactly as required. [end of text]
+
+

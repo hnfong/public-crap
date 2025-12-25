@@ -1,0 +1,698 @@
+<think>
+We are going to read the entire input from standard input (which may be multiple lines).
+ Steps:
+ 1. Read all input as a string.
+ 2. We need to extract all numbers that may have:
+    - optional commas as thousand separators
+    - optional suffixes (k, K, m, M, g, G)
+ 3. We'll use a regular expression to match the numbers with optional commas and suffixes.
+    Pattern: 
+        - A number can have: 
+            * optional sign? (but the example doesn't have negative, so we assume non-negative)
+            * digits, possibly with commas (which we'll remove) and a decimal point.
+        - Then optionally a suffix (one of [kKmMgG])
+
+    We can design a regex: 
+        [0-9,]+(\.[0-9]+)?[kKmMgG]?
+
+    However, note: the example has "1.5G", "2K", "3M", "4.2G", "500,000K", "600M".
+
+    But note: the commas are thousand separators, so we want to remove them.
+
+    We can break the problem:
+        - We'll look for tokens that are numbers (with commas and optional decimal) and then an optional suffix.
+
+    Let's design a regex that matches:
+        - One or more digits (with commas in between) OR a decimal number (with commas and a decimal point) and then an optional suffix.
+
+    However, note: the input may have non-numeric tokens. We want to extract only the numbers with optional suffix.
+
+    We can use: 
+        ([0-9,]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([kKmMgG])?
+
+    But note: the example has "500,000K", which is a number with commas and then a suffix.
+
+    Actually, the commas are thousand separators, so we can remove them and then convert to a double.
+
+    We'll use a regex that matches:
+        - A sequence of digits, commas, and a decimal point (but note: the decimal point only once and after digits)
+        - Then optionally a suffix.
+
+    However, the problem says: "numbers followed by optional suffixes", meaning the suffix is attached to the number.
+
+    We can try: 
+        \d{1,3}(?:,\d{3})*(\.\d+)?[kKmMgG]?
+
+    But note: the number might not have commas (like "1.5G") and might have a decimal without commas.
+
+    Alternatively, we can match:
+        [0-9,]+(\.[0-9]+)?[kKmMgG]?
+
+    However, this might match a string that has a decimal point and then a suffix, but also might match a string that has a decimal point without digits after? 
+    But the problem says "numbers", so we assume at least one digit before the decimal.
+
+    But note: the example has "1.5G", so we want to match "1.5G", but also "500,000K".
+
+    However, the regex [0-9,]+(\.[0-9]+)?[kKmMgG]? will match:
+        - "500,000K": [0-9,]+ matches "500,000", then (\.[0-9]+)? matches nothing, then [kKmMgG] matches 'K'
+        - "1.5G": [0-9,]+ matches "1", then (\.[0-9]+) matches ".5", then [kKmMgG] matches 'G'
+
+    But note: what about "1."? The problem says numbers, so we assume that if there's a decimal point, there's at least one digit after? 
+    However, the example doesn't have that. We'll assume the input is well-formed.
+
+    However, the problem says: "numbers followed by optional suffixes", so we don't have to worry about trailing decimal without digits.
+
+    But note: the regex [0-9,]+ will match "500,000" and then the decimal part is optional. So we can do:
+
+        Pattern pattern = Pattern.compile("[0-9,]+(\\.[0-9]+)?[kKmMgG]?");
+
+    However, this pattern might also match a string that has a suffix but without a number? Actually, the [0-9,]+ requires at least one digit.
+
+    But note: the pattern might match a string that has a suffix but the number part is empty? No, because [0-9,]+ requires at least one digit.
+
+    However, what about a string like "K"? It won't match because [0-9,]+ fails.
+
+    So we are safe.
+
+    But note: the input might have other characters. We are going to extract all matches.
+
+ 4. For each match:
+        - Remove the commas from the numeric part (the part that is [0-9,]+ and the decimal part if present).
+        - Convert the cleaned string to a double.
+        - Check the suffix (if present) and multiply by the appropriate factor.
+
+    Factors:
+        k, K -> 1024
+        m, M -> 1024 * 1024
+        g, G -> 1024 * 1024 * 1024
+
+ 5. Sum all the converted values.
+
+ 6. Print the total sum (as a double, but we have to format to one decimal place? Actually, the example output has one decimal place for the total and for the converted units).
+
+    However, note the example output:
+        7264621772.8
+        7094357.2 k
+        6928.1 M
+        6.8 G
+
+    So the total is printed as a double with one decimal place? Actually, the example total has one decimal.
+
+    But note: the problem says "prints the total sum as well as the sum in kilobytes (K), megabytes (M), and gigabytes (G) to one decimal place."
+
+    So we have to format each of the four lines to one decimal place.
+
+ 7. Steps in code:
+
+    a. Read entire input.
+    b. Use a regex to find all matches.
+    c. For each match:
+          - Extract the numeric string (without the suffix) and the suffix.
+          - Remove commas from the numeric string.
+          - Convert to double.
+          - Multiply by the factor for the suffix (if suffix is present; if not, factor=1).
+    d. Sum all the values.
+
+    e. Print the total sum (with one decimal place).
+    f. Then print the total in k, M, G (each with one decimal place).
+
+    However, note: the problem says "the sum in kilobytes (K), megabytes (M), and gigabytes (G)".
+
+    So:
+        total_k = total_sum / 1024.0
+        total_m = total_sum / (1024*1024.0)
+        total_g = total_sum / (1024*1024*1024.0)
+
+    But note: the example output:
+        total_sum = 7264621772.8
+        total_k = 7264621772.8 / 1024 = 7094357.2 (exactly as in the example)
+        total_m = 7264621772.8 / (1024*1024) = 6928.1
+        total_g = 7264621772.8 / (1024*1024*1024) = 6.8
+
+    So we have to compute these.
+
+ 8. Formatting: We'll use DecimalFormat or String.format to format to one decimal place.
+
+    However, note: the problem says "to one decimal place", so we must round to one decimal? 
+    But the example output has one decimal.
+
+    We can use: 
+        String.format("%.1f", value)
+
+    But note: the problem says "one decimal place", so we must output one digit after the decimal.
+
+ 9. Important: The problem says "the program must be production-ready", so we have to be cautious about:
+        - Input might be empty? Then we output 0.0 for the total and then 0.0 for the others? 
+        - But the example input has multiple lines.
+
+    However, the problem says: "reads a string from standard input (can contain multiple lines)".
+
+    We'll assume at least one number? But if there are no numbers, then the sum is 0.
+
+ 10. Implementation:
+
+        import java.util.*;
+        import java.util.regex.*;
+
+        public class NumberConverter {
+            public static void main(String[] args) {
+                // Read entire input
+                Scanner scanner = new Scanner(System.in);
+                StringBuilder input = new StringBuilder();
+                while (scanner.hasNextLine()) {
+                    input.append(scanner.nextLine());
+                    input.append("\n"); // to preserve the newline? but we are matching tokens, so it doesn't matter
+                }
+                scanner.close();
+
+                String text = input.toString();
+
+                // Pattern to match: [0-9,]+(\.[0-9]+)?[kKmMgG]?
+                Pattern pattern = Pattern.compile("[0-9,]+(\\.[0-9]+)?[kKmMgG]?");
+                Matcher matcher = pattern.matcher(text);
+
+                double total = 0.0;
+
+                while (matcher.find()) {
+                    String match = matcher.group();
+                    // Check if there's a suffix
+                    String suffix = "";
+                    // We'll try to see if the last character is a letter (k, K, m, M, g, G)
+                    // But note: the suffix might be at the end of the match.
+                    // We can check: if the last character is one of [kKmMgG], then we take it as suffix and remove it.
+                    // However, the regex matches the suffix as part of the group, so we can split the match.
+
+                    // Let's check: if the last character is a letter (and one of the suffixes), then we take it as suffix.
+                    if (match.length() > 0 && Character.isLetter(match.charAt(match.length()-1))) {
+                        suffix = match.substring(match.length()-1).toLowerCase();
+                        // The numeric part is the entire string without the last character.
+                        String numPart = match.substring(0, match.length()-1);
+                        // Remove commas from numPart
+                        numPart = numPart.replace(",", "");
+                        // Convert to double
+                        try {
+                            double num = Double.parseDouble(numPart);
+                            total += convert(num, suffix);
+                        } catch (NumberFormatException e) {
+                            // If conversion fails, skip? But the problem says the input is numbers, so we assume it's safe.
+                            // However, to be safe, we skip.
+                            continue;
+                        }
+                    } else {
+                        // No suffix: the entire match is the number (with commas)
+                        String numPart = match.replace(",", "");
+                        try {
+                            double num = Double.parseDouble(numPart);
+                            total += num;
+                        } catch (NumberFormatException e) {
+                            continue;
+                        }
+                    }
+                }
+
+                // Now, we have the total in bytes.
+
+                // Format the total to one decimal place.
+                System.out.printf("%.1f\n", total);
+
+                // Now, convert total to k, M, G.
+                double totalK = total / 1024.0;
+                double totalM = total / (1024.0 * 1024.0);
+                double totalG = total / (1024.0 * 1024.0 * 1024.0);
+
+                System.out.printf("%.1f k\n", totalK);
+                System.out.printf("%.1f M\n", totalM);
+                System.out.printf("%.1f G\n", totalG);
+            }
+
+            private static double convert(double num, String suffix) {
+                switch (suffix) {
+                    case "k":
+                    case "K":
+                        return num * 1024;
+                    case "m":
+                    case "M":
+                        return num * (1024 * 1024);
+                    case "g":
+                    case "G":
+                        return num * (1024 * 1024 * 1024);
+                    default:
+                        // This should not happen because we only get k, K, m, M, g, G.
+                        return num;
+                }
+            }
+        }
+
+ 11. But note: the example input has "500,000K", which we are matching as:
+        match = "500,000K"
+        suffix = "k" (after converting to lower)
+        numPart = "500,000" -> remove commas -> "500000", then convert to double -> 500000.0
+        then multiply by 1024 -> 500000 * 1024 = 512000000
+
+ 12. However, the example input also has "600M", which becomes 600 * (1024*1024) = 600 * 1048576 = 629145600.
+
+ 13. Let's check the example output: 
+        total = 7264621772.8
+
+        How do we get that?
+        The example input:
+            1.5G, 2K, 3M, and 4.2G
+            500,000K and 600M
+
+        Breakdown:
+          1.5G = 1.5 * (1024^3) = 1.5 * 1073741824 = 1610612736
+          2K = 2 * 1024 = 2048
+          3M = 3 * (1024^2) = 3 * 1048576 = 3145728
+          4.2G = 4.2 * 1073741824 = 4509715660.8
+          500,000K = 500000 * 1024 = 512000000
+          600M = 600 * 1048576 = 629145600
+
+        Sum = 1610612736 + 2048 + 3145728 + 4509715660.8 + 512000000 + 629145600
+        Let's compute step by step:
+
+          1610612736
+          + 2048 = 1610614784
+          + 3145728 = 1613760512
+          + 4509715660.8 = 6123476172.8
+          + 512000000 = 6635476172.8
+          + 629145600 = 7264621772.8
+
+        So it matches.
+
+ 14. However, note: the example output has:
+        7264621772.8
+        7094357.2 k
+        6928.1 M
+        6.8 G
+
+        Now, let's check:
+          total_k = 7264621772.8 / 1024 = 7094357.2 (exactly, because 7264621772.8 / 1024 = 7094357.2)
+          total_m = 7264621772.8 / (1024*1024) = 7264621772.8 / 1048576 = 6928.1 (exactly as per example)
+          total_g = 7264621772.8 / (1024*1024*1024) = 7264621772.8 / 1073741824 = 6.8
+
+        So the example is correct.
+
+ 15. But note: the problem says "the sum in kilobytes (K), megabytes (M), and gigabytes (G)".
+        So we are printing:
+            total in k (which is total / 1024) -> but note: the problem says "kilobytes", so we are printing the total in kilobytes (which is total / 1024).
+            Similarly, megabytes: total / (1024*1024), and gigabytes: total / (1024*1024*1024).
+
+ 16. However, the example output for kilobytes is "7094357.2 k", meaning 7094357.2 kilobytes.
+
+ 17. But note: the problem says "the sum in kilobytes (K)", so we are printing the total in kilobytes.
+
+ 18. One more issue: the regex might match a string that has a decimal point and then a suffix, but what if the suffix is attached without space? 
+        Our regex matches that, so it's okay.
+
+ 19. However, the regex [0-9,]+(\.[0-9]+)?[kKmMgG]? might also match a string that has a decimal point and then a suffix, but note that the decimal part is optional.
+
+        Example: "1.5G" -> matches: [0-9,]+ matches "1", then (\.[0-9]+) matches ".5", then [kKmMgG] matches "G".
+
+        But what about "1.5.6"? That would not be matched because the regex requires the decimal part to be followed by a suffix or nothing, but the regex doesn't allow two decimal points.
+
+        The regex [0-9,]+(\.[0-9]+)? means:
+            [0-9,]+: one or more digits or commas (so "1" or "1,234")
+            then (\.[0-9]+)? : an optional decimal part (which is a dot and then one or more digits)
+
+        So "1.5.6" would not be matched because after the first decimal, we have a dot again, which is not allowed.
+
+        But the problem says "numbers", so we assume well-formed numbers.
+
+ 20. Another issue: the regex might match a string that has a suffix but the number part is not valid? 
+        We are converting the number part (after removing commas) to double, so if it's invalid, we skip.
+
+ 21. Let's test with the example input.
+
+ 22. However, note: the example input has a comma after the numbers: "1.5G, 2K,". 
+        The regex will match "1.5G", "2K", "3M", "4.2G", "500,000K", "600M".
+
+        But note: the comma after "2K" is not part of the number, so the regex won't match "2K," because the comma is not a digit or comma? 
+        Actually, the regex [0-9,]+ will match "2K" -> no, because 'K' is not a digit or comma. So the regex will match "2K" (without the comma) because the comma is not in the [0-9,]+.
+
+        How does the regex work for "2K,"?
+            The string "2K," has:
+                '2' -> matches [0-9,]+
+                'K' -> matches [kKmMgG]? -> so the match is "2K", and then the comma is left.
+
+        So it's okay.
+
+ 23. But note: the regex might also match a string that has a suffix and then a comma? 
+        For example, "2K," -> the regex matches "2K", and then the comma is not part of the match.
+
+        So we are safe.
+
+ 24. However, what about a number without a suffix but with a comma? 
+        Example: "500,000" -> the regex will match "500,000" (because [0-9,]+ matches it, and then no suffix, so the [kKmMgG]? is not present).
+
+        Then we remove commas -> "500000", and convert to double -> 500000.0.
+
+        But note: the example input has "500,000K", so we don't have a standalone "500,000" in the example.
+
+        However, the problem says: "numbers followed by optional suffixes", meaning the suffix is optional. So standalone numbers are allowed.
+
+ 25. But the problem says: "extracts all numbers followed by optional suffixes", meaning the suffix is optional. So standalone numbers are included.
+
+ 26. Now, let's write the code accordingly.
+
+ 27. However, note: the regex might match a string that has a decimal point and then a suffix, but the decimal point might be the last character? 
+        Example: "1.5" (without suffix) -> the regex will match "1.5", and then we remove commas (none) and convert to double -> 1.5.
+
+        But what if we have "1."? 
+        The regex [0-9,]+(\.[0-9]+)? will match "1." because the decimal part is optional? 
+        Actually, the pattern (\.[0-9]+)? means: an optional group that is a dot followed by one or more digits. 
+        So "1." does not match the decimal part because there are no digits after the dot. 
+        Therefore, the regex would not match "1.".
+
+        But the problem says "numbers", so we assume that if there's a decimal point, there is at least one digit after.
+
+        However, to be safe, we can adjust the regex to allow a decimal point without digits? 
+        But the problem doesn't specify. We'll assume the input is well-formed.
+
+        Alternatively, we can change the regex to: [0-9,]+(\.[0-9]*)?[kKmMgG]?
+        But note: the problem says "numbers", and a number like "1." is not standard. 
+
+        However, the problem says: "numbers followed by optional suffixes", so we'll assume the numbers are well-formed.
+
+        We'll stick to the regex that requires at least one digit after the decimal point.
+
+        But the problem example doesn't have such case.
+
+ 28. Another issue: the regex might match a string that has a suffix but the number part is empty? 
+        We have [0-9,]+ which requires at least one digit, so the number part is non-empty.
+
+ 29. Let's run the example input through the regex:
+
+        Input: "1.5G, 2K,\n3M, and 4.2G\n500,000K and 600M"
+
+        Matches:
+          "1.5G" -> matches
+          "2K"  -> matches
+          "3M"  -> matches
+          "4.2G" -> matches
+          "500,000K" -> matches
+          "600M" -> matches
+
+        So we get 6 matches.
+
+ 30. Now, we write the code accordingly.
+
+ 31. But note: the problem says "only the standard library", so we are using java.util and java.util.regex.
+
+ 32. We'll write the code as a single file.
+
+ 33. One more thing: the problem says "the program must be production-ready", so we should handle the case where there are no matches.
+
+        If there are no matches, then total=0.0, and we output:
+            0.0
+            0.0 k
+            0.0 M
+            0.0 G
+
+        This is acceptable.
+
+ 34. Let's code accordingly.
+
+ 35. However, note: the example output has one decimal place. We are using printf with "%.1f", which will round to one decimal.
+
+        But note: the problem says "to one decimal place", so rounding is acceptable.
+
+ 36. We'll write the code.
+
+ 37. One more note: the problem says "the sum in kilobytes (K), megabytes (M), and gigabytes (G)".
+        We are printing:
+            total_k = total / 1024.0
+            total_m = total / (1024*1024.0)
+            total_g = total / (1024*1024*1024.0)
+
+        And then we format each to one decimal.
+
+ 38. But note: the example output for kilobytes is "7094357.2 k", meaning 7094357.2 kilobytes.
+
+        However, the problem says "kilobytes (K)", so we are printing the value in kilobytes (which is the total in bytes divided by 1024).
+
+        This is correct.
+
+ 39. Now, we write the code.
+
+ 40. We'll use a single class.
+
+ 41. Important: The problem says "write a complete single-file Java program".
+
+ 42. Let's write it.
+
+ 43. We'll test with the example input to be sure.
+
+ 44. However, we are not allowed to output anything else.
+
+ 45. Code:
+
+        We'll use the above plan.
+
+ 46. One more issue: the regex might match a string that has a suffix but the suffix is not one of kKmMgG? 
+        But our regex [kKmMgG]? will only match those letters. So if we have a suffix like 'x', it won't be matched. 
+        But the problem says the suffixes are k, K, m, M, g, G. So we assume only those.
+
+        However, if we get a suffix like 'x', then the regex will match the number part and the 'x' as part of the suffix? 
+        Actually, the regex [kKmMgG]? will match only if the last character is one of those. So if we have "1.5x", the regex will match "1.5x" because 'x' is not in [kKmMgG]? -> no, the regex [kKmMgG]? will not match 'x', so the entire match would be "1.5" (without the 'x')? 
+
+        Let me check: 
+            The regex: [0-9,]+(\.[0-9]+)?[kKmMgG]?
+            For "1.5x": 
+                [0-9,]+ matches "1"
+                (\.[0-9]+)? matches ".5"
+                [kKmMgG]? matches nothing (because 'x' is not in the set) -> so the entire match is "1.5"
+
+            Then we try to process: 
+                suffix = "" (because the last character is '5', which is not a letter? Actually, the last character of "1.5" is '5', so we don't take a suffix. 
+                Then we remove commas (none) and convert to double -> 1.5.
+
+            So it's treated as a standalone number.
+
+        But the problem says "numbers followed by optional suffixes", meaning the suffix is optional. So if there's a non-suffix letter, it's not considered a suffix and the number is taken as is.
+
+        This is acceptable.
+
+ 47. However, what if we have "1.5Kx"? 
+        The regex: 
+            [0-9,]+ -> "1"
+            (\.[0-9]+)? -> ".5"
+            [kKmMgG]? -> "K" (because 'K' is in the set) -> so the match is "1.5K", and then the 'x' is left.
+        So we process "1.5K" as 1.5 * 1024.
+
+        This is what we want.
+
+ 48. So the regex is safe.
+
+ 49. Now, we write the code.
+
+ 50. We'll use the following:
+
+        import java.util.*;
+        import java.util.regex.*;
+
+        public class Main {
+            public static void main(String[] args) {
+                Scanner scanner = new Scanner(System.in);
+                StringBuilder input = new StringBuilder();
+                while (scanner.hasNextLine()) {
+                    input.append(scanner.nextLine());
+                    input.append("\n");
+                }
+                scanner.close();
+
+                String text = input.toString();
+                Pattern pattern = Pattern.compile("[0-9,]+(\\.[0-9]+)?[kKmMgG]?");
+                Matcher matcher = pattern.matcher(text);
+                double total = 0.0;
+
+                while (matcher.find()) {
+                    String match = matcher.group();
+                    // Check if the last character is a letter (and one of the suffixes) -> but note: the suffix might be one of kKmMgG, so we check the last char.
+                    if (match.length() > 0 && Character.isLetter(match.charAt(match.length()-1))) {
+                        char lastChar = match.charAt(match.length()-1);
+                        if (lastChar == 'k' || lastChar == 'K' || lastChar == 'm' || lastChar == 'M' || lastChar == 'g' || lastChar == 'G') {
+                            String suffix = String.valueOf(lastChar).toLowerCase();
+                            String numPart = match.substring(0, match.length()-1);
+                            numPart = numPart.replace(",", "");
+                            try {
+                                double num = Double.parseDouble(numPart);
+                                total += convert(num, suffix);
+                            } catch (NumberFormatException e) {
+                                // Skip invalid number
+                                continue;
+                            }
+                        } else {
+                            // The last character is a letter but not a valid suffix -> treat as standalone number (so we don't take it as suffix)
+                            String numPart = match.replace(",", "");
+                            try {
+                                double num = Double.parseDouble(numPart);
+                                total += num;
+                            } catch (NumberFormatException e) {
+                                continue;
+                            }
+                        }
+                    } else {
+                        // No letter at the end -> standalone number
+                        String numPart = match.replace(",", "");
+                        try {
+                            double num = Double.parseDouble(numPart);
+                            total += num;
+                        } catch (NumberFormatException e) {
+                            continue;
+                        }
+                    }
+                }
+
+                // Format the total to one decimal place
+                System.out.printf("%.1f\n", total);
+                System.out.printf("%.1f k\n", total / 1024.0);
+                System.out.printf("%.1f M\n", total / (1024.0 * 1024.0));
+                System.out.printf("%.1f G\n", total / (1024.0 * 1024.0 * 1024.0));
+            }
+
+            private static double convert(double num, String suffix) {
+                switch (suffix) {
+                    case "k":
+                    case "K":
+                        return num * 1024;
+                    case "m":
+                    case "M":
+                        return num * (1024 * 1024);
+                    case "g":
+                    case "G":
+                        return num * (1024 * 1024 * 1024);
+                    default:
+                        return num;
+                }
+            }
+        }
+
+ 51. However, note: the problem says "the program must be production-ready", so we should avoid using a method that might throw an exception? 
+        But we are catching NumberFormatException and skipping the token. This is acceptable.
+
+ 52. But note: the problem says "the input can contain multiple lines", and we are reading with Scanner.nextLine() until no more lines.
+
+ 53. We'll test with the example input.
+
+ 54. However, we are not allowed to output anything else.
+
+ 55. One more thing: the problem says "only the standard library", and we are using only java.util and java.util.regex.
+
+ 56. We'll write the code as above.
+
+ 57. But note: the problem says "write a complete single-file Java program", so we have to put it in a single file.
+
+ 58. We'll name the class Main? But the problem doesn't specify the class name. However, the main method must be in a class.
+
+        We can name the class anything, but typically we use Main.
+
+ 59. However, the problem says "write a complete single-file Java program", so we write the entire program.
+
+ 60. Let me check: the example output has the total as 7264621772.8, which is a double. 
+        But note: 7264621772.8 is a double, and when we print with "%.1f", it will print as 7264621772.8.
+
+        However, the number is large, but double can handle it.
+
+ 61. We'll run the example in our head: it matches.
+
+ 62. Now, we write the code.
+
+ 63. One more note: the problem says "the sum in kilobytes (K), megabytes (M), and gigabytes (G)".
+        We are printing:
+            total / 1024.0 -> in kilobytes (K)
+            total / (1024*1024) -> in megabytes (M)
+            total / (1024*1024*1024) -> in gigabytes (G)
+
+        And we are printing each with one decimal.
+
+ 64. We'll write the code accordingly.
+
+ 65. However, note: the problem says "to one decimal place", so we use "%.1f".
+
+ 66. But note: the example output for the total is "7264621772.8", which has one decimal.
+
+ 67. We are using printf, which will round to one decimal.
+
+ 68. Now, we write the code.
+
+ 69. We'll make sure to import the necessary packages.
+
+ 70. Final code:
+</think>
+
+import java.util.*;
+import java.util.regex.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        StringBuilder input = new StringBuilder();
+        while (scanner.hasNextLine()) {
+            input.append(scanner.nextLine());
+            input.append("\n");
+        }
+        scanner.close();
+        
+        String text = input.toString();
+        Pattern pattern = Pattern.compile("[0-9,]+(\\.[0-9]+)?[kKmMgG]?");
+        Matcher matcher = pattern.matcher(text);
+        double total = 0.0;
+        
+        while (matcher.find()) {
+            String match = matcher.group();
+            if (match.length() > 0 && Character.isLetter(match.charAt(match.length() - 1))) {
+                char lastChar = match.charAt(match.length() - 1);
+                if (lastChar == 'k' || lastChar == 'K' || lastChar == 'm' || lastChar == 'M' || lastChar == 'g' || lastChar == 'G') {
+                    String suffix = String.valueOf(lastChar).toLowerCase();
+                    String numPart = match.substring(0, match.length() - 1);
+                    numPart = numPart.replace(",", "");
+                    try {
+                        double num = Double.parseDouble(numPart);
+                        total += convert(num, suffix);
+                    } catch (NumberFormatException e) {
+                        continue;
+                    }
+                } else {
+                    String numPart = match.replace(",", "");
+                    try {
+                        double num = Double.parseDouble(numPart);
+                        total += num;
+                    } catch (NumberFormatException e) {
+                        continue;
+                    }
+                }
+            } else {
+                String numPart = match.replace(",", "");
+                try {
+                    double num = Double.parseDouble(numPart);
+                    total += num;
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+            }
+        }
+        
+        System.out.printf("%.1f\n", total);
+        System.out.printf("%.1f k\n", total / 1024.0);
+        System.out.printf("%.1f M\n", total / (1024.0 * 1024.0));
+        System.out.printf("%.1f G\n", total / (1024.0 * 1024.0 * 1024.0));
+    }
+    
+    private static double convert(double num, String suffix) {
+        switch (suffix) {
+            case "k":
+            case "K":
+                return num * 1024;
+            case "m":
+            case "M":
+                return num * (1024 * 1024);
+            case "g":
+            case "G":
+                return num * (1024 * 1024 * 1024);
+            default:
+                return num;
+        }
+    }
+} [end of text]
+
+

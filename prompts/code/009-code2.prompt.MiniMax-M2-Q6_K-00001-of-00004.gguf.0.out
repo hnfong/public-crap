@@ -1,0 +1,150 @@
+Below is a self‑contained solution that performs a true binary search directly on a text file, reading only O(log n) blocks (plus a small constant for the final comparison). It works with any newline convention (`\n`, `\r\n`, or `\r`) and returns the byte offset of the target if found, otherwise the insertion point (the offset where the target would be inserted to keep the file sorted).
+
+Key ideas:
+- Use `seek` to jump to arbitrary byte positions.
+- Use `readline` to fetch a line starting at that position.
+- Use `bisect_left` semantics: return the first line ≥ target.
+- To avoid partial lines, we adjust the probe position to the next newline boundary.
+- We keep a low/high window of byte offsets (inclusive/exclusive) and shrink it in O(log n) steps.
+
+```python
+import os
+import sys
+
+def _detect_newline_style(file_path: str) -> bytes:
+    """Detect the newline style used in the file (b'\\n', b'\\r\\n', or b'\\r')."""
+    # Read a small chunk from the start to detect the newline style.
+    with open(file_path, 'rb') as f:
+        chunk = f.read(4096)
+    if b'\r\n' in chunk:
+        return b'\r\n'
+    elif b'\r' in chunk:
+        return b'\r'
+    else:
+        return b'\n'
+
+def _readline_from(file, start: int) -> bytes:
+    """
+    Read a line starting at byte offset `start` (inclusive).
+    Returns (line_bytes, next_offset) where next_offset is the position right after the newline.
+    If EOF is reached, returns (b'', file_size).
+    """
+    file.seek(start)
+    line = file.readline()
+    if not line:
+        return b'', file.tell()
+    return line, file.tell()
+
+def _find_line_start(file, pos: int, newline: bytes) -> int:
+    """
+    Given a byte position `pos` inside the file, return the start of the line that contains `pos`.
+    If `pos` is at a newline boundary, return `pos` (start of the next line).
+    """
+    if pos == 0:
+        return 0
+    # Move back until we hit a newline or the beginning of the file.
+    # To avoid many small reads, we read a small chunk backwards.
+    # This is O(1) amortized because we only do it O(log n) times.
+    file.seek(max(0, pos - 256))
+    chunk = file.read(min(256, pos))
+    # Find the last newline in the chunk
+    idx = chunk.rfind(newline)
+    if idx == -1:
+        # No newline found in the chunk, so the line starts at 0
+        return 0
+    else:
+        return pos - (len(chunk) - idx - len(newline))
+
+def binary_search_file(file_path: str, target: bytes) -> int:
+    """
+    Perform a binary search on a text file (sorted lexicographically by lines).
+    Returns the byte offset of the target if found, otherwise the insertion point (bisect_left).
+    The file is assumed to be sorted in lexicographical order using the same encoding as `target`.
+
+    Parameters:
+        file_path: Path to the text file.
+        target: The byte string to search for.
+
+    Returns:
+        int: Byte offset of the target or the insertion point.
+    """
+    if not isinstance(target, bytes):
+        raise TypeError("target must be bytes")
+
+    with open(file_path, 'rb') as f:
+        # Get file size
+        f.seek(0, os.SEEK_END)
+        file_size = f.tell()
+        if file_size == 0:
+            return 0
+
+        newline = _detect_newline_style(file_path)
+
+        # Binary search over byte offsets
+        low = 0          # inclusive
+        high = file_size # exclusive
+
+        while low < high:
+            mid = (low + high) // 2
+
+            # Adjust mid to the start of a line
+            mid = _find_line_start(f, mid, newline)
+
+            # Read the line at mid
+            line, next_offset = _readline_from(f, mid)
+            if not line:
+                # EOF reached, treat as less than target
+                high = mid
+                continue
+
+            # Strip the newline for comparison
+            if line.endswith(b'\r\n'):
+                line_stripped = line[:-2]
+            elif line.endswith(b'\r') or line.endswith(b'\n'):
+                line_stripped = line[:-1]
+            else:
+                line_stripped = line
+
+            if line_stripped == target:
+                # Found the target: return the byte offset of this line
+                return mid
+            elif line_stripped < target:
+                # Target is after this line
+                low = next_offset
+            else:
+                # Target is before this line
+                high = mid
+
+        # low == high: insertion point
+        return low
+```
+
+### How it works
+1. **Detect newline style** (`_detect_newline_style`): Reads a small chunk to determine whether the file uses `\n`, `\r\n`, or `\r`. This ensures correct line parsing and comparison.
+2. **Find line start** (`_find_line_start`): Given a byte position, backs up a small chunk and scans for the last newline to locate the start of the containing line. This avoids reading the entire file backwards.
+3. **Read line** (`_readline_from`): Uses `seek` and `readline` to fetch a full line starting at a known offset.
+4. **Binary search loop**:
+   - Maintain a `[low, high)` window of byte offsets.
+   - Probe the middle, adjust to the start of the line, and read it.
+   - Compare the line (without newline) to `target`.
+   - Narrow the window accordingly.
+5. **Return**: If found, return the byte offset of the matching line; otherwise, return `low` (the insertion point).
+
+### Example
+Given the file `myfile.txt`:
+```
+1 I go to school
+2 by bus
+foo bar
+hello world
+zoo zoo zoo
+```
+
+```python
+>>> binary_search_file("myfile.txt", b"2 by")
+17
+```
+
+Explanation: The line `2 by bus` starts at byte 17 (0‑based). The function returns 17 because the target matches exactly. If the target were `b"2 by "`, it would return the insertion point (the offset of the next line after `2 by bus`). [end of text]
+
+

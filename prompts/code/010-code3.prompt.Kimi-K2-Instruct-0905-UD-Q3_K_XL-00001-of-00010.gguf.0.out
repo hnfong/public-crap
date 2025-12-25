@@ -1,0 +1,98 @@
+Intended purpose  
+The routine is a naïve “one-sided” partitioner: it rearranges the input so that every element ≤ pivot comes first, the pivot itself is next, and every element > pivot comes last.  
+It is **not** a full quick-sort (it never recurses on the sub-arrays), but it is exactly the partitioning step that quick-sort uses.  
+Typical use would be
+
+    left, pivot, right = partition(arr)
+    quick_sort(left) + [pivot] + quick_sort(right)
+
+Code review (Python)
+
+1. Correctness  
+   Works for any comparable objects; duplicates are handled because `<=` keeps them on the left.
+
+2. Style / clarity  
+   - Single-letter names (`s`, `a`, `p`, `l`, `r`) are uninformative.  
+   - The function mutates nothing, so the doc-string should say it returns a *new* list.  
+   - No type hints.
+
+3. Efficiency  
+   - Two full passes over `a[1:]` and two intermediate lists.  
+   - O(n) extra memory instead of in-place.  
+   - No tail-call / recursion depth issues because it does not recurse.
+
+4. Minor points  
+   - The trailing comma in `[p,]` is legal but unnecessary.  
+   - No empty-list guard is needed; `len(a) <= 1` already covers it.
+
+Rust re-implementation  
+We will:
+- keep the same O(n) extra memory behaviour (return a fresh `Vec`),  
+- do the job in a single pass,  
+- use generics so any `T: Ord + Clone` works,  
+- give everything a descriptive name,  
+- add unit tests.
+
+```rust
+/// Partition `slice` around its first element (pivot).
+/// Returns `(left, pivot, right)` where
+///   left  := elements ≤ pivot
+///   right := elements >  pivot
+/// The original slice is untouched.
+pub fn partition_around_first<T>(items: &[T]) -> (Vec<T>, T, Vec<T>)
+where
+    T: Ord + Clone,
+{
+    if items.is_empty() {
+        panic!("partition_around_first: empty input has no pivot");
+    }
+
+    let pivot = &items[0];
+    let mut left  = Vec::with_capacity(items.len());
+    let mut right = Vec::with_capacity(items.len());
+
+    for x in &items[1..] {
+        if x <= pivot {
+            left.push(x.clone());
+        } else {
+            right.push(x.clone());
+        }
+    }
+    (left, pivot.clone(), right)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn basic_partition() {
+        let v = vec![5, 3, 8, 1, 4, 5];
+        let (l, p, r) = partition_around_first(&v);
+        assert_eq!(l, vec![3, 1, 4, 5]);
+        assert_eq!(p, 5);
+        assert_eq!(r, vec![8]);
+    }
+
+    #[test]
+    fn already_sorted() {
+        let v = vec![1, 2, 3];
+        let (l, p, r) = partition_around_first(&v);
+        assert!(l.is_empty());
+        assert_eq!(p, 1);
+        assert_eq!(r, vec![2, 3]);
+    }
+
+    #[test]
+    fn single_element() {
+        let v = vec![42];
+        let (l, p, r) = partition_around_first(&v);
+        assert!(l.is_empty() && r.is_empty());
+        assert_eq!(p, 42);
+    }
+}
+```
+
+The function is generic, zero-copy except for the cloned elements, and conveys intent clearly. [end of text]
+
+

@@ -1,0 +1,63 @@
+The pipeline you typed is a quick-and-dirty way to find the 20 most-frequent “word forms” that appear in your story.  
+Here is what every stage does, rewritten in plain language:
+
+1. `cat wowfanfic.txt`  
+   – dump the whole file to standard output.
+
+2. `perl -ne '@a = split(/\s/); foreach (@a) { print $_ . "\n"; }'`  
+   – break every line into whitespace-separated chunks and print one chunk per line.  
+   – punctuation is NOT removed, so “Thrall,” and “Thrall” are two different tokens.  
+   – empty chunks (two consecutive spaces) become empty lines.
+
+3. `sort`  
+   – put every token in strict ASCII order so identical spellings sit together.
+
+4. `uniq -c`  
+   – collapse adjacent identical lines and prefix each group with its count.
+
+5. `sort -n`  
+   – reorder the list by that count, smallest → largest.
+
+6. `tail -n 20`  
+   – keep only the last 20 lines, i.e. the 20 highest counts.
+
+Hence the screen will show something like:
+
+```
+  137 the
+  142 a
+  148 to
+  152 of
+  158 and
+  164 in
+  171 his
+  178 he
+  185 was
+  192 on
+  201 for
+  208 with
+  215 that
+  223 as
+  231 at
+  242 an
+  256 or
+  271 from
+  287 by
+  312 Thrall
+```
+
+(The exact numbers depend on your text, but the shape is always the same.)
+
+Basic-linguistic interpretation  
+- The list is a frequency-ranked **word-form** list, not a **lemma** list.  
+  “Orc”, “orc,” and “orc.” are three separate entries because the computer sees the comma/period as part of the spelling.  
+- The top slots are occupied by **function words** (articles, prepositions, pronouns, conjunctions).  
+  These closed-class items are inherently high-frequency in every English corpus; their frequency is almost independent of topic.  
+- The first **content word** you meet (here “Thrall”) is the most often used **proper noun** in your story.  
+  If you had written about Jaina instead of Thrall, “Jaina” would be the name that surfaces first.  
+- Because the pipeline is case-sensitive, “Thrall” and “thrall” would be counted separately; if you lower-cased the text first you would get a single, higher count.  
+- Punctuation artefacts such as “—”, “” or empty strings may also appear if the text is noisy.
+
+So the “probable output” is simply the 20 most common strings that were delimited by whitespace in your file, printed with their raw counts, giving you an instant, very crude lexical profile of your fan-fiction. [end of text]
+
+

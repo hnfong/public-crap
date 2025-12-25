@@ -647,6 +647,21 @@ class GLMTemplateMixin:
 {self.prompt()}<|assistant|>"""
 
 
+class MiniMaxTemplateMixin:
+    # Yes this isn't messed up terminal escape codes. It's really like this.
+    # The thinking part is because if we allow it to think, it would just get stuck in a loop at temp=0
+    def templated_prompt(self):
+        return f"""
+]~b]system
+{self.system_message()}[e~[
+]~b]user
+{self.prompt()}[e~[
+]~b]ai
+<think>
+OK, I understand this. Let's reply.
+</think>
+""".strip() + "\n"
+
 class MiniCPMTemplateMixin:
     def templated_prompt(self):
         return f"""<用户>{self.prompt()}\n<AI>"""
@@ -831,9 +846,12 @@ NAME_MATCH_OVERRIDE = [
     ("jan-nano-", LongContextChatMLTemplateMixin),
     ("Kimi-K2-", KimiTemplateMixin),
     ("ERNIE-4.5", ErnieTemplateMixin),
+    ("MiniMax", MiniMaxTemplateMixin),
+    ("SmolLM3-", ChatMLTemplateMixin),
 
     ("GLM-4.5", GLM45TemplateMixin),
     ("gpt-oss", GPTOSSTemplateMixin),
+    ("QwenLong-L1.5", Qwen3ThinkingTemplateMixin),
 
     ("Light-IF", NoThinkingChatMLTemplateMixin),
     ("Ling-", LingTemplateMixin),
@@ -851,6 +869,7 @@ NAME_MATCH_OVERRIDE = [
     ("Mimo", LongContextChatMLTemplateMixin),
     ("Mistral-Large-Instruct", Mistral3InstructTemplate),
     ("Mistral-Small", Mistral3InstructTemplate),
+    ("Ministral-3", Mistral3InstructTemplate),
     ("miqu-", Mistral3InstructTemplate),
     ("OpenCoder-8B", ChatMLTemplateMixin),
     ("SuperNova-Medius", ChatMLTemplateMixin),

@@ -1,0 +1,288 @@
+<think>
+We are given a query: "all lines with comments"
+ We are to output every line (with its line number) that has a comment, but only if the line obviously has a comment (not tangentially related).
+
+ In shell scripts, comments start with a '#' character. However, note that sometimes a '#' might appear inside a string or command (which is not a comment). But the problem says: "Only trigger when the input obviously matches the query, i.e. not tangentially related."
+
+ So we are to look for lines that start with a '#' (or have a '#' at the beginning of the line, or after whitespace) but note: the problem says "all lines with comments", meaning the line is a comment.
+
+ However, note that in shell, a comment is a line that starts with a '#' (or has a '#' at the beginning of the line, ignoring leading whitespace). But the problem says "obviously matches", so we should avoid lines that have a '#' inside a string or command.
+
+ But the problem states: "Only trigger when the input obviously matches the query, i.e. not tangentially related."
+
+ Therefore, we will consider a line as having a comment if:
+   - The line starts with a '#' (possibly after whitespace) and the '#' is not inside a string or command.
+
+ However, the problem does not require us to parse the shell syntax. We are to do a semantic grep. The instruction says: "obviously matches".
+
+ So we can assume that if a line has a '#' at the beginning (ignoring leading whitespace) and the line is not a command (i.e., it's a comment), then we output it.
+
+ But note: the problem says "all lines with comments", meaning the entire line is a comment? Or a line that contains a comment? However, in shell, a comment is the entire line from the '#' to the end.
+
+ However, the problem does not specify. But the typical meaning of "a line with a comment" in this context is a line that is a comment (i.e., the line starts with a comment).
+
+ Let's look at the input:
+
+  1:#!/bin/bash
+  2:set -ex
+  3:
+  4:# Save the path to ./download_check script
+  5:script_path=$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$0")
+  6:download_check_path=$(dirname "$script_path")/download_check
+  7:
+  8:function download_and_check() {
+  9:    set -e
+  10:    curl -C - -O -L "$1"
+  11:    local my_filename=$(basename "$1")
+  12:    "$download_check_path" "$my_filename"
+  13:}
+  14:
+  15:# This is a script to build and install tmux on macOS without homebrew.
+  16:prefix=$HOME/apps/tmux
+  17:mkdir -p "$prefix"
+  18:cd "$prefix"
+  19:
+  20:# Download and build pkg-config
+  21:download_and_check 'https://pkgconfig.freedesktop.org/releases/pkg-config-0.29.2.tar.gz'
+  22:tar zxvf pkg-config-0.29.2.tar.gz
+  23:cd pkg-config-0.29.2
+  24:CFLAGS="-Wno-int-conversion" ./configure --prefix="$prefix" --with-internal-glib
+  25:make -j 10
+  26:make install
+  27:cd ..
+  28:
+  29:# Download and build ncurses
+  30:download_and_check 'https://ftp.gnu.org/gnu/ncurses/ncurses-6.5.tar.gz'
+  31:tar zxvf ncurses-6.5.tar.gz
+  32:cd ncurses-6.5
+  33:./configure --prefix="$prefix"
+  34:make -j 10
+  35:make install
+  36:cd ..
+  37:
+  38:# Download and build libevent
+  39:download_and_check 'https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz'
+  40:tar zxvf libevent-2.1.12-stable.tar.gz
+  41:cd libevent-2.1.12-stable
+  42:./configure --disable-openssl --prefix="$prefix"
+  43:make -j 10
+  44:make install
+  45:cd ..
+  46:
+  47:
+  48:# Download and build utf8proc
+  49:download_and_check 'https://github.com/JuliaStrings/utf8proc/releases/download/v2.9.0/utf8proc-2.9.0.tar.gz'
+  50:tar zxvf utf8proc-2.9.0.tar.gz
+  51:cd utf8proc-2.9.0
+  52:make prefix="$prefix"
+  53:make install prefix="$prefix"
+  54:cd ..
+  55:
+  56:# Download and build tmux
+  57:download_and_check 'https://github.com/tmux/tmux/releases/download/3.5a/tmux-3.5a.tar.gz'
+  58:tar zxvf tmux-3.5a.tar.gz
+  59:cd tmux-3.5a
+  60:PKG_CONFIG="$prefix"/bin/pkg-config ./configure --enable-utf8proc --prefix="$prefix"
+  61:make -j 10
+  62:make install
+  63:cd ..
+  64:
+  65:ln -sf "$prefix"/bin/tmux ~/bin/tmux
+
+ Now, let's identify the lines that are comments:
+
+ - Line 4: starts with '#' -> comment
+ - Line 15: starts with '#' -> comment
+ - Line 20: starts with '#' -> comment
+ - Line 29: starts with '#' -> comment
+ - Line 38: starts with '#' -> comment
+ - Line 48: starts with '#' -> comment
+ - Line 56: starts with '#' -> comment
+
+ But note: what about lines that have a '#' inside a string? For example, line 5 has a string: 'import os,sys; print(os.path.realpath(sys.argv[1]))' - but the '#' is not in the string? Actually, the string does not contain a '#' so it's safe. However, we are not to consider lines that have a '#' inside a string as comments. But in this input, we don't have any line that has a '#' inside a string that is not a comment.
+
+ However, the problem says: "obviously matches", so we are only going to output lines that are clearly comments (i.e., the line starts with a '#' and the rest of the line is the comment).
+
+ But note: line 4: "# Save the path to ./download_check script" -> this is a comment.
+        line 15: "# This is a script to build and install tmux on macOS without homebrew." -> comment.
+        line 20: "# Download and build pkg-config" -> comment.
+        line 29: "# Download and build ncurses" -> comment.
+        line 38: "# Download and build libevent" -> comment.
+        line 48: "# Download and build utf8proc" -> comment.
+        line 56: "# Download and build tmux" -> comment.
+
+ However, note that line 3 is empty, so we skip. Line 7, 14, 28, 37, 46, 47, 64 are empty or just whitespace? Actually, they are empty lines (with no characters) so they don't have a comment.
+
+ But what about line 9: "    set -e" -> no comment.
+        line 10: "    curl -C - -O -L "$1"" -> no comment.
+
+ However, note: the problem says "all lines with comments", meaning the line is a comment. So we are only outputting the lines that are comments.
+
+ But note: the problem says "if the line has something that matches the given query/description". The query is "all lines with comments". So we are to output the lines that are comments.
+
+ However, the problem also says: "Only trigger when the input obviously matches the query, i.e. not tangentially related." So we are not to output a line that has a '#' but is not a comment (like in a string). But in this input, we don't have any such line.
+
+ Let's check for any line that has a '#' but is not a comment:
+
+  Line 5: `script_path=$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$0")`
+      The string inside the single quotes does not contain a '#', so the '#' in the command is not present. Actually, the line does not have a '#' at the beginning? It has a '#' inside the string? Wait, the string is: 'import os,sys; print(os.path.realpath(sys.argv[1]))' -> no '#' in that string. So the line does not have a '#' at all? Actually, the line has no '#' at all.
+
+  Similarly, line 6: `download_check_path=$(dirname "$script_path")/download_check` -> no '#'.
+
+  Line 24: `CFLAGS="-Wno-int-conversion" ./configure --prefix="$prefix" --with-internal-glib` -> no '#' in the line.
+
+  Line 60: `PKG_CONFIG="$prefix"/bin/pkg-config ./configure --enable-utf8proc --prefix="$prefix"` -> no '#'.
+
+  So we don't have any line that has a '#' that is not a comment.
+
+ Therefore, we output the lines that start with a '#' (with the line number).
+
+ However, note: the problem says "together with line number". The input already has line numbers (like "1:", "2:", etc.). But the problem says: "output the line (together with line number)".
+
+ How should we output? The problem says: "output the line (together with line number)".
+
+ We are to output the line number as given in the input (so the number that is at the beginning of the line in the input, but note: the input has the line number followed by a colon and then the line).
+
+ However, the problem says: "For every line in the input, output the line (together with line number)".
+
+ So we should output the line number as it appears in the input, and then the line content.
+
+ But note: the input format is:
+     1:#!/bin/bash
+     2:set -ex
+     ...
+
+ So we are to output, for example, "4:# Save the path to ./download_check script"
+
+ However, the problem says: "output the line (together with line number)".
+
+ But note: the input already has the line number. So we can output the entire line as it appears in the input? But the problem says "together with line number", meaning we are to include the line number.
+
+ However, the input already has the line number. So we can just output the line as it is in the input.
+
+ But wait: the problem says "output the line (together with line number)" and the input has the line number. So we output the line exactly as it appears in the input.
+
+ However, the problem also says: "Only trigger when the input obviously matches the query", so we are only outputting the lines that are comments.
+
+ So we output:
+
+  4:# Save the path to ./download_check script
+  15:# This is a script to build and install tmux on macOS without homebrew.
+  20:# Download and build pkg-config
+  29:# Download and build ncurses
+  38:# Download and build libevent
+  48:# Download and build utf8proc
+  56:# Download and build tmux
+
+ But note: the problem says "after each line of output, also emit a --- to separate it from your next output."
+
+ So for each matching line, we output the line (as it appears in the input) and then a line with "---".
+
+ However, note: the problem says "output the line (together with line number)" and the input line already has the line number. So we output the entire line including the line number.
+
+ But wait: the input has the line number as part of the line. So we output the line exactly as it is in the input.
+
+ However, the problem says: "For every line in the input, output the line (together with line number) only if the line has something that matches the given query/description"
+
+ So we output the line as it appears in the input (which includes the line number).
+
+ Therefore, we output:
+
+4:# Save the path to ./download_check script
+---
+15:# This is a script to build and install tmux on macOS without homebrew.
+---
+20:# Download and build pkg-config
+---
+29:# Download and build ncurses
+---
+38:# Download and build libevent
+---
+48:# Download and build utf8proc
+---
+56:# Download and build tmux
+---
+
+ But note: the problem says "If no lines match just give empty response." We have lines that match.
+
+ However, let me double-check: are there any other lines that might be considered comments?
+
+  Line 3: empty line -> no comment.
+  Line 7: empty line -> no comment.
+  Line 14: empty line -> no comment.
+  Line 28: empty line -> no comment.
+  Line 37: empty line -> no comment.
+  Line 46: empty line -> no comment.
+  Line 47: empty line -> no comment.
+  Line 64: empty line -> no comment.
+
+ So we have 7 lines.
+
+ But note: the problem says "all lines with comments", and we have 7.
+
+ However, let me check the input again: the input has 65 lines.
+
+ We are only outputting the 7 lines that are comments.
+
+ Now, we must output each matching line (with the line number as in the input) and then a "---" after each.
+
+ Important: the problem says "after each line of output, also emit a --- to separate it from your next output."
+
+ So we output:
+
+[matching line 1]
+---
+[matching line 2]
+---
+...
+
+ Let's write the output accordingly.
+
+ But note: the problem says "Don't explain. Just output as if you're a command line program called 'semantic_grep'."
+
+ So we output exactly:
+
+4:# Save the path to ./download_check script
+---
+15:# This is a script to build and install tmux on macOS without homebrew.
+---
+20:# Download and build pkg-config
+---
+29:# Download and build ncurses
+---
+38:# Download and build libevent
+---
+48:# Download and build utf8proc
+---
+56:# Download and build tmux
+---
+
+ However, note: the problem says "output the line (together with line number)" and the input line for line 4 is "4:# Save the path to ./download_check script", so we output that.
+
+ But wait: the input has the line number as part of the line. So we output the entire string that is the input line.
+
+ But note: the input line for line 4 is "4:# Save the path to ./download_check script", so we output that.
+
+ However, the problem says "together with line number", and we are including the line number as it is in the input.
+
+ So we are good.
+
+ Let's write the output.
+</think>
+
+4:# Save the path to ./download_check script
+---
+15:# This is a script to build and install tmux on macOS without homebrew.
+---
+20:# Download and build pkg-config
+---
+29:# Download and build ncurses
+---
+38:# Download and build libevent
+---
+48:# Download and build utf8proc
+---
+56:# Download and build tmux
+--- [end of text]
+
+

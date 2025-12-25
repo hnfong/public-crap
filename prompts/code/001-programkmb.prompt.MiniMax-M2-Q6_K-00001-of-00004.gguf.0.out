@@ -1,0 +1,65 @@
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+public class Main {
+    private static final Pattern NUMBER_PATTERN = Pattern.compile(
+        "(?x) \\b (?:\\d{1,3}(?:,\\d{3})+|\\d+) (?:\\.\\d+)? \\s* ([kKmMgG])? \\b"
+    );
+
+    public static void main(String[] args) throws IOException {
+        String input = readAllStdin();
+        long totalBytes = 0L;
+
+        Matcher m = NUMBER_PATTERN.matcher(input);
+        while (m.find()) {
+            String numStr = m.group().trim();
+            String suffix = null;
+            // Separate suffix if present
+            int len = numStr.length();
+            char lastChar = numStr.charAt(len - 1);
+            if (Character.isLetter(lastChar)) {
+                suffix = String.valueOf(lastChar);
+                numStr = numStr.substring(0, len - 1).trim();
+            }
+            // Remove commas
+            String clean = numStr.replace(",", "");
+            double value = Double.parseDouble(clean);
+            long bytes = convertToBytes(value, suffix);
+            totalBytes += bytes;
+        }
+
+        double totalKB = totalBytes / 1024.0;
+        double totalMB = totalKB / 1024.0;
+        double totalGB = totalMB / 1024.0;
+
+        System.out.printf(Locale.US, "%.1f%n", totalBytes / 1.0);
+        System.out.printf(Locale.US, "%.1f k%n", totalKB);
+        System.out.printf(Locale.US, "%.1f M%n", totalMB);
+        System.out.printf(Locale.US, "%.1f G%n", totalGB);
+    }
+
+    private static long convertToBytes(double value, String suffix) {
+        if (suffix == null) return Math.round(value);
+        switch (suffix.toLowerCase()) {
+            case "k": return Math.round(value * 1024L);
+            case "m": return Math.round(value * 1024L * 1024L);
+            case "g": return Math.round(value * 1024L * 1024L * 1024L);
+            default: return Math.round(value);
+        }
+    }
+
+    private static String readAllStdin() throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append('\n');
+            }
+        }
+        return sb.toString();
+    }
+}
+ [end of text]
+
+
