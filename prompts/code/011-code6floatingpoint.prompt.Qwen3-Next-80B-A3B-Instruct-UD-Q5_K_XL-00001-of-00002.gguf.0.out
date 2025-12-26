@@ -1,0 +1,213 @@
+Let’s answer each question carefully under the **IEEE 754 floating-point standard**, which Python uses for `float` values.
+
+---
+
+### **Q1.**
+
+```python
+import math
+x = 0.0
+while x < math.inf:
+    x += 1.0
+print(x)
+```
+
+#### Analysis:
+
+- `x` starts at `0.0`.
+- The loop condition is `x < math.inf` — which is always true until `x` becomes `inf`.
+- We add `1.0` repeatedly.
+- In IEEE 754 double-precision, integers can be represented exactly up to `2^53` (about 9e15). Beyond that, adding `1.0` to a large float no longer changes its value due to limited precision.
+- But **before** that, we keep adding `1.0` until `x` becomes `math.inf`.
+
+In IEEE 754 double-precision, the largest finite number is about `1.7976931348623157e+308`. When you add `1.0` to a number larger than `2^53` (about 9e15), adding `1.0` no longer changes the value due to precision limits — **but** that’s not the issue here.
+
+The real issue: **when `x` becomes large enough that `x + 1.0` overflows to `inf`**.
+
+In IEEE 754 double-precision, the maximum finite value is approximately `1.7976931348623157e+308`. When you add `1.0` to a number larger than `2^1023` (which is about `8.988e+307`), adding `1.0` may not change the value due to precision — **but eventually**, when `x` becomes large enough that `x + 1.0` exceeds `1.7976931348623157e+308`, the result overflows to `math.inf`.
+
+So, eventually, `x += 1.0` will cause `x` to become `inf`.
+
+Then the loop condition `x < math.inf` becomes `False`, and the loop exits.
+
+Then `print(x)` outputs `inf`.
+
+✅ **Answer to Q1:**
+> `inf`
+
+---
+
+### **Q2.**
+
+```python
+import math
+x = 1.0
+while x < math.inf:
+    x = x * 1.001
+print(x)
+```
+
+This is similar, but now we’re **multiplying** by `1.001` each time, not adding `1.0`.
+
+Multiplication grows **exponentially**.
+
+We start at `x = 1.0`, then multiply by `1.001` each iteration.
+
+This will reach `inf` much faster than Q1, because exponential growth is faster than linear.
+
+Let’s estimate how many iterations:
+
+We want `x = 1.0 * (1.001)^n > 1.7976931348623157e+308`
+
+Take log:
+
+```
+n * log(1.001) > log(1.797e308)
+log(1.001) ≈ 0.0009995
+log(1.797e308) ≈ ln(1.797e308) ≈ 308 * ln(10) + ln(1.797) ≈ 308 * 2.302585 + 0.585 ≈ 709.5
+```
+
+So: `n * ln(1.001) > 709.5`
+
+`ln(1.001) ≈ 0.0009995`
+
+So:
+
+`n > 709.5 / 0.0009995 ≈ 709,800`
+
+So around **710,000 iterations** — still finite, and within Python’s ability to compute (though slow, but not infinite).
+
+Eventually, `x` will exceed `1.797e308` and become `inf`.
+
+Then the loop exits, and `print(x)` outputs `inf`.
+
+✅ **Answer to Q2:**
+> `inf`
+
+**Is it different from Q1?**  
+No. Both eventually reach `inf` and print `inf`.  
+The difference is in **how fast** they reach `inf` — Q2 (multiplicative) reaches `inf` much faster than Q1 (additive), but **the final output is the same**: `inf`.
+
+✅ **Answer to Q2:**
+> `inf` — **same as Q1**
+
+---
+
+### **Q3.**
+
+```python
+import math
+x = 0.0
+inc = float(input("Enter a number"))
+while x < math.inf:
+    x += inc
+print("Done")
+```
+
+**Question**: Are there inputs that will lead to the output `"Done"`? Give at least 2 examples.
+
+We need the loop to **terminate**, so that `"Done"` is printed.
+
+The loop condition is: `x < math.inf`
+
+So the loop will terminate **only if** `x` becomes `inf` (so `x < inf` becomes `False`), **or** if `x` becomes `NaN` (which is not `< inf`), or if `inc` is `0` or `NaN`.
+
+Let’s analyze:
+
+### Case 1: `inc = 0.0`
+
+```python
+inc = 0.0
+x = 0.0
+while x < math.inf:
+    x += 0.0   # x remains 0.0 forever
+```
+
+Loop condition: `0.0 < inf` → always `True` → **infinite loop** → `"Done"` is **never printed**.
+
+So `inc = 0.0` → **does NOT** print `"Done"`.
+
+We need the loop to **exit**.
+
+When does `x < math.inf` become `False`?
+
+- When `x` becomes `inf` → then `x < inf` is `False` → loop exits.
+- Or if `x` becomes `NaN` → `NaN < inf` is `False` → loop exits.
+
+So we need `x` to become either `inf` or `NaN`.
+
+### Case 1: `inc = math.inf`
+
+```python
+inc = math.inf
+x = 0.0
+x += math.inf → x becomes inf
+Then: inf < inf → False → loop exits → prints "Done"
+```
+
+✅ So `inc = math.inf` → **prints "Done"**
+
+### Case 2: `inc = -math.inf`
+
+```python
+inc = -math.inf
+x = 0.0
+x += -math.inf → x = -inf
+Then: -inf < inf → True → loop continues forever??
+Wait: x = -inf, then x += -inf → still -inf
+So x remains -inf forever
+Condition: -inf < inf → True → infinite loop → "Done" never printed
+```
+
+So `inc = -math.inf` → **does NOT** print "Done"
+
+### Case 3: `inc = math.nan`
+
+```python
+inc = math.nan
+x = 0.0
+x += math.nan → x = nan
+Then: nan < inf → False (because any comparison with NaN is False)
+So loop exits → prints "Done"
+```
+
+✅ So `inc = math.nan` → **prints "Done"**
+
+### Case 4: `inc = 0.0` → we saw it loops forever → ❌
+
+### Case 5: `inc = -0.0` → same as `0.0` → infinite loop → ❌
+
+### Case 6: `inc = 1e308` → very large positive number
+
+```python
+inc = 1e308
+x = 0.0
+x += inc → 1e308
+x += inc → 2e308 → still finite
+...
+Eventually, x becomes > 1.797e308 → becomes inf → loop exits → prints "Done"
+```
+
+✅ So `inc = 1e300` or `inc = 1e308` → eventually overflows to `inf` → prints `"Done"`
+
+✅ So **two valid examples**:
+
+1. `inc = math.nan`
+2. `inc = 1e308` (or any large enough positive number that eventually overflows to `inf`)
+
+✅ **Answer to Q3:**
+
+> Yes, there are inputs that lead to the output `"Done"`.  
+> Two examples:  
+> 1. `math.nan`  
+> 2. `1e308` (or any sufficiently large positive number that causes overflow to `inf`)
+
+---
+
+### ✅ Final Answers:
+
+**Q1:** `inf`  
+**Q2:** `inf` — same as Q1  
+**Q3:** Yes. Two examples: `math.nan` and `1e308` [end of text]
+
+
