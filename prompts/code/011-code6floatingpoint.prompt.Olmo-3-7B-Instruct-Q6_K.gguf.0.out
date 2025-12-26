@@ -1,0 +1,186 @@
+Let's answer each question step by step, using IEEE 754 floating-point arithmetic assumptions.
+
+---
+
+## Q1. What (if any) is the eventual output of the following Python program?
+
+```python
+import math
+x = 0.0
+while x < math.inf:
+    x += 1.0
+print(x)
+```
+
+### Analysis
+
+- `math.inf` is `float('inf')`, which in IEEE 754 is positive infinity (`+inf`).
+- `x = 0.0` is a finite (normal) floating-point number.
+- The loop condition is `while x < math.inf`. Since any finite number is less than infinity, this loop will **never terminate** in exact arithmetic — but IEEE 754 has finite precision, so let's see what happens in practice.
+
+#### What happens in the loop?
+
+Each iteration does `x += 1.0`. But in IEEE 754 (typically 64-bit double precision), the maximum representable finite number is about `1.7976931348623157e+308`.
+
+- After about `1.7976931348623157e+308` iterations, `x` will reach this maximum value.
+- The next increment (`x += 1.0`) will result in overflow — the value will become positive infinity (`+inf`), because adding 1 to the maximum finite value exceeds the maximum exponent in IEEE 754.
+
+At that point, the loop condition becomes `while +inf < +inf`, which is **false**, so the loop exits.
+
+#### What is the value of `x` when it exits?
+
+It will be `+inf`, because the last increment caused overflow.
+
+#### Python's print behavior
+
+In Python, printing `float('inf')` outputs `inf`.
+
+### Final Answer for Q1
+
+```
+inf
+```
+or, in code output: `inf`
+
+---
+
+## Q2. What (if any) is the eventual output of the following python program? Is it different from the results above?
+
+```python
+import math
+x = 1.0
+while x < math.inf:
+    x = x * 1.001
+print(x)
+```
+
+### Analysis
+
+Same logic, but the increment is multiplicative: `x = x * 1.001` each time.
+
+- Start with `x = 1.0` (finite).
+- Multiply by 1.001 each iteration.
+- Again, in IEEE 754, the number will eventually overflow to infinity, because multiplying a finite number by a factor >1 repeatedly will eventually exceed the maximum representable value.
+
+#### How many iterations?
+
+Let’s estimate when `x` exceeds `math.inf` (i.e., becomes infinity due to overflow).
+
+The value after n iterations is:
+```
+x_n = 1.0 * (1.001)^n
+```
+We want to find the smallest n where `x_n` overflows to infinity (i.e., exceeds the max finite double).
+
+The maximum finite double is about `1.7976931348623157e+308`.
+
+Take log base 10:
+```
+(1.001)^n ≈ 1.7976931348623157e+308
+=> n * log10(1.001) ≈ log10(1.7976931348623157e+308)
+=> log10(1.001) ≈ 0.000434
+log10(max) = 308 + log10(1.797693...) ≈ 308 + 0.2558 ≈ 308.2558
+
+So n ≈ 308.2558 / 0.000434 ≈ 709,000 iterations (approximate).
+
+But regardless of the number, eventually the value will overflow to +inf due to finite precision.
+
+#### What happens at overflow?
+
+Just like in Q1, the last multiplication will result in an overflow to +inf. Then the loop condition `x < math.inf` becomes `inf < inf` → false, so the loop exits.
+
+#### Final value of x?
+
+It is now `+inf`.
+
+#### Python's print behavior
+
+Again, prints `inf`.
+
+### Is it different from Q1?
+
+No. Both programs eventually overflow to positive infinity due to the limitations of finite precision in IEEE 754 floating-point arithmetic. The output is the same: `inf`.
+
+---
+
+## Q3. Consider the following program:
+
+```python
+import math
+x = 0.0
+inc = float(input("Enter a number"))
+while x < math.inf:
+    x += inc
+print("Done")
+```
+
+### Are there inputs that will lead to the output "Done"?
+
+#### Let's analyze the loop condition and overflow.
+
+- `x` starts at 0.0 (finite).
+- Each iteration: `x += inc`
+- The loop continues as long as `x < +inf`.
+
+But in IEEE 754, if `inc` is **not zero**, then adding it repeatedly to `x` will eventually cause an overflow to infinity (assuming `inc > 0`). If `inc <= 0`, then `x` will never increase (or may decrease if `inc` is negative), so the loop will never terminate (unless `inc` is zero).
+
+#### Let's consider different cases for `inc`:
+
+##### Case 1: `inc == 0.0`
+
+- Each iteration: `x += 0.0` → `x` remains 0.0 forever.
+- Loop condition: `0.0 < +inf` is always true → **infinite loop**.
+- So the program never prints "Done".
+
+##### Case 2: `inc > 0.0` (e.g., 1.0, 0.5, 2.0e308, etc.)
+
+- Even a very small positive `inc` will eventually, after enough iterations, exceed the maximum finite value of double (about 1.797e308).
+- At that point, `x += inc` overflows to +inf.
+- Now, `x` is +inf, so `x < +inf` is false → loop exits.
+- The program prints "Done".
+
+So **any positive, non-infinite, non-zero value for `inc` will eventually cause overflow and exit the loop**, resulting in "Done" being printed.
+
+##### Special case: `inc = +inf`
+
+- If the user enters `inf` (or a value that converts to +inf), then `inc` is +inf.
+- First iteration: `x = 0.0 + inf = inf`
+- Loop condition: `inf < inf` → false → loop doesn't run, program prints "Done".
+
+But usually, the input is a finite number (as per the question's wording "Enter a number"), but technically, entering `inf` (if allowed) would also work.
+
+##### Negative `inc`:
+
+- If `inc < 0.0`, then `x` becomes more negative each time, so it will never reach +inf (unless it underflows to -inf, but that's not relevant here). So the loop never terminates.
+
+#### Examples of inputs that lead to "Done":
+
+1. **Any positive number**, e.g. `1`, `0.0000001`, `1e200`, etc.
+2. **`inf`** (if the input can be interpreted as infinity, e.g., by typing `inf` or entering a string that converts to it in Python's `float()`).
+
+##### Example 1:
+Input: `1`
+- x becomes 1, 2, 3, ... eventually overflows to +inf → loop exits → "Done" printed.
+
+##### Example 2:
+Input: `inf`
+- inc = +inf
+- x = 0 + inf = inf → loop condition fails → "Done" printed.
+
+##### Example 3 (edge case):
+Input: `1e308`
+- This is still less than the max finite double (~1.8e308), so after ~1.8e308 / 1e308 ≈ 1.8 steps, it will overflow → "Done".
+
+---
+
+### Final Answer for Q3
+
+**Yes, there are inputs that lead to the output "Done".**
+
+**Examples:**
+1. **Any positive real number**, such as `1`, `2.5`, `1e200`, etc.
+2. **The string "inf"** (if the input can be parsed as infinity by `float()`), e.g., entering `inf` or `float('inf')`.
+
+These inputs will cause `inc` to be a positive value (or +inf), so repeated addition will eventually overflow to +inf, breaking the loop and printing "Done". [end of text]
+
+

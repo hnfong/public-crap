@@ -1,0 +1,115 @@
+```java
+import java.io.*;
+import java.lang.*;
+
+public class NumberSumCalculator {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String input = br.readAll();
+        br.close();
+
+        long total = 0;
+        long kFactor = 1024, mFactor = kFactor * kFactor, gFactor = mFactor * kFactor;
+        String[] suffixes = {"k", "K", "m", "M", "g", "G"};
+        for (String s : input.split("\\s+")) {
+            s = s.trim();
+            if (s.isEmpty()) continue;
+            // Remove commas
+            s = s.replace(',', '');
+            int i = 0;
+            boolean inNumber = false;
+            long num = 0;
+            while (i < s.length()) {
+                char c = s.charAt(i);
+                if (Character.isDigit(c) || c == '.') {
+                    if (inNumber) {
+                        if (c == '.') {
+                            // allow only one dot per number
+                            if (num % 1 != 0) throw new RuntimeException(); // Shouldn't happen with valid input
+                        } else {
+                            num = num * 10 + (c - '0');
+                        }
+                    } else {
+                        inNumber = true;
+                        num = num * 10 + (c - '0');
+                    }
+                } else if (inNumber) {
+                    // reached non-digit, process the number if it's started
+                    if (num != 0) {
+                        String numStr = String.valueOf(num);
+                        for (int j = 0; j < suffixes.length; ++j) {
+                            String suf = suffixes[j];
+                            if (s.length() > numStr.length() && 
+                                (s.endsWith(suf) || (s.endsWith(suf.toUpperCase()) && s.length() > numStr.length() + 1))) {
+                                long value = num;
+                                if (s.length() > numStr.length() + suf.length()) {
+                                    // e.g. "1Km" is invalid, but we'll only match if suffix is at end after digits
+                                    // so this case shouldn't happen with our logic
+                                }
+                                switch (suf.toLowerCase()) {
+                                    case "k": value *= kFactor; break;
+                                    case "m": value *= mFactor; break;
+                                    case "g": value *= gFactor; break;
+                                    case "k": value *= kFactor; break; // redundant but covers uppercase
+                                    case "M": value *= mFactor; break;
+                                    case "G": value *= gFactor; break;
+                                }
+                                total += value;
+                                break;
+                            }
+                        }
+                        num = 0; // reset inNumber
+                    }
+                } else {
+                    i++;
+                }
+            }
+            // After loop, check if number was ended (with suffix or not)
+            if (inNumber && num != 0) {
+                String numStr = String.valueOf(num);
+                for (int j = 0; j < suffixes.length; ++j) {
+                    String suf = suffixes[j];
+                    if (s.length() > numStr.length() && 
+                        (s.endsWith(suf) || (s.endsWith(suf.toUpperCase()) && s.length() > numStr.length() + 1))) {
+                        long value = num;
+                        switch (suf.toLowerCase()) {
+                            case "k": value *= kFactor; break;
+                            case "m": value *= mFactor; break;
+                            case "g": value *= gFactor; break;
+                            case "k": value *= kFactor; break;
+                            case "M": value *= mFactor; break;
+                            case "G": value *= gFactor; break;
+                        }
+                        total += value;
+                    }
+                }
+            }
+        }
+
+        double sumK = total / (double) kFactor;
+        double sumM = total / (double) mFactor;
+        double sumG = total / (double) gFactor;
+        System.out.printf("%1.1f%n", total);
+        System.out.printf("%1.1f k%n", sumK);
+        System.out.printf("%1.1f M%n", sumM);
+        System.out.printf("%1.1f G%n", sumG);
+    }
+
+    // Helper to read all input as string
+    static String readAll() throws IOException {
+        char[] buf = new char[1024];
+        int len = 0;
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String line;
+        StringBuilder sb = new StringBuilder();
+        while ((line = br.readLine()) != null) {
+            sb.append(line);
+            sb.append('\n');
+        }
+        br.close();
+        return sb.toString();
+    }
+}
+``` [end of text]
+
+

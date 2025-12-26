@@ -1,0 +1,245 @@
+<seed:think>
+Got it, let's try to figure out how to do a binary search on a file directly. First, I need to remember what binary search requires. Normally, with a list, you have random access—you can get the middle element in O(1) time. But a file is a stream, so random access is possible (using seek), but we need to know the size of the file first maybe? Wait, but the key thing here is that the lines are sorted lexicographically. Oh right, but each line is a separate entry? Wait, the problem says "lines that contain names sorted in lexicographical order"—wait, the example has lines like "1 I go...", "2 by bus", etc. So each line is a record, and they are sorted lex order. So when we do binary search, we're looking for the target line (or insertion point) among these lines.
+
+Wait, but the function's target is a bytes object, like b"2 by". Wait the example: the line is "2 by bus", and the target is b"2 by"—but the return is 17. Let's check the example file's byte positions. Let's count:
+
+First line: "1 I go to school"—let's count bytes. Let's see: "1 I go to school" is 1 + 1 (space) + 1 (I) + 1 (space) + 1 (g) + 1 (o) + 1 (space) + 1 (t) + 1 (o) + 1 (space) + 1 (s) + 1 (c) + 1 (h) + 1 (o) + 1 (o) + 1 (l) → wait, let's write each character with bytes:
+
+"1 I go to school" → let's count:
+
+"1" (1) + " " (1) + "I" (1) + " " (1) + "g" (1) + "o" (1) + " " (1) + "t" (1) + "o" (1) + " " (1) + "s" (1) + "c" (1) + "h" (1) + "o" (1) + "o" (1) + "l" (1) → that's 16 characters? Wait then the newline—assuming it's a Unix newline (\n, 1 byte) or Windows (\r\n, 2)? Wait the example says binary_search_file("myfile.txt", b"2 by") returns 17. Let's see:
+
+Let's list each line with their start and end positions (assuming \n is newline, 1 byte):
+
+Line 1: "1 I go to school" → let's compute length. Let's write the string: "1 I go to school" → let's count:
+
+Breaking down:
+
+"1 " → 2, "I " → 2 (total 4), "go " → 3 (7), "to " →3 (10), "school" →6 (16). So line 1 is 16 characters, plus newline → 17 bytes. So line 1 ends at position 16 (0-based? Wait wait, positions: if the first byte is position 0, then line 1 is 0-16 (17 bytes: 16 chars + 1 newline). Then line 2 is "2 by bus"—starts at position 17. Oh! The example says the target is b"2 by" and returns 17. Oh right! Because "2 by" is the start of line 2, which starts at position 17. Wait but why is the target b"2 by" matching line 2? Because maybe the lines are sorted, and each line is a string, and we are to find the first line that is >= target? Wait no, in the example, the target is b"2 by", and the line is b"2 by bus". So perhaps the comparison is: when we read a line from the file (as bytes), we compare it to the target. Wait but in the example, the target is a prefix of the line. But the problem statement says "returns the (byte) position of the target, or the insertion point (as in bisect_left)". Oh, bisect_left's logic: find the first position where the element is >= target? Wait no, bisect_left returns the insertion point for target in a sorted list such that all elements before are <= target? Wait no, let's recall: bisect.bisect_left(a, x) returns the first index where x can be inserted to keep a sorted, which is equal to the number of elements in a that are strictly less than x. So for example, if a is [1,3,3,5], bisect_left(a,3) is 1.
+
+But in the file case, the "elements" are the lines, sorted lex order. So each "element" is a line (including the newline? Or excluding? Because when you read a line from a file using readline(), it includes the trailing newline. But in the example, let's think:
+
+The example file's lines (as bytes, assuming \n):
+
+Line 1: b"1 I go to school\n" → let's call this L1.
+
+Line 2: b"2 by bus\n" → L2.
+
+Line3: b"foo bar\n" → L3.
+
+Line4: b"hello world\n" → wait wait no, wait the example file as written is:
+
+1 I go to school
+
+2 by bus
+
+foo bar
+
+hello world
+
+zoo zoo zoo
+
+Wait wait, "hello world" comes after "foo bar"? But lex order: "foo" is before "hello", yes, because 'f' < 'h'. Oh right. So L3 is "foo bar\n", L4 is "hello world\n", L5 is "zoo zoo zoo\n".
+
+Now, the target is b"2 by". We need to find the insertion point as per bisect_left. But what's the comparison between the lines and the target? Because the target isn't exactly a line. Wait the example says that binary_search_file returns 17, which is the start position of line 2. So why? Let's think: if we compare the target b"2 by" with the lines. Let's see:
+
+Compare b"2 by" with L1 (b"1 I go..."): which is larger? Let's do byte-wise comparison. The first character of L1 is '1' (ASCII 49), target's first is '2' (50). So L1 < target. Then compare with L2: L2 is b"2 by bus\n". Compare to target b"2 by". Let's see: the first 3 bytes of L2 are '2', ' ', 'b'—same as target? Wait target is b"2 by"—let's count: '2' (1), ' ' (2), 'b' (3), 'y' (4)? Wait wait b"2 by" is 4 bytes: '2', ' ', 'b', 'y'? Wait L2 starts with '2', ' ', 'b', 'y', ' ' (since L2 is "2 by bus\n"). So target is b"2 by" (4 bytes), L2 is longer. When comparing two bytes objects in Python, b"2 by" < b"2 by bus\n" is True? Because when you compare, it goes byte by byte until a difference is found. If one is a prefix of the other, the shorter one is considered smaller. Oh right! So b"a" < b"aa" → True. So let's see:
+
+In the example, the sorted lines (as bytes, including newlines) are:
+
+L1: b"1 I go to school\n" → let's call this S1.
+
+S2: b"2 by bus\n"
+
+S3: b"foo bar\n"
+
+S4: b"hello world\n"
+
+S5: b"zoo zoo zoo\n"
+
+These are sorted in lex order, right? Let's check S1 < S2: yes, '1' < '2'. S2 < S3: '2' < 'f' → yes. S3 < S4: 'f' < 'h' → yes. S4 < S5: 'h' < 'z' → yes. Correct.
+
+Now, the target is T = b"2 by". We need to find the bisect_left position among the lines. Wait bisect_left finds the first index where S_i >= T? Wait no: bisect_left returns the insertion point such that all elements before are < T, and elements from that point are >= T. Wait let's think of the lines as the list [S1, S2, S3, S4, S5]. What is bisect.bisect_left([S1,S2,S3,S4,S5], T)?
+
+Let's compute T compared to each S_i:
+
+Compare T (b"2 by") with S1: S1 is b"1 I go...". First byte '1' (49) vs '2' (50): S1 < T → so T is after S1.
+
+Compare T with S2: S2 is b"2 by bus\n". Let's compare T and S2. Let's do byte by byte:
+
+T[0] = 50 ( '2' ), S2[0] =50 → same.
+
+T[1] =32 ( ' ' ), S2[1] =32 → same.
+
+T[2] =98 ( 'b' ), S2[2] =98 → same.
+
+T[3] =121 ( 'y' ), S2[3] =121 → same.
+
+Now T has no more bytes, S2 has more. So in Python, b"2 by" < b"2 by bus\n" → True. So T < S2.
+
+Wait then what about the next elements? S3 is b"foo...", which is larger than T (since '2' < 'f'). So the list of S_i compared to T is: S1 < T, S2 > T? Wait no: T < S2, right? Because T is a prefix of S2 and shorter. So S1 < T < S2 < S3 < ... So bisect_left would return index 1 (since that's the first position where S_i >= T? Wait no: S2 is greater than T, so the insertion point is 1, meaning we insert T between S1 and S2. But the example says the function returns 17, which is the start position of S2. Oh! Oh wait, maybe I misunderstood what the "elements" are. Maybe the lines are considered as the keys, but the target is being compared to the lines as if the lines are the elements, but the insertion point is the position where the target would be inserted as a new line to keep the file sorted, and we need to return the start byte position of that insertion point. Wait in the example, insertion point is index 1 (between S1 and S2), so the start position of S2 is 17, which is exactly what the example returns. Oh right! Because if you insert a new line at index 1, it goes before S2, so its start position is the start position of S2. That makes sense with the example.
+
+Wait let's confirm the start positions again. Let's calculate S1's length: "1 I go to school\n" → let's count the characters:
+
+"1 I go to school" is 16 characters (let's count: 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1? Wait no, let's write it out:
+
+"1 I go to school" → let's split into words: "1", "I", "go", "to", "school" → number of characters: 1 + 1 (space) + 1 (I) + 1 (space) + 2 (go) + 1 (space) + 2 (to) + 1 (space) + 6 (school) → total: 1+1+1+1+2+1+2+1+6 = 16. Then add the newline (\n) → 17 bytes. So S1 starts at 0, ends at 16 (inclusive), so length 17. Then S2 starts at 17. Which is exactly the example's return value. So that checks out.
+
+So now, the problem is: given a file where each line is a bytes object (including the trailing newline?), sorted in lex order, perform a binary search to find the insertion point (bisect_left) of the target bytes object, and return the start byte position of that insertion point. Wait but wait: are the lines including the newline? Because when you read a line with readline(), it includes the trailing newline. But what if a line doesn't end with a newline? Like the last line in the example: "zoo zoo zoo"—does it have a newline? The example may not specify, but for binary search, we need to know how the lines are delimited. Oh, but in practice, when dealing with text files, lines are sequences of characters terminated by a newline. So each line in the file is a line ending with a newline, except possibly the last one. But for the purpose of this problem, perhaps we can assume that each line is a record, and the file is a sequence of lines, each line being a bytes object (possibly without a trailing newline, but in practice, when reading, we can read until a newline or EOF). But wait, for binary search, we need to be able to find the middle line efficiently.
+
+Wait but binary search on a file: the key challenge is that we can't directly access the middle element (line) like we can with a list. Because to get the middle line, we need to seek to some position, read forward until we find a newline (to get the entire line), which could take O(k) time where k is the length of the line. But the problem states that we need to use at most O(log n) operations. Wait, what's an "operation" here? Probably, each operation is a seek and a read (to get a line). Because if each step of binary search requires reading one line (to compare with target), then total time is O(log n * L), where L is the average line length. But the problem says "using at most O(log(n)) operations"—maybe they mean O(log n) seek/read operations, which is acceptable even if each read is O(L), but perhaps the question is more about the algorithm structure rather than the constant factors of line length.
+
+So first, let's outline the steps needed for binary search on a file:
+
+1. **Determine the size of the file**: Because to perform binary search, we need to know the range of byte positions we're dealing with. The file has a start (0) and end (size) position. So first, we can seek to the end of the file and get the size (using os.path.getsize(file_path) is easier, but in Python, we can also open the file, seek to 0, then seek to end with tell()).
+
+Wait but os.path.getsize gives the total number of bytes in the file, which is correct. So file_size = os.path.getsize(file_path).
+
+2. **Binary search over the byte positions**: The idea is that the file is a sequence of lines, sorted. We need to find the insertion point of the target line. The insertion point corresponds to a certain byte position: the start of the first line that is greater than the target (wait no, bisect_left is the first position where the line is >= target? Wait no, let's get back to bisect_left definition. Let's suppose we have a list of lines L = [l_0, l_1, ..., l_{m-1}], sorted in non-decreasing order. bisect_left(L, x) returns the smallest index i such that l_i >= x. If all l_i < x, returns m. The insertion point i means that inserting x at i keeps L sorted. Now, each line l_i has a start byte position pos_i (pos_0 = 0, pos_1 is pos_0 + len(l_0), etc.), and pos_m = file_size (since after the last line, there's nothing). So the insertion point i corresponds to the byte position pos_i (since inserting before l_i means the new line starts at pos_i). So our goal is to find i = bisect_left(L, target), then return pos_i.
+
+Ah! That's a key insight. Because each line has a start position, the insertion point's start position is exactly pos_i, where i is the bisect_left index. So for example, in the example:
+
+L = [S1, S2, S3, S4, S5], m=5. target T = b"2 by". We need to find i = bisect_left(L, T). What's L[i]? Let's see:
+
+Compare T with each l in L:
+
+l_0 = S1: S1 < T → yes (since '1' < '2').
+
+l_1 = S2: Is S2 >= T? Let's see: T is b"2 by", S2 is b"2 by bus\n". As before, T < S2 → so S2 >= T is True? Wait no: T < S2 → so S2 is greater than T, so yes, S2 >= T. So the smallest i where l_i >= T is i=1. Then pos_1 is the start position of S2, which is 17—exactly the example's return value. Perfect! That's exactly matching.
+
+Another example: if target is b"foo", then bisect_left would find i=2 (since S2 < b"foo" < S3), so return pos_2 (start of S3). If target is b"zoo zoo zoo\n", then compare with S5: if S5 is equal to target, then i=4 (since all previous are smaller), return pos_4. If target is b"zzz", then all lines are smaller, so i=5, return pos_5 which is file_size (since pos_5 is after S5).
+
+Great! So now the problem reduces to:
+
+a) For a given file (sequence of sorted lines), compute the list of line start positions pos_0, pos_1, ..., pos_m (where pos_m = file_size). But wait—we don't want to read all lines to get pos_i, because that would be O(n) time, which is not allowed. We need to find pos_i for the bisect_left index i using binary search, i.e., without reading all lines.
+
+Wait but how do we perform binary search on the lines if we don't know where the lines start? Because binary search works by picking a middle element, comparing it to the target, then recursing on left or right half. So in the file case, the "middle element" is the line that is approximately in the middle of the file. To get that line, we need to:
+
+- Pick a middle byte position (mid_pos) between low and high (initially low=0, high=file_size).
+
+- Seek to mid_pos.
+
+- Read forward until we find a newline character (or EOF) to get the entire line that contains mid_pos. Wait—no, because mid_pos could be in the middle of a line. So if we seek to mid_pos, the line that contains mid_pos is the current line (starting from some pos <= mid_pos and ending at the next newline). But we need the start position of that line to know which line it is. Oh right—because each line is a record, so the lines are ordered, and each line's start position is the end of the previous line plus one. So to get the line that contains mid_pos, we need to find the start of that line (let's call it line_start), then read from line_start until the newline to get the entire line (line_bytes). Then we can compare line_bytes with the target.
+
+Ah, right! So the steps for each binary search step (finding the middle line) are:
+
+Given a range [low, high) (where low is the start position of the first line in the range, high is the start position of the line after the last line in the range—so the number of lines in the range is (number of lines from low to high-1)):
+
+Wait maybe better to model the binary search in terms of the line start positions. Let's think of the initial search space as all lines, which have start positions from pos_0=0 to pos_m=file_size. We want to find the smallest i where pos_i is the start of a line l_i >= target.
+
+But to find the middle line in the current search space, we can:
+
+1. Compute the mid byte position: mid = (low + high) // 2 (where low is the start of the first line in the current range, high is the start of the line after the last line in the current range).
+
+2. Find the start position of the line that contains mid—let's call this line_mid_start. To find line_mid_start: we need to seek to mid, then read backwards until we find a newline or reach 0. Wait—is that possible? Because if the file is large, reading backwards from mid could take O(k) time where k is the length of the line. But again, the problem says "at most O(log n) operations"—maybe each such read (forward or backward) is considered one operation, so even if it's O(k), it's acceptable as part of the O(log n) steps.
+
+Wait but how to find the line start from a given position? Let's think: for example, if we are at position mid, the line starts at the last newline before mid (plus 1), or 0 if there's no newline before mid. So to find line_mid_start:
+
+- Seek to mid.
+
+- If the byte at mid is a newline (unlikely, but possible), then line starts at mid+1? Wait no—wait a line is a sequence of bytes ending with a newline. So the line that contains position p is the line where line_start <= p < line_end, where line_end is the position of the newline (or file_size if it's the last line). So for example, if p is exactly at a newline (say, position 16), then that's the end of the previous line (line_start 0, line_end 16). So the line containing p=16 is line 0 (start 0). Wait but if we pick mid as (0 + file_size) // 2, which could be in the middle of a line. So to get the line that starts before or at mid, we need to find the previous newline.
+
+Wait let's take an example: suppose file has lines:
+
+Line 0: 0-16 (17 bytes, ends at 16 with newline).
+
+Line 1:17-25 (9 bytes: "2 by bus\n" → let's count: "2 by bus" is 7 characters, plus newline → 8 bytes? Wait 17 to 24 is 8 bytes (17,18,...,24). So line 1 ends at 24.
+
+If mid is (0 + 25) // 2 = 12 (since file_size is 25). Then mid=12 is in line 0 (0-16). So to find line_mid_start, we need to find the start of line 0, which is 0. How? We can seek to mid=12, then read backwards until we find a newline or reach 0. But since mid is in line 0, which starts at 0, there are no newlines before 12, so line_mid_start is 0. Then we read from line_mid_start (0) until we find the newline at 16: that's line 0's bytes (b"1 I go to school\n").
+
+Another example: mid=20 (which is in line 1: 17-24). Seek to 20, then read backwards: the bytes at 20 is 's' (from "bus"), 19 is 'u', 18 is 'b', 17 is ' ' (wait line 1 is "2 by bus\n" → let's write positions 17-24: 17='2', 18=' ', 19='b', 20='y', 21=' ', 22='b', 23='u', 24='s'? No wait I'm getting confused with the example. Anyway, the point is: to find the line start from a given mid position, we can seek to mid, then move backward byte by byte until we hit a newline or the start of the file. The line start is then current position + 1 (if we hit a newline) or 0 (if we hit start). Wait yes: for example, if we are at position p, and we move back to q where q is the last position < p where the byte is b'\n', then line starts at q+1. If there is no such q (i.e., no newline before p), then line starts at 0.
+
+Once we have line_mid_start, we can read the entire line: seek to line_mid_start, then read until we hit a newline or EOF. Let's call this line_bytes. Now, we compare line_bytes with the target.
+
+Then, based on the comparison:
+
+- If line_bytes < target: this means the target is in the right half of the lines. So we need to set low = line_mid_start + len(line_bytes) (since the next line starts after this line ends). Wait len(line_bytes) is the length of the line (including newline), so line_mid_start + len(line_bytes) is the start of the next line.
+
+- If line_bytes >= target: this means the target is in the left half (including this line). So we set high = line_mid_start.
+
+Wait wait—let's think about the binary search invariants. We want to maintain that the insertion point is in [low, high), where low is the start of the first line in the current candidate range, and high is the start of the line after the last candidate line. Initially, low=0 (start of first line), high=file_size (start of line after last line). The loop continues while low < high. In each step:
+
+1. Compute mid = (low + high) // 2 (arbitrary mid point in the byte range).
+
+2. Find line_mid_start: the start of the line containing mid.
+
+3. Read line_bytes from line_mid_start to the end of the line.
+
+4. Compare line_bytes with target:
+
+   a. If line_bytes < target: this means all lines before line_mid_start are also < target (since the file is sorted). So the insertion point can't be in the left of line_mid_start. So we need to set low to the start of the next line after line_mid_start. Because the next line starts at line_mid_start + len(line_bytes). Let's call this next_pos = line_mid_start + len(line_bytes). So low = next_pos.
+
+   b. Else (line_bytes >= target): this means the insertion point could be at line_mid_start or earlier. So we set high = line_mid_start.
+
+Wait let's test this logic with the example. Let's define the example file properly:
+
+Let's assume each line ends with a newline (\n, 1 byte). Let's compute the exact positions:
+
+Line 0: "1 I go to school\n" → let's count the bytes:
+
+Let's write the string: "1 I go to school" → let's count each character:
+
+"1" →1, " "→1, "I"→1, " "→1, "g"→1, "o"→1, " "→1, "t"→1, "o"→1, " "→1, "s"→1, "c"→1, "h"→1, "o"→1, "o"→1, "l"→1 → total 16 characters. Add newline → 17 bytes. So line 0: start=0, end=16 (inclusive), len=17. Next line starts at 17.
+
+Line1: "2 by bus\n" → let's count: "2 by bus" is 7 characters (2, space, b, y, space, b, u, s? Wait "2 by bus" → 2 +  + b + y +  + b + u + s → 8 characters? Wait "2 by bus" → let's count: '2' (1), ' ' (2), 'b' (3), 'y' (4), ' ' (5), 'b' (6), 'u' (7), 's' (8) → 8 characters, plus newline → 9 bytes. So line1: start=17, end=17+9-1=25 (since 17+9=26, so end at 25). Next line starts at 26.
+
+Line2: "foo bar\n" → "foo bar" is 6 characters (f,o,o, ,b,a,r? Wait "foo bar" → f o o  b a r → 7 characters? Let's say it's 7 characters plus newline → 8 bytes. So line2 starts at 26, ends at 33. Next line starts at 34.
+
+Line3: "hello world\n" → let's say 11 characters plus newline →12 bytes. Starts at34, ends at45. Next at46.
+
+Line4: "zoo zoo zoo\n" → say 13 characters plus newline →14 bytes. Starts at46, ends at59. Next line starts at60 (which is file_size=60).
+
+So file_size=60. Target is T=b"2 by".
+
+Now initial low=0, high=60.
+
+First iteration: low < high (0<60). mid=(0+60)//2=30.
+
+Now find line_mid_start: mid=30. We need to find the line that contains 30. Let's see: line1 ends at25, line2 starts at26 and ends at33 (26+8-1=33). So 30 is in line2 (start=26). How to find line_mid_start=26 from mid=30? We can seek to 30, then read backwards until we find a newline. Let's say we do that: we move back from 30 to 25: what's at 25? It's the newline of line1 (since line1 ends at25). Oh right! Because line1 ends at25 with a newline. So when we are at 30, moving back: 30 is in line2 (bytes 26-33). The newline between line1 and line2 is at25. So when we move back from 30, we hit 25 which is a newline. So line_mid_start is 25+1=26. Correct.
+
+Then we read line_bytes from 26: that's line2's bytes: b"foo bar\n". Now compare line_bytes (b"foo bar\n") with T (b"2 by"). Which is larger? Let's see: first byte of line_bytes is 'f' (ASCII 102), T's first byte is '2' (50). So '2' < 'f' → T < line_bytes. Wait wait no: line_bytes is b"foo bar\n", T is b"2 by". So line_bytes < T? No: 'f' is higher than '2', so line_bytes > T. Wait wait, let's do proper byte comparison:
+
+In Python, b"2 by" < b"foo bar\n" → True? Let's see: the first character of b"2 by" is 50 ( '2' ), first of b"foo..." is 102 ( 'f' ). Since 50 < 102, then yes, b"2 by" < b"foo bar\n" → so line_bytes (b"foo...") is greater than T. So according to step 4b: line_bytes >= target → set high=line_mid_start=26.
+
+Now low=0, high=26. Loop continues (0<26).
+
+Second iteration: mid=(0+26)//2=13.
+
+Find line_mid_start for mid=13. Where is 13? Line0 starts at0, ends at16. So 13 is in line0. To find line_mid_start: seek to13, move back until newline. There are no newlines before13 (since line0's newline is at16). So line_mid_start=0.
+
+Read line_bytes: line0's bytes (b"1 I go to school\n"). Compare with T: line0's first byte is '1' (49) < '2' (50) → line_bytes < T. So step4a: set low to next_pos=0 + len(line0)=0+17=17.
+
+Now low=17, high=26. Loop continues (17<26).
+
+Third iteration: mid=(17+26)//2= (43)//2=21 (since integer division).
+
+Find line_mid_start for mid=21. Where is 21? Line1 starts at17, ends at25. So 21 is in line1. To find line_mid_start: seek to21, move back until newline. The newline for line0 is at16. So moving back from21: we hit 16 (newline), so line_mid_start=16+1=17. Correct.
+
+Read line_bytes: line1's bytes (b"2 by bus\n"). Now compare with T (b"2 by"). What's the result? Let's compute:
+
+Compare b"2 by" vs b"2 by bus\n". Let's do byte by byte:
+
+Index 0: 50 vs50 → same.
+
+Index1:32 vs32 → same.
+
+Index2:98 vs98 → same.
+
+Index3:121 vs121 → same.
+
+Index4: T has no more bytes, line_bytes has more (index4 is ' ' in line1). So in Python, when comparing two bytes objects of different lengths where one is a prefix of the other, the shorter one is considered smaller. So b"2 by" < b"2 by bus\n" → True. So line_bytes (b"2 by bus\n") is greater than T? Wait wait: line_bytes is b"2 by bus\n", T is b"2 by". So line_bytes > T → so line_bytes >= T is True. So step4b: set high=line_mid_start=17.
+
+Now low=17, high=17 → loop ends (since low is not less than high).
+
+The insertion point is low (or high, since they are equal), which is 17. Which is exactly the example's return value! Wow, that works perfectly.
+
+Great! Let's recap that third iteration to make sure:
+
+After second iteration, low=17, high=26. mid=(17+26)//2=21. We find line_mid_start=17 (line1's start). Read line1's bytes (b"2 by bus\n"). Compare to T (b"2 by"): line_bytes is greater than T, so we set high=17. Now low=17, high=17 → exit loop. Return low (17), which is correct.
+
+Another test case: what if target is b"2 by bus\n" (exactly line1's bytes)? Let's see:
+
+In the third iteration, line_bytes == target → so line_bytes >= target is True → set high=17. Loop ends, return 17. Which is correct: bisect_left returns 1, pos_1=17.
+
+If target is b
+

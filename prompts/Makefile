@@ -22,21 +22,17 @@ all: $(MLX_TARGETS) $(TARGETS) $(VTARGETS)
 	if [[ -d ~/.cache/huggingface/hub/models--`basename $@ .mlx` ]]; then ./ask.py -t 0 -T REQUIRED -c 2048 -v -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m $@; fi
 
 __DONE__.%.gguf: ~/Downloads/%.gguf
-	./ask.py -t 0 -T REQUIRED -c 2048 -M qwq,-c,8192 -M Qwen3,-c,8192 -v -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m $<
-	if echo $(LONG_CTX_MODELS) | grep -q `basename $<`; then ./ask.py -t 0 -M \*,-c,10000 -v -p empty -n 1 -f '*/*.c10000.longprompt' -o '{f}.{m}.{n}.out' -m $<; fi
-	if echo $(LONG_CTX_MODELS) | grep -q `basename $<`; then ./ask.py -t 0 -M \*,-c,20000 -v -p empty -n 1 -f '*/*.c20000.longprompt' -o '{f}.{m}.{n}.out' -m $<; fi
-	if echo $(LONG_CTX_MODELS) | grep -q `basename $<`; then ./ask.py -t 0 -M \*,-c,40000 -v -p empty -n 1 -f '*/*.c40000.longprompt' -o '{f}.{m}.{n}.out' -m $<; fi
-	if echo $(LONG_CTX_MODELS) | grep -q `basename $<`; then ./ask.py -t 0 -M \*,-c,60000 -v -p empty -n 1 -f '*/*.c60000.longprompt' -o '{f}.{m}.{n}.out' -m $<; fi
+	./ask.py -t 0 -T REQUIRED -c 2048 -M qwq,-c,8192 -M Seed-OSS,-c,8192 -M Qwen3,-c,8192 -v -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m $<
+	if echo $(LONG_CTX_MODELS) | grep -q `basename $<`; then ./ask.py -t 0 -M \*,-c,80000 -d 10000 -v -p empty -n 1 -f '*/*.longprompt' -o '{f}.{m}.{n}.out' -m $<; fi
 
 __DONE__.test_models/split_ggufs/%.gguf: ~/Downloads/test_models/split_ggufs/%.gguf
 	./ask.py -t 0 -T REQUIRED -c 2048 -M qwq,-c,8192 -v -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m $<
-	if echo $(LONG_CTX_MODELS) | grep -q `basename $<`; then ./ask.py -t 0 -M \*,-c,10000 -v -p empty -n 1 -f '*/*.c10000.longprompt' -o '{f}.{m}.{n}.out' -m $<; fi
-	if echo $(LONG_CTX_MODELS) | grep -q `basename $<`; then ./ask.py -t 0 -M \*,-c,20000 -v -p empty -n 1 -f '*/*.c20000.longprompt' -o '{f}.{m}.{n}.out' -m $<; fi
-	if echo $(LONG_CTX_MODELS) | grep -q `basename $<`; then ./ask.py -t 0 -M \*,-c,40000 -v -p empty -n 1 -f '*/*.c40000.longprompt' -o '{f}.{m}.{n}.out' -m $<; fi
-	# if echo $(LONG_CTX_MODELS) | grep -q `basename $<`; then ./ask.py -t 0 -M \*,-c,60000 -v -p empty -n 1 -f '*/*.c60000.longprompt' -o '{f}.{m}.{n}.out' -m $<; fi
+
+	# Max 40k context for long models since we're memory starved >:-)
+	if echo $(LONG_CTX_MODELS) | grep -q `basename $<`; then ./ask.py -t 0 -M \*,-c,40000 -d 10000 -v -p empty -n 1 -f '*/*.longprompt' -o '{f}.{m}.{n}.out' -m $<; fi
 
 __DONE__.test_models/%.gguf: ~/Downloads/test_models/%.gguf
-	./ask.py -t 0 -T REQUIRED -c 2048 -M qwq,-c,8192 -v -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m $<
+	./ask.py -t 0 -T REQUIRED -c 2048 -M qwq,-c,8192 -M Seed-OSS,-c,8192 -v -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m $<
 
 
 __VDONE__/%:

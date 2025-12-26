@@ -429,6 +429,14 @@ class QwenFimMixin:
     def has_postprocess(self):
         return True
 
+class SeedTemplateMixin:
+    def templated_prompt(self):
+        return f"""
+<seed:bos>system
+{self.system_message()}<seed:eos><seed:bos>user
+{self.prompt()}<seed:eos><seed:bos>assistant
+        """.strip() + "\n"
+
 class KimiTemplateMixin:
     def templated_prompt(self):
         return f"""
@@ -823,6 +831,18 @@ class GLM45TemplateMixin(MlxArgumentConverter):
 <think></think>
 """.strip()
 
+class GLM47TemplateMixin:
+    def templated_prompt(self):
+        return f"""
+[gMASK]<sop>
+<|system|>
+{self.system_message()}
+<|user|>
+{self.prompt()}
+<|assistant|>
+</think>
+""".strip()
+
 class LingTemplateMixin:
     def templated_prompt(self):
         return f"""
@@ -848,8 +868,11 @@ NAME_MATCH_OVERRIDE = [
     ("ERNIE-4.5", ErnieTemplateMixin),
     ("MiniMax", MiniMaxTemplateMixin),
     ("SmolLM3-", ChatMLTemplateMixin),
+    ("Seed-", SeedTemplateMixin),
+    ("Olmo-", ChatMLTemplateMixin),
 
     ("GLM-4.5", GLM45TemplateMixin),
+    ("GLM-4.7", GLM47TemplateMixin),
     ("gpt-oss", GPTOSSTemplateMixin),
     ("QwenLong-L1.5", Qwen3ThinkingTemplateMixin),
 

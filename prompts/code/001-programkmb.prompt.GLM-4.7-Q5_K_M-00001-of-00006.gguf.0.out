@@ -1,0 +1,100 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Main {
+
+    private static final long KILO = 1024;
+    private static final long MEGA = 1024 * 1024;
+    private static final long GIGA = 1024 * 1024 * 1024;
+
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder inputBuilder = new StringBuilder();
+        String line;
+
+        try {
+            while ((line = reader.readLine()) != null) {
+                inputBuilder.append(line).append(" ");
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+            return;
+        }
+
+        String input = inputBuilder.toString();
+        double totalSum = extractAndSum(input);
+
+        DecimalFormat df = new DecimalFormat("#.#", DecimalFormatSymbols.getInstance(Locale.US));
+
+        System.out.println(df.format(totalSum));
+        System.out.println(df.format(totalSum / KILO) + " k");
+        System.out.println(df.format(totalSum / MEGA) + " M");
+        System.out.println(df.format(totalSum / GIGA) + " G");
+    }
+
+    private static double extractAndSum(String input) {
+        // Regex explanation:
+        // (?<=^|\\s|,)      Lookbehind for start of line, whitespace, or comma
+        // \\s*              Optional leading whitespace
+        // (\\d{1,3}(?:,\\d{3})*|\\d+) Number part: matches digits with commas (1,000) or plain digits
+        // (?:\\.\\d+)?      Optional decimal part
+        // \\s*              Optional trailing whitespace
+        // ([kKmMgG]?)       Capture group for suffix (k, K, m, M, g, G) or empty
+        // (?=\\s|,|$)       Lookahead for whitespace, comma, or end of line
+        String regex = "(?<=^|\\s|,)\\s*(\\d{1,3}(?:,\\d{3})*|\\d+)(?:\\.\\d+)?\\s*([kKmMgG]?)(?=\\s|,|$)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+
+        double sum = 0;
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+        DecimalFormat format = new DecimalFormat("#,###.#", symbols);
+        format.setParseBigDecimal(false);
+
+        while (matcher.find()) {
+            String numberStr = matcher.group(1);
+            String suffix = matcher.group(2);
+
+            try {
+                // Remove commas if present to ensure parsing works correctly
+                String cleanNumberStr = numberStr.replace(",", "");
+                double value = format.parse(cleanNumberStr).doubleValue();
+
+                if (suffix != null) {
+                    switch (suffix) {
+                        case "k":
+                        case "K":
+                            value *= KILO;
+                            break;
+                        case "m":
+                        case "M":
+                            value *= MEGA;
+                            break;
+                        case "g":
+                        case "G":
+                            value *= GIGA;
+                            break;
+                        default:
+                            // No suffix, value remains as is
+                            break;
+                    }
+                }
+                sum += value;
+            } catch (ParseException e) {
+                // Skip malformed numbers based on the regex logic
+                // In a robust production system, we might log this
+            }
+        }
+        return sum;
+    }
+}
+``` [end of text]
+
+
