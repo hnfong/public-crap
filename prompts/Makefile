@@ -22,7 +22,7 @@ all: $(MLX_TARGETS) $(TARGETS) $(VTARGETS)
 	if [[ -d ~/.cache/huggingface/hub/models--`basename $@ .mlx` ]]; then ./ask.py -t 0 -T REQUIRED -c 2048 -v -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m $@; fi
 
 __DONE__.%.gguf: ~/Downloads/%.gguf
-	./ask.py -t 0 -T REQUIRED -c 2048 -M qwq,-c,8192 -M Seed-OSS,-c,8192 -M Qwen3,-c,8192 -v -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m $<
+	./ask.py -t 0 -T REQUIRED -c 2048 -M qwq,-c,8192 -M Seed-OSS,-c,8192 -M Qwen3,-c,8192 -M Kimi-K2-Thinking,-c,8192 -v -p empty -n 1 -f '*/*.prompt' -o '{f}.{m}.{n}.out' -m $<
 	if echo $(LONG_CTX_MODELS) | grep -q `basename $<`; then ./ask.py -t 0 -M \*,-c,80000 -d 10000 -v -p empty -n 1 -f '*/*.longprompt' -o '{f}.{m}.{n}.out' -m $<; fi
 
 __DONE__.test_models/split_ggufs/%.gguf: ~/Downloads/test_models/split_ggufs/%.gguf
