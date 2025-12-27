@@ -1,0 +1,171 @@
+We are given a **Magic: the Gathering** scenario involving:
+
+- **Alice**: Has two **Kindle** cards in hand.  
+  - *Kindle* is an **instant** that says:  
+    > "Kindle deals X damage to any target, where X is 2 plus the number of cards named Kindle in all graveyards."
+
+- **Bob**: Has **Orim, Samite Healer** in play, **untapped**.  
+  - Orim is a 1/3 legendary creature with the ability:  
+    > "{T}: Prevent the next 3 damage that would be dealt to any target this turn."
+
+- It is **Alice's turn**.
+- Bob’s lands are tapped out → Bob cannot cast spells or activate abilities that require mana.
+- Orim is **not** affected by summoning sickness → Bob can tap it for its ability.
+- Alice has sufficient mana to cast spells.
+- Goal: Alice wants to kill Orim.
+
+Let’s analyze step by step.
+
+---
+
+### Step 1: Understand Kindle’s damage calculation
+
+> X = 2 + (number of **Kindle cards in all graveyards**)
+
+Currently, **no Kindles have been cast yet**, so:
+- Graveyards contain **zero** Kindle cards.
+- So if Alice casts **one** Kindle, X = 2 + 0 = **2 damage**.
+
+But if she **casts both**, the **first** Kindle will go to the graveyard, so the **second** Kindle will see **one** Kindle in the graveyard → X = 2 + 1 = **3 damage**.
+
+So:
+- Cast first Kindle → 2 damage
+- Cast second Kindle → 3 damage (because the first is now in the graveyard)
+
+Total potential: 5 damage, but possibly mitigated by Orim.
+
+---
+
+### Step 2: Orim’s ability
+
+- Bob can **tap** Orim to **prevent the next 3 damage** that would be dealt to **any target** this turn.
+- The ability is **activated**, costs {T}, and can be used **any time** Bob has priority.
+- Since it’s Alice’s turn, Bob gets priority **after** each spell she casts.
+
+So Bob can respond to Alice’s Kindle casts by activating Orim’s ability.
+
+---
+
+### Step 3: Alice’s goal
+
+She wants to deal **enough damage to kill Orim** (toughness 3). So she needs to get **3 damage through** to Orim.
+
+But Orim can **prevent 3 damage** per activation.
+
+So if Alice casts one Kindle → 2 damage → Bob can prevent all of it → 0 damage → Orim survives.
+
+If Alice casts two Kindles:
+- First: 2 damage → Bob can prevent 3 → prevents all 2 → 0
+- Second: 3 damage → Bob can **prevent the next 3**, so prevents all 3 → 0
+
+So both spells get fully prevented → Orim survives.
+
+But wait — is there a way to **overwhelm** the prevention?
+
+Yes — if Alice can deal **more than 3 damage in a single spell**, then even after prevention, some gets through.
+
+But:
+- First Kindle: 2 damage → fully preventable
+- Second Kindle: 3 damage → fully preventable (since 3 ≤ 3)
+
+So both are fully preventable.
+
+But here’s a **key insight**:
+
+> Orim’s ability prevents **"the next 3 damage"** — it’s a **shield**, not a permanent effect. Once 3 damage has been prevented, the ability is used up.
+
+So if Alice can **force Bob to use the prevention on a small spell**, then the bigger spell might get through.
+
+But Bob is smart — he will **save** the prevention for the bigger threat.
+
+Let’s simulate the turn.
+
+---
+
+### Alice’s Turn: Optimal Play
+
+Alice wants to maximize damage to Orim.
+
+She has two options:
+
+#### Option A: Cast one Kindle targeting Orim
+- Deals 2 damage
+- Bob can activate Orim → prevent next 3 damage → prevents all 2
+- Result: 0 damage
+
+Then Alice casts second Kindle:
+- Now X = 2 + 1 (first Kindle in graveyard) = 3 damage
+- Bob can activate Orim again? → **No!** Orim’s ability is **one-shot per activation**, and it hasn’t been used yet this turn? Wait — did Bob use it?
+
+Wait: Bob **can** activate Orim’s ability **multiple times per turn**, as long as he can tap it each time.
+
+But Orim is **untapped** at the start of the scenario.
+
+So Bob can tap it **once** to prevent 3 damage → then it’s tapped.
+
+But if Alice casts the first Kindle → Bob taps Orim to prevent 2 damage → Orim is now **tapped**.
+
+Then Alice casts second Kindle → 3 damage → Bob **cannot** tap Orim again (it’s tapped) → so **no prevention** → 3 damage → Orim dies!
+
+Ah! This is the key.
+
+So if Alice casts **both Kindles**, and Bob uses the prevention on the **first**, then the **second** gets through for 3 damage → lethal.
+
+But Bob is smart — he might **wait** to use the prevention.
+
+Can Bob wait?
+
+Yes.
+
+When Alice casts the **first** Kindle (2 damage), Bob can **let it resolve**, knowing that if he uses the prevention now, then the second (bigger) spell gets through.
+
+But if he **doesn’t** prevent the first, then:
+- First Kindle: 2 damage → Orim takes 2 → now at 1 toughness
+- Then Alice casts second Kindle → 3 damage → Bob can now **prevent 3**, so prevents all 3 → Orim survives with 1 toughness
+
+So Bob’s optimal play:
+- Let the **first** Kindle resolve → Orim takes 2 damage (now 1 toughness)
+- Then, when Alice casts the **second** Kindle (3 damage), Bob activates Orim’s ability → prevents 3 damage → 0 damage → Orim survives
+
+Result: Orim at 1 toughness.
+
+But is there a better way for Alice?
+
+What if Alice casts **both Kindles in a different order**? Doesn’t matter — the second one is always bigger.
+
+But what if she casts them **targeting different things**? Not useful — she wants to kill Orim.
+
+Wait — could she **cast the second Kindle first**? No, because the first one cast is the first one that goes to the graveyard.
+
+She has to cast them sequentially.
+
+So sequence:
+1. Cast Kindle → 2 damage
+2. Bob decides: use prevention or not?
+   - If he uses it → Orim survives, tapped → then second Kindle (3 damage) → no prevention → lethal
+   - If he doesn’t use it → Orim takes 2 → then second Kindle → Bob prevents 3 → Orim survives
+
+So Bob will **not** use the prevention on the first spell.
+
+Thus:
+- First Kindle resolves → 2 damage to Orim → Orim at 1 toughness
+- Second Kindle → 3 damage → Bob activates Orim → prevents 3 → 0 damage
+- Orim survives
+
+But wait — can Bob activate Orim **in response** to the second Kindle?
+
+Yes.
+
+Sequence:
+- Alice casts second Kindle (targeting Orim) → goes on stack
+- Bob gets priority → taps Orim → "prevent next 3 damage" shield is activated
+- Kindle resolves → deals 3 damage → prevention shield absorbs all 3 → 0 damage
+
+So Orim survives.
+
+Therefore, **Bob can fully protect Orim** by saving the prevention for the second, bigger spell.
+
+---
+
+### Is there any way for Alice to get
+
