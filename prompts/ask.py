@@ -983,20 +983,20 @@ def generate_options(cmd_opts, model_info, user_prompt, model_path, prompt_temp_
     results.append(str(temperature))
 
     is_mac = "Darwin" in subprocess.run(["uname"], capture_output=True).stdout.decode("utf-8").strip()
-    if opts.get("-g") or is_mac:
+    if cmd_opts.get("-g") or is_mac:
         results.append("-ngl")
         results.append("99")
 
-    if "-q" not in opts:
+    if "-q" not in cmd_opts:
         # If not quiet mode, verbose prompt
         results.append("--verbose-prompt")
 
     results.append("-c")
-    results.append(opts.get("-c", "0"))
+    results.append(cmd_opts.get("-c", "0"))
 
     # Passthrough arguments
-    if opts.get("-P"):
-        results += opts.get("-P").strip().split()
+    if cmd_opts.get("-P"):
+        results += cmd_opts.get("-P").strip().split()
 
     # If -n or --n-predict is not in the args, we add "--n-predict", "-2"
     if '-n' not in results and '--n-predict' not in results:
