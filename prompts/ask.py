@@ -12,13 +12,12 @@ ask.py [OPTIONS] [PROMPT]
 Options:
 
 -h: Show this help message
--g: Set the no generation limit flag
 -k: Keep the temporary prompt file
+-D: Dry run
 
 -P args:           Pass through arguments to llama.cpp
 -C context:        Set the context for the prompt (not very useful)
 -c size:           Set context size prompt (default: model default)
--D                 Dry run
 -d size:           Dynamic context size = prompt tokens+size (max is specified by -c)
 -t temperature:    Set the temperature (default: 0.3)
 -f file:           Input prompt file (can be a glob)
@@ -29,7 +28,7 @@ Options:
 -x ignore_prefix:  Set the prefix to ignore in the prompt file (default: #!)
 -X extra_prompt:   Set the extra prompt to add to the assistant output (default: "")
 -T template:       Set the template to use (default: chatml, but we hardcode some models to use different templates)
--Z n               Stop after processing n files for each model
+-Z n:              Stop after processing n files for each model
 
 """
 
@@ -982,11 +981,6 @@ def generate_options(cmd_opts, model_info, user_prompt, model_path, prompt_temp_
     results.append("--temp")
     results.append(str(temperature))
 
-    is_mac = "Darwin" in subprocess.run(["uname"], capture_output=True).stdout.decode("utf-8").strip()
-    if cmd_opts.get("-g") or is_mac:
-        results.append("-ngl")
-        results.append("99")
-
     if "-q" not in cmd_opts:
         # If not quiet mode, verbose prompt
         results.append("--verbose-prompt")
@@ -1016,6 +1010,14 @@ def generate_options(cmd_opts, model_info, user_prompt, model_path, prompt_temp_
 
 
 if __name__ == "__main__":
+    opt_list, args = getopt.getopt(sys.argv[1:], "DqhkP:C:c:d:t:f:o:p:m:n:x:X:T:vZ:")
+    verbosity = opt_list.count(('-v', ''))
+    opts = dict(opt_list)
+
+    if "-h" in opts:
+        print(__doc__)
+        sys.exit(0)
+
     PRESETS = {}
     # loop through all classes in this file and add them to the presets
     import inspect
@@ -1023,9 +1025,6 @@ if __name__ == "__main__":
         if inspect.isclass(obj):
             if issubclass(obj, Preset) and obj != Preset:
                 PRESETS[obj.name] = obj
-    opt_list, args = getopt.getopt(sys.argv[1:], "DqhkP:C:c:d:t:f:o:p:m:n:x:gX:T:vZ:")
-    verbosity = opt_list.count(('-v', ''))
-    opts = dict(opt_list)
 
     # Default to explain_this if we don't have a file. If we have a file it's better to assume the file contains a full prompt
     if opts.get("-p") is None:
