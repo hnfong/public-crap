@@ -18,6 +18,7 @@ Options:
 -P args:           Pass through arguments to llama.cpp
 -C context:        Set the context for the prompt (not very useful)
 -c size:           Set context size prompt (default: model default)
+-D                 Dry run
 -d size:           Dynamic context size = prompt tokens+size (max is specified by -c)
 -t temperature:    Set the temperature (default: 0.3)
 -f file:           Input prompt file (can be a glob)
@@ -30,6 +31,7 @@ Options:
 -T template:       Set the template to use (default: chatml, but we hardcode some models to use different templates)
 -M match,options.. If the model filename contains the match string, then append the specified options (comma separated).
 -F match,options.. If the input filename contains the match string, then append the specified options (comma separated).
+-Z n               Stop after processing n files for each model
 
 """
 
@@ -849,6 +851,11 @@ class LingTemplateMixin:
 <role>SYSTEM</role>{self.system_message()}<|role_end|><role>HUMAN</role>{self.prompt()}<|role_end|><role>ASSISTANT</role>
 """.strip()
 
+def mixer(clz1, clz2):
+    class MixedClass(clz1, clz2):
+        pass
+    return MixedClass
+
 NAME_MATCH_OVERRIDE = [
     # More specific first
     ("Nemotron-Research-Reasoning-Qwen", NemotronQwen3Reasoning),
@@ -865,6 +872,7 @@ NAME_MATCH_OVERRIDE = [
     ("dots.llm", DotsLLMTemplate),
     ("jan-nano-", LongContextChatMLTemplateMixin),
     ("Kimi-K2-", KimiTemplateMixin),
+    ("Kimi-Dev-", KimiTemplateMixin),
     ("ERNIE-4.5", ErnieTemplateMixin),
     ("MiniMax", MiniMaxTemplateMixin),
     ("SmolLM3-", ChatMLTemplateMixin),
@@ -970,7 +978,7 @@ if __name__ == "__main__":
         if inspect.isclass(obj):
             if issubclass(obj, Preset) and obj != Preset:
                 PRESETS[obj.name] = obj
-    opt_list, args = getopt.getopt(sys.argv[1:], "DqhkP:C:c:d:t:f:o:p:m:n:x:gX:T:M:F:v")
+    opt_list, args = getopt.getopt(sys.argv[1:], "DqhkP:C:c:d:t:f:o:p:m:n:x:gX:T:M:F:vZ:")
     verbosity = opt_list.count(('-v', ''))
     opts = dict(opt_list)
 
@@ -1106,7 +1114,12 @@ if __name__ == "__main__":
 
         class CurrentPromptTemplate(overrideTemplateMixIn, preset):
             pass
-        for prompt_file in prompt_globs or [None,]:
+
+        for num_processed, prompt_file in enumerate(prompt_globs or [None,]):
+            if num_processed >= int(opts.get("-Z") or 999999):
+                print(f"Maximum files {num_processed} reached for this model, breaking")
+                break
+
             if prompt_file is None:
                 prompt = {"user":user_prompt}
             else:
@@ -1114,6 +1127,7 @@ if __name__ == "__main__":
 
             if prompt.get("user") is None:
                 continue
+
 
             # Create a temporary file for storing the prompt
             with tempfile.NamedTemporaryFile(mode="w", delete=('-k' not in opts)) as temp_prompt_file:
@@ -1153,7 +1167,7 @@ if __name__ == "__main__":
                             replace('{n}', str(infer_round)).
                             replace('{m}', os.path.basename(model)).
                             replace('{f}', prompt_file))
-                        if os.path.exists(out_file):
+                        if os.path.exists(out_file) and "-D" not in opts:
                             print(f"Skipping {out_file} as it already exists")
                             continue
 
@@ -1199,7 +1213,7 @@ if __name__ == "__main__":
 
                             if not tok_success:
                                 sys.stderr.write("Error: cannot determine number of tokens in prompt!\n")
-                                sys.stderr.write("Command: %s\n" % str(tokenize_cmd))
+                                sys.stderr.write("Command: %s\n" % " ".join(tokenize_cmd))
                                 sys.stderr.write("Exit code: %d\n" % tok_p.returncode)
                                 sys.stderr.write("Output: %s\n" % tok_stdout.decode("utf-8", errors="replace"))
                                 sys.stderr.write("Stderr: %s\n" % tok_stderr.decode("utf-8", errors="replace"))
@@ -1211,6 +1225,8 @@ if __name__ == "__main__":
 
                     if "-D" in opts:
                         # Dry run only
+                        this_cmd[this_cmd.index(temp_prompt_file.name)] = "<placeholder>"
+                        print("DRY RUN:", this_cmd)
                         continue
 
                     with tempfile.TemporaryFile() as temp_stderr:
