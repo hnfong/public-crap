@@ -936,17 +936,14 @@ FIM_MATCH_OVERRIDE = [
     ("codegeex4", CodeGeeX4TemplateMixin),
 ]
 
-def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:", extra_args_prefix=" ARGS:", user_prompt=None):
+def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:", user_prompt=None):
     lines = []
     system = []
-    extra_args = []
     with open(prompt_file, "r") as f:
         while line := f.readline():
             if line.startswith(ignore_prefix):
                 if line.startswith(ignore_prefix + system_prefix):
                     system.append(line[len(ignore_prefix) + len(system_prefix):])
-                if line.startswith(ignore_prefix + extra_args_prefix):
-                    extra_args += line[len(ignore_prefix) + len(extra_args_prefix):].split()
 
                 continue
             lines.append(line)
@@ -963,10 +960,9 @@ def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:", e
     return {
         "user": user_final,
         "system": "".join(system).strip(),
-        "extra_args": extra_args
         }
 
-def generate_options(cmd_opts, model_info, user_prompt, model_path, prompt_temp_path, prompt_extra_args):
+def generate_options(cmd_opts, model_info, user_prompt, model_path, prompt_temp_path):
     results = [LLAMA_CPP_PATH, ]
 
     results.append("--no-escape")  # llama.cpp just doesn't do sane defaults...
@@ -1014,9 +1010,6 @@ def generate_options(cmd_opts, model_info, user_prompt, model_path, prompt_temp_
         results.extend(model_info.extra_gguf_options())
 
     results += ["-f", temp_prompt_file.name]
-
-    if prompt_extra_args:
-        results += prompt_extra_args
 
     return results
 
@@ -1152,8 +1145,7 @@ if __name__ == "__main__":
                             print(f"Skipping {out_file} as it already exists")
                             continue
 
-                    prompt_extra_args = prompt.get("extra_args")
-                    this_cmd = generate_options(opts, cp, user_prompt, model, temp_prompt_file.name, prompt_extra_args)
+                    this_cmd = generate_options(opts, cp, user_prompt, model, temp_prompt_file.name)
 
                     if opts.get("-d"):
                         with tempfile.TemporaryFile() as tok_stderr:
