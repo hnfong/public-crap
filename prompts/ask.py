@@ -969,7 +969,6 @@ def generate_options(cmd_opts, model_info, user_prompt, model_path, prompt_temp_
     results.append("--no-conversation")  # llama.cpp just doesn't do sane defaults...
     results.append("--no-display-prompt")  # llama.cpp just doesn't do sane defaults...
 
-
     if cmd_opts.get("-t") is not None:
         temperature = float(cmd_opts.get("-t"))
     elif int(cmd_opts.get("-n") or 1) == 1 and user_prompt is None:
@@ -992,7 +991,6 @@ def generate_options(cmd_opts, model_info, user_prompt, model_path, prompt_temp_
         # If not quiet mode, verbose prompt
         results.append("--verbose-prompt")
 
-
     results.append("-c")
     results.append(opts.get("-c", "0"))
 
@@ -1009,7 +1007,10 @@ def generate_options(cmd_opts, model_info, user_prompt, model_path, prompt_temp_
     if hasattr(model_info, "extra_gguf_options"):
         results.extend(model_info.extra_gguf_options())
 
-    results += ["-f", temp_prompt_file.name]
+    if "-D" in cmd_opts:
+        results += ["-f", "<placeholder>"]
+    else:
+        results += ["-f", temp_prompt_file.name]
 
     return results
 
@@ -1177,7 +1178,6 @@ if __name__ == "__main__":
 
                     if "-D" in opts:
                         # Dry run only
-                        this_cmd[this_cmd.index(temp_prompt_file.name)] = "<placeholder>"
                         print("DRY RUN:", this_cmd)
                         continue
 
