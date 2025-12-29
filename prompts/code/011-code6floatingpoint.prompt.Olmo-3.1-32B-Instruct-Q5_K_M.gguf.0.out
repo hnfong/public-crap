@@ -1,0 +1,191 @@
+Let's analyze each question step by step, considering IEEE 754 floating point semantics in Python (which uses double precision by default).
+
+---
+
+### Q1
+
+```python
+import math
+x = 0.0
+while x < math.inf:
+    x += 1.0
+print(x)
+```
+
+#### Analysis
+
+- `x` starts at `0.0`.
+- Each iteration, `x` is incremented by `1.0`.
+- The loop continues as long as `x < math.inf`.
+- In IEEE 754 double precision, the largest finite value is approximately `1.7976931348623157e+308`.
+- After that, adding `1.0` will eventually cause `x` to become `inf` due to overflow.
+- When `x` becomes `inf`, the condition `x < math.inf` is **False** (since `inf < inf` is False).
+- Therefore, the loop **exits** the moment `x` becomes `inf`.
+- However, the increment that causes overflow happens like this:
+    - Let `max_finite = sys.float_info.max` (about 1.8e308).
+    - If you add 1.0 to a value just below `max_finite`, you get `inf`.
+    - So, the last value of `x` inside the loop is `inf`.
+- The `print(x)` will output `inf`.
+
+#### Output
+
+```
+inf
+```
+
+Or, more precisely, it will print `inf` (Python prints it as `inf`).
+
+---
+
+### Q2
+
+```python
+import math
+x = 1.0
+while x < math.inf:
+    x = x * 1.001
+print(x)
+```
+
+#### Analysis
+
+- `x` starts at `1.0`.
+- Each iteration, `x` is multiplied by `1.001`.
+- The loop continues as long as `x < math.inf`.
+- Multiplying repeatedly by a number greater than 1 will eventually cause `x` to exceed the maximum finite float, at which point the next multiplication results in `inf`.
+- When `x` becomes `inf`, the condition `x < math.inf` is False, so the loop exits.
+- The last value of `x` is `inf`.
+
+#### Output
+
+```
+inf
+```
+
+#### Is it different from Q1?
+
+No, the eventual output is the same: `inf`.  
+However, the **way** it gets there is different (multiplication vs addition), but the result is the same: overflow to infinity.
+
+---
+
+### Q3
+
+```python
+import math
+x = 0.0
+inc = float(input("Enter a number"))
+while x < math.inf:
+    x += inc
+print("Done")
+```
+
+#### Analysis
+
+We are to determine: **Are there inputs for `inc` that will cause the program to print "Done"?**
+
+That is, are there values of `inc` such that the loop **terminates** (i.e., `x` stops being less than `math.inf`)?
+
+But let's think carefully:
+
+- If `inc > 0`, then `x` increases without bound, eventually exceeding `math.inf` and becoming `inf`, at which point the loop stops and "Done" is printed.
+- If `inc == 0`, then `x` stays at `0.0` forever, so the loop never terminates (infinite loop).
+- If `inc < 0`, then `x` becomes more negative, but `x < math.inf` is always true for negative numbers (since negative < positive infinity is always True). So the loop never terminates.
+
+But wait: in IEEE 754, `-inf < inf` is True, so for negative increments, `x` will eventually underflow to `-inf`, but `-inf < inf` is still True. So the loop will never exit for negative increments.
+
+However, let's check what happens when `x` underflows to `-inf`:
+- `-inf < inf` is True, so the loop continues forever.
+
+Therefore, the only way the loop terminates is if `inc > 0`, because then eventually `x` will overflow to `inf`, and `inf < inf` is False, so the loop exits.
+
+But let's be precise:  
+When `x` becomes `inf`, `x < math.inf` is False, so the loop stops.
+
+So, **any positive increment will eventually cause overflow to `inf` and terminate the loop.**
+
+But is there a positive increment so small that it never overflows?  
+No, because even the tiniest positive increment, when added enough times, will eventually overflow to `inf`.  
+However, for extremely small increments, it may take an astronomically large number of iterations, but in theory, it will happen.
+
+But in practice, for some increments, the loop may never terminate within the lifetime of the universe, but mathematically, for any finite positive increment, there exists a finite number of iterations after which `x` will overflow to `inf`.
+
+However, let's consider the case of **denormalized numbers** and underflow, but for positive increments, repeated addition will eventually reach the maximum finite value and then overflow to `inf`.
+
+But there is a subtle point:  
+If `inc` is so small that adding it to `x` doesn't change `x` due to lack of precision (i.e., `x + inc == x` due to rounding), then `x` will never increase, and the loop will run forever.
+
+This happens when `inc` is smaller than the smallest positive normalized number that can be added to `x` without changing its value (i.e., less than the machine epsilon for the current value of `x`).
+
+Let's formalize this:
+
+Let `x` be the current value.  
+The next value is `x + inc`, but if `inc` is less than the machine epsilon at `x`, then `x + inc == x` due to rounding.
+
+The machine epsilon for a float `x` is approximately `eps = 2 ** (-52)` for numbers near 1, but for very small `x`, the gap between representable numbers increases.
+
+So, for example, if you start at `x = 0.0`, and `inc` is less than the smallest positive normalized float (`sys.float_info.min`), then `x + inc` will remain `0.0` forever.
+
+But even for values above that, if `inc` is less than the current spacing between floats at `x`, then `x + inc == x`.
+
+Therefore, **if `inc` is too small, the loop will never terminate**.
+
+But if `inc` is large enough that at some point `x + inc` actually increases `x`, and eventually `x` overflows to `inf`, then the loop will terminate.
+
+So, to answer the question:
+
+> Are there inputs that will lead to the output "Done"? Give at least 2 examples of such inputs if possible.
+
+#### Yes, there are such inputs.
+
+**Example 1:**  
+Let `inc = 1.0`  
+This is a normal-sized increment. Eventually, after about `1.8e308` iterations, `x` will overflow to `inf` and the loop will terminate.
+
+**Example 2:**  
+Let `inc = 1e100`  
+This is a large increment. After a few thousand iterations, `x` will overflow to `inf`.
+
+But let's be more precise and give two concrete examples that are easy to see:
+
+- `inc = 1.0`  
+  After about `1.8e308` iterations, `x` will overflow to `inf`.
+
+- `inc = 1e20`  
+  After about `1e289` iterations, `x` will overflow to `inf`.
+
+However, if you choose an extremely small increment, such as:
+
+- `inc = 1e-320`  
+  This is smaller than the smallest positive normalized float (`~1e-308`).  
+  For such a value, `x + inc` will always be `0.0` (due to underflow and rounding), so the loop never terminates.
+
+But if you pick a value just above the smallest positive normalized float, say:
+
+- `inc = 1e-200`  
+  Eventually, after enough iterations, `x` will become large enough that adding `inc` will actually change `x`, and eventually overflow to `inf`.
+
+But even for `inc = 1e-200`, it will take an enormous number of iterations, but in theory, it will terminate.
+
+However, for practical purposes, some increments are so small that the program will never terminate in the real world, but mathematically, for any positive `inc`, there exists a finite number of iterations after which `x` will overflow to `inf`.
+
+But there is a special case: if `inc` is exactly zero, the loop never terminates.
+
+But the question is: **Are there inputs that will lead to "Done"?**  
+Yes.
+
+#### Two concrete examples:
+
+1. **inc = 1.0**  
+   After a huge number of iterations, `x` will overflow to `inf` and the program prints "Done".
+
+2. **inc = 1e100**  
+   After a large but finite number of iterations, `x` will overflow to `inf` and the program prints "Done".
+
+#### Note:
+For extremely small positive increments (e.g., `inc = 1e-400`), the loop will never terminate in practice (and perhaps not even in theory, if the increment is so small that it never affects `x` due to underflow and rounding), but for any increment that is not zero and not so small that it's always rounded away, the loop will eventually terminate.
+
+But strictly speaking, for any positive `inc` that is representable and not zero, there exists a finite number of iterations after which `x` will overflow to `inf`, so the loop will terminate.
+
+However, for increments that
+
