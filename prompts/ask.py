@@ -29,8 +29,6 @@ Options:
 -x ignore_prefix:  Set the prefix to ignore in the prompt file (default: #!)
 -X extra_prompt:   Set the extra prompt to add to the assistant output (default: "")
 -T template:       Set the template to use (default: chatml, but we hardcode some models to use different templates)
--M match,options.. If the model filename contains the match string, then append the specified options (comma separated).
--F match,options.. If the input filename contains the match string, then append the specified options (comma separated).
 -Z n               Stop after processing n files for each model
 
 """
@@ -938,7 +936,6 @@ FIM_MATCH_OVERRIDE = [
     ("codegeex4", CodeGeeX4TemplateMixin),
 ]
 
-
 def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:", extra_args_prefix=" ARGS:", user_prompt=None):
     lines = []
     system = []
@@ -969,6 +966,60 @@ def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:", e
         "extra_args": extra_args
         }
 
+def generate_options(cmd_opts, model_info, user_prompt, model_path, prompt_temp_path, prompt_extra_args):
+    results = [LLAMA_CPP_PATH, ]
+
+    results.append("--no-escape")  # llama.cpp just doesn't do sane defaults...
+    results.append("--no-conversation")  # llama.cpp just doesn't do sane defaults...
+    results.append("--no-display-prompt")  # llama.cpp just doesn't do sane defaults...
+
+
+    if cmd_opts.get("-t") is not None:
+        temperature = float(cmd_opts.get("-t"))
+    elif int(cmd_opts.get("-n") or 1) == 1 and user_prompt is None:
+        # Use 0 if we only run once on a file
+        temperature = 0.0
+    else:
+        # Default to 0.3
+        temperature = 0.3
+
+    assert temperature >= 0
+    results.append("--temp")
+    results.append(str(temperature))
+
+    is_mac = "Darwin" in subprocess.run(["uname"], capture_output=True).stdout.decode("utf-8").strip()
+    if opts.get("-g") or is_mac:
+        results.append("-ngl")
+        results.append("99")
+
+    if "-q" not in opts:
+        # If not quiet mode, verbose prompt
+        results.append("--verbose-prompt")
+
+
+    results.append("-c")
+    results.append(opts.get("-c", "0"))
+
+    # Passthrough arguments
+    if opts.get("-P"):
+        results += opts.get("-P").strip().split()
+
+    # If -n or --n-predict is not in the args, we add "--n-predict", "-2"
+    if '-n' not in results and '--n-predict' not in results:
+        results += ["--n-predict", "-2"] # -2 means fill context
+
+    results += ["-m", model]
+
+    if hasattr(model_info, "extra_gguf_options"):
+        results.extend(model_info.extra_gguf_options())
+
+    results += ["-f", temp_prompt_file.name]
+
+    if prompt_extra_args:
+        results += prompt_extra_args
+
+    return results
+
 
 if __name__ == "__main__":
     PRESETS = {}
@@ -978,7 +1029,7 @@ if __name__ == "__main__":
         if inspect.isclass(obj):
             if issubclass(obj, Preset) and obj != Preset:
                 PRESETS[obj.name] = obj
-    opt_list, args = getopt.getopt(sys.argv[1:], "DqhkP:C:c:d:t:f:o:p:m:n:x:gX:T:M:F:vZ:")
+    opt_list, args = getopt.getopt(sys.argv[1:], "DqhkP:C:c:d:t:f:o:p:m:n:x:gX:T:vZ:")
     verbosity = opt_list.count(('-v', ''))
     opts = dict(opt_list)
 
@@ -1006,88 +1057,18 @@ if __name__ == "__main__":
             print("What is your question?")
         user_prompt = sys.stdin.read()
 
-    template = opts.get("-T") or "chatml"
-
-    if opts.get("-t") is not None:
-        temperature = float(opts.get("-t"))
-    elif int(opts.get("-n") or 1) == 1 and user_prompt is None:
-        # Use 0 if we only run once on a file
-        temperature = 0.0
-    else:
-        # Default to 0.3
-        temperature = 0.3
-
     context = opts.get("-C") or ""
-    gguf_context_size = opts.get("-c", "0")
     model_name = opts.get("-m") or DEFAULT_MODEL
     if preset in (AskUserPreset, CodeReviewPreset):
         model_name = DEFAULT_CODE_INSTRUCT_MODEL
     if preset in (CodeGenerationPreset,):
         model_name = DEFAULT_CODE_GENERATION_MODEL
     cmd_args = []
-    cmd_args.append("--no-escape")  # llama.cpp just doesn't do sane defaults...
-    cmd_args.append("--no-conversation")  # llama.cpp just doesn't do sane defaults...
-    cmd_args.append("--no-display-prompt")  # llama.cpp just doesn't do sane defaults...
-    assert temperature >= 0
-    cmd_args.append("--temp")
-    cmd_args.append(str(temperature))
 
-    is_mac = "Darwin" in subprocess.run(["uname"], capture_output=True).stdout.decode("utf-8").strip()
-    if opts.get("-g") or is_mac:
-        cmd_args.append("-ngl")
-        cmd_args.append("99")
-
-    if "-q" not in opts:
-        # If not quiet mode, verbose prompt
-        cmd_args.append("--verbose-prompt")
-
-    templateMixIn = None
     overrideTemplateMixIn = None
-    if template == "chatml":
-        templateMixIn = ChatMLTemplateMixin
-    elif template == "llama":
-        templateMixIn = LlamaTemplateMixin
-    else:
-        templateMixIn = InstructionTemplateMixin
-
-    if preset is CodeGenerationPreset:
-        # Force template to be code completion
-        model = model_glob(model_name)[0]
-        for model_substring, tm in FIM_MATCH_OVERRIDE:
-            if model_substring.lower() in model.lower():
-                overrideTemplateMixIn = tm
-                break
-        else:
-            if overrideTemplateMixIn is None:
-                sys.stderr.write(f"Warning: No template found for {model}, using QwenFimMixin as a fallback\n")
-                overrideTemplateMixIn = QwenFimMixin
-
-        context = args[0]
-        # We need a file for code generation
-        assert opts.get("-f") is not None
-
-        cmd_args.append("-c")
-        cmd_args.append(gguf_context_size)
-
-        cmd_args.append("--n-predict")
-        cmd_args.append("200")
-    else:
-        cmd_args.append("-c")
-        cmd_args.append(gguf_context_size)
-
-    # Passthrough arguments
-    if opts.get("-P"):
-        cmd_args += opts.get("-P").strip().split()
-
-    # If -n or --n-predict is not in the args, we add "--n-predict", "-2"
-    if '-n' not in cmd_args and '--n-predict' not in cmd_args:
-        cmd_args += ["--n-predict", "-2"] # -2 means fill context
-
 
     class ModelPlaceholder:
         pass
-
-    cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", ModelPlaceholder]
 
     assert_count = 0
     ggg = model_glob(model_name)
@@ -1171,29 +1152,8 @@ if __name__ == "__main__":
                             print(f"Skipping {out_file} as it already exists")
                             continue
 
-                    this_cmd = cmd.copy()
-                    if hasattr(cp, "extra_gguf_options"):
-                        this_cmd.extend(cp.extra_gguf_options())
-
-                    this_cmd[this_cmd.index(ModelPlaceholder)] = model
-                    this_cmd += ["-f", temp_prompt_file.name]
-
-                    if (prompt_extra_args := prompt.get("extra_args")):
-                        this_cmd += prompt_extra_args
-
-
-                    if prompt_file and "-F" in opts:  # if filename matches a string, add more options
-                        conditional_options = opts.get("-F").split(",")
-                        if conditional_options[0] in prompt_file:
-                            this_cmd += conditional_options[1:]
-                            if '--skip--' in this_cmd:
-                                continue
-                    if "-M" in opts:  # if model matches a string, add more options
-                        m_params = [opt[1] for opt in opt_list if opt[0] == '-M']
-                        for m_param in m_params:
-                            conditional_options = m_param.split(",")
-                            if conditional_options[0] in model or conditional_options[0] == '*':
-                                this_cmd += conditional_options[1:]
+                    prompt_extra_args = prompt.get("extra_args")
+                    this_cmd = generate_options(opts, cp, user_prompt, model, temp_prompt_file.name, prompt_extra_args)
 
                     if opts.get("-d"):
                         with tempfile.TemporaryFile() as tok_stderr:
