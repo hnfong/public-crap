@@ -12,8 +12,8 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 ### 2025
 
 - [26-常識](writings/2025/26-常識.md)
-- [25-Solving NP using alternate metaphysics](writings/2025/25-Solving NP using alternate metaphysics.md)
-- [24-The Hive Mind](writings/2025/24-The Hive Mind.md)
+- [25-Solving NP using alternate metaphysics](writings/2025/25-Solving_NP_using_alternate_metaphysics.md)
+- [24-The Hive Mind](writings/2025/24-The_Hive_Mind.md)
 - [23-點解食禁果咁撚大鑊](writings/2025/23-點解食禁果咁撚大鑊.md)
 - [22-無為而無不為](writings/2025/22-無為而無不為.md)
 - [21-罪疚、時間、自由](writings/2025/21-罪疚、時間、自由.md)
