@@ -5,6 +5,10 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 ## Writings
 
 
+### 2026
+
+- [01-通脹](writings/2026/01-通脹.md)
+
 ### 2025
 
 - [26-常識](writings/2025/26-常識.md)
