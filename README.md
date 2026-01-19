@@ -7,6 +7,8 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2025
 
+- [26-常識](writings/2025/26-常識.md)
+- [25-Solving NP using alternate metaphysics](writings/2025/25-Solving NP using alternate metaphysics.md)
 - [24-The Hive Mind](writings/2025/24-The Hive Mind.md)
 - [23-點解食禁果咁撚大鑊](writings/2025/23-點解食禁果咁撚大鑊.md)
 - [22-無為而無不為](writings/2025/22-無為而無不為.md)
@@ -351,6 +353,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 - [麻婆豆腐 - 沙嗲王XO醬](recipes/麻婆豆腐_-_沙嗲王XO醬.md)
 - [食油](recipes/食油.md)
+- [雞蛋撈飯](recipes/雞蛋撈飯.md)
 - [雙色炒蛋](recipes/雙色炒蛋.md)
 - [醃辣椒](recipes/醃辣椒.md)
 - [蝦膏](recipes/蝦膏.md)
