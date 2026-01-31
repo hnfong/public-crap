@@ -7,6 +7,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2026
 
+- [02-啱嘅感覺](writings/2026/02-啱嘅感覺.md)
 - [01-通脹](writings/2026/01-通脹.md)
 
 ### 2025
