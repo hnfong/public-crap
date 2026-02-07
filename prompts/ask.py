@@ -935,15 +935,20 @@ FIM_MATCH_OVERRIDE = [
     ("codegeex4", CodeGeeX4TemplateMixin),
 ]
 
-def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:", user_prompt=None):
+def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:", llamacpp_prefix="LLAMACPP_ARGS:", ask_prefix="ASK_ARGS:", user_prompt=None):
     lines = []
     system = []
+    llamacpp = []
+    ask = []
     with open(prompt_file, "r") as f:
         while line := f.readline():
             if line.startswith(ignore_prefix):
                 if line.startswith(ignore_prefix + system_prefix):
                     system.append(line[len(ignore_prefix) + len(system_prefix):])
-
+                elif line.startswith(ignore_prefix + ask_prefix):
+                    ask += line[len(ignore_prefix) + len(ask_prefix):].strip().split()
+                elif line.startswith(ignore_prefix + llamacpp_prefix):
+                    llamacpp += line[len(ignore_prefix) + len(llamacpp_prefix):].strip().split()
                 continue
             lines.append(line)
 
@@ -959,9 +964,15 @@ def read_prompt_file(prompt_file, ignore_prefix="#!", system_prefix="SYSTEM:", u
     return {
         "user": user_final,
         "system": "".join(system).strip(),
+        "llama.cpp": llamacpp,
+        "ask_opts": ask,
+        "is_file": True,
         }
 
-def generate_options(cmd_opts, model_info, user_prompt, model_path, prompt_temp_path):
+def generate_options(cmd_opts, model_info, prompt, model_path, prompt_temp_path):
+    orig_opts = cmd_opts
+    cmd_opts = cmd_opts | (prompt.get("ask_opts") or {})
+
     results = [LLAMA_CPP_PATH, ]
 
     results.append("--no-escape")  # llama.cpp just doesn't do sane defaults...
@@ -970,7 +981,7 @@ def generate_options(cmd_opts, model_info, user_prompt, model_path, prompt_temp_
 
     if cmd_opts.get("-t") is not None:
         temperature = float(cmd_opts.get("-t"))
-    elif int(cmd_opts.get("-n") or 1) == 1 and user_prompt is None:
+    elif int(cmd_opts.get("-n") or 1) == 1 and prompt.get("is_file"):
         # Use 0 if we only run once on a file
         temperature = 0.0
     else:
@@ -1005,6 +1016,33 @@ def generate_options(cmd_opts, model_info, user_prompt, model_path, prompt_temp_
         results += ["-f", "<placeholder>"]
     else:
         results += ["-f", temp_prompt_file.name]
+
+    if cmd_opts.get("-d"):
+        with tempfile.TemporaryFile() as tok_stderr:
+            # Dynamically set the context size. But we need the user context size as a maximum value
+            LLAMA_TOKENIZER = os.path.dirname(LLAMA_CPP_PATH) + os.path.sep + "llama-tokenize"
+            tokenize_cmd = [LLAMA_TOKENIZER, "-m", model, "-f", temp_prompt_file.name, "--show-count", "--log-disable", "--ids"]
+            tok_p = subprocess.Popen(tokenize_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=tok_stderr)
+            tok_stdout, _ = tok_p.communicate()
+            tok_stderr.seek(0)
+            tok_stderr = tok_stderr.read()
+            tok_success = False
+            if tok_p.returncode == 0:
+                tok_m = re.search(r"Total number of tokens: (\d+)", tok_stdout.decode("utf-8", errors="replace"))
+                if tok_m:
+                    results += ["-c", "%d" % min(int(opts.get("-c") or 2147483647), int(tok_m.group(1)) + int(opts.get("-d")))]
+                    tok_success = True
+
+            if not tok_success:
+                sys.stderr.write("Error: cannot determine number of tokens in prompt!\n")
+                sys.stderr.write("Command: %s\n" % " ".join(tokenize_cmd))
+                sys.stderr.write("Exit code: %d\n" % tok_p.returncode)
+                sys.stderr.write("Output: %s\n" % tok_stdout.decode("utf-8", errors="replace"))
+                sys.stderr.write("Stderr: %s\n" % tok_stderr.decode("utf-8", errors="replace"))
+                sys.exit(1)
+
+    # Per file arguments
+    results += prompt.get("llama.cpp") or []
 
     return results
 
@@ -1145,31 +1183,7 @@ if __name__ == "__main__":
                             print(f"Skipping {out_file} as it already exists")
                             continue
 
-                    this_cmd = generate_options(opts, cp, user_prompt, model, temp_prompt_file.name)
-
-                    if opts.get("-d"):
-                        with tempfile.TemporaryFile() as tok_stderr:
-                            # Dynamically set the context size. But we need the user context size as a maximum value
-                            LLAMA_TOKENIZER = os.path.dirname(LLAMA_CPP_PATH) + os.path.sep + "llama-tokenize"
-                            tokenize_cmd = [LLAMA_TOKENIZER, "-m", model, "-f", temp_prompt_file.name, "--show-count", "--log-disable", "--ids"]
-                            tok_p = subprocess.Popen(tokenize_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=tok_stderr)
-                            tok_stdout, _ = tok_p.communicate()
-                            tok_stderr.seek(0)
-                            tok_stderr = tok_stderr.read()
-                            tok_success = False
-                            if tok_p.returncode == 0:
-                                tok_m = re.search(r"Total number of tokens: (\d+)", tok_stdout.decode("utf-8", errors="replace"))
-                                if tok_m:
-                                    this_cmd += ["-c", "%d" % min(int(opts.get("-c") or 2147483647), int(tok_m.group(1)) + int(opts.get("-d")))]
-                                    tok_success = True
-
-                            if not tok_success:
-                                sys.stderr.write("Error: cannot determine number of tokens in prompt!\n")
-                                sys.stderr.write("Command: %s\n" % " ".join(tokenize_cmd))
-                                sys.stderr.write("Exit code: %d\n" % tok_p.returncode)
-                                sys.stderr.write("Output: %s\n" % tok_stdout.decode("utf-8", errors="replace"))
-                                sys.stderr.write("Stderr: %s\n" % tok_stderr.decode("utf-8", errors="replace"))
-                                sys.exit(1)
+                    this_cmd = generate_options(opts, cp, prompt, model, temp_prompt_file.name)
 
 
                     if verbosity > 0:
