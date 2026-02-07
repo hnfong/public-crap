@@ -46,7 +46,7 @@ LLAMA_CPP_PATH = os.environ.get("LLAMA_CPP_PATH") or shutil.which('llama-complet
 MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/")
 
 def model_glob(abbr):
-    return glob.glob(f"{MODELS_PATH}/*{abbr}*.gguf")
+    return glob.glob(f"{MODELS_PATH}/*{abbr}*.gguf") or glob.glob(f"{MODELS_PATH}/test_models/split_ggufs/*{abbr}*.gguf") 
 
 DEFAULT_MODEL = "gemma-3-12b-it"
 DEFAULT_CODE_INSTRUCT_MODEL = "Qwen3-30B-A3B-Instruct"
