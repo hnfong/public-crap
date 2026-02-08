@@ -1,0 +1,129 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Card Cascade</title>
+<style>
+body { font-family: sans-serif; }
+.card { width: 80px; height: 120px; border: 1px solid black; margin: 5px; display: inline-block; text-align: center; }
+.red { background-color: #ff6666; }
+.black { background-color: #6666ff; }
+.valid { border: 2px solid green; }
+#gameArea { margin-top: 20px; }
+</style>
+</head>
+<body>
+<h1>Card Cascade</h1>
+<div id="gameArea"></div>
+<script>
+const suits = ['H', 'D', 'C', 'S'];
+const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
+let deck = [];
+let cascade = [];
+
+function createDeck() {
+  deck = [];
+  for (let suit of suits) {
+    for (let rank of ranks) {
+      deck.push({ suit, rank });
+    }
+  }
+  deck = deck.sort(() => Math.random() - 0.5);
+}
+
+function createCascade() {
+  cascade = [];
+  for (let i = 0; i < 7; i++) {
+    cascade.push([]);
+  }
+  for (let i = 0; i < 52; i++) {
+    cascade[i % 7].push(deck.pop());
+  }
+}
+
+function renderCascade() {
+  const gameArea = document.getElementById('gameArea');
+  gameArea.innerHTML = '';
+  for (let row of cascade) {
+    const rowDiv = document.createElement('div');
+    for (let card of row) {
+      const cardDiv = document.createElement('div');
+      cardDiv.classList.add('card');
+      cardDiv.classList.add(card.suit === 'H' || card.suit === 'D' ? 'red' : 'black');
+      cardDiv.textContent = card.rank + card.suit;
+      cardDiv.setAttribute('data-rank', card.rank);
+      cardDiv.setAttribute('data-suit', card.suit);
+      cardDiv.addEventListener('click', cardClicked);
+      rowDiv.appendChild(cardDiv);
+    }
+    gameArea.appendChild(rowDiv);
+  }
+}
+
+function cardClicked(event) {
+  const cardDiv = event.target;
+  const rank = cardDiv.getAttribute('data-rank');
+  const suit = cardDiv.getAttribute('data-suit');
+  const card = { rank, suit };
+
+  let validMove = false;
+  for (let i = 0; i < cascade.length; i++) {
+    for (let j = 0; j < cascade[i].length; j++) {
+      if (cascade[i][j] && (
+        (card.rank < cascade[i][j].rank && (card.suit === 'C' || card.suit === 'S')) ||
+        (card.rank > cascade[i][j].rank && (card.suit === 'H' || card.suit === 'D'))
+      )) {
+        validMove = true;
+        cardDiv.classList.add('valid');
+        cardDiv.setAttribute('data-move', i + ',' + j);
+        break;
+      } else {
+        cardDiv.classList.remove('valid');
+      }
+    }
+    if (validMove) break;
+  }
+
+  if (validMove) {
+    event.preventDefault();
+    moveCard(cardDiv);
+  }
+}
+
+function moveCard(cardDiv) {
+  const move = cardDiv.getAttribute('data-move').split(',');
+  const row = parseInt(move[0]);
+  const col = parseInt(move[1]);
+
+  if (cascade[row][col]) {
+    const rank = cardDiv.getAttribute('data-rank');
+    const suit = cardDiv.getAttribute('data-suit');
+    const card = { rank, suit };
+
+    cascade[row][col] = null;
+    cardDiv.classList.remove('valid');
+
+    const newCardDiv = document.createElement('div');
+    newCardDiv.classList.add('card');
+    newCardDiv.classList.add(card.suit === 'H' || card.suit === 'D' ? 'red' : 'black');
+    newCardDiv.textContent = card.rank + card.suit;
+    newCardDiv.setAttribute('data-rank', card.rank);
+    newCardDiv.setAttribute('data-suit', card.suit);
+    newCardDiv.addEventListener('click', cardClicked);
+
+    const targetRow = row;
+    const targetCol = col;
+    cascade[targetRow][targetCol] = card;
+    document.getElementById('gameArea').appendChild(newCardDiv);
+  }
+}
+
+createDeck();
+createCascade();
+renderCascade();
+</script>
+</body>
+</html>
+``` [end of text]
+
+

@@ -1,0 +1,1051 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pyramid Solitaire</title>
+  <style>
+    #game {
+      width: 400px;
+      height: 400px;
+      border: 1px solid black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #deck {
+      width: 100px;
+      height: 100px;
+      border: 1px solid black;
+      margin-bottom: 10px;
+    }
+    #discard {
+      width: 100px;
+      height: 100px;
+      border: 1px solid black;
+      margin-bottom: 10px;
+    }
+    #foundation {
+      width: 100px;
+      height: 100px;
+      border: 1px solid black;
+      margin-bottom: 10px;
+    }
+    .card {
+      width: 50px;
+      height: 70px;
+      border: 1px solid black;
+      display: inline-block;
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="game">
+    <div id="deck">
+      <button id="draw">Draw</button>
+    </div>
+    <div id="discard">
+      <div class="card" id="discard-0"></div>
+    </div>
+    <div id="foundation">
+      <div class="card" id="foundation-0"></div>
+      <div class="card" id="foundation-1"></div>
+      <div class="card" id="foundation-2"></div>
+      <div class="card" id="foundation-3"></div>
+    </div>
+  </div>
+  <script>
+    const deck = [
+      { suit: 'hearts', value: 'A' },
+      { suit: 'hearts', value: '2' },
+      { suit: 'hearts', value: '3' },
+      { suit: 'hearts', value: '4' },
+      { suit: 'hearts', value: '5' },
+      { suit: 'hearts', value: '6' },
+      { suit: 'hearts', value: '7' },
+      { suit: 'hearts', value: '8' },
+      { suit: 'hearts', value: '9' },
+      { suit: 'hearts', value: '10' },
+      { suit: 'hearts', value: 'J' },
+      { suit: 'hearts', value: 'Q' },
+      { suit: 'hearts', value: 'K' },
+      { suit: 'diamonds', value: 'A' },
+      { suit: 'diamonds', value: '2' },
+      { suit: 'diamonds', value: '3' },
+      { suit: 'diamonds', value: '4' },
+      { suit: 'diamonds', value: '5' },
+      { suit: 'diamonds', value: '6' },
+      { suit: 'diamonds', value: '7' },
+      { suit: 'diamonds', value: '8' },
+      { suit: 'diamonds', value: '9' },
+      { suit: 'diamonds', value: '10' },
+      { suit: 'diamonds', value: 'J' },
+      { suit: 'diamonds', value: 'Q' },
+      { suit: 'diamonds', value: 'K' },
+      { suit: 'clubs', value: 'A' },
+      { suit: 'clubs', value: '2' },
+      { suit: 'clubs', value: '3' },
+      { suit: 'clubs', value: '4' },
+      { suit: 'clubs', value: '5' },
+      { suit: 'clubs', value: '6' },
+      { suit: 'clubs', value: '7' },
+      { suit: 'clubs', value: '8' },
+      { suit: 'clubs', value: '9' },
+      { suit: 'clubs', value: '10' },
+      { suit: 'clubs', value: 'J' },
+      { suit: 'clubs', value: 'Q' },
+      { suit: 'clubs', value: 'K' },
+      { suit: 'spades', value: 'A' },
+      { suit: 'spades', value: '2' },
+      { suit: 'spades', value: '3' },
+      { suit: 'spades', value: '4' },
+      { suit: 'spades', value: '5' },
+      { suit: 'spades', value: '6' },
+      { suit: 'spades', value: '7' },
+      { suit: 'spades', value: '8' },
+      { suit: 'spades', value: '9' },
+      { suit: 'spades', value: '10' },
+      { suit: 'spades', value: 'J' },
+      { suit: 'spades', value: 'Q' },
+      { suit: 'spades', value: 'K' }
+    ];
+    let drawn = [];
+    let foundation = [null, null, null, null];
+    let discard = null;
+    const drawButton = document.getElementById('draw');
+    drawButton.addEventListener('click', drawCard);
+    function drawCard() {
+      if (deck.length > 0) {
+        drawn.push(deck.pop());
+        updateUI();
+      }
+    }
+    function updateUI() {
+      const deckElement = document.getElementById('deck');
+      deckElement.innerHTML = '';
+      drawn.forEach((card, i) => {
+        const cardElement = document.createElement('div');
+        cardElement.className = 'card';
+        cardElement.id = `drawn-${i}`;
+        cardElement.textContent = `${card.value} of ${card.suit}`;
+        deckElement.appendChild(cardElement);
+      });
+      const discardElement = document.getElementById('discard');
+      discardElement.innerHTML = '';
+      if (discard) {
+        const discardElement = document.createElement('div');
+        discardElement.className = 'card';
+        discardElement.id = 'discard-0';
+        discardElement.textContent = `${discard.value} of ${discard.suit}`;
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || topCard.suit === discard.suit) {
+              drawn.pop();
+              drawn.push(discard);
+              discard = null;
+              updateUI();
+            }
+          }
+        });
+        discardElement.style.backgroundColor = 'red';
+        discardElement.style.color = 'white';
+        discardElement.style.border = '2px solid black';
+        discardElement.style.padding = '10px';
+        discardElement.style.margin = '10px';
+        discardElement.style.fontSize = '24px';
+        discardElement.style.fontWeight = 'bold';
+        discardElement.style.textAlign = 'center';
+        discardElement.style.width = '100px';
+        discardElement.style.height = '100px';
+        discardElement.style.display = 'flex';
+        discardElement.style.justifyContent = 'center';
+        discardElement.style.alignItems = 'center';
+        discardElement.style.borderRadius = '10px';
+        discardElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        discardElement.style.cursor = 'pointer';
+        discardElement.addEventListener('click', () => {
+          if (drawn.length > 0) {
+            const topCard = drawn[drawn.length - 1];
+            if (topCard.value === discard.value || top
+

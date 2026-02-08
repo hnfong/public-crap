@@ -1,0 +1,70 @@
+<think>
+We are going to create a simple single-player poker game (5-card draw) that runs in the browser.
+ The game will:
+   - Start by dealing 5 cards to the player from a shuffled deck.
+   - Allow the player to choose which cards to hold and which to discard (by clicking on them).
+   - Then, the discarded cards will be replaced and the final hand will be evaluated.
+
+ Steps:
+   1. Create a deck of 52 cards.
+   2. Shuffle the deck.
+   3. Deal 5 cards to the player.
+   4. Display the cards and allow the player to toggle hold/discard on each card.
+   5. When the player clicks a button, replace the discarded cards and evaluate the hand.
+
+ We'll use a simple HTML structure with:
+   - A container for the cards (each card represented as an element).
+   - A button to draw (replace non-held cards) and evaluate.
+
+ We'll represent a card as { suit: string, rank: string, value: number }.
+ For simplicity, we'll map:
+   - Ranks: 2-10, J, Q, K, A -> values 2-14.
+
+ We'll write a function to evaluate the hand and return the hand rank (e.g., "Pair", "Two Pairs", etc.)
+
+ Note: We are going to minimize the code as much as possible, so we'll avoid unnecessary functions and use minimal styling.
+
+ Let's code accordingly.
+</think>
+```html
+<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Poker</title><style>body{font-family:Arial,sans-serif;text-align:center;margin:20px}button{font-size:16px;padding:10px;margin:5px}.card{display:inline-block;width:70px;height:100px;border:1px solid #000;border-radius:5px;margin:5px;text-align:center;line-height:100px;font-size:24px;background:#fff;cursor:pointer}.held{border:3px solid red}.hand{min-height:120px}</style></head><body><h1>Poker</h1><div id="hand" class="hand"></div><button id="deal">Deal</button><button id="draw" disabled>Draw</button><div id="result"></div><script>
+const suits=['♠','♥','♦','♣'],ranks=['2','3','4','5','6','7','8','9','10','J','Q','K','A']
+let deck=[],hand=[],held=[],gameState='initial'
+
+function createDeck(){for(let s of suits)for(let r=0;r<13;r++)deck.push({suit:s,rank:ranks[r],value:r+2})}
+function shuffle(){for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}}
+function dealHand(){hand=deck.splice(0,5);held=Array(5).fill(false);renderHand()}
+function renderHand(){const h=document.getElementById('hand');h.innerHTML='';hand.forEach((c,i)=>{const card=document.createElement('div');card.className='card'+(held[i]?' held':'');card.textContent=c.rank+c.suit;card.onclick=()=>toggleHold(i);h.appendChild(card)})}
+function toggleHold(i){if(gameState!='dealt')return;held[i]=!held[i];renderHand()}
+function drawCards(){for(let i=0;i<5;i++)if(!held[i])hand[i]=deck.shift();held.fill(false);gameState='drawn';renderHand();evaluateHand();document.getElementById('draw').disabled=true}
+function evaluateHand(){
+  const values=hand.map(c=>c.value).sort((a,b)=>a-b),suits=hand.map(c=>c.suit)
+  const counts=values.reduce((a,v)=>(a[v]=(a[v]||0)+1,a),{})
+  const freqs=Object.values(counts).sort((a,b)=>b-a)
+  const flush=suits.every(s=>s===suits[0])
+  const straight=values[4]-values[0]===4&&new Set(values).size===5
+  const straightAceLow=values.join()==='2,3,4,5,14'
+  
+  let result='High card'
+  if(flush&&straight&&values[0]===10)result='Royal flush'
+  else if(flush&&straight)result='Straight flush'
+  else if(freqs[0]===4)result='Four of a kind'
+  else if(freqs[0]===3&&freqs[1]===2)result='Full house'
+  else if(flush)result='Flush'
+  else if(straight||straightAceLow)result='Straight'
+  else if(freqs[0]===3)result='Three of a kind'
+  else if(freqs[0]===2&&freqs[1]===2)result='Two pair'
+  else if(freqs[0]===2)result='One pair'
+  
+  document.getElementById('result').textContent='Result: '+result
+}
+document.getElementById('deal').onclick=()=>{
+  deck=[];createDeck();shuffle();dealHand();gameState='dealt'
+  document.getElementById('draw').disabled=false
+  document.getElementById('result').textContent=''
+}
+document.getElementById('draw').onclick=drawCards
+</script></body></html>
+``` [end of text]
+
+

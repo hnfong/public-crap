@@ -1,0 +1,255 @@
+<!DOCTYPE html><html>
+<head>
+<meta charset="utf-8">
+<title>Solitaire Twist: Stack 13</title>
+<style>
+body{margin:0;background:#0b3d0b;font-family:Arial,sans-serif;color:#fff;display:flex;flex-direction:column;align-items:center}
+#hud{display:flex;gap:20px;margin:10px}
+.card{width:60px;height:84px;border-radius:8px;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;font-weight:bold;position:absolute;box-shadow:0 2px 4px rgba(0,0,0,.4);cursor:pointer;user-select:none}
+.card.red{color:#c00}
+.card.faceDown{background:#1e1e8c;color:#1e1e8c}
+#board{position:relative;width:720px;height:520px;margin:10px;border:2px solid #2e8b57;border-radius:8px;background:#114411}
+.pile{position:absolute;width:60px;height:84px;border:2px dashed rgba(255,255,255,.3);border-radius:8px}
+.pile.highlight{box-shadow:0 0 0 3px gold inset}
+#msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.7);padding:20px;border-radius:10px;display:none}
+button{background:#2e8b57;color:#fff;border:none;padding:8px 12px;border-radius:6px;cursor:pointer}
+button:hover{background:#3aa06a}
+.small{font-size:12px;opacity:.8}
+</style>
+</head>
+<body>
+<div id="hud">
+  <div>Score: <span id="score">0</span></div>
+  <div>Moves: <span id="moves">0</span></div>
+  <div>Time: <span id="time">0</span>s</div>
+  <button id="new">New Game</button>
+</div>
+<div id="board"></div>
+<div id="msg"></div>
+<script>
+(() => {
+  const board = document.getElementById('board');
+  const msg = document.getElementById('msg');
+  const scoreEl = document.getElementById('score');
+  const movesEl = document.getElementById('moves');
+  const timeEl = document.getElementById('time');
+  const newBtn = document.getElementById('new');
+  const W = 720, H = 520;
+  const suits = ['♠','♥','♦','♣'];
+  const colors = { '♠':'black','♣':'black','♥':'red','♦':'red' };
+  let deck = [], piles = [], moves = 0, score = 0, startTime = 0, timer = null, selected = null, drag = null;
+
+  function rnd(n){ return Math.floor(Math.random()*n) }
+  function makeDeck(){
+    let d=[];
+    for(let s of suits) for(let v=1; v<=13; v++) d.push({suit:s, val:v, id:s+v});
+    return d;
+  }
+  function shuffle(a){
+    for(let i=a.length-1;i>0;i--){ const j=rnd(i+1); [a[i],a[j]]=[a[j],a[i]] }
+    return a;
+  }
+  function layout(){
+    board.innerHTML='';
+    piles=[];
+    // 7 tableau piles
+    for(let i=0;i<7;i++){
+      const p=document.createElement('div'); p.className='pile'; p.style.left=(40+i*90)+'px'; p.style.top='40px';
+      p.dataset.i=i; board.appendChild(p); piles.push({el:p, cards:[], type:'tableau'});
+    }
+    // 4 foundation piles
+    for(let i=0;i<4;i++){
+      const p=document.createElement('div'); p.className='pile'; p.style.left=(40+i*90)+'px'; p.style.top='360px';
+      p.dataset.i=7+i; board.appendChild(p); piles.push({el:p, cards:[], type:'foundation'});
+    }
+    // stock and waste
+    const stock=document.createElement('div'); stock.className='pile'; stock.style.left='40px'; stock.style.top='200px'; stock.dataset.i=11; board.appendChild(stock);
+    piles.push({el:stock, cards:[], type:'stock'});
+    const waste=document.createElement('div'); waste.className='pile'; waste.style.left='130px'; waste.style.top='200px'; waste.dataset.i=12; board.appendChild(waste);
+    piles.push({el:waste, cards:[], type:'waste'});
+  }
+  function deal(){
+    deck=shuffle(makeDeck());
+    let idx=0;
+    for(let i=0;i<7;i++){
+      for(let j=0;j<=i;j++){
+        const c=deck[idx++]; c.faceUp=j===i;
+        piles[i].cards.push(c);
+      }
+    }
+    while(idx<deck.length) piles[11].cards.push(deck[idx++]); // stock
+  }
+  function cardEl(c, pileIndex, cardIndex){
+    const el=document.createElement('div'); el.className='card'+(c.faceUp?'':' faceDown')+(colors[c.suit]==='red'?' red':'');
+    el.style.left=(pileIndex<7?40+pileIndex*90: pileIndex===11?40:130)+'px';
+    const topOffset = pileIndex<7 ? 40 + cardIndex*24 : 200;
+    el.style.top=topOffset+'px';
+    el.dataset.pile=pileIndex; el.dataset.index=cardIndex;
+    el.textContent=c.faceUp? (c.val===1?'A':c.val===11?'J':c.val===12?'Q':c.val===13?'K':c.val)+c.suit : '🂠';
+    el.onmousedown = startDrag;
+    return el;
+  }
+  function render(){
+    board.querySelectorAll('.card').forEach(e=>e.remove());
+    piles.forEach((p,pi)=>{
+      p.cards.forEach((c,ci)=>{
+        const el=cardEl(c,pi,ci);
+        board.appendChild(el);
+      });
+    });
+  }
+  function canPlaceOnTableau(moving, target){
+    if(!target.cards.length) return moving.val===13; // King on empty
+    const top=target.cards[target.cards.length-1];
+    if(!top.faceUp) return false;
+    const col = colors[moving.suit]===colors[top.suit];
+    return !col && moving.val===top.val-1;
+  }
+  function canPlaceOnFoundation(moving, target){
+    if(!target.cards.length) return moving.val===1; // Ace starts
+    const top=target.cards[target.cards.length-1];
+    return moving.suit===top.suit && moving.val===top.val+1;
+  }
+  function startDrag(e){
+    const pileIndex = +this.dataset.pile;
+    const cardIndex = +this.dataset.index;
+    const pile = piles[pileIndex];
+    const card = pile.cards[cardIndex];
+    if(!card.faceUp) return;
+    // Only allow dragging top card or a valid sequence from tableau
+    if(pile.type==='tableau' && cardIndex !== pile.cards.length-1){
+      // Check sequence validity
+      for(let i=cardIndex;i<pile.cards.length-1;i++){
+        const a=pile.cards[i], b=pile.cards[i+1];
+        if(colors[a.suit]===colors[b.suit] || a.val!==b.val+1) return;
+      }
+    }
+    if(pile.type==='foundation' || pile.type==='stock') return;
+    selected={pileIndex, cardIndex};
+    drag={x:e.clientX, y:e.clientY, dx:0, dy:0};
+    document.onmousemove=moveDrag;
+    document.onmouseup=endDrag;
+  }
+  function moveDrag(e){
+    if(!selected) return;
+    drag.dx=e.clientX-drag.x; drag.dy=e.clientY-drag.y;
+    const el=board.querySelector(`.card[data-pile="${selected.pileIndex}"][data-index="${selected.cardIndex}"]`);
+    if(el){ el.style.transform=`translate(${drag.dx}px,${drag.dy}px)`; el.style.zIndex=1000; }
+    // highlight possible targets
+    board.querySelectorAll('.pile').forEach(p=>p.classList.remove('highlight'));
+    const moving = piles[selected.pileIndex].cards[selected.cardIndex];
+    for(let i=0;i<7;i++){
+      if(canPlaceOnTableau(moving, piles[i])) piles[i].el.classList.add('highlight');
+    }
+    for(let i=7;i<11;i++){
+      if(canPlaceOnFoundation(moving, piles[i])) piles[i].el.classList.add('highlight');
+    }
+  }
+  function endDrag(e){
+    document.onmousemove=null; document.onmouseup=null;
+    const el=board.querySelector(`.card[data-pile="${selected.pileIndex}"][data-index="${selected.cardIndex}"]`);
+    if(el){ el.style.transform=''; el.style.zIndex=''; }
+    board.querySelectorAll('.pile').forEach(p=>p.classList.remove('highlight'));
+    if(!selected) return;
+    const from = piles[selected.pileIndex];
+    const moving = from.cards[selected.cardIndex];
+    let moved=false;
+    // Check drop on tableau
+    for(let i=0;i<7;i++){
+      const target=piles[i];
+      const rect=target.el.getBoundingClientRect();
+      if(e.clientX>=rect.left && e.clientX<=rect.right && e.clientY>=rect.top && e.clientY<=rect.bottom){
+        if(canPlaceOnTableau(moving, target)){
+          target.cards.push(...from.cards.splice(selected.cardIndex));
+          moved=true; break;
+        }
+      }
+    }
+    // Check drop on foundation
+    if(!moved){
+      for(let i=7;i<11;i++){
+        const target=piles[i];
+        const rect=target.el.getBoundingClientRect();
+        if(e.clientX>=rect.left && e.clientX<=rect.right && e.clientY>=rect.top && e.clientY<=rect.bottom){
+          if(canPlaceOnFoundation(moving, target)){
+            target.cards.push(...from.cards.splice(selected.cardIndex));
+            moved=true; break;
+          }
+        }
+      }
+    }
+    if(moved){
+      moves++; movesEl.textContent=moves;
+      score+=10; scoreEl.textContent=score;
+      // Flip newly exposed card
+      if(from.type==='tableau' && from.cards.length && !from.cards[from.cards.length-1].faceUp){
+        from.cards[from.cards.length-1].faceUp=true; score+=5; scoreEl.textContent=score;
+      }
+      // Auto-move completed sequences to foundation
+      autoComplete();
+      checkWin();
+    }
+    selected=null; drag=null; render();
+  }
+  function autoComplete(){
+    // Try to move any top cards that can go to foundation
+    let moved=true;
+    while(moved){
+      moved=false;
+      for(let i=0;i<7;i++){
+        const t=piles[i];
+        if(!t.cards.length) continue;
+        const top=t.cards[t.cards.length-1];
+        for(let j=7;j<11;j++){
+          if(canPlaceOnFoundation(top, piles[j])){
+            piles[j].cards.push(t.cards.pop());
+            score+=15; moved=true; break;
+          }
+        }
+      }
+    }
+  }
+  function checkWin(){
+    const done = piles.slice(7,11).every(p=>p.cards.length===13);
+    if(done){
+      clearInterval(timer);
+      msg.innerHTML=`<h2>You win!</h2><div>Score: ${score} | Moves: ${moves} | Time: ${timeEl.textContent}s</div><div class="small">Click New Game to play again</div>`;
+      msg.style.display='block';
+    }
+  }
+  function drawFromStock(){
+    const stock=piles[11], waste=piles[12];
+    if(stock.cards.length){
+      const c=stock.cards.pop(); c.faceUp=true; waste.cards.push(c);
+      moves++; movesEl.textContent=moves; score+=1; scoreEl.textContent=score;
+    }else{
+      // recycle waste to stock
+      while(waste.cards.length){
+        const c=waste.cards.pop(); c.faceUp=false; stock.cards.push(c);
+      }
+      moves++; movesEl.textContent=moves;
+    }
+    render();
+  }
+  function newGame(){
+    clearInterval(timer); msg.style.display='none'; moves=0; score=0; movesEl.textContent='0'; scoreEl.textContent='0'; timeEl.textContent='0';
+    layout(); deal(); render();
+    startTime=Date.now(); timer=setInterval(()=>{ timeEl.textContent=Math.floor((Date.now()-startTime)/1000) }, 1000);
+  }
+  // Click handlers for stock and waste
+  board.addEventListener('click', e=>{
+    const t=e.target;
+    if(t.classList.contains('pile')){
+      const i=+t.dataset.i;
+      if(i===11) drawFromStock();
+    }
+  });
+  newBtn.onclick=newGame;
+  // Start
+  newGame();
+})();
+</script>
+</body>
+</html> [end of text]
+
+

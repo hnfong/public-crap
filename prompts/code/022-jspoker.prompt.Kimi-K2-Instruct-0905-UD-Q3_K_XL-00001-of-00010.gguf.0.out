@@ -1,0 +1,97 @@
+<!DOCTYPE html><html>
+<title>Poker</title>
+<style>
+body{font-family:monospace;background:#0f5132;color:#fff;margin:20px}
+button{margin:5px;padding:5px 10px;background:#ffc107;border:none;cursor:pointer}
+.card{display:inline-block;width:40px;height:60px;background:#fff;color:#000;border:1px solid #000;text-align:center;line-height:60px;margin:2px;border-radius:4px}
+.hand{margin:10px 0}
+#message{margin:10px 0;font-weight:bold}
+</style>
+<body>
+<h1>Video Poker - Jacks or Better</h1>
+<div id="message">Place your bet and deal!</div>
+<div>Balance: <span id="balance">1000</span> - Bet: <input id="bet" type="number" value="10" min="1" max="100"></div>
+<button onclick="deal()">Deal</button>
+<button onclick="draw()" id="drawBtn" disabled>Draw</button>
+<div id="hand" class="hand"></div>
+<div id="hold">Hold: </div>
+<div id="result"></div>
+
+<script>
+let deck=[],hand=[],hold=[],balance=1000,bet=10;
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
+
+function newDeck(){
+deck=[];
+for(let s of['♠','♥','♦','♣'])
+for(let r of['A','2','3','4','5','6','7','8','9','10','J','Q','K'])
+deck.push({suit:s,rank:r,value:r=='A'?1:'JQK'.includes(r)?10:r=='10'?0:parseInt(r)});
+shuffle(deck);
+}
+
+function deal(){
+bet=parseInt(document.getElementById('bet').value);
+if(bet>balance){alert('Not enough balance!');return}
+balance-=bet;
+document.getElementById('balance').textContent=balance;
+newDeck();hand=[];hold=[0,0,0,0,0];
+for(let i=0;i<5;i++)hand.push(deck.pop());
+showHand();
+document.getElementById('drawBtn').disabled=false;
+document.getElementById('result').textContent='';
+document.getElementById('message').textContent='Select cards to hold, then draw';
+}
+
+function showHand(){
+let html='';
+for(let i=0;i<5;i++){
+html+=`<div class="card" onclick="toggleHold(${i})" style="border:${hold[i]?'3px solid #ffc107':'1px solid #000'}">${hand[i].rank}${hand[i].suit}</div>`;
+}
+document.getElementById('hand').innerHTML=html;
+let holdText='Hold: ';
+for(let i=0;i<5;i++)if(hold[i])holdText+=`${hand[i].rank}${hand[i].suit} `;
+document.getElementById('hold').textContent=holdText||'Hold: None';
+}
+
+function toggleHold(i){
+if(document.getElementById('drawBtn').disabled)return;
+hold[i]=hold[i]?0:1;
+showHand();
+}
+
+function draw(){
+for(let i=0;i<5;i++)if(!hold[i])hand[i]=deck.pop();
+showHand();
+let win=evaluate();
+let payout={0:0,1:1,2:2,3:3,6:6,9:9,25:25,50:50,250:250}[win]||0;
+balance+=payout*bet;
+document.getElementById('balance').textContent=balance;
+document.getElementById('result').textContent=payout?`You won ${payout*bet} coins!`:'You lose';
+document.getElementById('drawBtn').disabled=true;
+document.getElementById('message').textContent='Game over. Deal again?';
+}
+
+function evaluate(){
+let v=hand.map(c=>c.value).sort((a,b)=>a-b);
+let suits=hand.map(c=>c.suit);
+let ranks=hand.map(c=>'A234567890JQK'.indexOf(c.rank));
+let flush=suits.every(s=>s==suits[0]);
+let straight=(()=>{let u=[...new Set(v)].sort();if(u.length!=5)return 0;if(u[4]-u[0]==4)return 1;if(u.join('')=='101112130')return 1;return 0})();
+let counts={};ranks.forEach(r=>counts[r]=(counts[r]||0)+1);
+let vals=Object.values(counts).sort((a,b)=>b-a);
+let pay=0;
+if(flush&&straight&&v[4]==13&&v[0]==1)pay=250;//Royal flush
+else if(flush&&straight)pay=50;//Straight flush
+else if(vals[0]==4)pay=25;//4 of a kind
+else if(vals[0]==3&&vals[1]==2)pay=9;//Full house
+else if(flush)pay=6;//Flush
+else if(straight)pay=4;//Straight
+else if(vals[0]==3)pay=3;//3 of a kind
+else if(vals[0]==2&&vals[1]==2)pay=2;//2 pair
+else if(vals[0]==2&&ranks.some(r=>r>8))pay=1;//Jacks or better
+return pay;
+}
+</script> [end of text]
+
+

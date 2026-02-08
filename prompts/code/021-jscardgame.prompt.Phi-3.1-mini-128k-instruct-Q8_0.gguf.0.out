@@ -1,0 +1,113 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>Solitaire-like Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #game-board { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        .card { width: 100px; height: 100px; margin: 10px; }
+        .card { width: 100px; height: 100px; background-size: cover; background-position: center; }
+        .card.face { display: flex; justify-content: center; align-items: center; }
+        .card.face img { width: 100px; height: 100px; }
+        .card.face img { max-width: 80px; max-height: 80px; }
+        .card.face img { object-fit: cover; }
+    </style>
+</head>
+<body>
+    <div id="game-board"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const gameBoard = document.getElementById('game-board');
+            const deck = [...Array(52).keys()].map(i => ({
+                value: i % 13 + 1,
+                suit: ['Hearts', 'Diamonds', 'Clubs', 'Spades'].map(suit => suit === 'Hearts' ? 'Ace' : i % 13 + 1),
+                face: ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'].map((value, index) => ({
+                    value,
+                    suit,
+                    face: index === 0 ? 'Ace' : value
+                })
+            })).sort((a, b) => a.value - b.value)
+            });
+
+            const shuffleDeck = () => {
+                for (let i = deck.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [deck[i], deck[j]] = [deck[j], deck[i];
+                }
+            };
+
+            const drawCards = (num) => {
+                const cards = deck.splice(0, num);
+                return cards.map(card => ({
+                    value: card.value,
+                    suit: card.suit,
+                    face: card.face,
+                    id: `card-${Math.random()}`
+                });
+            };
+
+            const createCardElement = (card) => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('card');
+                cardElement.innerHTML = `<div class="card face"><img src="https://example.com/cards/${card.face}.png" alt="${card.face} of ${card.suit}"></div>`;
+                cardElement.id = card.id;
+                gameBoard.appendChild(cardElement);
+                return cardElement;
+            };
+
+            const setupGame = () => {
+                shuffleDeck();
+                const table = drawCards(7);
+                const tableElements = table.map(createCardElement);
+                gameBoard.innerHTML = '';
+                tableElements.forEach(cardElement => gameBoard.appendChild(cardElement));
+                const drawPile = drawCards(7);
+                const drawPileElements = drawPile.map(createCardElement);
+                gameBoard.appendChild(drawPileElements[0]);
+                const discardPile = drawCards(7);
+                const discardPileElements = discardPile.map(createCardElement);
+                gameBoard.appendChild(discardPileElements[0]);
+                const stock = drawCards(7);
+                const stockElement = createCardElement(stock[0]);
+                gameBoard.appendChild(stockElement);
+            };
+
+            const moveCard = (fromId, toId) => {
+                const fromElement = document.getElementById(fromId);
+                const toElement = document.getElementById(toId);
+                fromElement.parentNode.removeChild(fromElement);
+                toElement.parentNode.appendChild(fromElement);
+            };
+
+            const playGame = () => {
+                setupGame();
+                const gameOver = false;
+                while (!gameOver) {
+                    const table = document.querySelectorAll('.card');
+                    table.forEach(card => {
+                        if (card.classList.contains('face') && !card.classList.contains('face-up')) {
+                            const faceValue = parseInt(card.dataset.value);
+                            if (faceValue > 10) {
+                                const topCard = document.querySelector('.card.face-up:last-child');
+                                if (topCard) {
+                                    const topCardValue = parseInt(topCard.dataset.value);
+                                    if (faceValue > topCardValue) {
+                                        moveCard(card.id, topCard.id);
+                                }
+                            }
+                    }
+                }
+                if (document.querySelector('.card.face-up:last-child').dataset.value === 'Ace') {
+                    gameOver = true;
+                }
+            };
+
+            setupGame();
+            playGame();
+        });
+    </script>
+</body>
+</html>
+ [end of text]
+
+

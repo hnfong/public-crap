@@ -1,0 +1,300 @@
+Looking at this problem, I need to perform a binary search on a file without loading all lines into memory, using only O(log n) file operations.
+
+The key insight is that I need to:
+1. Find the byte boundaries of lines (since lines can have variable lengths)
+2. Use binary search on the byte positions
+3. Read only the necessary portions of the file during the search
+
+Here's my approach:
+- First, I'll find the total file size and the byte positions of line boundaries
+- Then perform binary search where each comparison requires reading a line at a specific byte position
+- To find the line at a given byte position, I need to find the start of that line by searching backwards for a newline
+
+Let me implement this:
+
+```python
+import os
+
+def binary_search_file(file_path, target):
+    """
+    Perform binary search on a sorted text file.
+    
+    Args:
+        file_path: Path to the file
+        target: Bytes object to search for
+        
+    Returns:
+        Byte position of the target line, or insertion point
+    """
+    # Get file size
+    file_size = os.path.getsize(file_path)
+    
+    if file_size == 0:
+        return 0
+    
+    # Helper function to get line at a given byte position
+    def get_line_at_position(pos):
+        if pos >= file_size:
+            return b'', file_size
+        
+        with open(file_path, 'rb') as f:
+            # Find the start of the line containing position pos
+            # by searching backwards for newline
+            start = pos
+            while start > 0:
+                f.seek(start - 1)
+                if f.read(1) == b'\n':
+                    break
+                start -= 1
+            
+            # Read the line
+            f.seek(start)
+            line = f.readline()
+            return line.rstrip(b'\n'), start
+    
+    # Helper function to compare line with target
+    def compare_line(pos):
+        line, _ = get_line_at_position(pos)
+        if line < target:
+            return -1
+        elif line > target:
+            return 1
+        else:
+            return 0
+    
+    # Binary search
+    left, right = 0, file_size
+    
+    while left < right:
+        mid = (left + right) // 2
+        line, line_start = get_line_at_position(mid)
+        
+        # Compare the line with target
+        if line < target:
+            left = line_start + len(line) + 1  # Move past this line
+        elif line > target:
+            right = line_start  # This line is too big, search before it
+        else:
+            return line_start  # Found exact match
+    
+    return left  # Insertion point
+
+# For the example:
+# File content (with byte positions):
+# 0: "1 I go to school\n"
+# 17: "2 by bus\n"
+# 26: "foo bar\n"
+# 35: "hello world\n"
+# 48: "zoo zoo zoo"
+# 
+# binary_search_file("myfile.txt", b"2 by") should return 17
+```
+
+Wait, I need to reconsider the example. Let me check the byte positions:
+
+```
+"1 I go to school\n" -> 17 bytes (positions 0-16)
+"2 by bus\n" -> 9 bytes (positions 17-25)
+"foo bar\n" -> 9 bytes (positions 26-34)
+"hello world\n" -> 13 bytes (positions 35-47)
+"zoo zoo zoo" -> 11 bytes (positions 48-58)
+```
+
+So `b"2 by"` should match the line starting at position 17.
+
+My implementation has an issue with the comparison logic. Let me fix it:
+
+```python
+import os
+
+def binary_search_file(file_path, target):
+    """
+    Perform binary search on a sorted text file.
+    
+    Args:
+        file_path: Path to the file
+        target: Bytes object to search for
+        
+    Returns:
+        Byte position of the target line, or insertion point
+    """
+    # Get file size
+    file_size = os.path.getsize(file_path)
+    
+    if file_size == 0:
+        return 0
+    
+    # Helper function to get line at a given byte position
+    def get_line_at_position(pos):
+        if pos >= file_size:
+            return b'', file_size
+        
+        with open(file_path, 'rb') as f:
+            # Find the start of the line containing position pos
+            # by searching backwards for newline
+            start = pos
+            while start > 0:
+                f.seek(start - 1)
+                if f.read(1) == b'\n':
+                    break
+                start -= 1
+            
+            # Read the line
+            f.seek(start)
+            line = f.readline()
+            # Remove trailing newline if present
+            if line.endswith(b'\n'):
+                line = line[:-1]
+            return line, start
+    
+    # Binary search for the insertion point
+    left, right = 0, file_size
+    
+    while left < right:
+        mid = (left + right) // 2
+        line, line_start = get_line_at_position(mid)
+        
+        if line < target:
+            # Target is after this line, move left pointer
+            left = line_start + len(line) + 1
+        else:  # line >= target
+            # Target is at or before this line, move right pointer
+            right = line_start
+    
+    # Check if we found an exact match
+    if left < file_size:
+        line, line_start = get_line_at_position(left)
+        if line == target:
+            return line_start
+    
+    return left
+```
+
+Actually, there's still an issue with the binary search logic. The problem is that when `line >= target`, we should set `right = line_start`, but this might skip over lines that come before the current line.
+
+Let me think more carefully. In a standard binary search for insertion point:
+- We want to find the leftmost position where we could insert the target
+- If `line < target`, we need to search to the right
+- If `line >= target`, we need to search to the left (including current position)
+
+But the challenge is that `mid` might be in the middle of a line, so I need to be careful about which line I'm actually comparing.
+
+Here's a corrected version:
+
+```python
+import os
+
+def binary_search_file(file_path, target):
+    """
+    Perform binary search on a sorted text file.
+    
+    Args:
+        file_path: Path to the file
+        target: Bytes object to search for
+        
+    Returns:
+        Byte position of the target line, or insertion point
+    """
+    # Get file size
+    file_size = os.path.getsize(file_path)
+    
+    if file_size == 0:
+        return 0
+    
+    # Helper function to get line at a given byte position
+    def get_line_at_position(pos):
+        if pos >= file_size:
+            return b'', file_size
+        
+        with open(file_path, 'rb') as f:
+            # Find the start of the line containing position pos
+            # by searching backwards for newline
+            start = pos
+            while start > 0:
+                f.seek(start - 1)
+                if f.read(1) == b'\n':
+                    break
+                start -= 1
+            
+            # Read the line
+            f.seek(start)
+            line = f.readline()
+            # Remove trailing newline if present
+            if line.endswith(b'\n'):
+                line = line[:-1]
+            return line, start
+    
+    # Binary search for the insertion point
+    left, right = 0, file_size
+    
+    while left < right:
+        mid = (left + right) // 2
+        line, line_start = get_line_at_position(mid)
+        
+        if line < target:
+            # Target must be after this line
+            left = line_start + len(line) + 1
+        else:  # line >= target
+            # Target could be at this line or before
+            right = line_start
+    
+    return left
+```
+
+Let me trace through the example:
+- File size = 59 bytes (assuming no final newline on last line)
+- We want to find `b"2 by"`
+- Initial: left=0, right=59
+- mid=29, get_line_at_position(29) → this is in "hello world" line, line="hello world"
+- "hello world" > "2 by", so right = 35 (start of "hello world" line)
+- Continue until we find the line starting at position 17
+
+Actually, I think there's still a conceptual issue. When we find that `line >= target`, setting `right = line_start` might skip over lines that should be considered. Let me reconsider.
+
+The correct approach is to think in terms of line boundaries. Let me implement a cleaner version:
+
+```python
+import os
+
+def binary_search_file(file_path, target):
+    """
+    Perform binary search on a sorted text file.
+    
+    Args:
+        file_path: Path to the file
+        target: Bytes object to search for
+        
+    Returns:
+        Byte position of the target line, or insertion point
+    """
+    # Get file size
+    file_size = os.path.getsize(file_path)
+    
+    if file_size == 0:
+        return 0
+    
+    # Helper function to get line at a given byte position
+    def get_line_at_position(pos):
+        if pos >= file_size:
+            return b'', file_size
+        
+        with open(file_path, 'rb') as f:
+            # Find the start of the line containing position pos
+            # by searching backwards for newline
+            start = pos
+            while start > 0:
+                f.seek(start - 1)
+                if f.read(1) == b'\n':
+                    break
+                start -= 1
+            
+            # Read the line
+            f.seek(start)
+            line = f.readline()
+            # Remove trailing newline if present
+            if line.endswith(b'\n'):
+                line = line[:-1]
+            return line, start
+    
+
+

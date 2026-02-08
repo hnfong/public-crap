@@ -1,0 +1,87 @@
+<!DOCTYPE html><html><head><title>StackSolitaire</title><style>body{font-family:Arial,sans-serif;text-align:center;background:#f0f0f0}.board{display:inline-block;margin:20px;padding:10px;background:#fff;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,0.1)}.card{width:60px;height:80px;margin:2px;display:inline-flex;align-items:center;justify-content:center;border-radius:4px;color:white;font-weight:bold;cursor:pointer;user-select:none}.red{background:red}.black{background:black}.pile{display:inline-block;vertical-align:top;margin:5px;border:1px dashed #ccc;padding:5px;min-height:80px;min-width:60px}.found{background:#90EE90}</style></head><body><h1>Stack Solitaire</h1><div class="board" id="board"></div><script>
+const suits = ['♥', '♦', '♠', '♣'];
+const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+const colors = {'♥': 'red', '♦': 'red', '♠': 'black', '♣': 'black'};
+let deck = [], piles = [[],[],[],[]], foundations = [[],[],[],[]], waste = [];
+
+function newGame() {
+  deck = []; piles.forEach(p => p.length = 0); foundations.forEach(f => f.length = 0); waste.length = 0;
+  suits.forEach(suit => values.forEach(value => deck.push({value, suit, color: colors[suit]})));
+  shuffle(); piles = [[],[],[],[]]; for(let i=0; i<4; i++) for(let j=0; j<6; j++) piles[i].push(deck.pop());
+  render();
+}
+
+function shuffle() { for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; } }
+
+function render() {
+  const board = document.getElementById('board'); board.innerHTML = '';
+  // Draw foundations
+  const fDiv = document.createElement('div'); fDiv.style.display = 'flex';
+  foundations.forEach((f,i) => {
+    const p = document.createElement('div'); p.className = 'pile found'; p.dataset.idx = i;
+    if (f.length) { const c = f[f.length-1]; cardEl(p, c); }
+    else p.textContent = suits[i]; 
+    fDiv.appendChild(p);
+  }); board.appendChild(fDiv);
+
+  // Draw piles
+  const pDiv = document.createElement('div'); pDiv.style.display = 'flex';
+  piles.forEach((p,i) => {
+    const div = document.createElement('div'); div.className = 'pile'; div.dataset.idx = i;
+    p.forEach((c,j) => {
+      const cEl = document.createElement('div'); cEl.className = `card ${c.color}`; cEl.textContent = c.value + c.suit;
+      cEl.onclick = () => tryMove(i, j); cEl.style.position = 'relative'; cEl.style.top = j*15 + 'px'; div.appendChild(cEl);
+    });
+    pDiv.appendChild(div);
+  }); board.appendChild(pDiv);
+
+  // Draw waste
+  const wDiv = document.createElement('div');
+  wDiv.className = 'pile'; wDiv.textContent = 'Waste'; wDiv.dataset.type = 'waste';
+  if (waste.length) { const c = waste[waste.length-1]; cardEl(wDiv, c); }
+  wDiv.onclick = drawWaste; board.appendChild(wDiv);
+}
+
+function cardEl(parent, card) {
+  const el = document.createElement('div'); el.className = `card ${card.color}`; el.textContent = card.value + card.suit;
+  el.onclick = () => tryDiscard(card); parent.appendChild(el);
+}
+
+function drawWaste() {
+  if (deck.length === 0 && waste.length === 0) return;
+  if (deck.length === 0) { waste.forEach(c=>deck.push(c)); waste.length=0; }
+  waste.push(deck.pop()); render();
+}
+
+function tryDiscard(card) {
+  const suitIdx = suits.indexOf(card.suit);
+  const f = foundations[suitIdx];
+  if (card.value === 'A' && f.length === 0) { f.push(card); removeFromSource(card); }
+  else if (f.length > 0) {
+    const top = f[f.length-1];
+    if (top.value === values.indexOf(card.value)-1) { f.push(card); removeFromSource(card); }
+  }
+  render();
+}
+
+function tryMove(pileIdx, cardIdx) {
+  const pile = piles[pileIdx]; if (cardIdx >= pile.length) return;
+  const card = pile[cardIdx];
+  // Only top card can be moved
+  if (cardIdx !== pile.length - 1) return;
+  // Try to move to foundation
+  tryDiscard(card);
+  render();
+}
+
+function removeFromSource(card) {
+  // Check waste
+  if (waste.length && waste[waste.length-1] === card) { waste.pop(); return; }
+  // Check piles
+  piles.forEach(p => { if (p.length && p[p.length-1] === card) p.pop(); });
+}
+
+newGame();
+</script></body></html> [end of text]
+
+

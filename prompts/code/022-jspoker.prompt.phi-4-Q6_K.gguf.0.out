@@ -1,0 +1,49 @@
+```html
+<!DOCTYPE html><html><head><title>Poker Game</title></head><body><h1>Poker Game</h1><div id="game"></div><script>
+const suits = ['♠', '♥', '♦', '♣'];
+const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+const deck = [];
+suits.forEach(s => ranks.forEach(r => deck.push({rank: r, suit: s})));
+const gameDiv = document.getElementById('game');
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function dealHand() {
+  shuffle(deck);
+  return deck.slice(0, 5).map(card => `${card.rank}${card.suit}`);
+}
+
+function evaluateHand(hand) {
+  const rankCounts = hand.reduce((acc, card) => {
+    acc[card[0]] = (acc[card[0]] || 0) + 1;
+    return acc;
+  }, {});
+  const isFlush = hand.every(card => card[1] === hand[0][1]);
+  const isStraight = ranks.includes(hand.map(card => ranks.indexOf(card[0])).sort((a, b) => a - b).join('')) || hand.map(card => ranks.indexOf(card[0])).sort((a, b) => a - b).join('') === '10,J,Q,K,A';
+  if (isFlush && isStraight) return 'Straight Flush';
+  if (Object.values(rankCounts).some(count => count === 4)) return 'Four of a Kind';
+  if (Object.values(rankCounts).includes(3) && Object.values(rankCounts).includes(2)) return 'Full House';
+  if (isFlush) return 'Flush';
+  if (isStraight) return 'Straight';
+  if (Object.values(rankCounts).includes(3)) return 'Three of a Kind';
+  if (Object.values(rankCounts).filter(count => count === 2).length === 2) return 'Two Pair';
+  if (Object.values(rankCounts).includes(2)) return 'One Pair';
+  return 'High Card';
+}
+
+function updateGame() {
+  const hand = dealHand();
+  const result = evaluateHand(hand);
+  gameDiv.innerHTML = `<p>Hand: ${hand.join(', ')}</p><p>Result: ${result}</p><button onclick="updateGame()">Deal New Hand</button>`;
+}
+
+updateGame();
+</script></body></html>
+``` [end of text]
+
+

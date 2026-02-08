@@ -1,0 +1,151 @@
+<think>
+We are going to create a solitaire-like game with a creative twist.
+ The game: "Color Match Solitaire"
+ Rules:
+ - There is a deck of 52 cards (without jokers) but we will use only 4 suits and 13 ranks.
+ - The twist: Instead of the traditional solitaire, we will have a grid (say 7x7) of cards face down.
+ - The player can flip a card. When two cards are flipped, if they are of the same color (red or black) and adjacent (horizontally or vertically), then they are removed.
+ - The goal is to remove all cards.
+
+ Implementation:
+ - We'll create a 7x7 grid. Initially, all cards are face down.
+ - We'll use a standard deck and randomly assign cards to the grid (but we don't care about the rank, only the color).
+ - When the player clicks on a card, it flips. If two are flipped and they are adjacent and same color, remove both. Otherwise, flip them back after a short delay.
+ - We'll use CSS for styling.
+
+ Steps in code:
+ 1. HTML structure: a container for the grid.
+ 2. CSS: style for the grid, card, front (face down), back (face up).
+ 3. JavaScript:
+    - Create a 7x7 grid of divs (each representing a card).
+    - Assign each card a random suit and rank (but we only care about color).
+    - Store the state: whether the card is flipped, removed, and its color.
+    - On click: if the card is not removed and not already flipped, flip it.
+    - Check if two are flipped: if they are adjacent and same color, mark them as removed (and hide them). Otherwise, flip them back after 1 second.
+
+ Note: We are going to use minimal tokens, so we'll avoid long variable names and reduce indentation by using early returns and compact syntax.
+
+ Let's code:
+</think>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Color Match Solitaire</title><style>
+body {font-family: Arial, sans-serif; background: #2c3e50; display: flex; flex-direction: column; align-items: center; padding: 20px;}
+h1 {color: #ecf0f1; margin-bottom: 10px;}
+#game-info {color: #bdc3c7; margin-bottom: 20px;}
+#board {display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; max-width: 500px; margin: 0 auto;}
+.card {width: 60px; height: 90px; position: relative; cursor: pointer; transform-style: preserve-3d; transition: transform 0.5s;}
+.card.flipped {transform: rotateY(180deg);}
+.card-face {position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold;}
+.card-back {background: #3498db; border: 2px solid #2980b9;}
+.card-front {background: #ecf0f1; transform: rotateY(180deg); border: 2px solid #bdc3c7;}
+.red {color: #e74c3c;}
+.black {color: #2c3e50;}
+.removed {visibility: hidden;}
+#restart {margin-top: 20px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;}
+#restart:hover {background: #2980b9;}
+</style></head><body>
+<h1>Color Match Solitaire</h1>
+<div id="game-info">Flip two adjacent cards of the same color to remove them. Clear the board to win!</div>
+<div id="board"></div>
+<button id="restart">New Game</button>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const board = document.getElementById('board');
+  const restartBtn = document.getElementById('restart');
+  let cards = [], flipped = [], moves = 0, canFlip = true;
+
+  function initGame() {
+    board.innerHTML = '';
+    cards = [];
+    flipped = [];
+    moves = 0;
+    canFlip = true;
+    const deck = createDeck();
+    for (let i = 0; i < 49; i++) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const cardObj = {element: card, color: deck[i].color, symbol: deck[i].symbol, flipped: false, removed: false};
+      cards.push(cardObj);
+      const front = document.createElement('div');
+      front.className = `card-face card-front ${cardObj.color}`;
+      front.textContent = cardObj.symbol;
+      const back = document.createElement('div');
+      back.className = 'card-face card-back';
+      card.appendChild(front);
+      card.appendChild(back);
+      card.addEventListener('click', () => flipCard(cardObj));
+      board.appendChild(card);
+    }
+  }
+
+  function createDeck() {
+    const symbols = ['♥', '♦', '♠', '♣'];
+    const deck = [];
+    for (let i = 0; i < 49; i++) {
+      const suit = symbols[i % 4];
+      deck.push({symbol: suit, color: (i % 4 < 2) ? 'red' : 'black'});
+    }
+    return shuffle(deck);
+  }
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function flipCard(card) {
+    if (!canFlip || card.flipped || card.removed || flipped.length >= 2) return;
+    card.flipped = true;
+    card.element.classList.add('flipped');
+    flipped.push(card);
+    if (flipped.length === 2) {
+      moves++;
+      canFlip = false;
+      const [card1, card2] = flipped;
+      const index1 = cards.indexOf(card1);
+      const index2 = cards.indexOf(card2);
+      const adjacent = areAdjacent(index1, index2);
+      if (adjacent && card1.color === card2.color) {
+        setTimeout(() => {
+          card1.removed = true;
+          card2.removed = true;
+          card1.element.classList.add('removed');
+          card2.element.classList.add('removed');
+          flipped = [];
+          canFlip = true;
+          checkWin();
+        }, 500);
+      } else {
+        setTimeout(() => {
+          card1.flipped = false;
+          card2.flipped = false;
+          card1.element.classList.remove('flipped');
+          card2.element.classList.remove('flipped');
+          flipped = [];
+          canFlip = true;
+        }, 1000);
+      }
+    }
+  }
+
+  function areAdjacent(idx1, idx2) {
+    const row1 = Math.floor(idx1 / 7), col1 = idx1 % 7;
+    const row2 = Math.floor(idx2 / 7), col2 = idx2 % 7;
+    return (Math.abs(row1 - row2) === 1 && col1 === col2) || 
+           (Math.abs(col1 - col2) === 1 && row1 === row2);
+  }
+
+  function checkWin() {
+    if (cards.every(card => card.removed)) {
+      setTimeout(() => alert(`You won in ${moves} moves!`), 300);
+    }
+  }
+
+  restartBtn.addEventListener('click', initGame);
+  initGame();
+});
+</script></body></html> [end of text]
+
+

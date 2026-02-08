@@ -1,0 +1,89 @@
+
+<!DOCTYPE html><html>
+<head>
+<title>Poker</title>
+<style>
+body { font-family: Arial; background: #008800; color: white; text-align: center; }
+#game { margin: 20px auto; width: 600px; }
+#hand { height: 150px; margin: 20px; }
+.card { display: inline-block; width: 80px; height: 120px; background: white; color: black; border-radius: 5px; margin: 5px; line-height: 120px; font-size: 24px; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
+button { padding: 10px 20px; font-size: 16px; margin: 5px; cursor: pointer; }
+#message { font-size: 20px; margin: 10px; }
+</style>
+</head>
+<body>
+<div id="game">
+<h1>Poker</h1>
+<div id="hand"></div>
+<button onclick="deal()">Deal</button>
+<button onclick="draw()">Draw</button>
+<div id="message">Click Deal to start</div>
+</div>
+<script>
+let deck = [], hand = [], held = Array(5).fill(false), credits = 100, bet = 5;
+
+function createDeck() {
+  const suits = ['♠','♥','♦','♣'], ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  deck = []; for (let s of suits) for (let r of ranks) deck.push(r+s);
+}
+
+function shuffle() {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+}
+
+function deal() {
+  if (credits < bet) { message.innerHTML = 'No credits!'; return; }
+  credits -= bet;
+  createDeck(); shuffle(); hand = []; held.fill(false);
+  for (let i = 0; i < 5; i++) hand.push(deck.pop());
+  displayHand(); 
+  message.innerHTML = `Credits: ${credits} - Select cards to hold and click Draw`;
+}
+
+function draw() {
+  for (let i = 0; i < 5; i++) if (!held[i]) hand[i] = deck.pop();
+  held.fill(false);
+  displayHand();
+  const win = evaluateHand();
+  credits += win;
+  message.innerHTML = win ? `You won ${win} credits!` : 'No win.';
+  message.innerHTML += ` Credits: ${credits}`;
+}
+
+function displayHand() {
+  handDiv.innerHTML = '';
+  hand.forEach((card, i) => {
+    const cardEl = document.createElement('div');
+    cardEl.className = 'card';
+    cardEl.textContent = card;
+    cardEl.onclick = () => { held[i] = !held[i]; cardEl.style.background = held[i] ? '#ffcc00' : 'white'; };
+    handDiv.appendChild(cardEl);
+  });
+}
+
+function evaluateHand() {
+  const ranks = hand.map(card => card.slice(0,-1)), suits = hand.map(card => card.slice(-1));
+  const rankCounts = {}; ranks.forEach(r => rankCounts[r] = (rankCounts[r] || 0) + 1);
+  const suitCounts = {}; suits.forEach(s => suitCounts[s] = (suitCounts[s] || 0) + 1);
+  const isFlush = Object.values(suitCounts).includes(5);
+  const rankValues = ranks.map(r => ({'A':14,'K':13,'Q':12,'J':11}[r] || parseInt(r)));
+  rankValues.sort((a,b) => a-b);
+  const isStraight = rankValues.every((v,i,a) => i===0 || v-a[i-1]===1) || (rankValues.join()==='2,3,4,5,14' && (rankValues=[1,2,3,4,5]));
+  if (isStraight && isFlush) return rankValues[4]===14 ? 800 : 50;
+  if (Object.values(rankCounts).includes(4)) return 25;
+  if (Object.values(rankCounts).includes(3) && Object.values(rankCounts).includes(2)) return 9;
+  if (isFlush) return 6;
+  if (isStraight) return 4;
+  if (Object.values(rankCounts).includes(3)) return 3;
+  if (Object.values(rankCounts).filter(c => c===2).length === 2) return 2;
+  if (Object.values(rankCounts).includes(2)) return 1;
+  return 0;
+}
+</script>
+</body>
+</html> [end of text]
+
+

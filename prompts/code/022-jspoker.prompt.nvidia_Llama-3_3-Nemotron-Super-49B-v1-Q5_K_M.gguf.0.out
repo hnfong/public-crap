@@ -1,0 +1,58 @@
+```html
+<!DOCTYPE html><html>
+<head><title>Poker Game</title></head>
+<body>
+<h1>Poker Game</h1>
+<div id="game"></div>
+<div id="hand"></div>
+<div id="actions"><button onclick="deal()">Deal</button> <button onclick="checkHand()">Check Hand</button></div>
+<div id="result"></div>
+
+<script>
+const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'];
+let deck, hand;
+
+function deal() {
+  deck = []; for(let s of suits) for(let r of ranks) deck.push({suit:s, rank:r});
+  shuffle(deck); hand = deck.splice(0,5); render();
+}
+
+function checkHand() {
+  const sorted = hand.sort((a,b)=>ranks.indexOf(a.rank)-ranks.indexOf(b.rank));
+  const flush = [...new Set(hand.map(c=>c.suit))].length === 1;
+  const ranksUsed = sorted.map(c=>ranks.indexOf(c.rank));
+  const straight = ranksUsed.every((v,i,a)=>i===0||v===a[i-1]+1) && ranksUsed[ranksUsed.length-1] - ranksUsed[0] === 4;
+  const pairs = {}; sorted.forEach(c=>pairs[c.rank] = (pairs[c.rank]||0)+1);
+  const pair = Object.values(pairs).filter(v=>v===2).length === 1;
+  const threeOfAKind = Object.values(pairs).filter(v=>v===3).length === 1;
+  const twoPair = Object.values(pairs).filter(v=>v===2).length === 2;
+  const fullHouse = threeOfAKind && pair;
+  const fourOfAKind = Object.values(pairs).filter(v=>v===4).length === 1;
+  const royalFlush = flush && straight && sorted[0].rank === '10';
+  const handRank = () => {
+    if (royalFlush) return 'Royal Flush';
+    if (straight && flush) return 'Straight Flush';
+    if (fourOfAKind) return 'Four of a Kind';
+    if (fullHouse) return 'Full House';
+    if (flush) return 'Flush';
+    if (straight) return 'Straight';
+    if (threeOfAKind) return 'Three of a Kind';
+    if (twoPair) return 'Two Pair';
+    if (pair) return 'Pair';
+    return 'High Card: ' + sorted[sorted.length-1].rank;
+  };
+  document.getElementById('result').innerText = handRank();
+}
+
+function shuffle(a) {for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
+
+function render() {
+  document.getElementById('hand').innerText = hand.map(c=>`${c.rank} of ${c.suit}`).join(', ');
+  document.getElementById('result').innerText = '';
+}
+</script>
+</body></html>
+``` [end of text]
+
+

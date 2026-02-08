@@ -1,0 +1,354 @@
+We need to produce a single HTML file with embedded JavaScript that implements a solitaire-like game with a creative twist. The constraints: must run locally, no network requests, vanilla JS, concise code, reduce indentation to save tokens. The output must be HTML, starting with <!DOCTYPE html><html>. No explanations. The user will directly paste into a browser.
+
+We need to think of a solitaire-like game with a twist. Something simple but interesting. Let's think of a game like "Spider Solitaire" but simpler, or "Freecell", or "Klondike". But we need to be concise. Maybe a game where you have a single deck, you can drag cards onto each other based on some rule, maybe like "Pyramid" but simpler. Or maybe a puzzle: you have a row of cards, you can click on a card to remove it if it's between two cards of the same suit or same rank? Or maybe a "TriPeaks" style: a pyramid of cards, you can remove a card if it's one rank higher or lower than the top card of the waste pile. That's a known solitaire variant: TriPeaks. That's a good twist: it's like solitaire but you clear a pyramid. The rules: a tableau of cards arranged in a pyramid shape (like 7 rows). The waste pile starts with one card face-up. You can click a card from the tableau that is uncovered (i.e., no cards covering it) and whose rank is adjacent (one higher or lower) to the top waste card, regardless of suit. Aces and Kings wrap? Usually in TriPeaks, you can wrap around (Ace can be placed on King and vice versa). The goal is to clear all cards from the pyramid. You can draw from the stock to get a new waste card. The game ends when no more moves.
+
+We need to implement a simple UI: display the pyramid, the waste pile, the stock (draw pile). The user can click on a card in the pyramid to move it to the waste if it's legal. Also click on the stock to draw a new waste card. The game should detect win/lose.
+
+We need to generate a deck, shuffle, deal the pyramid (28 cards for a 7-row pyramid: 1+2+3+4+5+6+7 = 28). Then remaining cards become stock (24 cards). The waste starts with one card from the stock. Then the player can click.
+
+We need to render cards. We can use Unicode characters for suits: ♠, ♥, ♦, ♣. Ranks: A,2-10,J,Q,K. We can use a simple representation: a div for each card, with background color white, border, etc. We need to show the rank and suit. We need to differentiate colors: red for hearts and diamonds, black for spades and clubs.
+
+We need to handle click events. We need to keep state: the pyramid (array of arrays), the stock (array), the waste (array). The pyramid cards have a "visible" flag if they are not covered by any card. Initially only the bottom row is uncovered. Actually, in TriPeaks, a card is uncovered if it has no cards covering it, i.e., both children are removed (if any). But we can simplify: a card is available if both cards directly below it are removed (or it's in the bottom row). But we can also just allow any card that is not covered by any other card (i.e., no card overlapping it). In a pyramid, each card is covered by two cards above? Actually, typical TriPeaks has three peaks, but we can do a simple pyramid: each row has one more card than the row above, centered. The covering rule: a card is covered if there is any card directly above it that is still present. Actually, in a typical pyramid solitaire, a card is uncovered if both cards directly above it are removed. But we can simplify: a card is available if it has no cards covering it (i.e., no card in the row above that overlaps it). But that might be complex. Simpler: we can treat the pyramid as a set of rows where each card is covered by the two cards above it (if any). So a card is available if both of its "children" (the two cards directly below it) are removed. Wait, typical pyramid solitaire: you remove pairs of cards that sum to 13. But TriPeaks is different: you remove a card if it's adjacent in rank to the waste card, and the card must be "exposed", meaning no cards covering it. In TriPeaks, the layout is three overlapping peaks, but we can simplify to a single pyramid.
+
+Simplify: we can make a "pyramid" of 5 rows (1+2+3+4+5 = 15 cards). That reduces the number of cards and complexity. But we can also do 7 rows (28 cards). The stock will have 24 cards (52-28). The waste starts with one card.
+
+We need to check adjacency: rank difference of 1 (wrap around). So we need a function to get rank value: A=1, 2=2,...,10=10, J=11, Q=12, K=13. Then a move is allowed if |rank - wasteRank| == 1 or (rank == 1 and wasteRank == 13) or (rank == 13 and wasteRank == 1). So basically treat ranks cyclically.
+
+We need to handle removal: when a card is moved to waste, we remove it from the pyramid (mark as removed). Then we need to update available cards: any card whose covering cards are both removed becomes available.
+
+Simplify representation: each card object: {suit, rank, removed, visible?}. Actually, we can compute visibility dynamically: a card is visible if it's not removed and all cards covering it are removed. For a pyramid, each card (except those in the bottom row) has two "children" directly below it: left and right. So we can store indices of children. Or we can store parent indices. Let's define the pyramid as a flat array of 28 cards, with each card having leftChildIndex and rightChildIndex. Then we can compute if a card is available: if it's not removed and both children are removed (or it's a bottom row card with no children). Then we can allow clicking on it if it's available and rank matches.
+
+We need to render the pyramid in a triangular shape. Use absolute positioning or CSS grid? We can use a container with relative positioning and each card absolutely positioned. Or we can use a flexbox with rows. Simpler: use a div for each row, with text-align center, and each card as inline-block. That will automatically center the rows. We can use a container with a fixed width and each row centered.
+
+We need to handle click events on cards: if the card is available and rank matches, move it to waste (i.e., remove it). Then update the waste top card. Also need to handle stock click: draw next card from stock to waste (if stock not empty). If stock empty, maybe reshuffle waste (except top) back into stock? In TriPeaks, you can recycle the waste pile: when stock is empty, you can turn over the waste pile (except the top card) back into stock. But we can skip that for simplicity: once stock empty, you can't draw more. But that may make the game harder. We can implement a simple "draw" button that draws a new waste card from stock. If stock empty, you lose.
+
+We need to detect win: all pyramid cards removed. Detect lose: no available moves and stock empty.
+
+We need to generate the deck: 52 cards. Shuffle using Fisher-Yates.
+
+We need to create the pyramid: we can allocate the first 28 cards to the pyramid, in order of rows: row 0 (1 card), row 1 (2 cards), etc. We need to assign children indices. For each card at index i in the flat array, we can compute its children indices: if row < 6 (0-indexed), then leftChild = i + row + 1, rightChild = i + row + 2? Actually, the pyramid structure: row 0 has 1 card, row 1 has 2 cards, row 2 has 3, etc. The total number of cards up to row r is (r+1)*(r+2)/2? Actually, sum of 1..(r+1) = (r+1)*(r+2)/2. But we need to map each card to its children. Let's define the pyramid as an array of rows: each row is an array of card objects. For each card at row r, position p (0-indexed within row), its left child is at row r+1, position p (if r+1 < numRows). Its right child is at row r+1, position p+1 (if r+1 < numRows). So we can store children indices as flat indices: leftChild = sum_{i=0}^{r} (i+1) + p? Actually, we can compute the flat index of a card at row r, position p: index = (r*(r+1))/2 + p. Because sum of rows before row r: 1+2+...+r = r*(r+1)/2. Then children: leftChild = ((r+1)*(r+2))/2 + p (flat index of first card in row r+1) + p? Wait, we need to compute the flat index of the left child: it's at row r+1, position p. The number of cards before row r+1 is (r+1)*(r+2)/2. So leftChild = (r+1)*(r+2)/2 + p. RightChild = leftChild + 1. So we can store children indices.
+
+Alternatively, we can store parent indices for each card: for a card at row r, position p, its parent (if any) is at row r-1, position p (if p < row) and row r-1, position p-1 (if p > 0). Actually, each card (except top) has two parents: left parent (if p > 0) and right parent (if p < r). But for availability, we need to check if both parents are removed? Actually, a card is covered by the two cards above it (parents). So a card is available if both parents are removed (or it's top row). So we need to check parents, not children. So we need to store parent indices for each card. For each card at row r, position p, its left parent is at row r-1, position p-1 (if p > 0). Its right parent is at row r-1, position p (if p < r). So we can store parent indices. Then a card is available if it's not removed and both parents are removed (or no parents). That is easier: we can check parents.
+
+Thus, we can generate the pyramid as a flat array of 28 cards, each with suit, rank, removed flag, and parent indices (maybe two). Then we can compute available.
+
+Simplify further: we can just store the pyramid as a 2D array (rows). Then for each card, we can check its parents: if row == 0, no parents; else left parent = rows[row-1][pos-1] if pos > 0; right parent = rows[row-1][pos] if pos < row. Then a card is available if not removed and both parents are removed (or no parents). So we need to store removed flag for each card.
+
+Thus, we can generate the deck, shuffle, then take first 28 cards for pyramid, assign them to rows. Then the remaining 24 cards are stock (array). Then set waste = [stock.pop()] (the top card). Then render.
+
+We need to render the pyramid: for each row, create a div with class "row", and for each card in row, create a div with class "card". For each card, we need to display rank and suit, and color. We can set class "card" and maybe "available" if available. Click handler: if available and rank matches, remove it.
+
+We need to update the waste pile display: show the top card of waste. Also show the stock count (number of cards left). Also a "draw" button to draw from stock.
+
+We need to detect win: if all pyramid cards removed (i.e., count of removed cards == 28). Then show win message.
+
+Detect lose: if no available moves (i.e., no card in pyramid is available and matches rank) and stock is empty (or maybe also if stock has cards but you can't draw because you can't use them? Actually, you can always draw a new waste card from stock if stock not empty. So lose condition: stock empty and no available moves.
+
+We need to handle drawing: when you draw, you take the top card from stock and push it to waste. That changes the waste top card, which may enable new moves.
+
+We need to handle recycling: in TriPeaks, when stock is empty, you can turn the waste pile (except top) back into stock. But we can skip that for simplicity. But if we skip, the game may be unwinnable often. But we can add a "reshuffle" button that recycles waste (except top) back into stock. That would be nice. But to keep concise, maybe we can just allow drawing until stock empty, then you lose if no moves. That may be okay.
+
+We need to keep code concise: reduce indentation, use short variable names, avoid unnecessary braces. Use ternary operators. Use array methods.
+
+We need to output a single HTML file with embedded CSS and JS. Use minimal CSS: cards as inline-block with border, padding, margin. Use red color for hearts and diamonds.
+
+We need to handle click events: attach a click handler to each card element, but we need to identify which card object it corresponds to. We can store index in dataset. Or we can store the card object in a global array and use index.
+
+We need to render the game state after each move. We can have a render function that clears the pyramid container and redraws. Or we can update classes and visibility. But simpler: just redraw everything each time. Since the game state is small, we can just re-render the entire pyramid and waste and stock. That is easier.
+
+Thus, the structure: HTML: a <div id="pyramid">, a <div id="waste">, a <div id="stock">, a <div id="message"> for win/lose. Also a "New Game" button.
+
+We need to generate the deck: function generateDeck() returns array of 52 cards: {suit, rank, removed?}. Suit can be 0-3, rank 1-13. We can use suit symbols: ['♠','♥','♦','♣'].
+
+We need to shuffle: function shuffle(arr) { for i from n-1 down to 1, pick random j <= i, swap arr[i], arr[j] }. Use Math.random.
+
+We need to create pyramid: rows = []; let index = 0; for r from 0 to 6 (7 rows): row = []; for p from 0 to r: card = deck[index++]; card.removed = false; row.push(card); store row index and position maybe. Then compute parent indices: for each card, store parent indices: leftParent = (r>0 && p>0) ? rows[r-1][p-1] : null; rightParent = (r>0 && p<r) ? rows[r-1][p] : null. Actually, we can store parent indices as flat indices or references. But we can compute availability on the fly by checking parents' removed flags.
+
+Thus, we need to store the pyramid as a flat array of cards with row and pos maybe. Or we can store the rows as a 2D array and compute parents by referencing rows.
+
+Simplify: store rows as a 2D array of card objects. Then we can compute availability by checking parents in the rows.
+
+Thus, we can have global variables: rows, stock, waste. Also a variable "gameOver" flag.
+
+We need to render: function render() { render pyramid: for each row, create a div with class "row"; for each card, create a div with class "card" plus "available" if available, and maybe "removed" if removed (display none). Add click handler: handleCardClick(row, pos). For each card, display rank and suit. Use Unicode for suit.
+
+We need to handle click: function handleCardClick(row, pos) { card = rows[row][pos]; if card.removed return; if !isAvailable(card) return; if !rankMatches(card, wasteTop) return; card.removed = true; waste.push(card); render(); checkWinLose(); }
+
+We need isAvailable(card): if row == 0, return true (top card). Else, leftParent = rows[row-1][pos-1] if pos>0; rightParent = rows[row-1][pos] if pos<row. If both parents are removed (or null), then available. Actually, we need to check if both parents are removed (i.e., not present). But if a parent doesn't exist (like left parent doesn't exist if pos==0), then we treat it as removed? Actually, the card is covered only by existing parents. So if a parent exists and is not removed, then card is not available. So condition: for each parent that exists (i.e., not null), if parent.removed == false, then not available. So available = all existing parents are removed.
+
+Thus, isAvailable = (row == 0) || ((pos == 0 || rows[row-1][pos-1].removed) && (pos == row || rows[row-1][pos].removed)). Wait, careful: for a card at row r, position p, the parents are: left parent at row r-1, position p-1 (if p>0); right parent at row r-1, position p (if p < r). So condition: if left parent exists and not removed, then not available. Similarly for right parent. So available = (left parent exists ? left parent removed : true) && (right parent exists ? right parent removed : true). So we can compute that.
+
+RankMatches: function rankMatches(card, wasteCard) { return (card.rank == wasteCard.rank + 1) || (card.rank == wasteCard.rank - 1) || (card.rank == 1 && wasteCard.rank == 13) || (card.rank == 13 && wasteCard.rank == 1); }
+
+We need to get wasteTop: waste[waste.length-1].
+
+We need to handle draw: function draw() { if stock.length > 0) { waste.push(stock.pop()); render(); checkWinLose(); } }
+
+We need to check win: if all pyramid cards removed (count removed == 28). Then show win message.
+
+Check lose: if stock.length == 0 and no available moves: i.e., for each card in pyramid, if not removed and isAvailable(card) and rankMatches(card, wasteTop) then there is a move. If no such card, then lose.
+
+We need to render the stock count: show number of cards left. Also a "Draw" button that calls draw().
+
+We need to handle new game: initialize everything and render.
+
+We need to style: use minimal CSS. Use a monospace font for cards. Use red for hearts and diamonds.
+
+We need to keep code concise: use short variable names: deck, rows, stock, waste, topCard. Use global functions.
+
+We need to embed CSS in <style> tag. Use minimal indentation.
+
+We need to output as a single HTML file, starting with <!DOCTYPE html><html>. No extra text.
+
+We need to be careful about token count: each token is expensive. So we need to minimize tokens: use short variable names, avoid unnecessary spaces, use semicolons only where needed. Use arrow functions? But we need to be compatible with browsers. Use function declarations.
+
+We need to avoid using let/const? Actually, we can use let to avoid var. But we can use var to save tokens? Actually, let is fine. But we need to minimize tokens. Use short names: d for deck, r for rows, s for stock, w for waste. Use t for top card.
+
+We need to minimize indentation: we can put multiple statements on one line separated by semicolons. Use ternary operators.
+
+We need to avoid comments. No explanations.
+
+We need to produce a working game.
+
+Let's outline the code:
+
+<!DOCTYPE html><html>
+<head>
+<meta charset="utf-8">
+<title>TriPeaks</title>
+<style>
+body{font-family:sans-serif;background:#0f0f0f;color:#fff;text-align:center}
+#pyramid{margin:20px auto;display:inline-block}
+.row{clear:both}
+.card{display:inline-block;width:60px;height:80px;border:1px solid #fff;border-radius:5px;margin:2px;background:#fff;color:#000;cursor:pointer;vertical-align:top}
+.card.red{color:#f00}
+.card.available{border-color:#0f0}
+.card.removed{visibility:hidden}
+#waste,#stock{margin:10px}
+#stock button{font-size:16px;padding:5px 10px}
+#message{font-size:24px;margin:10px}
+</style>
+</head>
+<body>
+<h1>TriPeaks</h1>
+<div id="message"></div>
+<div id="pyramid"></div>
+<div id="waste"></div>
+<div id="stock"></div>
+<button onclick="newGame()">New Game</button>
+<script>
+// code here
+</script>
+</body>
+</html>
+
+Now the script:
+
+We need to define global variables: rows, stock, waste, topCard.
+
+We need to define generateDeck: function G(){var s=['♠','♥','♦','♣'];var r=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];var d=[];for(var i=0;i<4;i++)for(var j=1;j<=13;j++)d.push({su:i,ra:j,rm:false});return d;}
+
+But we need to store suit symbol and rank symbol. Actually, we need to display rank as a letter/number. We can map rank to string: if rank==1 => 'A', 11 => 'J', 12 => 'Q', 13 => 'K', else rank. So we can store rank number and compute display string later.
+
+We need to shuffle: function S(d){for(var i=d.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=d[i];d[i]=d[j];d[j]=t;}return d;}
+
+We need to create pyramid: function C(d){var rows=[];var idx=0;for(var r=0;r<7;r++){var row=[];for(var p=0;p<=r;p++){var c=d[idx++];c.r=r;c.p=p;c.rm=false;row.push(c);}rows.push(row);}return rows;}
+
+We need to set up stock: stock = d.slice(28); waste = [stock.pop()]; Actually, we need to take the remaining cards after pyramid. So after dealing pyramid, the rest are stock.
+
+We need to define isAvailable: function A(c){var r=c.r,p=c.p;if(r==0)return!c.rm;var l=true,u=true;if(p>0)l=rows[r-1][p-1].rm;if(p<r)u=rows[r-1][p].rm;return l&&u&&!c.rm;}
+
+But we need to reference rows global variable. So we need to define rows as global.
+
+We need to define rankMatches: function M(c,w){var a=c.ra,b=w.ra;return a==b+1||a==b-1||(a==1&&b==13)||(a==13&&b==1);}
+
+We need to define render: function R(){var py=document.getElementById('pyramid');py.innerHTML='';for(var i=0;i<rows.length;i++){var row=rows[i];var rd=document.createElement('div');rd.className='row';for(var j=0;j<row.length;j++){var c=row[j];var cd=document.createElement('div');cd.className='card';if(c.rm)cd.classList.add('removed');else if(A(c)&&M(c,w[w.length-1]))cd.classList.add('available');cd.onclick=function(rr,pp){return function(){if(A(rows[rr][pp])&&M(rows[rr][pp],w[w.length-1])&&!rows[rr][pp].rm){rows[rr][pp].rm=true;w.push(rows[rr][pp]);R();K();}}}(i,j);var s=['♠','♥','♦','♣'][c.su];var rstr=c.ra==1?'A':c.ra==11?'J':c.ra==12?'Q':c.ra==13?'K':c.ra;cd.innerHTML=rstr+'<br>'+s;if(c.su==1||c.su==2)cd.classList.add('red');rd.appendChild(cd);}py.appendChild(rd);}var wd=document.getElementById('waste');var top=w[w.length-1];wd.innerHTML='Waste: '+top.ra+' '+['♠','♥','♦','♣'][top.su];var sd=document.getElementById('stock');sd.innerHTML='Stock: '+s.length+' cards <button onclick="D()">Draw</button>';if(s.length==0)sd.innerHTML='Stock: empty';}
+
+But we need to handle the case where waste may be empty? Initially waste has one card. So it's fine.
+
+We need to define D(): function D(){if(s.length>0){w.push(s.pop());R();K();}}
+
+We need to define K(): function K(){var win=true;for(var i=0;i<rows.length;i++)for(var j=0;j<rows[i].length;j++)if(!rows[i][j].rm){win=false;break} if(win){document.getElementById('message').innerHTML='You Win!';return;} if(s.length==0){var mv=false;for(var i=0;i<rows.length;i++)for(var j=0;j<rows[i].length;j++){var c=rows[i][j];if(!c.rm&&A(c)&&M(c,w[w.length-1])){mv=true;break}} if(!mv)document.getElementById('message').innerHTML='No moves left. You lose.';}}
+
+We need to define newGame: function N(){var d=G();S(d);rows=C(d);s=d.slice(28);w=[s.pop()];document.getElementById('message').innerHTML='';R();}
+
+We need to call N() on load: N();
+
+We need to define global variables: var rows, s, w; Actually, we need to declare them globally.
+
+We need to be careful about variable names: we used rows, s, w. But we also have a function S for shuffle. So rename shuffle to Sh or something.
+
+We need to minimize tokens: use short function names: G for generate deck, Sh for shuffle, C for create pyramid, A for available, M for match, R for render, D for draw, K for check win/lose, N for newGame.
+
+We need to avoid using var repeatedly? We can use var for each variable. But we can also use let. But we need to be concise.
+
+We need to avoid using innerHTML for card click? We need to attach onclick. We can use cd.onclick = function(){...}. But we need to capture row and pos. Use closure: (function(r,p){return function(){...}})(i,j). That is a bit verbose. Maybe we can store row and pos as dataset attributes: cd.dataset.r = i; cd.dataset.p = j; Then handle click with a single global handler: document.getElementById('pyramid').addEventListener('click',function(e){var t=e.target;if(t.classList.contains('card')){var r=+t.dataset.r,p=+t.dataset.p;...}); That might be shorter. But we need to attach dataset. That might be less code.
+
+Alternatively, we can attach onclick directly: cd.onclick = function(){...}. But we need to pass row and pos. We can use cd.onclick = function(){var c=rows[i][j];...} but i and j are loop variables that will be captured by reference, causing the last value to be used. So we need to create a closure. We can use IIFE: (function(r,p){return function(){...}})(i,j). That's a bit long but okay.
+
+Alternatively, we can store the card object itself in a global array and use index. But we need to map index to row and pos. Simpler: we can store the card object in a global flat array and compute parents differently. But we can keep rows.
+
+We need to minimize tokens: we can use for loops with minimal braces: for(var i=0;i<rows.length;i++){var row=rows[i];for(var j=0;j<row.length;j++){...}}. That's okay.
+
+We need to avoid using innerHTML for the card content? We can use textContent or innerHTML. Use innerHTML for simplicity.
+
+We need to handle the waste display: show top card rank and suit.
+
+We need to handle the stock display: show count and draw button.
+
+We need to handle the message display.
+
+We need to ensure that the code runs without errors.
+
+Potential issues: The waste top card may be undefined if waste is empty. But we always have at least one card initially. After we remove all pyramid cards, we may still have waste top card. That's fine.
+
+Potential issues: The draw function may be called when stock is empty; we need to disable the button. We can hide the button when stock empty.
+
+Simplify: In render, we can show the stock count and a draw button if stock.length>0. If stock empty, show "Stock: empty". So we need to conditionally show the button.
+
+Simplify: In render, we can do: var sd=document.getElementById('stock'); sd.innerHTML='Stock: '+s.length+' cards'+(s.length>0?' <button onclick="D()">Draw</button>':'');
+
+We need to ensure that the draw function D checks if s.length>0.
+
+Now, we need to define the global variables: var rows, s, w; Actually, we need to define them in N() and also make them global. So we can declare them outside functions: var rows,s,w; Then N() sets them.
+
+We need to define the deck generation: function G(){var s=['♠','♥','♦','♣'];var d=[];for(var i=0;i<4;i++)for(var j=1;j<=13;j++)d.push({su:i,ra:j,rm:false});return d;}
+
+But we need to store the suit symbol mapping: we can map suit index to symbol later.
+
+We need to define the shuffle function: function Sh(d){for(var i=d.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=d[i];d[i]=d[j];d[j]=t;}return d;}
+
+We need to define the create pyramid function: function C(d){var rows=[];var idx=0;for(var r=0;r<7;r++){var row=[];for(var p=0;p<=r;p++){var c=d[idx++];c.r=r;c.p=p;c.rm=false;row.push(c);}rows.push(row);}return rows;}
+
+But we need to store rows globally. So we can assign rows = C(d); inside N().
+
+Now, we need to define the available function A(c). It needs to access rows global. So we can define: function A(c){var r=c.r,p=c.p;if(r==0)return!c.rm;var l=true,u=true;if(p>0)l=rows[r-1][p-1].rm;if(p<r)u=rows[r-1][p].rm;return l&&u&&!c.rm;}
+
+But we need to check if left parent exists: if p>0, left parent exists. If p<r, right parent exists. So condition: if left parent exists and not removed, then not available. So we need to check: if(p>0 && !rows[r-1][p-1].rm) return false; if(p<r && !rows[r-1][p].rm) return false; return true; But we also need to check if card is not removed. So we can incorporate that.
+
+Simplify: function A(c){var r=c.r,p=c.p;if(c.rm)return false;if(r==0)return true;if(p>0&&!rows[r-1][p-1].rm)return false;if(p<r&&!rows[r-1][p].rm)return false;return true;}
+
+Now rankMatches: function M(c,w){var a=c.ra,b=w.ra;return a==b+1||a==b-1||(a==1&&b==13)||(a==13&&b==1);}
+
+Now render: function R(){var py=document.getElementById('pyramid');py.innerHTML='';for(var i=0;i<rows.length;i++){var row=rows[i];var rd=document.createElement('div');rd.className='row';for(var j=0;j<row.length;j++){var c=row[j];var cd=document.createElement('div');cd.className='card';if(c.rm)cd.classList.add('removed');else if(A(c)&&M(c,w[w.length-1]))cd.classList.add('available');cd.onclick=(function(r,p){return function(){var c=rows[r][p];if(!c.rm&&A(c)&&M(c,w[w.length-1])){c.rm=true;w.push(c);R();K();}}})(i,j);var s=['♠','♥','♦','♣'][c.su];var rstr=c.ra==1?'A':c.ra==11?'J':c.ra==12?'Q':c.ra==13?'K':c.ra;cd.innerHTML=rstr+'<br>'+s;if(c.su==1||c.su==2)cd.classList.add('red');rd.appendChild(cd);}py.appendChild(rd);}var wd=document.getElementById('waste');var top=w[w.length-1];wd.innerHTML='Waste: '+(top.ra==1?'A':top.ra==11?'J':top.ra==12?'Q':top.ra==13?'K':top.ra)+' '+['♠','♥','♦','♣'][top.su];var sd=document.getElementById('stock');sd.innerHTML='Stock: '+s.length+' cards'+(s.length>0?' <button onclick="D()">Draw</button>':'');}
+
+But we need to handle the case where waste top card may be undefined? Not needed.
+
+Now check win/lose: function K(){var win=true;for(var i=0;i<rows.length;i++)for(var j=0;j<rows[i].length;j++)if(!rows[i][j].rm){win=false;break} if(win){document.getElementById('message').innerHTML='You Win!';return;} if(s.length==0){var mv=false;for(var i=0;i<rows.length;i++)for(var j=0;j<rows[i].length;j++){var c=rows[i][j];if(!c.rm&&A(c)&&M(c,w[w.length-1])){mv=true;break}} if(!mv)document.getElementById('message').innerHTML='No moves left. You lose.';}}
+
+Now newGame: function N(){var d=G();Sh(d);rows=C(d);s=d.slice(28);w=[s.pop()];document.getElementById('message').innerHTML='';R();}
+
+We need to call N() on load: N();
+
+Now we need to ensure that the code is placed in <script> tag.
+
+Potential issues: The waste top card may be undefined if waste is empty after drawing all stock? But we always have at least one card in waste initially. After drawing all stock, waste may have many cards. So waste top always exists.
+
+Potential issues: The draw function D may be called when stock is empty; we need to guard: function D(){if(s.length>0){w.push(s.pop());R();K();}}
+
+Now we need to ensure that the global variables rows, s, w are declared: var rows,s,w; at top.
+
+Now we need to ensure that the code uses minimal tokens. We can shorten function names: G, Sh, C, A, M, R, D, K, N. Use single-letter names where possible.
+
+We need to avoid using innerHTML for the waste display? It's fine.
+
+We need to ensure that the code is syntactically correct and runs.
+
+Now, we need to test the logic: The pyramid has 7 rows, 28 cards. The stock has 24 cards. The waste starts with one card from stock. The player can click on any available card that matches rank adjacent to waste top. The card is removed and added to waste. The waste top updates to that card. The game continues.
+
+We need to ensure that after each move, we re-render the entire pyramid. That may be okay.
+
+Potential performance: fine.
+
+Now, we need to ensure that the click handler works: The closure (function(r,p){return function(){...}})(i,j) will capture the current values of i and j (row and pos). However, we need to capture the card object rows[r][p] inside the handler. But we need to reference rows global. That's fine.
+
+Now, we need to ensure that the available class is only added if the card is not removed and is available and matches rank. So we need to check both A(c) and M(c,wTop). So we can do: if(!c.rm&&A(c)&&M(c,w[w.length-1])) cd.classList.add('available');
+
+Now, we need to ensure that the card is not removed: we already check c.rm, but we also need to check that the card is not removed before adding available class. So we can do: if(!c.rm && A(c) && M(c,w[w.length-1])) cd.classList.add('available');
+
+Now, we need to ensure that the click handler only works if the card is available and matches. So we need to check those conditions inside the handler as well. But we can also just rely on the available class to indicate it's clickable. But we need to prevent clicking on non-available cards. So we can check inside the handler: if(!c.rm && A(c) && M(c,w[w.length-1])) { ... } else return false; That is fine.
+
+Now, we need to ensure that the waste top card is updated after each move. In the handler, we push the card onto waste, then call R() to re-render.
+
+Now, we need to ensure that the waste display updates after each move. In R(), we get the top card w[w.length-1] and display it.
+
+Now, we need to ensure that the stock display updates after each draw.
+
+Now, we need to ensure that the win condition is checked after each move: K() after R().
+
+Now, we need to ensure that the lose condition is checked only when stock is empty and no moves. That's what K() does.
+
+Now, we need to ensure that the message is displayed only once. We can set message innerHTML accordingly.
+
+Now, we need to ensure that the new game button works: <button onclick="N()">New Game</button>.
+
+Now, we need to ensure that the game starts automatically on load: N();
+
+Now, we need to ensure that the CSS is minimal but functional.
+
+Now, we need to ensure that the HTML structure is correct: <div id="pyramid"></div>, <div id="waste"></div>, <div id="stock"></div>, <div id="message"></div>.
+
+Now, we need to ensure that the code is concise: we can combine variable declarations: var rows,s,w; but we need to declare them globally.
+
+Now, we need to ensure that we use minimal spaces. But we can keep some spaces for readability, but tokens count includes spaces? The user said "Each token is expensive, and we are poor :(". Usually tokens refer to words separated by whitespace. So we should minimize whitespace. But we can keep minimal spaces for readability. However, we can remove spaces around operators, after semicolons, etc. But we need to be careful not to break syntax.
+
+We can compress the code: remove unnecessary spaces, use semicolons to separate statements, avoid line breaks? But we can keep line breaks for readability; they don't count as tokens? Usually tokens are separated by whitespace. But we can reduce whitespace.
+
+We can also reduce the number of functions: maybe combine generate deck and shuffle into one function. But we can keep separate.
+
+We can also reduce the number of loops: maybe use forEach loops? But that may be longer.
+
+We can also reduce the number of functions by inlining code. But we need to keep code readable enough.
+
+Now, we need to ensure that the code is valid JavaScript and HTML.
+
+Now, we need to test the game manually.
+
+Let's simulate a small pyramid (5 rows) for easier testing. But we can keep 7 rows.
+
+Potential issues: The available condition may be wrong: In TriPeaks, a card is available if it is not covered by any other card. In our pyramid, a card is covered by its parents (the two cards above it). So if both parents are removed, the card becomes available. That's correct.
+
+Now, we need to ensure that the initial layout has only the bottom row available (since all parents are present). Actually, the bottom row (row 6) has parents in row 5. But those parents are not removed initially, so bottom row cards are not available? Wait, we need to think: In a pyramid, the bottom row cards have no children, but they are covered by parents above them? Actually, the covering direction is reversed: In a pyramid, each card covers the two cards below it. So a card is available if no card is covering it, i.e., no card directly above it that is still present. In our representation, a card is covered by its parents (the cards above). So a card is available if both parents are removed (or no parents). That means initially only the top card (row 0) has no parents, so it's available. But in TriPeaks, the bottom row is available because there are no cards below them; they are not covered by any card. Wait, we need to think about the geometry.
+
+In a typical pyramid solitaire (like "Pyramid" solitaire), the pyramid is built such that each card overlaps the two cards below it. So the bottom row is uncovered (no cards below). But the covering is from above: a card covers the two cards below it. So a card is available if it is not covered by any card above it, i.e., if all cards that cover it have been removed. The cards that cover a given card are its parents (the two cards above it). So a card is available if all its parents are removed. Initially, the top card has no parents, so it's available. The bottom row cards have parents (the cards in row 5). Those parents are present initially, so the bottom row cards are not available. That is the opposite of typical TriPeaks, where the bottom row is available initially. Actually, in TriPeaks, the layout is three peaks, not a single pyramid. But in a typical pyramid solitaire (like "Pyramid" where you remove pairs summing to 13), the bottom row is available initially because there are no cards below them, but they are covered by cards above? Actually, in that game, you can only remove uncovered cards, meaning cards that have no cards covering them. The covering cards are those directly above them. So the bottom row is uncovered because there are no cards below them, but they are covered by cards above? Wait, the covering direction is that a card covers the two cards below it. So the bottom row is not covered by any card (since there are no cards below them). But they are covered by cards above? Actually, the cards above are covering them, but the covering is defined as a card being overlapped by the card above it. So the bottom row is covered by the cards above? Let's visualize:
+
+Row 0: one card at top.
+Row 1: two cards, each partially overlapped by the top card.
+Row 2: three cards, each partially overlapped by the two cards in row 1, etc.
+
+Thus, each card is covered by the two cards above it (except top row). So the bottom row is covered by the cards in row 5 (the row above). So initially, the bottom row is not available. Only the top card is available. That is the typical pyramid solitaire rule: you can only remove the top card initially, then after removing it, the cards in row 1 become available. That is correct for "Pyramid" solitaire, but TriPeaks is different: you have three peaks where the bottom rows are exposed.
+
+But the user asked for a solitaire-like game with a creative twist. We can make a "Pyramid" solitaire with adjacent rank removal rather than sum to 13. That is a twist: combine Pyramid layout with TriPeaks removal rule. That is fine.
+
+Thus, the game will be: you can remove a card if it is uncovered (no cards covering it) and its rank is adjacent to the waste top. That is a creative twist.
+
+Thus, the initial available card is only the top card. After removing it, the two cards in row 1 become available, etc. That is a valid game.
+
+Thus, the game is a combination of Pyramid and TriPeaks.
+
+Now, we need to ensure that the rule for available cards is correct: a card is available if both parents are removed (or no parents). That matches the typical Pyramid solitaire rule.
+
+Now, we need to ensure that the waste top card is initially drawn from stock. The player can draw new waste cards from stock at any time. That is like TriPeaks.
+
+Thus, the game is a hybrid: Pyramid layout + TriPeaks removal rule.
+
+Now, we need to ensure that the win condition is to clear all pyramid cards. That's fine.
+
+Now, we need to ensure that the lose condition is when stock empty and no available moves.
+
+Now, we need to ensure that the game is winnable. It may be hard, but it's okay.
+
+Now, we need to ensure that the code is correct.
+
+Now, we need to produce the final HTML output.
+
+We need to start with <!DOCTYPE html><html>. Then include head and body.
+
+We need to embed CSS and JS.
+
+We need to avoid any external resources.
+
+Now, we need to produce the final answer.
+
+We need to be careful about quoting: use double quotes for HTML attributes, single quotes for JS
+
