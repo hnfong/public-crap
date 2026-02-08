@@ -870,6 +870,7 @@ NAME_MATCH_OVERRIDE = [
     ("jan-nano-", LongContextChatMLTemplateMixin),
     ("Kimi-K2-", KimiTemplateMixin),
     ("Kimi-Dev-", KimiTemplateMixin),
+    ("Kimi-Linear-", KimiTemplateMixin),
     ("ERNIE-4.5", ErnieTemplateMixin),
     ("MiniMax", MiniMaxTemplateMixin),
     ("SmolLM3-", ChatMLTemplateMixin),
