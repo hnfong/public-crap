@@ -1,0 +1,58 @@
+<!DOCTYPE html><html>
+<head><meta charset="utf-8"><title>JS Poker</title><style>
+body{font:16px/1.3 system-ui,Arial;margin:20px;background:#0b0f14;color:#e6edf3}
+h1{font-size:20px;margin:0 0 10px}
+#board{display:flex;gap:8px;margin:10px 0}
+.card{width:60px;height:84px;border:1px solid #3b4452;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px;background:#fff;color:#111}
+.card.red{color:#c62828}
+.controls{margin:10px 0}
+button{padding:8px 12px;margin-right:8px;border:0;border-radius:6px;background:#2d6cdf;color:#fff;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+#status{height:22px;margin-top:6px}
+#hand{display:flex;gap:8px;margin-top:10px}
+.badge{display:inline-block;padding:2px 6px;border-radius:4px;background:#223;margin-left:6px}
+</style></head>
+<body>
+<h1>Video Poker (Jacks or Better)</h1>
+<div id="board"></div>
+<div class="controls">
+  <button id="deal">Deal</button>
+  <button id="draw" disabled>Draw</button>
+  <button id="new" disabled>New Game</button>
+  <span id="bet" class="badge">Bet: 5</span>
+  <span id="bank" class="badge">Bank: 100</span>
+</div>
+<div id="status"></div>
+<div id="hand"></div>
+<script>
+(()=>{ // conciseness: IIFE
+const SUITS=['♠','♥','♦','♣'],RANKS=[2,3,4,5,6,7,8,9,10,'J','Q','K','A'];
+let deck=[],hand=[],bank=100,bet=5,state='idle',held=Array(5).fill(false);
+const el=id=>document.getElementById(id),board=el('board'),handDiv=el('hand'),status=el('status'),bankEl=el('bank'),betEl=el('bet');
+function makeDeck(){deck=[];for(let s of SUITS)for(let r of RANKS)deck.push({s,r});shuffle(deck)}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}} 
+function deal(){if(state!=='idle')return;makeDeck();hand=deck.splice(0,5);held.fill(false);state='bet';render();el('deal').disabled=true;el('draw').disabled=false;el('new').disabled=true;status.textContent='Select cards to hold, then Draw.'}
+function draw(){if(state!=='bet')return;state='draw';el('draw').disabled=true;el('new').disabled=false;for(let i=0;i<5;i++)if(!held[i])hand[i]=deck.pop();render();let score=scoreHand(hand);bank+=score;bankEl.textContent='Bank: '+bank;status.innerHTML=score?('Win: '+score):'No win';}
+function newGame(){state='idle';el('deal').disabled=false;el('draw').disabled=true;el('new').disabled=true;board.innerHTML='';handDiv.innerHTML='';status.textContent=''}
+function toggleHold(i){if(state!=='bet')return;held[i]=!held[i];render()}
+function render(){board.innerHTML='';handDiv.innerHTML='';hand.forEach((c,i)=>{const d=document.createElement('div');d.className='card'+(c.s==='♥'||c.s==='♦'?' red':'');d.textContent=c.r+c.s;d.style.cursor=state==='bet'?'pointer':'default';d.title=state==='bet'?'Click to hold/release':'';if(state==='bet')d.onclick=()=>toggleHold(i);handDiv.appendChild(d)});if(state==='bet'){board.innerHTML='<div style="opacity:.7">Hold cards by clicking them</div>'}}
+function scoreHand(h){const v=h.map(c=>c.r==='A'?14:c.r==='K'?13:c.r==='Q'?12:c.r==='J'?11: +c.r).sort((a,b)=>a-b);
+const s=h.map(c=>c.s),counts={},vals={};v.forEach(x=>counts[x]=(counts[x]||0)+1);Object.entries(counts).forEach(([k,c])=>vals[c]=vals[c]||[],vals[c].push(+k));
+const flush=s.every(x=>x===s[0]),straight=(()=>{const u=[...new Set(v)];if(u.length!==5)return false;const min=u[0];return u.every((x,i)=>x===min+i)||JSON.stringify(u)==='[10,11,12,13,14]';})();
+const groups=Object.entries(vals).sort((a,b)=>b[0]-a[0]); // by count desc
+const top=groups[0],sec=groups[1];
+if(straight&&flush)return v[0]===10?800:50; // Royal/Straight flush
+if(top[0]==='4')return 25; // Four of a kind
+if(top[0]==='3'&&sec&&sec[0]==='2')return 9; // Full house
+if(flush)return 6; // Flush
+if(straight)return 4; // Straight
+if(top[0]==='3')return 3; // Three of a kind
+if(top[0]==='2'&&sec&&sec[0]==='2')return 2; // Two pair
+if(top[0]==='2'&&(top[1][0]===11||top[1][0]===12||top[1][0]===13||top[1][0]===14))return 1; // Jacks or better
+return 0}
+el('deal').onclick=deal;el('draw').onclick=draw;el('new').onclick=newGame;betEl.textContent='Bet: '+bet;bankEl.textContent='Bank: '+bank;render();
+})();
+</script>
+</body></html> [end of text]
+
+

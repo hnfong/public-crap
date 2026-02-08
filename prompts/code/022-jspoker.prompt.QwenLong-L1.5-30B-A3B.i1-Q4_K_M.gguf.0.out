@@ -1,0 +1,647 @@
+<think>
+We are going to create a simple single-player poker game in vanilla JavaScript.
+ The game will:
+   - Shuffle a deck of 52 cards.
+   - Deal 5 cards to the player.
+   - Allow the player to hold (keep) some cards and replace the others.
+   - Show the hand and the best poker hand ranking.
+
+ However, note: the requirement says "standard poker game", so we'll implement a simplified version of video poker (like Jacks or Better) but without betting. 
+ We'll just show the hand and the hand ranking.
+
+ Steps:
+ 1. Create a deck of 52 cards (each card is an object with suit and rank).
+ 2. Shuffle the deck.
+ 3. Deal 5 cards to the player.
+ 4. Display the 5 cards.
+ 5. Provide buttons to hold each card (so the player can choose which to keep).
+ 6. After the player has chosen which cards to hold, replace the non-held cards with new ones from the deck.
+ 7. Show the final hand and its poker hand ranking.
+
+ But note: the requirement says "single player", so we don't need to worry about multiple players.
+
+ However, the problem says: "No outgoing network requests", so we'll do everything in the browser.
+
+ We are to output an HTML file with embedded JavaScript.
+
+ Important: We must be concise to save tokens (so we'll minimize the code and use short variable names).
+
+ Let's plan the code:
+
+ - We'll create a deck array with 52 cards. We can represent each card as a string: [rank][suit] (e.g., "AH" for Ace of Hearts, "2D" for 2 of Diamonds, etc.)
+   But note: we need to be able to sort and evaluate. Alternatively, we can have an array of objects, but to save tokens we'll use strings.
+
+   However, for evaluation, we might need to parse the rank and suit. So we can do:
+
+   Ranks: '2','3','4','5','6','7','8','9','T','J','Q','K','A'
+   Suits: 'C','D','H','S'
+
+   So a card is a string of two characters: first character is rank, second is suit.
+
+   Example: "2C", "TD", "QS", "AS"
+
+ - We'll create a function to shuffle the deck (using Fisher-Yates).
+
+ - We'll have a function to evaluate the hand (to determine the poker hand ranking).
+
+ - We'll have a function to display the hand (as HTML).
+
+ - We'll have a function to handle the hold buttons.
+
+ But note: the requirement says "concise", so we'll try to write as little code as possible.
+
+ However, we must have a working game.
+
+ Let's outline the HTML structure:
+
+   <!DOCTYPE html>
+   <html>
+   <head>
+     <title>Poker</title>
+     <style>
+        /* minimal styling to make it look decent */
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .card { display: inline-block; border: 1px solid #000; padding: 5px; margin: 5px; width: 50px; height: 70px; line-height: 70px; }
+        .card span { display: block; }
+        .card .rank { font-size: 20px; }
+        .card .suit { font-size: 15px; }
+        button { margin: 5px; }
+     </style>
+   </head>
+   <body>
+     <h1>Single-Player Poker</h1>
+     <div id="hand"></div>
+     <div id="controls">
+        <button id="hold1">Hold 1</button>
+        <button id="hold2">Hold 2</button>
+        <button id="hold3">Hold 3</button>
+        <button id="hold4">Hold 4</button>
+        <button id="hold5">Hold 5</button>
+        <button id="deal">Deal</button>
+     </div>
+     <div id="result"></div>
+
+     <script>
+        // Our JavaScript code here
+     </script>
+   </body>
+   </html>
+
+ Now, the JavaScript:
+
+   We'll have:
+     let deck = []; // the deck of 52 cards
+     let hand = [];  // current hand (5 cards)
+     let held = [false, false, false, false, false]; // which cards are held
+
+   Steps in code:
+
+     1. Initialize the deck.
+     2. Shuffle the deck.
+     3. Deal 5 cards to the hand.
+     4. Display the hand.
+     5. When the "Deal" button is clicked (initially, we'll have a deal button that starts the game), we reset the hand and held array, then deal.
+        But note: after the first deal, we want to allow holding and then replacing. So we'll have two states: 
+          - Initial state: show the first 5 cards and the "Hold" buttons and a "Deal" button (which will be the "Draw" button after holding).
+        Actually, we can have:
+          - First, we show the hand and the hold buttons. Then when the player clicks a hold button, we toggle the hold state for that card.
+          - Then we have a "Draw" button that replaces the non-held cards.
+
+        However, the requirement says "single player", so we'll do:
+
+          - On page load: deal 5 cards and show them.
+          - Then the player can click on the hold buttons (each button corresponds to a card) to hold that card.
+          - After holding, the player clicks "Draw" to replace the non-held cards.
+
+        But note: the requirement says "standard poker", so we'll do the typical video poker.
+
+        We'll have two buttons: "Hold" for each card (which we'll make toggle buttons) and a "Draw" button.
+
+        However, to save tokens, we can have one button for each card that says "Hold" or "Unhold", and then a "Draw" button.
+
+        We'll manage the state of the hold buttons.
+
+     6. After the draw, we replace the non-held cards and then evaluate the hand and show the result.
+
+   Implementation:
+
+     We'll create a function `initDeck` to create the deck.
+
+     We'll create a function `shuffle` to shuffle the deck.
+
+     We'll create a function `deal` to deal 5 cards to the hand (and reset held array).
+
+     We'll create a function `displayHand` to show the hand in the #hand div.
+
+     We'll create a function `evaluateHand` to return the hand ranking (as a string).
+
+     We'll create a function `handleHold` that toggles the held state for a card (by index) and updates the button text.
+
+     We'll create a function `handleDraw` that replaces the non-held cards and then evaluates and displays the result.
+
+   However, note: we want to be concise. We'll try to write the code in as few lines as possible.
+
+   Let's try to write the code without too many helper functions, but we'll have to.
+
+   Important: We are to output the entire HTML with the script.
+
+   We'll write the code in a way that minimizes the number of lines and tokens.
+
+   We'll use:
+
+     const suits = ['C','D','H','S'];
+     const ranks = ['2','3','4','5','6','7','8','9','T','J','Q','K','A'];
+
+   Then the deck:
+
+     let deck = [];
+     for (let r of ranks) for (let s of suits) deck.push(r+s);
+
+   But note: we want to shuffle, so we'll write a shuffle function.
+
+   We'll write a shuffle function using Fisher-Yates.
+
+   However, to save tokens, we can do:
+
+     const shuffle = a => { for (let i = a.length; i; i--) { let j = Math.floor(Math.random() * i); [a[i-1], a[j]] = [a[j], a[i-1]]; } };
+
+   But note: we are going to use the deck as an array, and we'll be popping from it.
+
+   Steps for dealing:
+
+     hand = [];
+     for (let i=0; i<5; i++) hand.push(deck.pop());
+
+   But note: we are going to have multiple deals? So we need to reset the deck and shuffle again after each game.
+
+   However, the requirement is a single game? Actually, we'll let the player play multiple hands.
+
+   So we'll have:
+
+     function newGame() {
+        deck = []; // reset deck
+        for (let r of ranks) for (let s of suits) deck.push(r+s);
+        shuffle(deck);
+        hand = [];
+        for (let i=0; i<5; i++) hand.push(deck.pop());
+        held = [false, false, false, false, false];
+        displayHand();
+        // update the hold buttons: set to "Hold" for all
+        document.querySelectorAll('.hold').forEach((btn, i) => btn.textContent = `Hold ${i+1}`);
+        document.getElementById('draw').style.display = 'inline-block';
+        document.getElementById('deal').style.display = 'none';
+     }
+
+   But note: we don't have a "deal" button for the initial state? Actually, we'll have a "Deal" button that starts the game.
+
+   We'll have:
+
+     - Initially, the hand is empty, and we have a "Deal" button that says "Deal" and is visible.
+     - When the player clicks "Deal", we call newGame().
+
+   Then, after the hand is dealt, we show the hold buttons and a "Draw" button (which is hidden initially).
+
+   We'll have:
+
+     <button id="hold1" class="hold">Hold 1</button> ... up to 5.
+
+     <button id="draw" style="display:none;">Draw</button>
+     <button id="deal">Deal</button>
+
+   Then, in the event listeners:
+
+     document.getElementById('deal').addEventListener('click', newGame);
+
+     for (let i=0; i<5; i++) {
+        document.getElementById(`hold${i+1}`).addEventListener('click', () => {
+            held[i] = !held[i];
+            document.getElementById(`hold${i+1}`).textContent = held[i] ? `Unhold ${i+1}` : `Hold ${i+1}`;
+        });
+     }
+
+     document.getElementById('draw').addEventListener('click', () => {
+        // replace non-held cards
+        for (let i=0; i<5; i++) {
+            if (!held[i]) {
+                hand[i] = deck.pop();
+            }
+        }
+        // evaluate the hand
+        const result = evaluateHand(hand);
+        document.getElementById('result').textContent = `Your hand: ${result}`;
+        // after drawing, we reset the held array and the hold buttons
+        held = [false, false, false, false, false];
+        document.querySelectorAll('.hold').forEach((btn, i) => btn.textContent = `Hold ${i+1}`);
+        // hide the draw button and show the deal button
+        document.getElementById('draw').style.display = 'none';
+        document.getElementById('deal').style.display = 'inline-block';
+        // display the new hand
+        displayHand();
+     });
+
+   Now, the `evaluateHand` function:
+
+     We need to determine the best poker hand from 5 cards.
+
+     The hand rankings (from highest to lowest):
+
+        Royal Flush: A, K, Q, J, 10, all same suit.
+        Straight Flush: Five consecutive ranks, same suit (but not royal).
+        Four of a Kind: Four cards of the same rank.
+        Full House: Three of a kind plus a pair.
+        Flush: All five cards same suit.
+        Straight: Five consecutive ranks (not same suit).
+        Three of a Kind: Three cards of the same rank.
+        Two Pair: Two different pairs.
+        One Pair: Two cards of the same rank.
+        High Card: None of the above.
+
+     How to evaluate:
+
+        Step 1: Check for flush (all same suit).
+        Step 2: Check for straight (consecutive ranks).
+
+        We can sort the hand by rank.
+
+        We'll map the ranks to numbers for straight:
+
+          '2' -> 2, '3'->3, ... 'T'->10, 'J'->11, 'Q'->12, 'K'->13, 'A'->14 (and also 1 for straight? but note: A can be low in a straight: A,2,3,4,5)
+
+        However, for simplicity, we'll consider the straight with A as 14 and also check for the wheel (A,2,3,4,5) as a straight.
+
+        Steps for straight:
+
+          - Sort the hand by rank (using a mapping to numbers).
+          - Check if the ranks are consecutive (with the exception of the wheel).
+
+        We'll create a helper function to get the rank value.
+
+        But note: we want to be concise.
+
+        Let's write the evaluateHand function:
+
+          function evaluateHand(hand) {
+            // First, sort the hand by rank (using a mapping)
+            const rankMap = { '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, 'T':10, 'J':11, 'Q':12, 'K':13, 'A':14 };
+            const sorted = hand.slice().sort((a, b) => rankMap[a[0]] - rankMap[b[0]]);
+            // Check for flush
+            const flush = sorted.every(card => card[1] === sorted[0][1]);
+            // Check for straight
+            let straight = false;
+            let straightHigh = 0;
+            // Check for normal straight
+            let consecutive = true;
+            for (let i=1; i<5; i++) {
+                if (rankMap[sorted[i][0]] !== rankMap[sorted[i-1][0]] + 1) {
+                    consecutive = false;
+                    break;
+                }
+            }
+            if (consecutive) {
+                straight = true;
+                straightHigh = rankMap[sorted[4][0]];
+            } else {
+                // Check for wheel (A,2,3,4,5)
+                if (sorted[0][0] === 'A' && sorted[1][0] === '2' && sorted[2][0] === '3' && sorted[3][0] === '4' && sorted[4][0] === '5') {
+                    straight = true;
+                    straightHigh = 5; // because the highest card in the wheel is 5
+                }
+            }
+
+            // Now, check for pairs, etc.
+            const counts = {};
+            for (let card of hand) {
+                counts[card[0]] = (counts[card[0]] || 0) + 1;
+            }
+            const values = Object.values(counts).sort((a, b) => b - a); // descending order
+
+            // Now, we can check:
+            if (straight && flush) {
+                if (straightHigh === 14) return 'Royal Flush';
+                return 'Straight Flush';
+            }
+            if (values[0] === 4) return 'Four of a Kind';
+            if (values[0] === 3 && values[1] === 2) return 'Full House';
+            if (flush) return 'Flush';
+            if (straight) return 'Straight';
+            if (values[0] === 3) return 'Three of a Kind';
+            if (values[0] === 2 && values[1] === 2) return 'Two Pair';
+            if (values[0] === 2) return 'One Pair';
+            return 'High Card';
+          }
+
+        However, note: the straightHigh in the royal flush is 14, so we check for that.
+
+        But note: the straightHigh for the wheel is 5, but we don't need it for the name.
+
+        This function returns a string.
+
+   Now, the `displayHand` function:
+
+        function displayHand() {
+            let html = '';
+            for (let i=0; i<5; i++) {
+                const card = hand[i];
+                html += `<div class="card"><span class="rank">${card[0]}</span><span class="suit">${suitSymbol(card[1])}</span></div>`;
+            }
+            document.getElementById('hand').innerHTML = html;
+        }
+
+        We need a helper for suit symbol:
+
+          function suitSymbol(suit) {
+            switch(suit) {
+                case 'C': return '♣';
+                case 'D': return '♦';
+                case 'H': return '♥';
+                case 'S': return '♠';
+            }
+          }
+
+        But to save tokens, we can do:
+
+          const suitSymbol = s => ['♣','♦','♥','♠']['CDSH'.indexOf(s)];
+
+        However, note: the suits are 'C','D','H','S'. So:
+
+          'C' -> 0 -> '♣'
+          'D' -> 1 -> '♦'
+          'H' -> 2 -> '♥'
+          'S' -> 3 -> '♠'
+
+        So we can write:
+
+          const suitSymbol = s => ['♣','♦','♥','♠'][['C','D','H','S'].indexOf(s)];
+
+        But that's a bit long. Alternatively, we can use a string:
+
+          const suitSymbol = s => '♣♦♥♠'['CDSH'.indexOf(s)];
+
+        However, note: the string 'CDSH' has the same order as the array. So:
+
+          'C' -> 0 -> '♣'
+          'D' -> 1 -> '♦'
+          'H' -> 2 -> '♥'
+          'S' -> 3 -> '♠'
+
+        So we can do:
+
+          const suitSymbol = s => '♣♦♥♠'['CDSH'.indexOf(s)];
+
+        But note: if s is not in 'CDSH', it will return undefined. But we know it's one of them.
+
+        However, to be safe, we can assume it's always one of them.
+
+   Now, let's put it all together.
+
+   We'll try to write the entire code in a very concise way.
+
+   Important: We must not have any extra explanations.
+
+   We'll write the entire HTML with the script.
+
+   We'll minimize the code by:
+
+     - Using short variable names.
+     - Avoiding unnecessary functions (but we need some for clarity and to save tokens in the main flow).
+     - Using arrow functions and short syntax.
+
+   Let's write the code.
+
+   Note: We are going to have the entire code in the script tag.
+
+   We'll do:
+
+     <!DOCTYPE html><html><head><title>Poker</title><style>body{font-family:Arial,sans-serif;text-align:center}.card{display:inline-block;border:1px solid #000;padding:5px;margin:5px;width:50px;height:70px;line-height:70px}.card .rank{font-size:20px}.card .suit{font-size:15px}button{margin:5px}</style></head><body><h1>Single-Player Poker</h1><div id="hand"></div><div id="controls"><button id="hold1" class="hold">Hold 1</button><button id="hold2" class="hold">Hold 2</button><button id="hold3" class="hold">Hold 3</button><button id="hold4" class="hold">Hold 4</button><button id="hold5" class="hold">Hold 5</button><button id="draw" style="display:none;">Draw</button><button id="deal">Deal</button><div id="result"></div><script>const r=['2','3','4','5','6','7','8','9','T','J','Q','K','A'],s=['C','D','H','S'],deck=[],hand=[],held=[],suitSymbol=s=>['♣','♦','♥','♠']['CDSH'.indexOf(s)],shuffle=a=>{for(let i=a.length;i;i--){let j=Math.floor(Math.random()*i);[a[i-1],a[j]]=[a[j],a[i-1]]}},initDeck=()=>{deck=[];for(let r of r)for(let s of s)deck.push(r+s);shuffle(deck)},deal=()=>{hand=[];for(let i=0;i<5;i++)hand.push(deck.pop());held=[false,false,false,false,false];displayHand();document.querySelectorAll('.hold').forEach((b,i)=>b.textContent=`Hold ${i+1}`);document.getElementById('draw').style.display='inline-block';document.getElementById('deal').style.display='none';},displayHand=()=>{let h='';for(let i=0;i<5;i++){const c=hand[i];h+=`<div class="card"><span class="rank">${c[0]}</span><span class="suit">${suitSymbol(c[1])}</span></div>`}document.getElementById('hand').innerHTML=h},evaluateHand=h=>{const m={2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,T:10,J:11,Q:12,K:13,A:14},s=h.slice().sort((a,b)=>m[a[0]]-m[b[0]]),f=s.every(c=>c[1]===s[0][1]),c=()=>{for(let i=1;i<5;i++)if(m[s[i][0]]!==m[s[i-1][0]]+1)return!1;return!0},str=c(),w=s[0][0]=='A'&&s[1][0]=='2'&&s[2][0]=='3'&&s[3][0]=='4'&&s[4][0]=='5',st=str||w;if(st){if(s[4][0]=='A'&&s[3][0]=='K')return'Royal Flush';return'Straight Flush'};const v={};for(let c of h)v[c[0]]=(v[c[0]]||0)+1;const k=Object.values(v).sort((a,b)=>b-a);if(k[0]==4)return'Four of a Kind';if(k[0]==3&&k[1]==2)return'Full House';if(f)return'Flush';if(st)return'Straight';if(k[0]==3)return'Three of a Kind';if(k[0]==2&&k[1]==2)return'Two Pair';if(k[0]==2)return'One Pair';return'High Card'},handleHold=i=>{held[i]=!held[i];document.getElementById(`hold${i+1}`).textContent=held[i]?'Unhold '+i+1:'Hold '+i+1},handleDraw=()=>{for(let i=0;i<5;i++)if(!held[i])hand[i]=deck.pop();document.getElementById('result').textContent=`Your hand: ${evaluateHand(hand)}`;held=[false,false,false,false,false];document.querySelectorAll('.hold').forEach((b,i)=>b.textContent=`Hold ${i+1}`);document.getElementById('draw').style.display='none';document.getElementById('deal').style.display='inline-block';displayHand();};initDeck();document.getElementById('deal').addEventListener('click',deal);for(let i=0;i<5;i++)document.getElementById(`hold${i+1}`).addEventListener('click',()=>handleHold(i));document.getElementById('draw').addEventListener('click',handleDraw);</script></body></html>
+
+   However, note: the above code is very long and we are trying to be concise. But we have to.
+
+   But wait: the requirement says "reduce indentation to save tokens". We are going to write without extra spaces and with minimal line breaks.
+
+   However, the problem says "each token is expensive", so we'll write in a single line as much as possible.
+
+   But note: the HTML structure must be valid. We'll write the HTML in a compact way.
+
+   Let me try to write the entire response as a single string without extra spaces.
+
+   However, the problem says: "Your first line of output must be <!DOCTYPE html><html>"
+
+   We'll write:
+
+     <!DOCTYPE html><html><head><title>Poker</title><style>body{font-family:Arial,sans-serif;text-align:center}.card{display:inline-block;border:1px solid #000;padding:5px;margin:5px;width:50px;height:70px;line-height:70px}.card .rank{font-size:20px}.card .suit{font-size:15px}button{margin:5px}</style></head><body><h1>Single-Player Poker</h1><div id="hand"></div><div id="controls"><button id="hold1" class="hold">Hold 1</button><button id="hold2" class="hold">Hold 2</button><button id="hold3" class="hold">Hold 3</button><button id="hold4" class="hold">Hold 4</button><button id="hold5" class="hold">Hold 5</button><button id="draw" style="display:none;">Draw</button><button id="deal">Deal</button><div id="result"></div><script>const r=['2','3','4','5','6','7','8','9','T','J','Q','K','A'],s=['C','D','H','S'],deck=[],hand=[],held=[],suitSymbol=s=>['♣','♦','♥','♠']['CDSH'.indexOf(s)],shuffle=a=>{for(let i=a.length;i;i--){let j=Math.floor(Math.random()*i);[a[i-1],a[j]]=[a[j],a[i-1]]}},initDeck=()=>{deck=[];for(let r of r)for(let s of s)deck.push(r+s);shuffle(deck)},deal=()=>{hand=[];for(let i=0;i<5;i++)hand.push(deck.pop());held=[false,false,false,false,false];displayHand();document.querySelectorAll('.hold').forEach((b,i)=>b.textContent=`Hold ${i+1}`);document.getElementById('draw').style.display='inline-block';document.getElementById('deal').style.display='none';},displayHand=()=>{let h='';for(let i=0;i<5;i++){const c=hand[i];h+=`<div class="card"><span class="rank">${c[0]}</span><span class="suit">${suitSymbol(c[1])}</span></div>`}document.getElementById('hand').innerHTML=h},evaluateHand=h=>{const m={2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,T:10,J:11,Q:12,K:13,A:14},s=h.slice().sort((a,b)=>m[a[0]]-m[b[0]]),f=s.every(c=>c[1]===s[0][1]),c=()=>{for(let i=1;i<5;i++)if(m[s[i][0]]!==m[s[i-1][0]]+1)return!1;return!0},str=c(),w=s[0][0]=='A'&&s[1][0]=='2'&&s[2][0]=='3'&&s[3][0]=='4'&&s[4][0]=='5',st=str||w;if(st){if(s[4][0]=='A'&&s[3][0]=='K')return'Royal Flush';return'Straight Flush'};const v={};for(let c of h)v[c[0]]=(v[c[0]]||0)+1;const k=Object.values(v).sort((a,b)=>b-a);if(k[0]==4)return'Four of a Kind';if(k[0]==3&&k[1]==2)return'Full House';if(f)return'Flush';if(st)return'Straight';if(k[0]==3)return'Three of a Kind';if(k[0]==2&&k[1]==2)return'Two Pair';if(k[0]==2)return'One Pair';return'High Card'},handleHold=i=>{held[i]=!held[i];document.getElementById(`hold${i+1}`).textContent=held[i]?'Unhold '+i+1:'Hold '+i+1},handleDraw=()=>{for(let i=0;i<5;i++)if(!held[i])hand[i]=deck.pop();document.getElementById('result').textContent=`Your hand: ${evaluateHand(hand)}`;held=[false,false,false,false,false];document.querySelectorAll('.hold').forEach((b,i)=>b.textContent=`Hold ${i+1}`);document.getElementById('draw').style.display='none';document.getElementById('deal').style.display='inline-block';displayHand();};initDeck();document.getElementById('deal').addEventListener('click',deal);for(let i=0;i<5;i++)document.getElementById(`hold${i+1}`).addEventListener('click',()=>handleHold(i));document.getElementById('draw').addEventListener('click',handleDraw);</script></body></html>
+
+   But note: the above code might be too long and might have a typo.
+
+   Let me check the straight check:
+
+        c=()=>{for(let i=1;i<5;i++)if(m[s[i][0]]!==m[s[i-1][0]]+1)return!1;return!0},str=c()
+
+        This checks for consecutive increasing by 1.
+
+        Then we check for the wheel: w = (s[0][0]=='A' && s[1][0]=='2' && s[2][0]=='3' && s[3][0]=='4' && s[4][0]=='5')
+
+        Then st = str || w.
+
+        Then if st: 
+            if (s[4][0]=='A' && s[3][0]=='K') -> that would be the royal flush? 
+            But note: in the sorted hand, the highest card is s[4]. So if the highest card is 'A' and the next is 'K', then it's royal.
+
+        However, note: the sorted hand for royal flush: ['10','J','Q','K','A'] -> so s[0]='10', s[1]='J', s[2]='Q', s[3]='K', s[4]='A'
+
+        So we check: s[4][0]=='A' and s[3][0]=='K' -> that's true.
+
+        So we return 'Royal Flush'. Otherwise, 'Straight Flush'.
+
+   This should be correct.
+
+   However, note: the straight flush check: we have to check for flush and straight. We do:
+
+        if (straight && flush) { ... }
+
+        But in the code, we have:
+
+          if (st) { ... } // which is straight
+
+          and then we check for flush (f) and straight (st) together.
+
+        Actually, we have:
+
+          if (st) {
+            if (s[4][0]=='A' && s[3][0]=='K') return 'Royal Flush';
+            return 'Straight Flush';
+          }
+
+        But wait, we haven't checked for flush? We have:
+
+          if (st) { ... }   // but we need to check that it's also a flush.
+
+        So we should have:
+
+          if (st && f) {
+            if (s[4][0]=='A' && s[3][0]=='K') return 'Royal Flush';
+            return 'Straight Flush';
+          }
+
+        But in the code above, we did:
+
+          if (st) {
+            if (s[4][0]=='A' && s[3][0]=='K') return 'Royal Flush';
+            return 'Straight Flush';
+          }
+
+        This is wrong because we are returning 'Straight Flush' even if it's not a flush.
+
+        So we must check for flush.
+
+        Correction:
+
+          if (st && f) {
+            if (s[4][0]=='A' && s[3][0]=='K') return 'Royal Flush';
+            return 'Straight Flush';
+          }
+
+        So we'll change the evaluateHand function accordingly.
+
+        Let me fix that.
+
+        We'll change:
+
+          if (st) {
+            if (s[4][0]=='A' && s[3][0]=='K') return 'Royal Flush';
+            return 'Straight Flush';
+          }
+
+        to:
+
+          if (st && f) {
+            if (s[4][0]=='A' && s[3][0]=='K') return 'Royal Flush';
+            return 'Straight Flush';
+          }
+
+        But note: the variable `f` is the flush.
+
+        So the corrected part:
+
+          if (st && f) {
+            if (s[4][0]=='A' && s[3][0]=='K') return 'Royal Flush';
+            return 'Straight Flush';
+          }
+
+        Now, let's update the code.
+
+   Also, note: the wheel straight (A,2,3,4,5) is a straight, but it's not a flush? We check flush separately.
+
+   So the corrected evaluateHand:
+
+        const m = { ... };
+        const s = hand.slice().sort((a,b)=>m[a[0]]-m[b[0]]);
+        const f = s.every(c=>c[1]===s[0][1]);
+        const c = () => { for (let i=1; i<5; i++) if (m[s[i][0]] !== m[s[i-1][0]]+1) return false; return true; };
+        const str = c();
+        const w = s[0][0]=='A' && s[1][0]=='2' && s[2][0]=='3' && s[3][0]=='4' && s[4][0]=='5';
+        const st = str || w;
+        if (st && f) {
+            if (s[4][0]=='A' && s[3][0]=='K') return 'Royal Flush';
+            return 'Straight Flush';
+        }
+        ... rest ...
+
+   We'll update the code accordingly.
+
+   Now, let's write the entire code with the fix.
+
+   We'll also note: the `m` object: we have to map the rank string to a number. We did:
+
+        const m = { '2':2, '3':3, ... }
+
+   But in the code we wrote, we used:
+
+        const m={2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,T:10,J:11,Q:12,K:13,A:14}
+
+   However, note: the keys are strings? Actually, in the object, the keys are strings. But we are using the rank as a string.
+
+   But in the sort, we are using `m[a[0]]` and `a[0]` is a string. So we need the keys to be strings.
+
+   So we should write:
+
+        const m = { '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, 'T':10, 'J':11, 'Q':12, 'K':13, 'A':14 };
+
+   But to save tokens, we can write without quotes for the keys? Actually, in JavaScript, if the key is a string without spaces, we can omit quotes. But note: '2' is a string, and we can write it as 2? But that would be a number. We want a string.
+
+   However, in the object, the key '2' is a string. But if we write 2, it becomes a number. So we must use quotes.
+
+   But to save tokens, we can write:
+
+        const m = {2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,T:10,J:11,Q:12,K:13,A:14};
+
+   This is acceptable because the keys are interpreted as strings? Actually, no: in JavaScript, when you write a key without quotes, it's a string if it's a valid identifier. But '2' is not a valid identifier without quotes? Actually, it is: 2 is a number, but we are using it as a key. However, the key will be converted to a string.
+
+   But note: the rank is a string. So when we do `m[a[0]]`, `a[0]` is a string. So we need the key to be a string. But if we write `2:2`, then the key is the string "2", because the key is always a string.
+
+   So it's safe.
+
+   Now, let's write the entire code.
+
+   We'll write it as a single string.
+
+   Important: We must not have any extra spaces that are not necessary.
+
+   We'll write without extra spaces in the code.
+
+   However, the problem says "concise", so we'll remove all unnecessary spaces.
+
+   But note: the HTML must be valid.
+
+   We'll write the HTML without extra spaces.
+
+   Let me write the entire response.
+
+   Note: We are going to output exactly the string below.
+
+   We'll write:
+
+     <!DOCTYPE html><html><head><title>Poker</title><style>body{font-family:Arial,sans-serif;text-align:center}.card{display:inline-block;border:1px solid #000;padding:5px;margin:5px;width:50px;height:70px;line-height:70px}.card .rank{font-size:20px}.card .suit{font-size:15px}button{margin:5px}</style></head><body><h1>Single-Player Poker</h1><div id="hand"></div><div id="controls"><button id="hold1" class="hold">Hold 1</button><button id="hold2" class="hold">Hold 2</button><button id="hold3" class="hold">Hold 3</button><button id="hold4" class="hold">Hold 4</button><button id="hold5" class="hold">Hold 5</button><button id="draw" style="display:none;">Draw</button><button id="deal">Deal</button><div id="result"></div><script>const r=['2','3','4','5','6','7','8','9','T','J','Q','K','A'],s=['C','D','H','S'],deck=[],hand=[],held=[],suitSymbol=s=>['♣','♦','♥','♠']['CDSH'.indexOf(s)],shuffle=a=>{for(let i=a.length;i;i--){let j=Math.floor(Math.random()*i);[a[i-1],a[j]]=[a[j],a[i-1]]}},initDeck=()=>{deck=[];for(let r of r)for(let s of s)deck.push(r+s);shuffle(deck)},deal=()=>{hand=[];for(let i=0;i<5;i++)hand.push(deck.pop());held=[false,false,false,false,false];displayHand();document.querySelectorAll('.hold').forEach((b,i)=>b.textContent=`Hold ${i+1}`);document.getElementById('draw').style.display='inline-block';document.getElementById('deal').style.display='none';},displayHand=()=>{let h='';for(let i=0;i<5;i++){const c=hand[i];h+=`<div class="card"><span class="rank">${c[0]}</span><span class="suit">${suitSymbol(c[1])}</span></div>`}document.getElementById('hand').innerHTML=h},evaluateHand=h=>{const m={2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,T:10,J:11,Q:12,K:13,A:14},s=h.slice().sort((a,b)=>m[a[0]]-m[b[0]]),f=s.every(c=>c[1]===s[0][1]),c=()=>{for(let i=1;i<5;i++)if(m[s[i][0]]!==m[s[i-1][0]]+1)return!1;return!0},str=c(),w=s[0][0]=='A'&&s[1][0]=='2'&&s[2][0]=='3'&&s[3][0]=='4'&&s[4][0]=='5',st=str||w;if(st&&f){if(s[4][0]=='A'&&s[3][0]=='K')return'Royal Flush';return'Straight Flush'};const v={};for(let c of h)v[c[0]]=(v[c[0]]||0)+1;const k=Object.values(v).sort((a,b)=>b-a);if(k[0]==4)return'Four of a Kind';if(k[0]==3&&k[1]==2)return'Full House';if(f)return'Flush';if(st)return'Straight';if(k[0]==3)return'Three of a Kind';if(k[0]==2&&k[1]==2)return'Two Pair';if(k[0]==2)return'One Pair';return'High Card'},handleHold=i=>{held[i]=!held[i];document.getElementById(`hold${i+1}`).textContent=held[i]?'Unhold '+i+1:'Hold '+i+1},handleDraw=()=>{for(let i=0;i<5;i++)if(!held[i])hand[i]=deck.pop();document.getElementById('result').textContent=`Your hand: ${evaluateHand(hand)}`;held=[false,false,false,false,false];document.querySelectorAll('.hold').forEach((b,i)=>b.textContent=`Hold ${i+1}`);document.getElementById('draw').style.display='none';document.getElementById('deal').style.display='inline-block';displayHand();};initDeck();document.getElementById('deal').addEventListener('click',deal);for(let i=0;i<5;i++)document.getElementById(`hold${i+1}`).addEventListener('click',()=>handleHold(i));document.getElementById('draw').addEventListener('click',handleDraw);</script></body></html>
+
+   But note: the `handleHold` function: we are using `i+1` in the text, but in the function we have `i` (the index). So for the first card, i=0, we want to say "Hold 1", so we do `i+1`.
+
+   However, in the `handleHold` function, we have:
+
+        document.getElementById(`hold${i+1}`).textContent=held[i]?'Unhold '+i+1:'Hold '+i+1
+
+   But note: `i+1` is a number, and we are concatenating with a string. So it will be "Unhold 1" for i=0.
+
+   This is correct.
+
+   Let me test the code in my mind:
+
+     - On page load, we call `initDeck()`, which creates the deck and shuffles it.
+     - Then we set up the event listeners.
+
+   We'll output the above string.
+
+   However, note: the problem says "No explanations needed", so we output exactly the above.
+
+   But note: the problem says "You are Qwen, created by Alibaba Cloud. You are a helpful assistant." and we are to output the code.
+
+   We output the code as the response.
+
+   Let me write it.
+
+   Important: We must not have any extra text.
+
+   We output the entire HTML string.
+
+   Note: The above string is very long, but we are trying to be concise.
+
+   We'll output it.
+
+   One more note: the `suitSymbol` function: we are using `['♣','♦','♥','♠']['CDSH'.indexOf(s)]`. 
+   But note: the string 'CDSH' has the letters in the order of the suits. So for 'C', it's 0 -> '♣', etc.
+
+   This should work.
+
+   We are ready.
+</think>
+
+<!DOCTYPE html><html><head><title>Poker</title><style>body{font-family:Arial,sans-serif;text-align:center}.card{display:inline-block;border:1px solid #000;padding:5px;margin:5px;width:50px;height:70px;line-height:70px}.card .rank{font-size:20px}.card .suit{font-size:15px}button{margin:5px}</style></head><body><h1>Single-Player Poker</h1><div id="hand"></div><div id="controls"><button id="hold1" class="hold">Hold 1</button><button id="hold2" class="hold">Hold 2</button><button id="hold3" class="hold">Hold 3</button><button id="hold4" class="hold">Hold 4</button><button id="hold5" class="hold">Hold 5</button><button id="draw" style="display:none;">Draw</button><button id="deal">Deal</button><div id="result"></div><script>const r=['2','3','4','5','6','7','8','9','T','J','Q','K','A'],s=['C','D','H','S'],deck=[],hand=[],held=[],suitSymbol=s=>['♣','♦','♥','♠']['CDSH'.indexOf(s)],shuffle=a=>{for(let i=a.length;i;i--){let j=Math.floor(Math.random()*i);[a[i-1],a[j]]=[a[j],a[i-1]]}},initDeck=()=>{deck=[];for(let r of r)for(let s of s)deck.push(r+s);shuffle(deck)},deal=()=>{hand=[];for(let i=0;i<5;i++)hand.push(deck.pop());held=[false,false,false,false,false];displayHand();document.querySelectorAll('.hold').forEach((b,i)=>b.textContent=`Hold ${i+1}`);document.getElementById('draw').style.display='inline-block';document.getElementById('deal').style.display='none';},displayHand=()=>{let h='';for(let i=0;i<5;i++){const c=hand[i];h+=`<div class="card"><span class="rank">${c[0]}</span><span class="suit">${suitSymbol(c[1])}</span></div>`}document.getElementById('hand').innerHTML=h},evaluateHand=h=>{const m={2:2,3:3,4:4
+

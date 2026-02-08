@@ -1,0 +1,940 @@
+<think>
+Okay, let's tackle this poker game task. The user wants a single-player vanilla JS poker game that runs locally in the browser with no network requests. First, I need to make sure I understand all the hard requirements.
+
+They specified it must be a standard poker game. So probably Texas Hold'em or maybe 5-card draw. Since it's single-player, maybe a simple 5-card draw where the player plays against the computer. But the user didn't specify the variant, so I'll go with 5-card draw as it's straightforward for a single player.
+
+The code has to be concise, minimize indentation to save tokens. Each token is expensive, so I need to write compact code. Also, output must be HTML with embedded JS, starting with <!DOCTYPE html><html>.
+
+First, structure the HTML. Need a basic layout: a place to show the player's hand, maybe buttons for actions like draw or hold. Since it's single-player, the player will draw cards to improve their hand, then compare against a dealer's hand.
+
+Wait, in single-player poker, usually you play against the house. So the player gets 5 cards, can discard some, then the dealer (computer) gets 5 cards, and then compare hands to see who wins.
+
+But the user said "standard poker game", so maybe it's a simple 5-card draw where the player tries to make the best hand, and the game evaluates it. Wait, but single-player against what? Maybe the game just evaluates the player's hand after they draw, but that's not really a game. Hmm.
+
+Wait, perhaps it's a video poker style game. In video poker, you're dealt 5 cards, choose which to hold, draw replacements, and then the hand is evaluated against a payout table. But the user said "standard poker game", which might mean comparing against a dealer's hand.
+
+Wait, the problem statement says "single player", so maybe it's the player vs the computer. So the player and computer each get 5 cards, player can discard some, then computer draws, then compare hands.
+
+But how to structure that. Let's outline the steps:
+
+1. Deal 5 cards to player and 5 to dealer (face down except maybe one? But in single-player, maybe dealer's hand is hidden until end).
+
+But the user wants it concise, so maybe simplify. Let's do:
+
+- Player is dealt 5 cards.
+- Player selects which cards to hold (click to toggle hold).
+- Player clicks 'Draw' to replace non-held cards.
+- Then, dealer's hand is revealed (maybe dealer follows some rules, like draw to improve their hand).
+- Compare hands to determine winner.
+
+But implementing hand evaluation is complex. Need to check for pairs, straights, flushes, etc. That's going to take some code, but must be done concisely.
+
+First, create a deck of cards. Each card can be an object with rank and suit.
+
+Deck generation: suits = ['H','D','C','S'], ranks = ['2','3',...,'A'].
+
+Shuffle the deck. Fisher-Yates shuffle.
+
+Deal 5 cards to player. Display them. Allow selecting which to hold.
+
+When player clicks 'Draw', replace non-held cards with new ones from deck.
+
+Then, evaluate player's hand and dealer's hand (which is dealt 5 cards, maybe after player's draw? Or dealer's hand is dealt initially but not shown).
+
+Wait, in standard poker, both players have their own hands. So perhaps:
+
+- Deal 5 to player, 5 to dealer (dealer's face down).
+- Player discards, draws new cards.
+- Then dealer may draw (but how? Maybe dealer follows a rule, like draw if hand is less than a certain value).
+- Then reveal both hands, compare.
+
+But implementing dealer AI might complicate things. To keep it simple, maybe dealer's hand is fixed (dealt initially, no draw), and player tries to beat it.
+
+Alternatively, after player draws, dealer draws to make a hand, then compare.
+
+But for simplicity, maybe dealer's hand is dealt after player's draw, so it's a fresh 5 cards. Then compare.
+
+But need to evaluate both hands.
+
+Hand evaluation function: given 5 cards, determine the hand rank (high card, pair, two pair, etc.)
+
+This is the most complex part. Need a function that takes an array of 5 cards and returns the hand strength.
+
+Possible approach:
+
+- Check for flush (all same suit)
+- Check for straight (consecutive ranks)
+- Check for four of a kind, full house, etc.
+
+But doing this concisely is challenging.
+
+Let me think of a way to compute the hand rank.
+
+First, sort the cards by rank.
+
+Ranks can be mapped to numbers: 2-10, J=11, Q=12, K=13, A=14 (but A can also be 1 in a straight like A,2,3,4,5).
+
+So need to handle that.
+
+But for simplicity, maybe ignore the low straight (A,2,3,4,5) to save code, but that's not standard. Hmm.
+
+Alternatively, when checking for straight, check both possibilities.
+
+But this adds complexity.
+
+Alternatively, map ranks to numbers where A=14, and check if the sorted ranks are consecutive. If not, check if it's A,2,3,4,5 by seeing if the ranks are [14,2,3,4,5] when sorted.
+
+But this requires extra code.
+
+Given the token constraints, maybe skip the low straight for simplicity, but that's not correct. However, the user said "standard poker game", so must include it.
+
+Hmm. This is tricky.
+
+Alternative approach for straight:
+
+Sort the ranks in ascending order (with A as 14). Check if each next rank is +1. If yes, it's a straight.
+
+If not, check if the ranks are [2,3,4,5,14] (A,2,3,4,5), which is a straight.
+
+So in code:
+
+sortedRanks = [ ... ].sort((a,b) => a - b);
+
+if (sortedRanks[4] - sortedRanks[0] == 4 && new Set(sortedRanks).size ==5) {
+    // straight
+} else if (sortedRanks.join('') == '2345A') {
+    // low straight
+}
+
+Wait, but in numeric terms, if A is 14, then the low straight would be [2,3,4,5,14], which when sorted is [2,3,4,5,14]. The difference between 14 and 2 is 12, so the first condition fails. So need to check specifically for [2,3,4,5,14].
+
+So code for straight:
+
+let isStraight = false;
+if (new Set(ranks).size ===5) {
+    let sorted = ranks.slice().sort((a,b) => a - b);
+    if (sorted[4] - sorted[0] ===4) isStraight = true;
+    else if (sorted.join('') === '2345A') isStraight = true; // but ranks are numbers, so A is 14, so sorted would be [2,3,4,5,14], which as numbers is 2,3,4,5,14. So sorted.join('') would be '234514', which is not '2345A'. So need to check if sorted is [2,3,4,5,14].
+
+So perhaps:
+
+if (sorted[0] ===2 && sorted[1]===3 && sorted[2]===4 && sorted[3]===5 && sorted[4]===14) isStraight = true;
+
+But that's verbose.
+
+Alternative: check if the sorted ranks are [2,3,4,5,14].
+
+So:
+
+if (sorted[0] ==2 && sorted[1]==3 && sorted[2]==4 && sorted[3]==5 && sorted[4]==14) isStraight = true;
+
+But this adds code.
+
+Given token constraints, maybe skip the low straight for now, but that's not standard. However, the user might not care as long as it's a basic game. But the requirement says "standard poker game", so must include it.
+
+Hmm. This is getting complicated. Let's think of a way to handle it concisely.
+
+Another approach: when evaluating straights, check both possibilities.
+
+But perhaps for the sake of conciseness, we can have a helper function.
+
+But given the token limit, maybe it's better to proceed with the main structure and handle hand evaluation as best as possible.
+
+Let's outline the main components:
+
+- Deck creation and shuffle
+- Dealing cards
+- Player interaction (hold/draw)
+- Hand evaluation for player and dealer
+- Determine winner
+
+Now, code structure:
+
+HTML structure:
+
+- A div for player's hand (each card as a button or image, but since it's text-based, maybe display as text)
+- Buttons: 'Draw' (after selecting holds)
+- A div for dealer's hand (initially hidden)
+- A div for result message
+
+But since it's text-based, maybe display cards as text like "Ah", "Kd", etc.
+
+So, for each card in player's hand, display the rank and suit, and have a checkbox or click to toggle hold.
+
+But to save tokens, maybe use buttons that toggle a 'held' class.
+
+Wait, but the code needs to be concise. Let's use minimal HTML.
+
+Perhaps:
+
+<div id="player"></div>
+<button onclick="draw()">Draw</button>
+<div id="dealer" style="display:none"></div>
+<div id="result"></div>
+
+When the game starts, deal 5 cards to player, display them. Each card is a span that can be clicked to toggle hold.
+
+In JS:
+
+function hold(i) {
+    held[i] = !held[i];
+    updateDisplay();
+}
+
+But need to track which cards are held.
+
+Alternatively, when drawing, replace non-held cards.
+
+Now, the hand evaluation function.
+
+Let's try to write a function evaluateHand(hand) that returns a score.
+
+The score can be a number where higher is better.
+
+Possible hand rankings (from high to low):
+
+Royal flush: 9
+Straight flush: 8
+Four of a kind: 7
+Full house: 6
+Flush: 5
+Straight: 4
+Three of a kind: 3
+Two pair: 2
+One pair: 1
+High card: 0
+
+But need to break ties, so the score should also include kickers.
+
+But for simplicity, maybe just compare the hand type first, then kickers.
+
+But implementing full tie-breaking is complex.
+
+Given token constraints, perhaps the evaluation function returns a string that can be compared lexicographically.
+
+For example, for a pair of kings with kickers Q, J, 9: "1KQJ9"
+
+For two pair, tens and fives with 3 kicker: "2T53"
+
+But this requires careful formatting.
+
+Alternatively, compute a numeric score.
+
+But this is getting too involved.
+
+Alternative approach: for the purpose of this game, just determine the hand type (e. g., "Pair", "Flush", etc.), and when comparing two hands, if same type, compare the highest cards.
+
+But implementing this correctly is non-trivial.
+
+Given the token limit, perhaps the evaluation function will return a value that combines the hand rank and the relevant card ranks.
+
+For example:
+
+- High card: 0 followed by sorted ranks descending
+- Pair: 1 followed by pair rank then kickers
+- Two pair: 2 followed by higher pair, lower pair, kicker
+- etc.
+
+This way, comparing two scores lexicographically would determine the winner.
+
+But constructing this score string needs to be done correctly.
+
+Let's outline the steps for evaluateHand:
+
+1. Count suits and ranks.
+2. Check for flush (all same suit).
+3. Check for straight.
+4. Check for four of a kind, full house, etc.
+
+Let's try to code this concisely.
+
+First, map ranks to numbers:
+
+const rankMap = {2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,T:10,J:11,Q:12,K:13,A:14};
+
+But to save tokens, maybe use a string and indexOf.
+
+Wait, for example, '23456789TJQKA'.indexOf(rank) + 2.
+
+But 'T' is 10, so:
+
+ranks = hand.map(card => '23456789TJQKA'.indexOf(card[0]) + 2);
+
+Wait, card is a string like 'Ah', so card[0] is 'A', which in the string '23456789TJQKA' is at position 12, so +2 gives 14. Correct.
+
+So:
+
+let r = hand.map(c => '23456789TJQKA'.indexOf(c[0])+2).sort((a,b)=>b-a);
+let s = hand.map(c => c[1]);
+
+Check flush:
+
+let flush = new Set(s).size ==1;
+
+Check straight:
+
+let str = false;
+if (new Set(r).size ==5) {
+    if (r[0]-r[4]==4) str=true;
+    else if (r.join('')=='145432') str=true; // Wait, no. For A,2,3,4,5, the sorted r would be [14,5,4,3,2], but sorted descending is [14,5,4,3,2], which when joined is '145432'. But 14-2=12, so the first condition fails. So check if r is [14,5,4,3,2].
+
+Wait, sorted descending for A,2,3,4,5 would be [14,5,4,3,2]. So r[0] is 14, r[1] 5, etc.
+
+So str = (r[0]-r[4]==12 && r[1]==5); // Not sure.
+
+Alternatively, check if the sorted ascending is [2,3,4,5,14], which when sorted descending is [14,5,4,3,2].
+
+So str = (r[0]==14 && r[1]==5 && r[2]==4 && r[3]==3 && r[4]==2);
+
+But this is verbose.
+
+Alternatively, create a sorted ascending array:
+
+let ra = r.slice().sort((a,b)=>a-b);
+str = ra[4]-ra[0]==4 && ra[4]-ra[3]==1 || ra.join('')=='234514';
+
+But ra.join('') for [2,3,4,5,14] is '234514'.
+
+So:
+
+str = (ra[4]-ra[0]==4 && new Set(ra).size==5) || ra.join('')=='234514';
+
+But '234514' is the string when ra is [2,3,4,5,14].
+
+So:
+
+str = (ra[4]-ra[0]==4 && ra.every((v,i,a) => !i || v==a[i-1]+1)) || ra.join('')=='234514';
+
+But this is getting too long.
+
+Given token constraints, perhaps ignore the low straight for now, but that's not standard. However, maybe the user won't notice, or it's acceptable for the sake of conciseness.
+
+Alternatively, handle it with a simple check:
+
+str = ra.join('')=='234514' || (ra[4]-ra[0]==4 && new Set(ra).size==5);
+
+But ra is sorted ascending, so for a normal straight, ra[4]-ra[0] is 4, and all consecutive.
+
+But if there are duplicates, new Set(ra).size !=5, so str is false.
+
+So:
+
+str = (new Set(ra).size ==5) && (ra[4]-ra[0]==4 || ra.join('')=='234514');
+
+But ra.join('') for [2,3,4,5,14] is '234514'.
+
+So:
+
+str = (new Set(ra).size ==5) && (ra[4]-ra[0]==4 || ra.join('')=='234514');
+
+This might work.
+
+Now, if flush and str, then it's a straight flush. If str and ra[0]==14, then royal flush.
+
+But royal flush is just a straight flush with A high.
+
+So:
+
+if (flush && str) {
+    score = ra[0]==14 ? 9 : 8;
+} else if (four of a kind) ... etc.
+
+Now, checking for four of a kind:
+
+Count the frequency of each rank.
+
+For example, in r = [14,14,14,14,2], the counts are {14:4, 2:1}.
+
+So, if any count is 4, four of a kind.
+
+Similarly, full house is counts of 3 and 2.
+
+So, let's compute counts:
+
+let counts = {};
+r.forEach(rank => counts[rank] = (counts[rank]||0)+1);
+let freq = Object.values(counts).sort().join('');
+
+For four of a kind: freq == '14'
+
+Full house: '23'
+
+Three of a kind: '113'
+
+Two pair: '122'
+
+One pair: '1112'
+
+High card: '11111'
+
+So:
+
+if (freq == '14') { /* four of a kind */ }
+else if (freq == '23') { /* full house */ }
+...
+
+So, putting it all together:
+
+function evaluate(hand) {
+    let r = hand.map(c => '23456789TJQKA'.indexOf(c[0])+2).sort((a,b)=>b-a);
+    let s = hand.map(c => c[1]);
+    let ra = r.slice().sort((a,b)=>a-b);
+    let flush = new Set(s).size ==1;
+    let str = (new Set(ra).size ==5) && (ra[4]-ra[0]==4 || ra.join('')=='234514');
+    let counts = {}, freq;
+    r.forEach(rank => counts[rank] = (counts[rank]||0)+1);
+    freq = Object.values(counts).sort().join('');
+    if (flush && str && r[0]==14) return 9; // royal flush
+    if (flush && str) return 8; // straight flush
+    if (freq == '14') return 7; // four of a kind
+    if (freq == '23') return 6; // full house
+    if (flush) return 5;
+    if (str) return 4;
+    if (freq == '113') return 3; // three of a kind
+    if (freq == '122') return 2; // two pair
+    if (freq == '1112') return 1; // one pair
+    return 0; // high card
+}
+
+But this doesn't handle kickers, so two hands of the same type would tie, which is not correct. But for the sake of conciseness, maybe this is acceptable, or perhaps the game just declares a tie if same hand type.
+
+But the user said "standard poker game", so need to compare kickers.
+
+This complicates things. However, given token constraints, perhaps the evaluation function returns a string that includes the hand type and the relevant ranks, so that comparing the strings lexicographically gives the correct result.
+
+For example:
+
+- Royal flush: '9'
+- Straight flush: '8' + highest rank
+- Four of a kind: '7' + four of a kind rank + kicker
+- Full house: '6' + three of a kind rank + pair rank
+- etc.
+
+But constructing this string requires more code.
+
+Alternative approach: for each hand type, generate a score array that can be compared element-wise.
+
+For example:
+
+- High card: [0, r[0], r[1], r[2], r[3], r[4]]
+- One pair: [1, pair_rank, r0, r1, r2] (where r0-r2 are kickers)
+- Two pair: [2, higher_pair, lower_pair, kicker]
+- etc.
+
+Then, comparing the score arrays element by element.
+
+But implementing this requires identifying the pair ranks, etc.
+
+This is getting too involved for token limits.
+
+Given the constraints, perhaps the evaluation function will return a numeric score where higher is better, and for same hand types, the higher ranks win.
+
+But without proper kicker handling, it's not accurate, but maybe acceptable for a simple game.
+
+Alternatively, for the purpose of this task, just compare the hand types, and if same, it's a tie.
+
+But the user might expect proper comparison.
+
+Hmm.
+
+Given the time constraints, perhaps proceed with the basic evaluation function that returns the hand type (0-9), and in case of tie, compare the highest card.
+
+But how to get the highest card.
+
+Wait, in the evaluate function, after determining the hand type, we can append the relevant ranks.
+
+For example, for a pair, the score is [1, pair_rank, kicker1, kicker2, kicker3].
+
+But to get pair_rank, need to find which rank has count 2.
+
+This requires more code.
+
+Alternative idea: sort the ranks in order of importance for the hand type.
+
+For example:
+
+- For four of a kind: [four_rank, kicker]
+- For full house: [three_rank, pair_rank]
+- For flush: sorted ranks descending
+- etc.
+
+Then, the score is [hand_type, ...relevant_ranks].
+
+So, the evaluate function returns an array where the first element is the hand type (9 for royal flush down to 0), followed by the relevant ranks in order of importance.
+
+Then, to compare two hands, compare the arrays element by element.
+
+This is a standard approach.
+
+Implementing this:
+
+function evaluate(hand) {
+    let r = hand.map(c => '23456789TJQKA'.indexOf(c[0])+2).sort((a,b)=>b-a);
+    let s = hand.map(c => c[1]);
+    let ra = r.slice().sort((a,b)=>a-b);
+    let flush = new Set(s).size ==1;
+    let str = (new Set(ra).size ==5) && (ra[4]-ra[0]==4 || ra.join('')=='234514');
+    let counts = {}, freq;
+    r.forEach(rank => counts[rank] = (counts[rank]||0)+1);
+    freq = Object.values(counts).sort().join('');
+    if (flush && str && r[0]==14) return [9];
+    if (flush && str) return [8, r[0]];
+    if (freq == '14') {
+        let four = Object.keys(counts).find(k => counts[k]==4)|0;
+        let kicker = Object.keys(counts).find(k => counts[k]==1)|0;
+        return [7, four, kicker];
+    }
+    if (freq == '23') {
+        let three = Object.keys(counts).find(k => counts[k]==3)|0;
+        let pair = Object.keys(counts).find(k => counts[k]==2)|0;
+        return [6, three, pair];
+    }
+    if (flush) return [5, ...r];
+    if (str) return [4, r[0]];
+    if (freq == '113') {
+        let three = Object.keys(counts).find(k => counts[k]==3)|0;
+        let kickers = r.filter(rank => rank != three);
+        return [3, three, ...kickers];
+    }
+    if (freq == '122') {
+        let pairs = Object.keys(counts).filter(k => counts[k]==2).map(Number).sort((a,b)=>b-a);
+        let kicker = Object.keys(counts).find(k => counts[k]==1)|0;
+        return [2, pairs[0], pairs[1], kicker];
+    }
+    if (freq == '1112') {
+        let pair = Object.keys(counts).find(k => counts[k]==2)|0;
+        let kickers = r.filter(rank => rank != pair);
+        return [1, pair, ...kickers];
+    }
+    return [0, ...r];
+}
+
+But this code is quite long, and uses .find, .filter, etc., which may add tokens.
+
+Also, converting keys to numbers: Object.keys(counts) gives strings, so need to |0 or Number().
+
+But given token constraints, perhaps this is the way to go.
+
+Now, comparing two hands:
+
+function compare(h1, h2) {
+    let s1 = evaluate(h1), s2 = evaluate(h2);
+    for (let i=0; i<Math.max(s1.length, s2.length); i++) {
+        if ((s1[i]||0) != (s2[i]||0)) return (s1[i]||0) - (s2[i]||0);
+    }
+    return 0;
+}
+
+But this compare function would return negative if h1 < h2, positive if h1 > h2, 0 if equal.
+
+Now, in the game, after player and dealer draw, compare their hands.
+
+Now, putting it all together.
+
+The game flow:
+
+1. Initialize deck, shuffle.
+2. Deal 5 to player, 5 to dealer (dealer's hand stored but not shown).
+3. Display player's hand with hold buttons.
+4. Player clicks cards to hold, then clicks 'Draw'.
+5. Replace non-held player cards.
+6. Reveal dealer's hand (maybe dealer follows some rules, but for simplicity, dealer's hand is fixed as the initial 5 cards).
+7. Compare hands, display result.
+
+Wait, but in standard poker, the dealer may draw cards based on their hand. For example, in 5-card draw, the dealer (house) typically draws if their hand is below a certain rank, like pair of jacks or better.
+
+But implementing dealer AI would add complexity. To keep it simple, perhaps the dealer's hand is fixed (no draw), and player tries to beat it.
+
+So steps:
+
+- Deal 5 to player (shown), 5 to dealer (hidden).
+- Player discards, draws new cards.
+- Then, dealer's hand is revealed.
+- Compare.
+
+So dealer doesn't draw; their hand is the initial 5.
+
+This simplifies things.
+
+Now, code structure:
+
+Variables:
+
+- deck: array of cards
+- playerHand: array of 5 cards
+- dealerHand: array of 5 cards
+- held: array of booleans indicating which player cards are held
+
+Functions:
+
+- init(): shuffle deck, deal hands, display player hand
+- hold(i): toggle held[i]
+- draw(): replace non-held player cards, then evaluate and show result
+- displayHand(hand, isDealer): generate HTML for hand display
+
+Now, writing the code concisely.
+
+First, the HTML structure.
+
+<!DOCTYPE html><html><body>
+<div id=p></div>
+<button onclick=d()>Draw</button>
+<div id=d></div>
+<div id=r></div>
+<script>
+// JS code here
+</script>
+</body></html>
+
+Wait, the first line must be <!DOCTYPE html><html>, so:
+
+<!DOCTYPE html><html><body>
+...
+</body></html>
+
+Now, the JS code.
+
+Need to minimize tokens. Use short variable names.
+
+Let's try:
+
+Deck generation:
+
+s='HDCS', r='23456789TJQKA', d=[]; for (a of s) for (b of r) d.push(b+a); // creates deck
+
+Shuffle:
+
+for (i=d.length;i;){j=Math.random()*i--|0; [d[i],d[j]]=[d[j],d[i]]}
+
+Deal:
+
+p=d.splice(0,5), q=d.splice(0,5) // p is player, q is dealer
+
+Display player hand:
+
+Each card is a span that toggles hold.
+
+But need to track held cards. Let h = [0,0,0,0,0] (0 for not held, 1 for held)
+
+When displaying, for each card i, onclick="h[i]^=1; render()"
+
+But render() would update the display to show held state.
+
+But to save tokens, maybe inline the display.
+
+Alternatively, when draw is clicked, replace non-held cards.
+
+But need to have a way to indicate which cards are held.
+
+Perhaps, when a card is clicked, it gets a 'held' class.
+
+So in display:
+
+p.map((c,i)=>`<span onclick="h[${i}]=!h[${i}];this.className=h[${i}]?'h':''">${c}</span>`).join('')
+
+But need to initialize h as an array of false.
+
+Now, the code:
+
+<!DOCTYPE html><html><body>
+<div id=p></div>
+<button onclick=d()>Draw</button>
+<div id=q style="display:none"></div>
+<div id=r></div>
+<script>
+s='HDCS',r='23456789TJQKA',d=[],h=[];for(A of s)for(B of r)d.push(B+A);
+for(i=d.length;i;){j=Math.random()*i--|0;[d[i],d[j]]=[d[j],d[i]]}
+p=d.splice(0,5),q=d.splice(0,5);render=()=>{pL=p.map((c,i)=>`<span onclick="h[${i}]=!h[${i}];render()">${c}</span>`).join('');document.getElementById('p').innerHTML=pL};
+d=()=>{for(i=5;i--;)if(!h[i])p[i]=d.shift();render();document.getElementById('q').style.display='';qL=q.map(c=>c).join(' ');document.getElementById('q').innerHTML=qL;let a=eval(p),b=eval(q);document.getElementById('r').innerHTML=a>b?'Win':a<b?'Lose':'Tie'};
+eval=h=>{let r=h.map(c=>'23456789TJQKA'.indexOf(c[0])+2).sort((x,y)=>y-x),s=h.map(c=>c[1]),ra=[...r].sort((x,y)=>x-y),F=new Set(s).size==1,S=new Set(ra).size==5&&(ra[4]-ra[0]==4||ra.join('')=='234514'),c={},f;for(x of r)c[x]=(c[x]||0)+1;f=Object.values(c).sort().join('');if(F&&S&&r[0]==14)return 9;if(F&&S)return 8;if(f=='14'){let o=+Object.keys(c).find(k=>c[k]==4),k=+Object.keys(c).find(k=>c[k]==1);return[o,k]}if(f=='23'){let t=+Object.keys(c).find(k=>c[k]==3),o=+Object.keys(c).find(k=>c[k]==2);return[t,o]}if(F)return[5,...r];if(S)return[4,r[0]];if(f=='113'){let t=+Object.keys(c).find(k=>c[k]==3),k=r.filter(x=>x!=t);return[t,...k]}if(f=='122'){let o=Object.keys(c).filter(k=>c[k]==2).map(Number).sort((x,y)=>y-x),k=+Object.keys(c).find(k=>c[k]==1);return[o[0],o[1],k]}if(f=='1112'){let o=+Object.keys(c).find(k=>c[k]==2),k=r.filter(x=>x!=o);return[o,...k]}return[0,...r]};
+render();h=Array(5).fill(0);
+</script>
+</body></html>
+
+Wait, but there are several issues here.
+
+First, the eval function is named 'eval', which is a reserved word. So need to rename it to something else, like 'e'.
+
+Also, in the d() function (the draw function), it's using d as the deck, but d is also the function name. Conflict.
+
+Ah, right. The function is named d(), but the deck is also called d. So need to rename the function.
+
+Let's adjust:
+
+Change the draw function to 'dr()'.
+
+Also, the deck variable should not be 'd' if the function is 'd'.
+
+Let me rework the variable names.
+
+Let’s use:
+
+deck = d
+
+playerHand = p
+
+dealerHand = q
+
+held = h
+
+shuffle and deal.
+
+So:
+
+s='HDCS',r='23456789TJQKA',d=[];for(A of s)for(B of r)d.push(B+A);
+for(i=d.length;i;){j=Math.random()*i--|0;[d[i],d[j]]=[d[j],d[i]]}
+p=d.splice(0,5),q=d.splice(0,5);
+
+Then, the draw function should be named something else, like 'dr'.
+
+Also, the 'd' in the onclick for the Draw button is conflicting.
+
+So:
+
+<button onclick=dr()>Draw</button>
+
+And the function is dr=()=>{...}
+
+Now, the code:
+
+<!DOCTYPE html><html><body>
+<div id=p></div>
+<button onclick=dr()>Draw</button>
+<div id=q style=display:none></div>
+<div id=r></div>
+<script>
+s='HDCS',r='23456789TJQKA',d=[],h=[];for(A of s)for(B of r)d.push(B+A);
+for(i=d.length;i;){j=Math.random()*i--|0;[d[i],d[j]]=[d[j],d[i]]}
+p=d.splice(0,5),q=d.splice(0,5);h=Array(5).fill(0);
+e=h=>{let r=h.map(c=>'23456789TJQKA'.indexOf(c[0])+2).sort((x,y)=>y-x),s=h.map(c=>c[1]),ra=[...r].sort((x,y)=>x-y),F=new Set(s).size==1,S=new Set(ra).size==5&&(ra[4]-ra[0]==4||ra.join('')=='234514'),c={},f;for(x of r)c[x]=(c[x]||0)+1;f=Object.values(c).sort().join('');if(F&&S&&r[0]==14)return[9];if(F&&S)return[8,r[0]];if(f=='14'){let o=+Object.keys(c).find(k=>c[k]==4),k=+Object.keys(c).find(k=>c[k]==1);return[7,o,k]}if(f=='23'){let t=+Object.keys(c).find(k=>c[k]==3),o=+Object.keys(c).find(k=>c[k]==2);return[6,t,o]}if(F)return[5,...r];if(S)return[4,r[0]];if(f=='113'){let t=+Object.keys(c).find(k=>c[k]==3),k=r.filter(x=>x!=t);return[3,t,...k]}if(f=='122'){let o=Object.keys(c).filter(k=>c[k]==2).map(Number).sort((x,y)=>y-x),k=+Object.keys(c).find(k=>c[k]==1);return[2,o[0],o[1],k]}if(f=='1112'){let o=+Object.keys(c).find(k=>c[k]==2),k=r.filter(x=>x!=o);return[1,o,...k]}return[0,...r]};
+cmp=(a,b)=>{for(i in a)if(a[i]!=b[i])return b[i]-a[i];return 0};
+render=_=>{pL=p.map((c,i)=>`<span onclick="h[${i}]=!h[${i}];render()">${c}</span>`).join('');document.getElementById('p').innerHTML=pL};
+dr=_=>{for(i=5;i--;)if(!h[i])p[i]=d.shift();render();qE=document.getElementById('q');qE.style.display='';qE.innerHTML=q.join(' ');let a=e(p),b=e(q);document.getElementById('r').innerHTML=cmp(a,b)>0?'Win':cmp(a,b)<0?'Lose':'Tie'};
+render();
+</script>
+</body></html>
+
+Wait, but the cmp function: need to compare the evaluation arrays.
+
+The e function returns an array like [hand_type, ...ranks].
+
+So cmp(a,b) should return negative if a < b, positive if a > b.
+
+But in the code above, cmp=(a,b)=>{for(i in a)if(a[i]!=b[i])return b[i]-a[i];return 0};
+
+Wait, if a is better than b, then a should be higher. So if a[i] > b[i], then a is better.
+
+But in the cmp function, returning b[i]-a[i] would give negative if a[i] > b[i], which would mean a is better.
+
+Wait, no: if a[i] > b[i], then b[i]-a[i] is negative, so cmp(a,b) is negative, which in JS sort means a comes before b, but we want a > b to return positive.
+
+Wait, the cmp function should return positive if a > b.
+
+So, for example, if a[i] > b[i], return positive.
+
+So cmp=(a,b)=>{for(i in a)if(a[i]!=b[i])return a[i]-b[i];return 0};
+
+Yes, that's correct.
+
+So in the dr function:
+
+let a=e(p),b=e(q); cmp(a,b) >0 ? 'Win' : cmp(a,b)<0 ? 'Lose' : 'Tie'
+
+But in the code above, cmp is defined as:
+
+cmp=(a,b)=>{for(i in a)if(a[i]!=b[i])return a[i]-b[i];return 0};
+
+So if cmp(a,b) >0, a is better.
+
+Thus, the result is:
+
+cmp(a,b) >0 → Win
+
+cmp(a,b) <0 → Lose
+
+Else Tie.
+
+Now, checking the e function:
+
+It returns an array where the first element is the hand type (higher is better), followed by relevant ranks.
+
+For example, a pair of kings with kickers Q, J, 9 would be [1,13,12,11,9].
+
+Another pair of queens would be [1,12,...], so the king pair is higher.
+
+This should work.
+
+Now, testing for royal flush:
+
+If hand is ['Th','Jh','Qh','Kh','Ah'], then r = [10,11,12,13,14], sorted descending is [14,13,12,11,10].
+
+ra sorted ascending is [10,11,12,13,14], ra[4]-ra[0] =4, so str=true.
+
+F is true (all 'h').
+
+r[0] is 14, so returns [9].
+
+Which is correct.
+
+Another example: straight flush 2-6 of hearts.
+
+r = [6,5,4,3,2], sorted descending.
+
+ra = [2,3,4,5,6], ra[4]-ra[0] =4, str=true.
+
+F is true.
+
+So returns [8,6] (since r[0] is 6).
+
+Which is correct.
+
+Four of a kind: ['2h','2d','2c','2s','3h'].
+
+freq is '14' (since counts are 4 and 1).
+
+So returns [7,2,3].
+
+Full house: ['2h','2d','2c','3s','3h'] → [6,2,3].
+
+Flush: all same suit, not straight → [5,14,13,12,11,10] (but array length 6? Wait, no: [5, ...r], and r is 5 elements, so array length 6.
+
+But when comparing, the first element is 5, then the ranks.
+
+So two flushes are compared by their ranks.
+
+This should work.
+
+Now, the code.
+
+But there are some issues:
+
+- In the e function, for four of a kind, it returns [7, o, k], where o is the four rank, k is kicker.
+
+Similarly for others.
+
+The cmp function compares these arrays correctly.
+
+Now, the code as written.
+
+But need to check for syntax errors.
+
+For example, in the e function:
+
+if(F&&S&&r[0]==14)return[9];
+
+Yes.
+
+Also, in the str check:
+
+S=new Set(ra).size==5&&(ra[4]-ra[0]==4||ra.join('')=='234514')
+
+ra.join('') for [2,3,4,5,14] is '234514', which matches.
+
+Now, the code.
+
+Another issue: in the dr function, after drawing, it sets qE.style.display='', which shows the dealer's hand.
+
+But initially, dealer's hand is hidden.
+
+Now, the code.
+
+Let's check token count.
+
+But the user said to minimize indentation and tokens.
+
+The code uses arrow functions, short variable names.
+
+Possible improvements:
+
+- Replace 'document.getElementById' with a shorter alias, but that would require a variable, which may not save tokens.
+
+For example:
+
+let G=id=>document.getElementById(id);
+
+But then using G('p') etc. might save tokens if used multiple times.
+
+In the code, it's used 3 times:
+
+document.getElementById('p').innerHTML=pL;
+
+document.getElementById('q').style.display='';
+
+document.getElementById('q').innerHTML=q.join(' ');
+
+document.getElementById('r').innerHTML=...
+
+So replacing with a function:
+
+G=id=>document.getElementById(id);
+
+Then:
+
+G('p').innerHTML=pL;
+
+G('q').style.display='';
+
+G('q').innerHTML=...;
+
+G('r').innerHTML=...;
+
+This would save tokens if G is short.
+
+Original: 3 * 'document.getElementById(' (24 chars each?) Let's count:
+
+'document.getElementById(' is 24 characters.
+
+Using G('p') is 7 characters.
+
+So for 4 uses, saves 4*(24 -7) = 68 characters.
+
+But adding G=id=>document.getElementById(id); is 34 characters.
+
+Net saving: 68 -34 =34.
+
+So it's worth it.
+
+So modify the code:
+
+G=id=>document.getElementById(id);
+
+Then replace all instances.
+
+Also, in the render function:
+
+pL=p.map(...).join(''); G('p').innerHTML=pL;
+
+Similarly for others.
+
+Now, the code:
+
+<!DOCTYPE html><html><body>
+<div id=p></div>
+<button onclick=dr()>Draw</button>
+<div id=q style=display:none></div>
+<div id=r></div>
+<script>
+G=id=>document.getElementById(id);s='HDCS',r='23456789TJQKA',d=[],h=[];for(A of s)for(B of r)d.push(B+A);
+for(i=d.length;i;){j=Math.random()*i--|0;[d[i],d[j]]=[d[j],d[i]]}
+p=d.splice(0,5),q=d.splice(0,5);h=Array(5).fill(0);
+e=h=>{let r=h.map(c=>'23456789TJQKA'.indexOf(c[0])+2).sort((x,y)=>y-x),s=h.map(c=>c[1]),ra=[...r].sort((x,y)=>x-y),F=new Set(s).size==1,S=new Set(ra).size==5&&(ra[4]-ra[0]==4||ra.join('')=='234514'),c={},f;for(x of r)c[x]=(c[x]||0)+1;f=Object.values(c).sort().join('');if(F&&S&&r[0]==14)return[9];if(F&&S)return[8,r[0]];if(f=='14'){let o=+Object.keys(c).find(k=>c[k]==4),k=+Object.keys(c).find(k=>c[k]==1);return[7,o,k]}if(f=='23'){let t=+Object.keys(c).find(k=>c[k]==3),o=+Object.keys(c).find(k=>c[k]==2);return[6,t,o]}if(F)return[5,...r];if(S)return[4,r[0]];if(f=='113'){let t=+Object.keys(c).find(k=>c[k]==3),k=r.filter(x=>x!=t);return[3,t,...k]}if(f=='122'){let o=Object.keys(c).filter(k=>c[k]==2).map(Number).sort((x,y)=>y-x),k=+Object.keys(c).find(k=>c[k]==1);return[2,o[0],o[1],k]}if(f=='1112'){let o=+Object.keys(c).find(k=>c[k]==2),k=r.filter(x=>x!=o);return[1,o,...k]}return[0,...r]};
+cmp=(a,b)=>{for(i in a)if(a[i]!=b[i])return a[i]-b[i];return 0};
+render=_=>{pL=p.map((c,i)=>`<span onclick="h[${i}]=!h[${i}];render()">${c}</span>`).join('');G('p').innerHTML=pL};
+dr=_=>{for(i=5;i--;)if(!h[i])p[i]=d.shift();render();qE=G('q');qE.style.display='';qE.innerHTML=q.join(' ');let a=e(p),b=e(q);G('r').innerHTML=cmp(a,b)>0?'Win':cmp(a,b)<0?'Lose':'Tie'};
+render();
+</script>
+</body></html>
+
+This should work.
+
+Testing:
+
+- Deck is created and shuffled.
+- Player and dealer are dealt 5 cards each.
+- Player can click cards to toggle hold.
+- Clicking Draw replaces non-held cards.
+- Dealer's hand is revealed.
+- Result is displayed.
+
+The e
+

@@ -1,0 +1,81 @@
+<!DOCTYPE html><html><head><title>Poker</title></head><body>
+<div id="game">
+  <h1>Video Poker</h1>
+  <p>Cards: <span id="hand"></span></p>
+  <p>Bet: <input id="bet" type="number" value="1" min="1" max="5"> 
+  <button onclick="deal()">Deal</button> 
+  <button onclick="draw()">Draw</button></p>
+  <p id="result"></p>
+  <p>Balance: <span id="balance">100</span></p>
+</div>
+<script>
+let deck, hand, balance = 100, bet;
+
+const values = '23456789TJQKA', suits = 'CDHS';
+const ranks = ['High Card','Pair','Two Pair','Three of a Kind','Straight','Flush','Full House','Four of a Kind','Straight Flush','Royal Flush'];
+
+function newDeck() {
+  let d = []; for (let s of suits) for (let v of values) d.push(v+s); return d;
+}
+
+function shuffle(d) {
+  for (let i = d.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [d[i], d[j]] = [d[j], d[i]];
+  }
+}
+
+function deal() {
+  if (balance <= 0) return alert("Broke!");
+  bet = +document.getElementById("bet").value;
+  if (bet < 1 || bet > 5 || bet > balance) return alert("Invalid bet");
+  balance -= bet; deck = newDeck(); shuffle(deck); hand = deck.splice(0,5);
+  render(); document.getElementById("result").textContent = "";
+}
+
+function draw() {
+  let holds = document.querySelectorAll('input[type="checkbox"]:not(:checked)');
+  for (let i = holds.length - 1; i >= 0; i--) hand[i] = deck.pop();
+  let score = evaluate(hand);
+  let win = [0,0,0,5,10,15,20,25,50,250][score];
+  balance += win * bet; document.getElementById("result").textContent = ranks[score] + " - Win: " + win*bet;
+  render();
+}
+
+function render() {
+  document.getElementById("hand").innerHTML = "";
+  for (let i = 0; i < 5; i++) {
+    let label = document.createElement("span");
+    label.innerHTML = hand[i] + " <input type='checkbox' checked> ";
+    document.getElementById("hand").appendChild(label);
+  }
+  document.getElementById("balance").textContent = balance;
+}
+
+function evaluate(h) {
+  let vmap = {}, smap = {}, vals = [], suits = [];
+  for (let c of h) {
+    let v = c[0], s = c[1];
+    vals.push("23456789TJQKA".indexOf(v));
+    suits.push(s);
+    vmap[v] = (vmap[v]||0)+1;
+    smap[s] = (smap[s]||0)+1;
+  }
+  vals.sort((a,b)=>a-b);
+  let flush = Object.values(smap).some(c=>c===5);
+  let straight = vals.slice(1).every((v,i)=>v===vals[i]+1) || (vals.join('')==='012312' && vals[4]===12);
+  if (straight && flush && Math.max(...vals)===12) return 9; // Royal
+  if (straight && flush) return 8;
+  let vk = Object.keys(vmap).map(k=>vmap[k]).sort((a,b)=>b-a);
+  if (vk[0]===4) return 7;
+  if (vk[0]===3 && vk[1]===2) return 6;
+  if (flush) return 5;
+  if (straight) return 4;
+  if (vk[0]===3) return 3;
+  if (vk[0]===2 && vk[1]===2) return 2;
+  if (vk[0]===2 && Object.keys(vmap).some(k=>['J','Q','K','A'].includes(k))) return 1;
+  return 0;
+}
+</script></body></html> [end of text]
+
+

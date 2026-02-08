@@ -1,0 +1,29 @@
+Here's a concise vanilla JS poker game that runs locally in the browser:
+
+```html
+<!DOCTYPE html><html><head><title>Poker</title><style>body{font-family:Arial;text-align:center;margin:20px}button{padding:10px;margin:5px}div{margin:10px}</style></head><body><h1>Poker</h1><div id="game"><div id="hand"></div><div id="message"></div><button id="deal">Deal</button><button id="draw" disabled>Draw</button></div><script>
+const ranks='A23456789TJQK',suits='♠♥♦♣',values=[14,2,3,4,5,6,7,8,9,10,11,12,13],deck=[],hand=[],discard=[];
+for(let s=0;s<4;s++)for(let r=0;r<13;r++)deck.push({rank:ranks[r],suit:suits[s],value:values[r]});
+function shuffle(){for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}}
+function deal(){shuffle();hand.length=0;for(let i=0;i<5;i++)hand.push(deck.pop());update();document.getElementById('draw').disabled=false;}
+function draw(){const checkboxes=document.querySelectorAll('input[type="checkbox"]:checked');checkboxes.forEach(cb=>{const i=parseInt(cb.value);discard.push(hand[i]);hand[i]=deck.pop();});update();document.getElementById('draw').disabled=true;}
+function update(){let html='';hand.forEach((card,i)=>{html+=`<span style="margin:5px"><input type="checkbox" id="c${i}" value="${i}"><label for="c${i}">${card.rank}${card.suit}</label></span>`;});document.getElementById('hand').innerHTML=html;document.getElementById('message').textContent=evalHand();}
+function evalHand(){
+const counts={},flush=hand.every(c=>c.suit===hand[0].suit),straight=hand.map(c=>c.value).sort((a,b)=>a-b).every((v,i,a)=>i===0||v===a[i-1]+1);
+hand.forEach(c=>counts[c.rank]=(counts[c.rank]||0)+1);const pairs=Object.values(counts).filter(v=>v===2).length,trips=Object.values(counts).some(v=>v===3),quads=Object.values(counts).some(v=>v===4);
+if(flush&&straight&&hand.some(c=>c.rank==='A')&&hand.some(c=>c.rank==='K'))return'Royal Flush';
+if(flush&&straight)return'Straight Flush';
+if(quads)return'Four of a Kind';
+if(trips&&pairs)return'Full House';
+if(flush)return'Flush';
+if(straight)return'Straight';
+if(trips)return'Three of a Kind';
+if(pairs===2)return'Two Pair';
+if(pairs===1)return'One Pair';
+return'High Card';
+}
+document.getElementById('deal').addEventListener('click',deal);document.getElementById('draw').addEventListener('click',draw);
+</script></body></html>
+``` [end of text]
+
+

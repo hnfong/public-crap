@@ -1,0 +1,72 @@
+<!DOCTYPE html><html><head><title>Poker Game</title><style>body{font-family:sans-serif;text-align:center}#game{margin:20px}#hand{margin:20px}#controls{margin:20px}button{padding:10px;margin:5px}</style></head><body><div id="game"><h1>Single Player Poker</h1><div id="hand"></div><div id="controls"><button onclick="deal()">Deal</button><button onclick="hold(0)">Hold 1</button><button onclick="hold(1)">Hold 2</button><button onclick="hold(2)">Hold 3</button><button onclick="hold(3)">Hold 4</button><button onclick="hold(4)">Hold 5</button><button onclick="draw()">Draw</button></div><div id="result"></div></div><script>
+const suits = ['♠','♥','♦','♣']
+const ranks = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']
+let deck = []
+let hand = []
+let held = [false,false,false,false,false]
+
+function createDeck() {
+	deck = []
+	for (let s of suits) for (let r of ranks) deck.push(r+s)
+	for (let i=deck.length-1; i>0; i--) {
+		const j = Math.floor(Math.random() * (i+1))
+		;[deck[i], deck[j]] = [deck[j], deck[i]]
+	}
+}
+
+function deal() {
+	createDeck()
+	hand = deck.slice(0,5)
+	held = [false,false,false,false,false]
+	displayHand()
+	document.getElementById('result').innerHTML = ''
+}
+
+function hold(i) {
+	if (hand.length !== 5) return
+	held[i] = !held[i]
+	displayHand()
+}
+
+function draw() {
+	if (hand.length !== 5) return
+	let j = 5
+	for (let i=0; i<5; i++) if (!held[i]) hand[i] = deck[j++]
+	displayHand()
+	document.getElementById('result').innerHTML = evaluateHand()
+}
+
+function displayHand() {
+	let html = ''
+	for (let i=0; i<5; i++) {
+		const card = hand[i] || '🂠'
+		const color = card.includes('♥') || card.includes('♦') ? 'red' : 'black'
+		html += `<span style="color:${color};font-size:2em;cursor:pointer" onclick="hold(${i})">${card}</span> `
+	}
+	document.getElementById('hand').innerHTML = html
+}
+
+function evaluateHand() {
+	const values = hand.map(c => ranks.indexOf(c.slice(0,-1))).sort((a,b) => a-b)
+	const suitsOnly = hand.map(c => c.slice(-1))
+	const isFlush = suitsOnly.every(s => s === suitsOnly[0])
+	const isStraight = values.every((v,i) => i===0 || v === values[i-1]+1) || 
+		(values.join(',') === "0,1,2,3,12") // A,2,3,4,5
+	const counts = {}
+	values.forEach(v => counts[v] = (counts[v]||0)+1)
+	const countArr = Object.values(counts).sort((a,b) => b-a)
+	
+	if (isStraight && isFlush && values[0] === 8) return "Royal Flush!"
+	if (isStraight && isFlush) return "Straight Flush!"
+	if (countArr[0] === 4) return "Four of a Kind!"
+	if (countArr[0] === 3 && countArr[1] === 2) return "Full House!"
+	if (isFlush) return "Flush!"
+	if (isStraight) return "Straight!"
+	if (countArr[0] === 3) return "Three of a Kind!"
+	if (countArr[0] === 2 && countArr[1] === 2) return "Two Pair!"
+	if (countArr[0] === 2) return "One Pair!"
+	return "High Card"
+}
+</script></body></html> [end of text]
+
+

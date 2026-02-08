@@ -1,0 +1,65 @@
+<!DOCTYPE html><html>
+<head><title>Twisted Solitaire: "Reversi Stacks"</title><style>
+  body {font-family: Arial; display: flex; flex-direction: column; align-items: center;}
+  .deck {cursor: pointer; margin-bottom: 20px;}
+  .stack {display: inline-block; margin: 10px; border: 1px solid #ccc; padding: 5px; width: 60px;}
+  .card {margin: 2px; padding: 5px; border: 1px solid #000; width: 50px; text-align: center;}
+  .card.selected {background: #eee;}
+</style></head>
+<body>
+<div id="deck" class="deck">Draw</div>
+<div id="gameArea"></div>
+<script>
+  let deck = [], gameStacks = [], selectedCard = null;
+  const suits = ['♥','♦','♣','♠'], ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  const gameArea = document.getElementById('gameArea');
+  
+  // Initialize Game
+  for(let s of suits) for(let r of ranks) deck.push({suit:s, rank:r});
+  shuffle(deck);
+  for(let i=0; i<7; i++) gameStacks.push(deck.splice(0, i+1));
+  render();
+  
+  // Event Listeners
+  document.getElementById('deck').addEventListener('click', drawCard);
+  gameArea.addEventListener('click', e => {
+    if(e.target.classList.contains('card')) {
+      const card = JSON.parse(e.target.dataset.card);
+      if(selectedCard) {
+        if(validMove(selectedCard, card)) {
+          moveCard(selectedCard, card);
+          selectedCard = null;
+        } else selectedCard = null;
+      } else if(card.rank === 'A') {
+        // Special "Reversi" Rule: Aces can reverse stack order
+        reverseStack(gameStacks.find(stack => stack.includes(card)));
+        selectedCard = null;
+      } else {
+        selectedCard = card;
+        highlightCard(card);
+      }
+    } else selectedCard = null;
+  });
+  
+  // Functions
+  function shuffle(a) {for(let i=a.length-1; i>0; i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
+  function render() {
+    gameArea.innerHTML = gameStacks.map((stack, i) => `<div class="stack" id="stack${i}">${stack.map(c => `<div class="card" data-card='${JSON.stringify(c)}'>${c.rank}${c.suit}</div>`).join('')}</div>`).join('');
+    document.getElementById('deck').innerText = `Draw (${deck.length})`;
+    if(selectedCard) highlightCard(selectedCard);
+  }
+  function drawCard() {if(deck.length) {const card = deck.pop(); gameStacks[0].push(card); render();}}
+  function validMove(from, to) {return from.rank === 'A' || (from.suit === to.suit && parseInt(from.rank) === parseInt(to.rank)+1)}
+  function moveCard(fromCard, toCard) {
+    const fromStack = gameStacks.find(stack => stack.includes(fromCard));
+    const toStack = gameStacks.find(stack => stack.includes(toCard));
+    fromStack.splice(fromStack.indexOf(fromCard), 1);
+    toStack.push(fromCard);
+    render();
+  }
+  function reverseStack(stack) {stack.reverse(); render();}
+  function highlightCard(card) {const elem = document.querySelector(`[data-card='${JSON.stringify(card)}']`); elem.classList.toggle('selected', true);}
+</script>
+</body></html> [end of text]
+
+

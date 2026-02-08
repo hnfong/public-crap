@@ -1,0 +1,121 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Solitaire Twist</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .deck { display: flex; justify-content: center; flex-wrap: wrap; }
+        .card { width: 70px; height: 100px; margin: 5px; border: 1px solid black; cursor: pointer; }
+        .hidden { background-color: grey; }
+        .visible { background-color: white; }
+        .foundation { display: flex; justify-content: center; flex-wrap: wrap; }
+        .foundation-card { width: 70px; height: 100px; margin: 5px; border: 1px solid black; }
+    </style>
+</head>
+<body>
+    <h1>Solitaire Twist</h1>
+    <div class="deck"></div>
+    <div class="foundation"></div>
+    <script>
+        const suits = ['♥', '♦', '♣', '♠'];
+        const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        let deck = [];
+        let foundation = [[], [], [], []];
+        let selectedCard = null;
+
+        function createDeck() {
+            deck = [];
+            for (let suit of suits) {
+                for (let value of values) {
+                    deck.push({ suit, value, visible: false });
+                }
+            }
+            shuffle(deck);
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function renderDeck() {
+            const deckElement = document.querySelector('.deck');
+            deckElement.innerHTML = '';
+            deck.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('card', card.visible ? 'visible' : 'hidden');
+                cardElement.dataset.index = index;
+                cardElement.innerHTML = card.visible ? `${card.value}${card.suit}` : '';
+                cardElement.addEventListener('click', () => selectCard(index));
+                deckElement.appendChild(cardElement);
+            });
+        }
+
+        function renderFoundation() {
+            const foundationElement = document.querySelector('.foundation');
+            foundationElement.innerHTML = '';
+            foundation.forEach((pile, index) => {
+                const pileElement = document.createElement('div');
+                pileElement.classList.add('foundation-card');
+                pileElement.innerHTML = pile.map(card => `${card.value}${card.suit}`).join('<br>');
+                pileElement.addEventListener('click', () => moveToFoundation(index));
+                foundationElement.appendChild(pileElement);
+            });
+        }
+
+        function selectCard(index) {
+            if (selectedCard !== null) return;
+            const card = deck[index];
+            if (card.visible) {
+                selectedCard = index;
+                deck[index].visible = false;
+                renderDeck();
+            }
+        }
+
+        function moveToFoundation(index) {
+            if (selectedCard === null) return;
+            const card = deck[selectedCard];
+            if (foundation[index].length === 0) {
+                if (card.value === 'A') {
+                    foundation[index].push(card);
+                    deck.splice(selectedCard, 1);
+                    selectedCard = null;
+                    renderDeck();
+                    renderFoundation();
+                }
+            } else {
+                const topCard = foundation[index][foundation[index].length - 1];
+                if (card.value === String.fromCharCode(topCard.value.charCodeAt(0) + 1)) {
+                    foundation[index].push(card);
+                    deck.splice(selectedCard, 1);
+                    selectedCard = null;
+                    renderDeck();
+                    renderFoundation();
+                }
+            }
+        }
+
+        function revealTopCards() {
+            for (let i = deck.length - 1; i >= 0; i--) {
+                if (!deck[i].visible) {
+                    deck[i].visible = true;
+                    if (deck[i + 1] && !deck[i + 1].visible) break;
+                }
+            }
+            renderDeck();
+        }
+
+        createDeck();
+        renderDeck();
+        revealTopCards();
+        renderFoundation();
+    </script>
+</body>
+</html>
+``` [end of text]
+
+

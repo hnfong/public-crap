@@ -1,0 +1,161 @@
+<!DOCTYPE html><html>
+<title>Spiderette</title>
+<style>body{font-family:monospace;background:#0f0;display:flex;justify-content:center;align-items:center;height:100vh;margin:0}#t{width:600px;height:700px;position:relative}#s{position:absolute;top:0;left:0;width:100%;height:100%}.c{position:absolute;width:40px;height:56px;border:1px solid #000;border-radius:4px;background:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .1s}.c.u{background:#eee}.c.s{box-shadow:0 0 10px #ff0}.c.m{box-shadow:0 0 10px #f0f}.r{color:red}.p{position:absolute;top:10px;left:10px;font-size:24px}</style>
+<div id="t"><canvas id="s"></canvas></div>
+<script>
+const suits=['♠','♥','♦','♣'],vals=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+let d=[],t=[],f=[],p=[],m=null,sc=0;
+function sh(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
+function cd(s,v,f,u){return{s,v,f,u}}
+function id(c){return c.s*13+c.v}
+function inits(){
+d=[];t=[];f=[[],[],[],[],[],[],[],[]];p=[];
+for(let s=0;s<4;s++)for(let v=0;v<13;v++)d.push(cd(s,v,0,0));
+sh(d);
+for(let i=0;i<7;i++){
+for(let j=0;j<=i;j++){
+const c=d.pop();
+c.f=i===6?1:0;
+f[j].push(c);
+}
+}
+for(let i=0;i<24;i++)t.push(d.pop());
+render();
+}
+function render(){
+const g=document.getElementById('t');
+g.innerHTML='<canvas id="s"></canvas>';
+const cv=document.getElementById('s');
+cv.width=600;cv.height=700;
+const ctx=cv.getContext('2d');
+ctx.fillStyle='#080';
+ctx.fillRect(0,0,600,700);
+// Draw stock
+ctx.fillStyle='#fff';
+ctx.strokeStyle='#000';
+for(let i=0;i<Math.min(3,t.length);i++){
+ctx.fillRect(10+i*2,10+i*2,40,56);
+ctx.strokeRect(10+i*2,10+i*2,40,56);
+}
+ctx.fillStyle='#000';
+ctx.font='16px monospace';
+ctx.fillText('Stock: '+t.length,10,80);
+// Draw foundations
+for(let i=0;i<4;i++){
+ctx.fillStyle='#fff';
+ctx.strokeStyle='#000';
+ctx.fillRect(60+i*50,10,40,56);
+ctx.strokeRect(60+i*50,10,40,56);
+if(p[i]&&p[i].length){
+const tc=p[i][p[i].length-1];
+ctx.fillStyle=tc.s<2?'#000':'#f00';
+ctx.fillText(vals[tc.v],62+i*50,30);
+ctx.fillText(suits[tc.s],62+i*50,50);
+}
+}
+// Draw tableau
+for(let col=0;col<7;col++){
+for(let r=0;r<f[col].length;r++){
+const c=f[col][r];
+ctx.fillStyle=c.f||c.u?'#fff':'#888';
+ctx.strokeStyle='#000';
+ctx.fillRect(100+col*60,100+r*20,40,56);
+ctx.strokeRect(100+col*60,100+r*20,40,56);
+if(c.f||c.u){
+ctx.fillStyle=c.s<2?'#000':'#f00';
+ctx.fillText(vals[c.v],102+col*60,120+r*20);
+ctx.fillText(suits[c.s],102+col*60,140+r*20);
+}
+}
+}
+// Draw score
+ctx.fillStyle='#fff';
+ctx.font='20px monospace';
+ctx.fillText('Score: '+sc,10,650);
+}
+function canPlace(a,b){
+if(!a||!b)return true;
+return b.v===0?a.v===12:a.v===b.v-1;
+}
+function handleClick(e){
+const rect=e.target.getBoundingClientRect();
+const x=e.clientX-rect.left;
+const y=e.clientY-rect.top;
+// Check stock click
+if(x>=10&&x<=50&&y>=10&&y<=66&&t.length){
+const c=t.pop();
+c.f=1;
+f[0].push(c);
+sc+=5;
+render();
+return;
+}
+// Check foundation clicks
+for(let i=0;i<4;i++){
+if(x>=60+i*50&&x<=100+i*50&&y>=10&&y<=66){
+// Try to move from tableau
+for(let col=0;col<7;col++){
+if(f[col].length){
+const lc=f[col][f[col].length-1];
+if(!p[i].length&&lc.v===0||p[i].length&&lc.s===p[i][p[i].length-1].s&&lc.v===p[i][p[i].length-1].v+1){
+p[i].push(f[col].pop());
+sc+=10;
+if(f[col].length&&!f[col][f[col].length-1].f)f[col][f[col].length-1].f=1;
+render();
+return;
+}
+}
+}
+}
+// Check tableau clicks
+for(let col=0;col<7;col++){
+for(let r=0;r<f[col].length;r++){
+if(x>=100+col*60&&x<=140+col*60&&y>=100+r*20&&y<=156+r*20){
+const c=f[col][r];
+if(!c.f&&!c.u)continue;
+// Select/deselect
+if(m&&m.col===col&&m.row===r){m=null;render();return;}
+// Try to move
+if(m){
+const src=m;
+const dst={col,row:r};
+// Check if valid sequence
+let valid=true;
+for(let i=src.row;i<f[src.col].length-1;i++){
+const a=f[src.col][i],b=f[src.col][i+1];
+if(a.s!==b.s||a.v!==b.v+1){valid=false;break;}
+}
+if(!valid){m=null;render();return;}
+// Check placement
+const dstCard=dst.row<f[dst.col].length?f[dst.col][dst.row]:null;
+const srcCard=f[src.col][src.row];
+if(canPlace(srcCard,dstCard)){
+const toMove=f[src.col].splice(src.row);
+for(let card of toMove){
+card.u=1;
+f[dst.col].push(card);
+}
+if(f[src.col].length&&!f[src.col][f[src.col].length-1].f)f[src.col][f[src.col].length-1].f=1;
+m=null;
+sc+=5;
+render();
+return;
+}else{
+m=null;
+render();
+return;
+}
+}else{
+m={col,row:r};
+render();
+return;
+}
+}
+}
+}
+}
+document.getElementById('t').addEventListener('click',handleClick);
+inits();
+</script> [end of text]
+
+

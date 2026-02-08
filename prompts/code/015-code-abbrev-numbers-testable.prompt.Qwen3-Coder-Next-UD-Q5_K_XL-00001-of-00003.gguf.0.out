@@ -1,0 +1,71 @@
+```python
+def abbrev_num(x):
+    if x < 0:
+        return "-" + abbrev_num(-x)
+    
+    if x < 1000:
+        return str(x)
+    
+    # Define suffixes and their thresholds
+    suffixes = [
+        (1_000_000_000, 'B'),
+        (1_000_000, 'M'),
+        (1_000, 'K')
+    ]
+    
+    for threshold, suffix in suffixes:
+        if x >= threshold:
+            # Calculate the value in the new unit
+            value = x / threshold
+            
+            # Try different rounding approaches to fit in 4 characters
+            # First try: one decimal place
+            formatted = f"{value:.1f}{suffix}"
+            if len(formatted) <= 4:
+                return formatted
+            
+            # Second try: round to integer
+            formatted = f"{round(value)}{suffix}"
+            if len(formatted) <= 4:
+                return formatted
+            
+            # Third try: if integer is 100 or more, use next lower unit
+            # (e.g., 100K -> 0.1M)
+            if value >= 100:
+                continue  # Try next suffix
+            
+            # If we're here and still too long, try rounding to 2 significant digits
+            # without decimal point
+            rounded = round(value)
+            formatted = f"{rounded}{suffix}"
+            if len(formatted) <= 4:
+                return formatted
+            
+            # Last resort: round to 2 digits total
+            if value >= 10:
+                rounded = round(value / 10) * 10
+                formatted = f"{rounded}{suffix}"
+                if len(formatted) <= 4:
+                    return formatted
+    
+    # For numbers between 1000 and 10000 that didn't fit above
+    if x >= 1000:
+        # Try rounding to nearest 100 for numbers >= 10K
+        if x >= 10000:
+            rounded = round(x / 1000) * 1000
+            formatted = f"{rounded // 1000}K"
+            if len(formatted) <= 4:
+                return formatted
+        
+        # Otherwise use 1 decimal place
+        formatted = f"{x/1000:.1f}K"
+        if len(formatted) <= 4:
+            return formatted
+        
+        # Fallback to integer
+        return f"{round(x/1000)}K"
+    
+    return str(x)
+``` [end of text]
+
+

@@ -1,0 +1,108 @@
+```html
+<!DOCTYPE html><html>
+<head>
+    <title>Hex Solitaire</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f0f0; }
+        .game { display: flex; flex-direction: column; align-items: center; }
+        .board { display: grid; grid-template-columns: repeat(7, 100px); grid-template-rows: repeat(6, 100px); gap: 5px; }
+        .cell { width: 100px; height: 100px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; }
+        .cell.empty { background: #e0e0e0; }
+        .cell.occupied { background: #b0e0e0; }
+        .cell.selected { background: #80b0ff; }
+        .cell.target { background: #ff8080; }
+        .controls { margin-top: 20px; display: flex; gap: 10px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="game">
+        <h1>Hex Solitaire</h1>
+        <div class="board" id="board"></div>
+        <div class="controls">
+            <button id="restart">Restart</button>
+            <button id="undo">Undo</button>
+        </div>
+    </div>
+    <script>
+        const board = document.getElementById('board')
+        const restartBtn = document.getElementById('restart')
+        const undoBtn = document.getElementById('undo')
+        const cells = []
+        let selected = null
+        let moves = []
+        let history = []
+        const directions = [[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]]
+        function init() {
+            board.innerHTML = ''
+            cells.length = 0
+            selected = null
+            moves.length = 0
+            history.length = 0
+            for (let y = 0; y < 6; y++) {
+                for (let x = 0; x < 7; x++) {
+                    const cell = document.createElement('div')
+                    cell.classList.add('cell')
+                    cell.dataset.x = x
+                    cell.dataset.y = y
+                    cell.textContent = (y + 1) * (x + 1)
+                    cell.addEventListener('click', handleClick)
+                    board.appendChild(cell)
+                    cells.push(cell)
+                }
+            }
+        }
+        function handleClick(e) {
+            const x = +e.target.dataset.x
+            const y = +e.target.dataset.y
+            if (selected) {
+                if (selected.x === x && selected.y === y) {
+                    selected = null
+                    updateCells()
+                    return
+                }
+                const dx = x - selected.x
+                const dy = y - selected.y
+                if (Math.abs(dx) + Math.abs(dy) === 1 || (Math.abs(dx) === 1 && Math.abs(dy) === 1)) {
+                    const move = {from: {x: selected.x, y: selected.y}, to: {x, y}}
+                    moves.push(move)
+                    history.push({cells: cells.map(c => ({x: +c.dataset.x, y: +c.dataset.y, text: c.textContent})), moves: [...moves]})
+                    cells.forEach(c => c.textContent = '')
+                    updateCells()
+                    selected = null
+                    if (moves.length === 27) {
+                        setTimeout(() => alert('You win!'), 100)
+                    }
+                }
+            } else {
+                selected = {x, y}
+                updateCells()
+            }
+        }
+        function updateCells() {
+            cells.forEach(c => {
+                const x = +c.dataset.x
+                const y = +c.dataset.y
+                c.classList.remove('selected', 'target')
+                if (selected && x === selected.x && y === selected.y) {
+                    c.classList.add('selected')
+                }
+            })
+        }
+        restartBtn.addEventListener('click', init)
+        undoBtn.addEventListener('click', () => {
+            if (history.length === 0) return
+            const state = history.pop()
+            state.cells.forEach(c => {
+                const cell = document.querySelector(`.cell[data-x="${c.x}"][data-y="${c.y}"]`)
+                cell.textContent = c.text
+            })
+            moves = state.moves
+        })
+        init()
+    </script>
+</body>
+</html>
+``` [end of text]
+
+

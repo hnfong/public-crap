@@ -1,0 +1,123 @@
+```html
+<!DOCTYPE html><html>
+<head><title>Poker Game</title><style>
+  .card { border: 1px solid black; padding: 5px; margin: 5px; display: inline-block; }
+  #player-hand, #dealer-hand { display: flex; flex-wrap: wrap; }
+</style></head>
+<body>
+  <h1>Poker Game</h1>
+  <div id="player-hand"></div>
+  <div id="dealer-hand"></div>
+  <button onclick="deal()">Deal</button>
+  <button onclick="hit()">Hit</button>
+  <button onclick="stand()">Stand</button>
+  <p id="message"></p>
+  <script>
+    let deck = [];
+    let playerHand = [];
+    let dealerHand = [];
+    let gameOver = false;
+    const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+    const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
+
+    function createDeck() {
+      deck = [];
+      for (let suit of suits) {
+        for (let rank of ranks) {
+          deck.push({ suit, rank });
+        }
+      }
+    }
+
+    function shuffleDeck() {
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+    }
+
+    function dealCard() {
+      return deck.pop();
+    }
+
+    function calculateHandValue(hand) {
+      let value = 0;
+      let aceCount = 0;
+      for (let card of hand) {
+        let rankValue = card.rank === 'J' || card.rank === 'Q' || card.rank === 'K' ? 10 : card.rank === 'A' ? 11 : parseInt(card.rank);
+        value += rankValue;
+        if (card.rank === 'A') aceCount++;
+      }
+      while (value > 21 && aceCount > 0) {
+        value -= 10;
+        aceCount--;
+      }
+      return value;
+    }
+
+    function renderHand(hand, elementId) {
+      const handElement = document.getElementById(elementId);
+      handElement.innerHTML = '';
+      for (let card of hand) {
+        const cardElement = document.createElement('div');
+        cardElement.classList.add('card');
+        cardElement.textContent = `${card.rank} of ${card.suit}`;
+        handElement.appendChild(cardElement);
+      }
+    }
+
+    function deal() {
+      createDeck();
+      shuffleDeck();
+      playerHand = [];
+      dealerHand = [];
+      playerHand.push(dealCard());
+      dealerHand.push(dealCard());
+      playerHand.push(dealCard());
+      dealerHand.push(dealCard());
+      renderHand(playerHand, 'player-hand');
+      renderHand(dealerHand, 'dealer-hand');
+      document.getElementById('message').textContent = '';
+      gameOver = false;
+    }
+
+    function hit() {
+      if (gameOver) return;
+      playerHand.push(dealCard());
+      renderHand(playerHand, 'player-hand');
+      const playerValue = calculateHandValue(playerHand);
+      if (playerValue > 21) {
+        gameOver = true;
+        document.getElementById('message').textContent = 'Bust! You lose.';
+      } else if (playerValue === 21) {
+        document.getElementById('message').textContent = 'Blackjack!';
+        stand();
+      }
+    }
+
+    function stand() {
+      if (gameOver) return;
+      let dealerValue = calculateHandValue(dealerHand);
+      while (dealerValue < 17) {
+        dealerHand.push(dealCard());
+        dealerValue = calculateHandValue(dealerHand);
+        renderHand(dealerHand, 'dealer-hand');
+      }
+      const playerValue = calculateHandValue(playerHand);
+      if (dealerValue > 21) {
+        gameOver = true;
+        document.getElementById('message').textContent = 'Dealer busts! You win.';
+      } else if (dealerValue >= playerValue) {
+        gameOver = true;
+        document.getElementById('message').textContent = 'Dealer wins.';
+      } else {
+        gameOver = true;
+        document.getElementById('message').textContent = 'You win!';
+      }
+    }
+  </script>
+</body>
+</html>
+``` [end of text]
+
+

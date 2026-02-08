@@ -1,0 +1,120 @@
+<!DOCTYPE html><html><head><style>body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#f0f0f0}#game{display:grid;grid-template-columns:repeat(4,100px);gap:10px}.card{width:100px;height:140px;background:white;border:1px solid #ccc;border-radius:8px;display:flex;justify-content:center;align-items:center;font-size:24px;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,.1)}.card.flipped{background:#e0e0e0}.pile{background:#ddd;border-radius:8px}.foundation{background:#bbf}</style></head><body><div id="game"></div><script>
+const game=document.getElementById('game')
+const suits=['♠','♥','♦','♣']
+const ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K']
+let deck=[]
+let piles=[[],[],[],[]]
+let foundations=[[],[],[],[]]
+let selected=null
+
+function createDeck(){
+deck=[]
+for(let s of suits)for(let r of ranks)deck.push({suit:s,rank:r})
+for(let i=deck.length-1;i>0;i--){
+const j=Math.floor(Math.random()*(i+1))
+;[deck[i],deck[j]]=[deck[j],deck[i]]
+}
+}
+
+function deal(){
+piles=[[],[],[],[]]
+foundations=[[],[],[],[]]
+for(let i=0;i<4;i++)for(let j=0;j<4;j++)piles[j].push(deck.pop())
+render()
+}
+
+function render(){
+game.innerHTML=''
+for(let i=0;i<4;i++){
+const pile=document.createElement('div')
+pile.className='pile'
+pile.onclick=()=>selectPile(i)
+for(let j=0;j<piles[i].length;j++){
+const card=document.createElement('div')
+card.className='card'
+card.textContent=piles[i][j].rank+piles[i][j].suit
+if(piles[i][j].suit==='♥'||piles[i][j].suit==='♦')card.style.color='red'
+pile.appendChild(card)
+}
+game.appendChild(pile)
+}
+
+for(let i=0;i<4;i++){
+const foundation=document.createElement('div')
+foundation.className='foundation'
+foundation.onclick=()=>selectFoundation(i)
+const card=document.createElement('div')
+card.className='card flipped'
+card.textContent=foundations[i].length?foundations[i][foundations[i].length-1].rank+foundations[i][foundations[i].length-1].suit:''
+if(foundations[i].length&&foundations[i][foundations[i].length-1].suit==='♥'||foundations[i][foundations[i].length-1].suit==='♦')card.style.color='red'
+foundation.appendChild(card)
+game.appendChild(foundation)
+}
+}
+
+function selectPile(index){
+if(selected===null){
+if(piles[index].length){
+selected={type:'pile',index}
+render()
+}
+}else{
+if(selected.type==='pile'){
+selected=null
+render()
+}else{
+const card=foundations[selected.index].pop()
+if(card){
+piles[index].push(card)
+checkWin()
+}
+selected=null
+render()
+}
+}
+}
+
+function selectFoundation(index){
+if(selected===null){
+for(let i=0;i<4;i++){
+if(piles[i].length&&canMoveToFoundation(piles[i][piles[i].length-1],index)){
+const card=piles[i].pop()
+foundations[index].push(card)
+checkWin()
+render()
+return
+}
+}
+}else{
+if(selected.type==='foundation'){
+selected=null
+render()
+}else{
+const card=piles[selected.index].pop()
+if(card&&canMoveToFoundation(card,index)){
+foundations[index].push(card)
+checkWin()
+}
+selected=null
+render()
+}
+}
+}
+
+function canMoveToFoundation(card,foundationIndex){
+if(foundations[foundationIndex].length===0)return card.rank==='A'
+const top=foundations[foundationIndex][foundations[foundationIndex].length-1]
+return card.suit===top.suit&&ranks.indexOf(card.rank)===ranks.indexOf(top.rank)+1
+}
+
+function checkWin(){
+if(foundations.every(f=>f.length===13)){
+setTimeout(()=>alert('You win!'),100)
+}
+}
+
+createDeck()
+deal()
+</script></body></html> [end of text]
+
+

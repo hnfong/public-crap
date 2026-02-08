@@ -1,0 +1,96 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Poker</title>
+<style>
+body { font-family: sans-serif; }
+#cards { display: flex; flex-wrap: wrap; }
+.card { width: 50px; height: 70px; border: 1px solid black; margin: 2px; text-align: center; line-height: 70px; }
+</style>
+</head>
+<body>
+<h1>Poker</h1>
+<div id="cards"></div>
+<div id="result"></div>
+
+<script>
+const suits = ['H', 'D', 'C', 'S'];
+const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
+
+function createDeck() {
+  let deck = [];
+  for (let suit of suits) {
+    for (let rank of ranks) {
+      deck.push(rank + suit);
+    }
+  }
+  return deck.sort(() => Math.random() - 0.5);
+}
+
+function dealHand(deck, n) {
+  let hand = [];
+  for (let i = 0; i < n; i++) {
+    hand.push(deck.pop());
+  }
+  return hand;
+}
+
+function handToHTML(hand) {
+  let html = '';
+  for (let card of hand) {
+    html += `<div class="card">${card}</div>`;
+  }
+  return html;
+}
+
+function evaluateHand(hand) {
+  let ranks = hand.map(card => card[0]);
+  let suits = hand.map(card => card[1]);
+  ranks.sort();
+  let flush = new Set(suits).size === 1;
+  let straight = (() => {
+    let nums = ranks.map(r => {
+      if (r === 'T') return 10;
+      if (r === 'J') return 11;
+      if (r === 'Q') return 12;
+      if (r === 'K') return 13;
+      if (r === 'A') return 14;
+      return parseInt(r);
+    });
+    for (let i = 1; i < nums.length; i++) {
+      if (nums[i] !== nums[i - 1] + 1) return false;
+    }
+    return true;
+  })();
+
+  let count = {};
+  for (let rank of ranks) {
+    count[rank] = (count[rank] || 0) + 1;
+  }
+  let values = Object.values(count).sort((a, b) => b - a);
+
+  if (values[0] === 4) return 'Four of a Kind';
+  if (values[0] === 3 && values[1] === 2) return 'Full House';
+  if (flush && straight) return 'Straight Flush';
+  if (flush) return 'Flush';
+  if (straight) return 'Straight';
+  if (values[0] === 3) return 'Three of a Kind';
+  if (values[0] === 2 && values[1] === 2) return 'Two Pair';
+  if (values[0] === 2) return 'One Pair';
+  return 'High Card';
+}
+
+let deck = createDeck();
+let playerHand = dealHand(deck, 5);
+let dealerHand = dealHand(deck, 5);
+
+document.getElementById('cards').innerHTML = handToHTML(playerHand) + handToHTML(dealerHand);
+let result = evaluateHand(playerHand);
+document.getElementById('result').innerText = `Your hand: ${result}`;
+</script>
+</body>
+</html>
+``` [end of text]
+
+

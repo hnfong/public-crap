@@ -1,0 +1,101 @@
+
+<!DOCTYPE html><html>
+<head><title>Solitaire Twist</title><style>
+body{font-family:Arial,sans-serif;background:#2c3e50;margin:0;padding:20px;display:flex;justify-content:center;align-items:center;height:100vh;}
+.game-container{width:800px;height:600px;background:#34495e;border-radius:10px;box-shadow:0 0 20px rgba(0,0,0,0.5);position:relative;overflow:hidden;}
+.card{width:80px;height:120px;background:#ecf0f1;border-radius:8px;position:absolute;display:flex;justify-content:center;align-items:center;font-size:24px;font-weight:bold;color:#2c3e50;cursor:pointer;user-select:none;transition:transform 0.2s;box-shadow:0 2px 4px rgba(0,0,0,0.2);}
+.card.red{color:#e74c3c;}
+.card.face-down{background:#2980b9;color:transparent;}
+.card.selected{transform:translateY(-10px);}
+.pile{position:absolute;width:80px;height:120px;border:2px dashed #7f8c8d;border-radius:8px;}
+</style></head>
+<body>
+<div class="game-container" id="gameContainer"></div>
+<script>
+const suits = ['♠', '♥', '♦', '♣'];
+const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+let selectedCard = null;
+
+function createDeck() {
+    let deck = [];
+    for (let suit of suits) {
+        for (let value of values) {
+            deck.push({suit, value, color: (suit === '♥' || suit === '♦') ? 'red' : 'black'});
+        }
+    }
+    return deck;
+}
+
+function shuffle(deck) {
+    for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+    return deck;
+}
+
+function createCardElement(card, faceDown = false) {
+    const el = document.createElement('div');
+    el.className = `card ${faceDown ? 'face-down' : card.color}`;
+    el.textContent = faceDown ? '' : `${card.value}${card.suit}`;
+    el.dataset.suit = card.suit;
+    el.dataset.value = card.value;
+    el.dataset.color = card.color;
+    el.addEventListener('click', () => handleCardClick(card, el));
+    return el;
+}
+
+function handleCardClick(card, element) {
+    if (element.classList.contains('face-down')) return;
+    if (selectedCard === element) {
+        element.classList.remove('selected');
+        selectedCard = null;
+    } else {
+        if (selectedCard) selectedCard.classList.remove('selected');
+        element.classList.add('selected');
+        selectedCard = element;
+    }
+}
+
+function dealCards() {
+    const container = document.getElementById('gameContainer');
+    const deck = shuffle(createDeck());
+    const stockPile = deck.slice(0, 24);
+    const tableauPiles = [];
+    for (let i = 0; i < 7; i++) {
+        tableauPiles.push(deck.splice(0, i + 1));
+    }
+
+    stockPile.forEach((card, index) => {
+        const el = createCardElement(card, true);
+        el.style.left = '50px';
+        el.style.top = '50px';
+        container.appendChild(el);
+    });
+
+    tableauPiles.forEach((pile, pileIndex) => {
+        pile.forEach((card, cardIndex) => {
+            const el = createCardElement(card, cardIndex !== pile.length - 1);
+            el.style.left = `${200 + pileIndex * 100}px`;
+            el.style.top = `${300 + cardIndex * 30}px`;
+            container.appendChild(el);
+        });
+    });
+
+    const foundationPiles = [];
+    for (let i = 0; i < 4; i++) {
+        const pile = document.createElement('div');
+        pile.className = 'pile';
+        pile.style.left = `${500 + i * 100}px`;
+        pile.style.top = '50px';
+        container.appendChild(pile);
+        foundationPiles.push(pile);
+    }
+}
+
+window.onload = dealCards;
+</script>
+</body>
+</html> [end of text]
+
+
