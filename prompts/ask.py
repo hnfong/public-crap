@@ -659,7 +659,7 @@ class MiniMaxTemplateMixin:
     # The thinking part is because if we allow it to think, it would just get stuck in a loop at temp=0
     def templated_prompt(self):
         return f"""
-]~b]system
+]~!b[]~b]system
 {self.system_message()}[e~[
 ]~b]user
 {self.prompt()}[e~[

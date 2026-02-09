@@ -1,0 +1,91 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringJoiner;
+
+public class Main {
+    private static final double KILO = 1024.0;
+    private static final double MEGA = KILO * 1024.0;
+    private static final double GIGA = MEGA * 1024.0;
+
+    public static void main(String[] args) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (sb.length() > 0) sb.append(' ');
+                sb.append(line);
+            }
+        }
+
+        String input = sb.toString();
+        double total = 0.0;
+
+        int i = 0;
+        while (i < input.length()) {
+            // Skip non-digit characters
+            while (i < input.length() && !Character.isDigit(input.charAt(i))) {
+                i++;
+            }
+            if (i >= input.length()) break;
+
+            // Parse number (including optional decimal point and commas)
+            StringBuilder numBuilder = new StringBuilder();
+            boolean hasDecimal = false;
+            while (i < input.length()) {
+                char c = input.charAt(i);
+                if (c == ',' && !hasDecimal) {
+                    // Skip commas (thousand separators)
+                    i++;
+                    continue;
+                }
+                if (c == '.' || Character.isDigit(c)) {
+                    numBuilder.append(c);
+                    if (c == '.') hasDecimal = true;
+                    i++;
+                } else {
+                    break;
+                }
+            }
+
+            if (numBuilder.length() == 0) continue;
+            double value = Double.parseDouble(numBuilder.toString());
+
+            // Parse optional suffix
+            if (i < input.length()) {
+                char suffix = Character.toLowerCase(input.charAt(i));
+                if (suffix == 'k') {
+                    value *= KILO;
+                    i++;
+                } else if (suffix == 'm') {
+                    value *= MEGA;
+                    i++;
+                } else if (suffix == 'g') {
+                    value *= GIGA;
+                    i++;
+                }
+            }
+
+            total += value;
+        }
+
+        System.out.println(formatNumber(total));
+        System.out.println(formatNumber(total / KILO) + " k");
+        System.out.println(formatNumber(total / MEGA) + " M");
+        System.out.println(formatNumber(total / GIGA) + " G");
+    }
+
+    private static String formatNumber(double value) {
+        // Round to one decimal place
+        double rounded = Math.round(value * 10.0) / 10.0;
+        // Remove trailing .0 if present
+        if (rounded == Math.floor(rounded)) {
+            return String.valueOf((long) rounded);
+        }
+        return String.valueOf(rounded);
+    }
+}
+``` [end of text]
+
+
