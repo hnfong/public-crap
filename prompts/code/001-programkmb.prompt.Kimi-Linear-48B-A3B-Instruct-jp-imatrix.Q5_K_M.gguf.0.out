@@ -1,0 +1,71 @@
+```java
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class ByteSizeSum {
+    private static final Pattern NUMBER_PATTERN = Pattern.compile(
+        "^([0-9]{1,3}(?:,[0-9]{3})*|\\d+)(?:\\.(\\d+))?(k|K|m|M|g|G)?$"
+    );
+    
+    private static final long KILO = 1024L;
+    private static final long MEGA = KILO * 1024L;
+    private static final long GIGA = MEGA * 1024L;
+    
+    public static void main(String[] args) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder input = new StringBuilder();
+        String line;
+        
+        while ((line = reader.readLine()) != null) {
+            input.append(line).append("\n");
+        }
+        
+        String[] tokens = input.toString().split("[,\\s]+");
+        BigDecimal totalBytes = BigDecimal.ZERO;
+        
+        for (String token : tokens) {
+            token = token.trim();
+            if (token.isEmpty()) continue;
+            
+            Matcher matcher = NUMBER_PATTERN.matcher(token);
+            if (matcher.matches()) {
+                BigDecimal value = new BigDecimal(matcher.group(1).replace(",", ""));
+                String fraction = matcher.group(2);
+                String suffix = matcher.group(3);
+                
+                if (fraction != null) {
+                    value = value.add(new BigDecimal("0." + fraction));
+                }
+                
+                long multiplier = getMultiplier(suffix);
+                totalBytes = totalBytes.add(BigDecimal.valueOf(value.doubleValue() * multiplier));
+            }
+        }
+        
+        BigDecimal kiloBytes = totalBytes.divide(BigDecimal.valueOf(KILO), 10, RoundingMode.HALF_UP);
+        BigDecimal megaBytes = totalBytes.divide(BigDecimal.valueOf(MEGA), 10, RoundingMode.HALF_UP);
+        BigDecimal gigaBytes = totalBytes.divide(BigDecimal.valueOf(GIGA), 10, RoundingMode.HALF_UP);
+        
+        System.out.println(totalBytes.setScale(1, RoundingMode.HALF_UP));
+        System.out.printf("%.1f k%n", kiloBytes.setScale(1, RoundingMode.HALF_UP));
+        System.out.printf("%.1f M%n", megaBytes.setScale(1, RoundingMode.HALF_UP));
+        System.out.printf("%.1f G%n", gigaBytes.setScale(1, RoundingMode.HALF_UP));
+    }
+    
+    private static long getMultiplier(String suffix) {
+        if (suffix == null) return 1L;
+        switch (suffix) {
+            case "k": case "K": return KILO;
+            case "m": case "M": return MEGA;
+            case "g": case "G": return GIGA;
+            default: return 1L;
+        }
+    }
+}
+``` [end of text]
+
+
