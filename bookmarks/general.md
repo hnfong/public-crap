@@ -92,6 +92,7 @@
 
 ## Finance and Business
 
+- ☆ https://www.reddit.com/r/wallstreetbets/comments/mbx510/slv_is_a_complete_scam_its_a_scalp_trade_set_up/
 - ☆ https://www.youtube.com/watch?v=16qy12WDxcY Fed Chair Powell Speaks to David Rubenstein (full interview)
   - Very interesting inside look at what the Fed Chairman does
 - ☆ https://www.bankofengland.co.uk/-/media/boe/files/quarterly-bulletin/2014/money-creation-in-the-modern-economy.pdf
