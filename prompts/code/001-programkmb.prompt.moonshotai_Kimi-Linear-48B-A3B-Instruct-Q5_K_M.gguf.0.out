@@ -1,0 +1,82 @@
+```java
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class ByteSizeSum {
+    private static final Pattern NUMBER_PATTERN = Pattern.compile(
+        "^([0-9]{1,3}(?:,[0-9]{3})*|\\d+)(?:\\.(\\d+))?$"
+    );
+    private static final Pattern SIZE_PATTERN = Pattern.compile(
+        "^([0-9]{1,3}(?:,[0-9]{3})*|\\d+)(?:\\.(\\d+))?\\s*([kmgKMG])$"
+    );
+
+    public static void main(String[] args) throws Exception {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringBuilder input = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                input.append(line).append("\n");
+            }
+
+            BigDecimal totalBytes = BigDecimal.ZERO;
+            BigDecimal totalKilobytes = BigDecimal.ZERO;
+            BigDecimal totalMegabytes = BigDecimal.ZERO;
+            BigDecimal totalGigabytes = BigDecimal.ZERO;
+
+            String[] tokens = input.toString().split("\\s+");
+            for (String token : tokens) {
+                if (token.isEmpty()) continue;
+
+                Matcher sizeMatcher = SIZE_PATTERN.matcher(token);
+                if (sizeMatcher.matches()) {
+                    BigDecimal value = parseNumber(sizeMatcher.group(1), sizeMatcher.group(2));
+                    char suffix = sizeMatcher.group(3).charAt(0);
+                    BigDecimal bytes = convertToBytes(value, suffix);
+                    totalBytes = totalBytes.add(bytes);
+                }
+            }
+
+            totalKilobytes = totalBytes.divide(BigDecimal.valueOf(1024), 10, RoundingMode.HALF_UP);
+            totalMegabytes = totalBytes.divide(BigDecimal.valueOf(1024 * 1024), 10, RoundingMode.HALF_UP);
+            totalGigabytes = totalBytes.divide(BigDecimal.valueOf(1024 * 1024 * 1024), 10, RoundingMode.HALF_UP);
+
+            System.out.println(totalBytes.setScale(1, RoundingMode.HALF_UP));
+            System.out.printf("%.1f k%n", totalKilobytes);
+            System.out.printf("%.1f M%n", totalMegabytes);
+            System.out.printf("%.1f G%n", totalGigabytes);
+        }
+    }
+
+    private static BigDecimal parseNumber(String integerPart, String fractionalPart) {
+        String combined = integerPart + (fractionalPart != null ? "." + fractionalPart : "");
+        return new BigDecimal(combined);
+    }
+
+    private static BigDecimal convertToBytes(BigDecimal value, char suffix) {
+        BigDecimal multiplier;
+        switch (suffix) {
+            case 'k':
+            case 'K':
+                multiplier = BigDecimal.valueOf(1024);
+                break;
+            case 'm':
+            case 'M':
+                multiplier = BigDecimal.valueOf(1024 * 1024);
+                break;
+            case 'g':
+            case 'G':
+                multiplier = BigDecimal.valueOf(1024 * 1024 * 1024);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid suffix: " + suffix);
+        }
+        return value.multiply(multiplier);
+    }
+}
+``` [end of text]
+
+
