@@ -347,7 +347,6 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 ### Software
 
 - [vim](reviews/software/vim.md)
-- [llm](reviews/software/llm.md)
 - [genimage](reviews/software/genimage.md)
 
 ### Food
