@@ -1,0 +1,194 @@
+Let’s analyze this Magic: The Gathering scenario step by step, using the **2024 rules** (though Kindle’s mechanics haven’t changed recently).
+
+---
+
+### **Setup Recap**
+
+- **Alice**:
+  - Hand: **2 copies of *Kindle*** (instant)
+  - Graveyard: empty (initially)
+  - Mana: “sufficient” → assume she can cast both *Kindle*s (each costs {1}{R}, so needs 2 mana total; she has it).
+  - Goal: Kill Orim (1/3) to remove a threat.
+
+- **Bob**:
+  - Hand: 0 cards
+  - Battlefield: **Orim, Samite Healer** (untapped, legendary 1/3)
+    - Ability: **{T}: Prevent the next 3 damage that would be dealt to any target this turn.**
+  - Lands: tapped out (no mana available to activate abilities *now* — but he can tap Orim *this turn* before damage resolves).
+
+- **Orim has been on board a while**, so no summoning sickness.
+
+---
+
+### **Understanding *Kindle***
+> *Kindle* (instant): **"Kindle deals X damage to any target, where X is 2 plus the number of cards named Kindle in all graveyards."**
+
+Key points:
+- Damage is **not conditional on casting cost** — it’s dynamic based on *graveyard count*.
+- Each *Kindle* is a separate spell on the stack.
+- The number of *Kindle*s in graveyards is evaluated **as each *Kindle* resolves** — *not* when cast.
+
+So:
+- If **0** *Kindle*s in graveyards when first *Kindle* resolves → X = 2.
+- After first *Kindle* resolves, 1 *Kindle* in graveyard → second *Kindle* deals X = 3.
+- If both cast in same turn, and first resolves before second, second deals more.
+
+But: **Order of resolution matters**, and Bob can respond between them.
+
+---
+
+### **Alice’s Options**
+
+She can cast:
+1. **One *Kindle*** → deals 2 damage (since 0 in graveyards).
+2. **Two *Kindle*s**, one after the other (on the stack, second one resolves after first).
+3. Possibly cast both *simultaneously*? No — instants are cast one at a time, though she can cast both before passing priority (but they resolve in LIFO order: last-in, first-out).
+
+So if she casts:
+- First *Kindle* A → goes on stack.
+- Then *Kindle* B → goes on stack *on top*.
+- Stack: [B (top), A (bottom)]
+- A resolves first → deals 2 damage (0 *Kindle*s in graveyards yet).
+- Then B resolves → now 1 *Kindle* in graveyard (A), so B deals 3 damage.
+
+Total damage: **5**, unless prevented.
+
+But Bob has **Orim’s prevention ability** — he can tap Orim to prevent up to 3 damage *this turn*.
+
+He can activate it **in response to either *Kindle* resolving**, or before any damage is dealt.
+
+---
+
+### **Bob’s Options**
+
+Bob is on the **opponent’s turn** (Alice’s turn), so he gets priority *after* Alice casts each spell.
+
+Sequence possibilities:
+
+#### **Option 1: Alice casts both *Kindle*s before Bob acts**
+- Alice casts *Kindle* A (goes on stack).
+- Alice casts *Kindle* B (goes on stack on top).
+- Now Bob has priority *before* any resolve.
+
+Bob can:
+- **Tap Orim** (activate ability) — says “prevent next 3 damage this turn”.
+- Then *Kindle* A resolves → deals 2 damage → all prevented (since prevention shield is active).
+- Then *Kindle* B resolves → deals 3 damage → 2 more prevented (shield has 3 total prevention left? Wait — no: **the ability says “prevent the next 3 damage” — it’s a *pool* of 3, not per source**.
+
+✅ **Important**: Orim’s ability creates a *replacement effect* that prevents up to 3 damage *total* this turn — not per spell.
+
+So:
+- After tap: shield = 3 damage prevention available.
+- *Kindle* A deals 2 → 2 prevented → 1 prevention left.
+- *Kindle* B deals 3 → 2 prevented (using remaining 1? Wait: 1 left, so only 1 more can be prevented), and 2 damage remains unprevented.
+
+Wait — correction: **The prevention is applied as damage is dealt**, and it’s a *shared pool*.
+
+Let’s simulate precisely:
+
+- Bob taps Orim → “Prevent the next 3 damage that would be dealt to any target this turn.”
+- This creates a *continuous effect* that replaces damage with prevention, up to 3 total.
+
+Now *Kindle* A resolves:
+- Would deal 2 damage to Orim.
+- Replacement effect applies: prevent 2 damage (≤ 3), so Orim takes 0 damage.
+- 1 prevention point remains.
+
+Then *Kindle* B resolves:
+- Would deal 3 damage to Orim.
+- Replacement effect applies: prevent 1 damage (remaining), so Orim takes **2 damage**.
+- Total damage to Orim: **2** → Orim survives (1/3 → 1/1).
+
+So **Orim survives**.
+
+But wait — can Alice do better?
+
+#### **Option 2: Alice casts one *Kindle*, waits for Bob to respond, then casts second**
+
+Sequence:
+1. Alice casts *Kindle* A.
+2. Bob has priority — he can:
+   - Tap Orim to prevent 3 damage.
+   - Or do nothing.
+
+If Bob taps Orim *now*, then *Kindle* A resolves → 2 damage prevented → shield exhausted.
+
+Then Alice casts *Kindle* B → resolves → 3 damage unprevented → Orim takes 3 → dies.
+
+✅ So if Bob taps Orim *too early*, Alice can “overload” the prevention.
+
+But is Bob rational? He knows Alice has two *Kindle*s. He should anticipate this.
+
+So Bob’s optimal response to *first* *Kindle* being cast is: **do NOT tap Orim yet** — wait to see if Alice casts a second *Kindle*.
+
+Let’s simulate Bob’s best response:
+
+- Alice casts *Kindle* A.
+- Bob has priority. He knows Alice has 2 *Kindle*s in hand (he sees her hand? In tournament play, hand is hidden unless revealed — but in this hypothetical, let’s assume Bob knows Alice has two *Kindle*s, or at least suspects she does).
+
+But in real MTG, hand is hidden. However, the prompt says “assuming Alice has sufficient mana” and describes her hand explicitly — so this is a *theoretical* analysis where both players know the full state (like a puzzle). So Bob knows Alice has exactly two *Kindle*s.
+
+So Bob knows:
+- Alice has two *Kindle*s.
+- If he taps Orim now, and Alice casts second *Kindle*, he’ll only prevent 3 total → 2 damage leaks.
+- If he waits, and Alice casts second *Kindle*, same thing — still 2 damage leaks.
+- But if he waits *until after first *Kindle* resolves*, then he can decide whether to tap *before* second *Kindle*.
+
+Wait — but *Kindle* A resolves *before* Bob gets priority again after casting *Kindle* B.
+
+Let’s timeline:
+
+1. Alice casts *Kindle* A → goes on stack.
+2. Bob has priority → can tap Orim or not.
+3. If Bob taps Orim, *Kindle* A resolves → 2 damage prevented.
+4. Then Alice casts *Kindle* B → goes on stack *on top*.
+5. Bob has priority again — but Orim’s prevention shield is **already exhausted** (3 used up), so he can’t prevent more.
+6. *Kindle* B resolves → 3 damage → Orim dies.
+
+So if Bob taps *before* first *Kindle* resolves, he loses.
+
+What if Bob **does NOT tap** when *Kindle* A is on stack?
+
+1. Alice casts *Kindle* A.
+2. Bob passes priority (does not tap).
+3. *Kindle* A resolves → deals 2 damage to Orim → Orim now 1/1 (2 damage taken).
+4. Alice casts *Kindle* B.
+5. Bob now has priority — he can tap Orim to prevent next 3 damage.
+   - Shield = 3.
+   - *Kindle* B resolves → deals 3 damage.
+   - Prevention applies: 3 prevented → Orim takes 0.
+   - Orim survives at 1/1.
+
+So if Bob waits *until after first *Kindle* resolves*, he can prevent the second *Kindle*’s 3 damage and save Orim.
+
+But wait — is Orim still a valid target for *Kindle* B? Yes — it’s still on battlefield, 1/1.
+
+So Bob’s optimal play is:
+- **Do NOT tap Orim in response to first *Kindle*.**
+- Let *Kindle* A deal 2 damage (Orim goes to 1/1).
+- Then, *before* second *Kindle* resolves, tap Orim to prevent its 3 damage.
+
+Result: Orim survives with 1 HP.
+
+But can Alice prevent this?
+
+What if Alice casts *both* *Kindle*s **before** Bob gets priority — i.e., she casts A, then B, and Bob only gets priority *once*, before any resolve.
+
+That’s standard: when you cast two spells in succession, both go on stack, and opponent gets priority *after* the second is cast (before any resolve). So Bob gets one chance to act *before* either resolves.
+
+So:
+- Alice casts A, then B.
+- Stack: [B (top), A (bottom)]
+- Bob has priority — he must decide: tap Orim now or not.
+
+If he taps now:
+- Shield = 3.
+- A resolves → 2 damage prevented (shield left: 1).
+- B resolves → 3 damage → 1 prevented, 2 unprevented → Orim takes 2 → survives.
+
+If he *doesn’t* tap now:
+- A resolves → 2 damage → Orim 1/1.
+- Then B resolves → 3 damage → Orim takes 3 → dies.
+
+So Bob’s best choice *at that moment* is to **tap Or
+
