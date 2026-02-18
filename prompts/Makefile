@@ -2,7 +2,7 @@
 MODELS=$(shell cd ~/Downloads; ls *.gguf test_models/*.gguf; ls test_models/split_ggufs/*00001-of-*gguf )
 
 # Replace / with ---
-VMODELS=mlx-community---Qwen2.5-VL-7B-Instruct-4bit mlx-community---InternVL3-8B-6bit mlx-community---Qwen2.5-VL-32B-Instruct-4bit mlx-community---gemma-3-12b-it-qat-6bit mlx-community---GLM-4.5V-5bit mlx-community---Jan-v2-VL-low-8bit-mlx
+VMODELS=mlx-community---gemma-3-12b-it-qat-6bit mlx-community---GLM-4.5V-5bit
 
 MLXLM_MODELS=mlx-community--GLM-4.5-4bit mlx-community--GLM-4.5-Air-4bit
 

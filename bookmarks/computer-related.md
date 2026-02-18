@@ -814,3 +814,8 @@ Computer technology related.
 - https://github.com/diesel-rs/diesel - A safe, extensible ORM and Query Builder for Rust
 - https://github.com/johnthagen/min-sized-rust - Minimizing Rust Binary Size - This repository demonstrates how to minimize the size of a Rust binary.
 
+## Publishing Tools
+
+- https://pandoc.org/ - If you need to convert files from one markup format into another, pandoc is your swiss-army knife. Pandoc can convert between the following formats:
+- https://github.com/typst/typst - Typst is a new markup-based typesetting system that is designed to be as powerful as LaTeX while being much easier to learn and use.
+
