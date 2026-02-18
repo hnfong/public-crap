@@ -22,7 +22,7 @@ Options:
 -t temperature:    Set the temperature (default: 0.3)
 -f file:           Input prompt file (can be a glob)
 -o file:           Output file (can contain {n}, {m}, {f} for round, model, and file)
--p preset:         Set the preset to use (default: explain_this)
+-p preset:         Set the preset to use (default: explain_this), can also be a question or instruction for CustomPreset
 -m model:          Set the model to use. This can be a string in which case the first substring match in ~/Downloads or MODELS_PATH will be used.
 -n rounds:         Set the number of rounds to run (default: 1)
 -x ignore_prefix:  Set the prefix to ignore in the prompt file (default: #!)
@@ -35,6 +35,7 @@ Options:
 import datetime
 import getopt
 import glob
+import io
 import re
 import os
 import shutil
@@ -48,9 +49,9 @@ MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/"
 def model_glob(abbr):
     return glob.glob(f"{MODELS_PATH}/*{abbr}*.gguf") or glob.glob(f"{MODELS_PATH}/test_models/split_ggufs/*{abbr}*.gguf") 
 
-DEFAULT_MODEL = "gemma-3-12b-it"
-DEFAULT_CODE_INSTRUCT_MODEL = "Qwen3-30B-A3B-Instruct"
-DEFAULT_CODE_GENERATION_MODEL = "Qwen3-Coder-30B-A3B-Instruct"  # FIM
+DEFAULT_MODEL = "Qwen3-30B-A3B-Instruct"
+DEFAULT_CODE_INSTRUCT_MODEL = "Qwen3-Coder-Next"
+DEFAULT_CODE_GENERATION_MODEL = "Qwen3-Coder-Next"  # FIM
 
 # Presets
 
@@ -116,19 +117,18 @@ class CliPreset(Preset):
     def prompt(self):
         return f"[Only give the command. Do not explain unless necessary, but if you explain, put it in the form of comments appropriate for the script/language you are using as output. IMPORTANT: Make sure the output is executable.]\n[Environment: {os.environ.get('SHELL')}; Operating System: {self.get_os()}\n\n{self.user_prompt}\n"
 
-class ExplainPreset(Preset):
-    def __init__(self, user_prompt, context):
-        super().__init__(user_prompt)
-        self.context = context
-        self._system_message = "You are a helpful, thoughtful and creative AI assistant. Give concise answers unless the answer would be better with more detail."
+# Note: this is not a preset, but a base class for dynamically generating a new
+# base class with the string passed through the -p argument
+class CustomPresetBase(Preset):
+    def __init__(self, user_prompt, custom_prompt):
+        self.custom_prompt = custom_prompt
+        self._system_message = "You are a helpful assistant."
+        self.user_prompt = user_prompt
 
-    name = "explain_this"
+    name = "custom_preset"
 
     def prompt(self):
-        if self.context:
-            return f"In the context of {self.context}, please explain the following. Be concise in your answer.\n```{self.user_prompt}```\n"
-        else:
-            return f"Please explain the following.\n```{self.user_prompt}```\n"
+        return f"# Instructions: {self.custom_prompt}\n---\n{self.user_prompt}\n---\n# Instructions: {self.custom_prompt}\n"
 
 class AskUserPreset(Preset):
     def __init__(self, user_prompt, context):
@@ -298,40 +298,6 @@ discuss implementation details. Just explain what it does to somebody who is
 not familiar with the codebase (and not familiar with the class names and their
 interactions etc.)
 """
-
-
-class SummarizeLawCase(Preset):
-    def __init__(self, user_prompt, context):
-        super().__init__(user_prompt)
-        self.context = context
-        self._system_message = "You are a helpful AI assistant."
-
-    name = "lawcase"
-    def prompt(self):
-        return f"""
-### TASKS ###
-
-1. Briefly summarize the facts of the following case.
-1.1 After your summary, craft a catchy, memorable sentence to help the reader remember the case. (The sentence should be short and concise and reference distinctive elements of the case)
-2. Then, briefly summarize the arguments of the two parties.
-3. Summarize the legal principles (ratio decidendi) of the case. Be detailed and thorough. There is no word limit. Use multiple paragraphs. If applicable, focus on the points that might be novel or controversial.
-4. Finally, is there anything striking, unusual or remarkable about the case? (It may or may not be about law, just anything you find extraordinary.)
-
-----
-
-{self.user_prompt}
-
-----
-
-### TASKS ###
-
-1. Briefly summarize the facts of the above case.
-1.1 After your summary, craft a catchy, memorable sentence to help the reader remember the case. (The sentence should be short and concise and reference distinctive elements of the case)
-2. Then, briefly summarize the arguments of the two parties.
-3. Summarize the legal principles (ratio decidendi) of the case. Be detailed and thorough. There is no word limit. Use multiple paragraphs. If applicable, focus on the points that might be novel or controversial.
-4. Finally, is there anything striking, unusual or remarkable about the case? (It may or may not be about law, just anything you find extraordinary.)
-"""
-
 
 class ReviewPreset(Preset):
     def __init__(self, user_prompt, context):
@@ -883,6 +849,7 @@ NAME_MATCH_OVERRIDE = [
     ("QwenLong-L1.5", Qwen3ThinkingTemplateMixin),
 
     ("Light-IF", NoThinkingChatMLTemplateMixin),
+    ("starling", ChatMLTemplateMixin),  # Officially it's not ChatML, but it works. Officially, the prompt template looks like this: single_turn_prompt = f"GPT4 Correct User: {prompt}<|end_of_turn|>GPT4 Correct Assistant:"
     ("Ling-", LingTemplateMixin),
     ("Hunyuan-MT", HuanyuanTemplateMixin),
     ("Hunyuan-", HuanyuanNoThinkTemplateMixin),
@@ -920,7 +887,6 @@ NAME_MATCH_OVERRIDE = [
     ("phi-4", Phi4TemplateMixin),
     ("qwen2", QwenTemplateMixin),
     ("qwq-32b", QwenTemplateMixin),
-    ("starling", ChatMLTemplateMixin),  # Officially it's not ChatML, but it works. Officially, the prompt template looks like this: single_turn_prompt = f"GPT4 Correct User: {prompt}<|end_of_turn|>GPT4 Correct Assistant:"
     ("tinyllama_v1.1", ChatMLTemplateMixin),
     ("wizardlm", WizardLmMixin),
     ("zephyr", ZephyrTemplateMixin),
@@ -1069,7 +1035,17 @@ if __name__ == "__main__":
     if opts.get("-p") is None:
         preset = ExplainPreset if "explain" in sys.argv[0] else DefaultPreset
     else:
-        preset = PRESETS.get(opts.get("-p"))
+        p_option_string = opts.get("-p")
+        preset = PRESETS.get(p_option_string)
+        identifier = re.compile(r'^[a-zA-Z\-\_]+$')
+        if preset is None and p_option_string is not None and not identifier.match(p_option_string):
+            # Create a custom preset with the base custom preset
+            class CustomPreset(CustomPresetBase):
+                def __init__(self, prompt, context):
+                    # Call parent class initializer with the string provided in -p
+                    super().__init__(prompt, opts.get("-p"))
+            preset = CustomPreset
+
     assert preset is not None
 
     user_prompt = None
@@ -1089,15 +1065,16 @@ if __name__ == "__main__":
             print("What is your question?")
         user_prompt = sys.stdin.read()
 
+    overrideTemplateMixIn = None
+
     context = opts.get("-C") or ""
     model_name = opts.get("-m") or DEFAULT_MODEL
     if preset in (AskUserPreset, CodeReviewPreset):
         model_name = DEFAULT_CODE_INSTRUCT_MODEL
     if preset in (CodeGenerationPreset,):
         model_name = DEFAULT_CODE_GENERATION_MODEL
+        overrideTemplateMixIn = QwenFimMixin
     cmd_args = []
-
-    overrideTemplateMixIn = None
 
     class ModelPlaceholder:
         pass
@@ -1141,27 +1118,30 @@ if __name__ == "__main__":
             if prompt.get("user") is None:
                 continue
 
-
             # Create a temporary file for storing the prompt
-            with tempfile.NamedTemporaryFile(mode="w", delete=('-k' not in opts)) as temp_prompt_file:
-                cp = CurrentPromptTemplate(prompt.get("user"), context)
-                sys_prompt = prompt.get("system")
-                if sys_prompt:
-                    cp.set_system_message(sys_prompt)
-                templated_prompt = cp.templated_prompt()
-                if verbosity >= 2:
-                    print(templated_prompt)
-                temp_prompt_file.write(templated_prompt)
-                # Try to fix an apparent llama.cpp bug where it chops off the last newline
-                if templated_prompt[-1] == "\n":
-                    temp_prompt_file.write("\n")
-                if extra := opts.get("-X"):
-                    # Extra prompt as prefix of assistant output
-                    temp_prompt_file.write(extra)
-                    if extra[-1] != "\n":
-                        temp_prompt_file.write("\n")
-                temp_prompt_file.flush()
+            temp_prompt_contents = io.StringIO()
 
+            cp = CurrentPromptTemplate(prompt.get("user"), context)
+            sys_prompt = prompt.get("system")
+            if sys_prompt:
+                cp.set_system_message(sys_prompt)
+            templated_prompt = cp.templated_prompt()
+
+            temp_prompt_contents.write(templated_prompt)
+            # Try to fix an apparent llama.cpp bug where it chops off the last newline
+            if templated_prompt[-1] == "\n":
+                temp_prompt_contents.write("\n")
+            if extra := opts.get("-X"):
+                # Extra prompt as prefix of assistant output
+                temp_prompt_contents.write(extra)
+                if extra[-1] != "\n":
+                    temp_prompt_contents.write("\n")
+            if verbosity >= 2:
+                print(temp_prompt_contents.getvalue())
+
+            with tempfile.NamedTemporaryFile(mode="w", delete=('-k' not in opts)) as temp_prompt_file:
+                temp_prompt_file.write(temp_prompt_contents.getvalue())
+                temp_prompt_file.flush()
                 for infer_round in range(int(opts.get("-n") or 1)):
                     out_file = opts.get("-o")
                     if '-m' not in opts: # allow overriding the model if the user did not specify it.
