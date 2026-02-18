@@ -1,0 +1,120 @@
+<!DOCTYPE html><html>
+<head>
+    <title>Twisted Solitaire</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .card { width: 70px; height: 100px; background-color: white; border: 1px solid black; display: inline-block; margin: 5px; text-align: center; line-height: 100px; cursor: pointer; }
+        .hidden { background-color: gray; }
+        .pile { display: inline-block; margin: 10px; }
+        .foundation { display: inline-block; margin: 10px; }
+        .stock { display: inline-block; margin: 10px; }
+        .waste { display: inline-block; margin: 10px; }
+    </style>
+</head>
+<body>
+    <div id="game"></div>
+    <script>
+        const suits = ['♠', '♥', '♦', '♣'];
+        const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        const deck = ranks.flatMap(rank => suits.map(suit => ({ rank, suit }))).sort(() => Math.random() - 0.5);
+        const game = document.getElementById('game');
+        const piles = Array(7).fill().map(() => []);
+        const foundations = Array(4).fill().map(() => []);
+        const stock = deck.slice();
+        const waste = [];
+
+        function createCard(card, hidden = false) {
+            const el = document.createElement('div');
+            el.classList.add('card', hidden ? 'hidden' : '');
+            el.textContent = hidden ? '' : `${card.rank}${card.suit}`;
+            el.card = card;
+            el.hidden = hidden;
+            el.addEventListener('click', () => moveCard(el));
+            return el;
+        }
+
+        function createPile(pile, index) {
+            const el = document.createElement('div');
+            el.classList.add('pile');
+            pile.forEach(card => el.appendChild(createCard(card, pile === piles[index] && card === pile[pile.length - 1])));
+            return el;
+        }
+
+        function createFoundation(foundation, index) {
+            const el = document.createElement('div');
+            el.classList.add('foundation');
+            foundation.forEach(card => el.appendChild(createCard(card)));
+            return el;
+        }
+
+        function createStock() {
+            const el = document.createElement('div');
+            el.classList.add('stock');
+            el.appendChild(createCard({ rank: 'X', suit: 'X' }, true));
+            el.addEventListener('click', () => drawCard());
+            return el;
+        }
+
+        function createWaste() {
+            const el = document.createElement('div');
+            el.classList.add('waste');
+            waste.forEach(card => el.appendChild(createCard(card)));
+            return el;
+        }
+
+        function drawCard() {
+            if (stock.length === 0) return;
+            const card = stock.pop();
+            waste.push(card);
+            game.replaceChild(createWaste(), game.querySelector('.waste'));
+            game.replaceChild(createStock(), game.querySelector('.stock'));
+        }
+
+        function moveCard(cardEl) {
+            const card = cardEl.card;
+            const from = cardEl.parentElement;
+            const to = document.elementFromPoint(event.clientX, event.clientY).parentElement;
+
+            if (to.classList.contains('foundation')) {
+                const foundation = foundations[to.dataset.index];
+                if (foundation.length === 0 || (card.rank === String.fromCharCode(foundation[foundation.length - 1].rank.charCodeAt(0) + 1) && card.suit === foundation[foundation.length - 1].suit)) {
+                    foundation.push(card);
+                    from.removeChild(cardEl);
+                    game.replaceChild(createFoundation(foundation, to.dataset.index), to);
+                    checkWin();
+                }
+            } else if (to.classList.contains('pile')) {
+                const pile = piles[to.dataset.index];
+                if (pile.length === 0 || (ranks.indexOf(card.rank) === ranks.indexOf(pile[pile.length - 1].rank) - 1 && suits.indexOf(card.suit) % 2 !== suits.indexOf(pile[pile.length - 1].suit) % 2)) {
+                    pile.push(card);
+                    from.removeChild(cardEl);
+                    game.replaceChild(createPile(pile, to.dataset.index), to);
+                }
+            }
+        }
+
+        function checkWin() {
+            if (foundations.every(f => f.length === 13)) {
+                alert('You win!');
+            }
+        }
+
+        function setupGame() {
+            for (let i = 0; i < 7; i++) {
+                for (let j = 0; j <= i; j++) {
+                    const card = stock.pop();
+                    piles[i].push(card);
+                }
+            }
+            piles.forEach((pile, i) => game.appendChild(createPile(pile, i)));
+            foundations.forEach((foundation, i) => game.appendChild(createFoundation(foundation, i)));
+            game.appendChild(createStock());
+            game.appendChild(createWaste());
+        }
+
+        setupGame();
+    </script>
+</body>
+</html> [end of text]
+
+
