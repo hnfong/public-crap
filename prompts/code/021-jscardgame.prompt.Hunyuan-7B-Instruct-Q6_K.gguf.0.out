@@ -1,0 +1,105 @@
+<think>
+
+</think>
+<answer>
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .game-board { display: grid; grid-template-columns: repeat(7, 50px); grid-template-rows: repeat(7, 50px); gap: 2px; }
+        .tile { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; font-size: 20px; cursor: pointer; }
+        .tile.hidden { visibility: hidden; }
+        .tile.selected { background-color: yellow; }
+    </style>
+</head>
+<body>
+    <h1>Solitaire Twist</h1>
+    <div class="game-board" id="board"></div>
+    <script>
+        const board = [];
+        const suits = ['♠', '♥', '♦', '♣'];
+        const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+
+        function createBoard() {
+            for (let i = 0; i < 7; i++) {
+                board[i] = [];
+                for (let j = 0; j < 7; j++) {
+                    board[i][j] = { suit, rank: ranks[i * 7 + j], hidden: true };
+                }
+            }
+            shuffleBoard();
+            renderBoard();
+        }
+
+        function shuffleBoard() {
+            for (let i = board.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [board[i], board[j]] = [board[j], board[i]];
+            }
+        }
+
+        function renderBoard() {
+            const boardElement = document.getElementById('board');
+            boardElement.innerHTML = '';
+            for (let i = 0; i < 7; i++) {
+                for (let j = 0; j < 7; j++) {
+                    const tile = document.createElement('div');
+                    tile.className = `tile ${board[i][j].hidden ? 'hidden' : ''}`;
+                    tile.textContent = `${board[i][j].suit}${board[i][j].rank}`;
+                    tile.addEventListener('click', () => handleTileClick(i, j));
+                    boardElement.appendChild(tile);
+                }
+            }
+        }
+
+        function handleTileClick(row, col) {
+            const tile = board[row][col];
+            if (tile.hidden) {
+                tile.hidden = false;
+                renderBoard();
+            } else if (row === 0 && col === 0) {
+                const selectedTile = getSelectedTile();
+                if (selectedTile) {
+                    selectedTile.hidden = true;
+                    renderBoard();
+                }
+            } else if (isAdjacent(row, col, getSelectedTile())) {
+                const selectedTile = getSelectedTile();
+                const targetTile = board[row][col];
+                if (targetTile.rank === selectedTile.rank + 1) {
+                    selectedTile.hidden = true;
+                    targetTile.hidden = true;
+                    renderBoard();
+                } else {
+                    selectedTile.hidden = true;
+                    renderBoard();
+                }
+            }
+        }
+
+        function getSelectedTile() {
+            let selectedTile = null;
+            const tiles = document.querySelectorAll('.tile');
+            tiles.forEach(tile => {
+                if (!tile.hidden && tile.classList.contains('selected')) {
+                    const row = Math.floor(tile.parentElement.rowIndex / 7);
+                    const col = tile.parentElement.cellIndex;
+                    selectedTile = { row, col };
+                }
+            });
+            return selectedTile;
+        }
+
+        function isAdjacent(row1, col1, row2, col2) {
+            return (Math.abs(row1 - row2) === 1 && col1 === col2) || (Math.abs(col1 - col2) === 1 && row1 === row2);
+        }
+
+        createBoard();
+    </script>
+</body>
+</html>
+```
+</answer> [end of text]
+
+
