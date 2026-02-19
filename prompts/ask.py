@@ -443,6 +443,28 @@ class ChatMLTemplateMixin:
     def extra_gguf_options(self):
         return ["-r", "<|im_end|>"]
 
+class ChatMLThinkingTemplateMixin:
+    def templated_prompt(self):
+        if self.system_message():
+            return f"""
+<|im_start|>system
+{self.system_message()}<|im_end|>
+<|im_start|>user
+{self.prompt()}<|im_end|>
+<|im_start|>assistant
+<think>
+            """.strip() + "\n"
+        else:
+            return f"""
+<|im_start|>user
+{self.prompt()}<|im_end|>
+<|im_start|>assistant
+<think>
+            """.strip() + "\n"
+
+    def extra_gguf_options(self):
+        return ["-r", "<|im_end|>", "-c", "9216"]
+
 class NoThinkingChatMLTemplateMixin:
     def templated_prompt(self):
         if self.system_message():
@@ -848,6 +870,7 @@ NAME_MATCH_OVERRIDE = [
     ("gpt-oss", GPTOSSTemplateMixin),
     ("QwenLong-L1.5", Qwen3ThinkingTemplateMixin),
 
+    ("Step-3.5", ChatMLThinkingTemplateMixin),
     ("Light-IF", NoThinkingChatMLTemplateMixin),
     ("starling", ChatMLTemplateMixin),  # Officially it's not ChatML, but it works. Officially, the prompt template looks like this: single_turn_prompt = f"GPT4 Correct User: {prompt}<|end_of_turn|>GPT4 Correct Assistant:"
     ("Ling-", LingTemplateMixin),
