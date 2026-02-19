@@ -1,0 +1,68 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class MemorySumCalculator {
+
+    public static void main(String[] args) {
+        // Regex explanation:
+        // (\d+(?:,\d{3})*(?:\.\d+)?) -> Group 1: Number with optional commas and decimals.
+        // \s*                         -> Optional whitespace between number and suffix.
+        // ([kKmMgG])?                 -> Group 2: Optional suffix.
+        // (?![a-zA-Z0-9])             -> Negative lookahead to ensure we don't match partial words (e.g., "500Kilo").
+        Pattern pattern = Pattern.compile("(\\d+(?:,\\d{3})*(?:\\.\\d+)?)\\s*([kKmMgG])?(?![a-zA-Z0-9])");
+        
+        double totalBytes = 0.0;
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Matcher matcher = pattern.matcher(line);
+                while (matcher.find()) {
+                    String numberStr = matcher.group(1).replace(",", "");
+                    String suffix = matcher.group(2);
+                    
+                    double value = Double.parseDouble(numberStr);
+                    
+                    if (suffix != null) {
+                        switch (suffix) {
+                            case "k":
+                            case "K":
+                                value *= 1024L;
+                                break;
+                            case "m":
+                            case "M":
+                                value *= 1024L * 1024L;
+                                break;
+                            case "g":
+                            case "G":
+                                value *= 1024L * 1024L * 1024L;
+                                break;
+                        }
+                    }
+                    totalBytes += value;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+            return;
+        }
+
+        // Define units for conversion
+        double kb = 1024.0;
+        double mb = 1024.0 * 1024.0;
+        double gb = 1024.0 * 1024.0 * 1024.0;
+
+        // Print results formatted to one decimal place
+        System.out.printf("%.1f%n", totalBytes);
+        System.out.printf("%.1f k%n", totalBytes / kb);
+        System.out.printf("%.1f M%n", totalBytes / mb);
+        System.out.printf("%.1f G%n", totalBytes / gb);
+    }
+}
+``` [end of text]
+
+

@@ -901,6 +901,7 @@ NAME_MATCH_OVERRIDE = [
     ("gemma-2", Gemma2Mixin),
     ("gemma-3", Gemma3Mixin),
     ("glm-4", GLMTemplateMixin),
+    ("GLM-5", GLMTemplateMixin),
     ("llama-2", LlamaTemplateMixin),
     ("llama-3", Llama3TemplateMixin),
     ("minicpm", MiniCPMTemplateMixin),

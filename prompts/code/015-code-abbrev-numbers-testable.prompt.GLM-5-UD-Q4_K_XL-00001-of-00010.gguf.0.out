@@ -1,0 +1,62 @@
+```python
+def abbrev_num(x):
+    # Handle negative numbers by converting to positive, processing, and re-applying sign
+    if x < 0:
+        return "-" + abbrev_num(-x)
+    
+    # Define suffixes for orders of magnitude
+    suffixes = ['', 'K', 'M', 'B', 'T']
+    
+    # Determine the appropriate suffix and scale
+    suffix_index = 0
+    temp_val = x
+    while temp_val >= 1000 and suffix_index < len(suffixes) - 1:
+        suffix_index += 1
+        temp_val //= 1000
+    
+    suffix = suffixes[suffix_index]
+    divisor = 1000 ** suffix_index
+    
+    # Calculate the scaled value
+    scaled_val = x / divisor
+    
+    # Format the number
+    # We need to ensure the total length is <= 4 characters.
+    # Formats to try: "X", "XX", "X.X", "XXK", etc.
+    
+    # Try formatting with 1 decimal place (e.g., "9.4M")
+    s = f"{scaled_val:.1f}{suffix}"
+    
+    # If length is acceptable (<= 4), return it
+    if len(s) <= 4:
+        return s
+    
+    # If too long, it's usually because we have 4 digits like "10.0K".
+    # We round to integer (e.g., "10K") to save space.
+    # Using int() truncates, but standard rounding is usually preferred for "human readable".
+    # However, the prompt example "74581" -> "75K" suggests rounding.
+    # int(round(scaled_val)) handles the rounding.
+    rounded_val = int(round(scaled_val))
+    
+    # Construct the rounded string
+    s_rounded = f"{rounded_val}{suffix}"
+    
+    # Check length again (should be <= 4, e.g., "10K", "100K")
+    if len(s_rounded) <= 4:
+        return s_rounded
+    
+    # Edge case: If rounding increased digits (e.g. 999.9K -> 1000K -> 1M)
+    # This logic handles the rollover by recursively calling the function.
+    # Example: x = 999,950. 
+    # scaled_val = 999.95 -> rounds to 1000.
+    # s_rounded becomes "1000K" (5 chars).
+    # We should return abbrev_num(x) which would calculate 1M.
+    # But to avoid infinite recursion issues if logic is flawed, we can force the next suffix.
+    # Actually, if rounded_val is 1000, we just bump the suffix.
+    if rounded_val >= 1000 and suffix_index < len(suffixes) - 1:
+        return f"1{suffixes[suffix_index + 1]}"
+        
+    return s_rounded
+``` [end of text]
+
+
