@@ -1,0 +1,66 @@
+<!DOCTYPE html><html>
+<head><title>Single Player Poker</title>
+<style>
+body{font-family:sans-serif;text-align:center;background:#222;color:#fff}
+.card{background:#fff;color:#000;display:inline-block;padding:10px 15px;margin:5px;border-radius:5px;font-size:24px}
+#msg{height:30px;margin:10px;color:#ff0}
+button{padding:10px 20px;font-size:16px;cursor:pointer}
+</style>
+</head>
+<body>
+<h1>Poker</h1>
+<div id="msg"></div>
+<div id="player"></div>
+<div id="community"></div>
+<button onclick="deal()">Deal</button>
+<button onclick="draw()">Draw</button>
+<script>
+const suits='♠♥♦♣', ranks='23456789TJQKA';
+let deck=[], hand=[], comm=[], stage=0;
+function makeDeck(){
+  deck=[];
+  for(let s of suits)for(let r of ranks)deck.push(r+s);
+  deck.sort(()=>Math.random()-.5);
+}
+function showCards(arr,el){
+  el.innerHTML=arr.map(c=>`<div class="card">${c}</div>`).join('');
+}
+function evalHand(h){
+  let v=h.map(c=>ranks.indexOf(c[0])).sort((a,b)=>b-a);
+  let s=h.map(c=>c[1]);
+  let flush=s.every(x=>x===s[0])&&s.length===5;
+  let straight=v.every((x,i)=>i?v[i-1]-x===1:true)&&v[0]-v[4]===4;
+  let counts={},pairs=0;
+  v.forEach(x=>counts[x]=(counts[x]||0)+1);
+  Object.values(counts).forEach(c=>{if(c===2)pairs++;if(c===3)return 3;if(c===4)return 4;});
+  if(straight&&flush)return 9;
+  if(v.includes(3)&&v.includes(2))return 7;
+  if(flush)return 6;
+  if(straight)return 5;
+  if(v.includes(3))return 4;
+  if(pairs===2)return 3;
+  if(pairs===1)return 2;
+  return 1;
+}
+function deal(){
+  makeDeck();hand=deck.splice(0,5);comm=deck.splice(0,5);stage=1;
+  showCards(hand,document.getElementById('player'));
+  showCards(comm,document.getElementById('community'));
+  document.getElementById('msg').innerText='Select cards to discard and Draw';
+}
+function draw(){
+  if(stage!==1)return;
+  let sel=document.querySelectorAll('.card.selected');
+  let idx=sel.map(el=>hand.indexOf(el.innerText));
+  hand=hand.map((c,i)=>idx.includes(i)?deck.pop():c);
+  stage=2;
+  showCards(hand,document.getElementById('player'));
+  let rank=['High Card','Pair','Two Pair','Three of a Kind','Straight','Flush','Full House','Four of a Kind','Straight Flush','Royal Flush'];
+  let score=evalHand(hand);
+  document.getElementById('msg').innerText='You have: '+rank[score];
+}
+document.getElementById('player').onclick=e=>{if(stage===1&&e.target.classList.contains('card'))e.target.classList.toggle('selected')};
+</script>
+</body></html> [end of text]
+
+
