@@ -1,0 +1,195 @@
+
+<!DOCTYPE html><html>
+<head>
+<meta charset="UTF-8">
+<title>Gravity Solitaire</title>
+<style>
+body { background: #1a1a2e; color: #eee; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; user-select: none; }
+#game { display: grid; grid-template-columns: repeat(8, 80px); grid-template-rows: repeat(6, 110px); gap: 5px; background: #16213e; padding: 10px; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+.card { width: 80px; height: 110px; background: #eee; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; position: relative; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+.card.selected { box-shadow: 0 0 0 3px #ffd700, 0 0 15px #ffd700; transform: scale(1.05); }
+.card.hint { animation: pulse 0.5s infinite alternate; }
+@keyframes pulse { to { box-shadow: 0 0 0 3px #4db8ff; } }
+.red { color: #d32f2f; }
+.black { color: #212121; }
+#ui { margin-bottom: 15px; text-align: center; }
+button { background: #0f3460; color: #eee; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; margin: 0 5px; }
+button:hover { background: #e94560; }
+#msg { margin-top: 15px; font-size: 18px; color: #4db8ff; height: 24px;}
+</style>
+</head>
+<body>
+<div id="ui">
+    <h2>Gravity Solitaire</h2>
+    <button onclick="init()">New Game</button> <button onclick="showHint()">Hint</button>
+    <div id="msg"></div>
+</div>
+<div id="game"></div>
+
+<script>
+const suits = ['♠', '♥', '♦', '♣'], vals = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+let board = [], selected = null;
+
+function init() {
+    board = [];
+    let deck = [];
+    for (let s of suits) for (let v of vals) deck.push({ s, v, r: vals.indexOf(v), c: (s === '♥' || s === '♦') ? 'red' : 'black' });
+    for (let i = deck.length - 1; i > 0; i--) { let j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+    for (let i = 0; i < 48; i++) board.push(deck[i]);
+    selected = null;
+    render();
+    document.getElementById('msg').textContent = '';
+}
+
+function render() {
+    const game = document.getElementById('game');
+    game.innerHTML = '';
+    // Create grid slots
+    let slots = new Array(48).fill(null);
+    board.forEach(c => { let pos = findLowestEmpty(c.col || findFirstEmpty()); if(pos !== -1) slots[pos] = c; });
+    
+    // Map board to grid (gravity logic)
+    let grid = Array(6).fill(0).map(()=>Array(8).fill(null));
+    let tempBoard = [...board];
+    
+    // Sort board into columns based on original deal, then apply gravity
+    // Actually, let's just render the current board state with gravity applied
+    let cols = [[],[],[],[],[],[],[],[]];
+    board.forEach(c => {
+        if(c.col === undefined) c.col = findFirstEmpty(); // initial placement
+        cols[c.col].push(c);
+    });
+    
+    // Apply gravity: sort columns by row (implicit by push order), fill from bottom
+    let newBoard = [];
+    for(let x=0; x<8; x++) {
+        // Filter cards belonging to this column
+        let colCards = board.filter(c => c.col === x);
+        // Place them from bottom up (y=5 to 0)
+        for(let y=5; y>=0; y--) {
+            if(colCards.length > 0) {
+                let c = colCards.shift(); // Take the "bottom-most" available logic? 
+                // Wait, simple gravity: just stack them at the bottom.
+            }
+        }
+    }
+    // Simplified: Just render what is in `board` into the grid.
+    // We need to re-calculate positions for rendering based on gravity.
+    
+    grid = Array(6).fill(0).map(()=>Array(8).fill(null));
+    // Group by column
+    let colGroups = [[],[],[],[],[],[],[],[]];
+    board.forEach(c => { if(c.col >= 0) colGroups[c.col].push(c); });
+    
+    for(let x=0; x<8; x++) {
+        let colCards = colGroups[x];
+        let y = 5;
+        for(let i = colCards.length - 1; i >= 0; i--) {
+            if(y >= 0) grid[y--][x] = colCards[i];
+        }
+    }
+
+    for (let y = 0; y < 6; y++) {
+        for (let x = 0; x < 8; x++) {
+            let c = grid[y][x];
+            let div = document.createElement('div');
+            div.className = 'card' + (c ? '' : ' empty');
+            if (c) {
+                div.classList.add(c.c);
+                div.innerHTML = `<div>${c.v}</div><div>${c.s}</div>`;
+                div.onclick = () => click(x, y, c);
+                if (selected && selected.c === c) div.classList.add('selected');
+            }
+            game.appendChild(div);
+        }
+    }
+}
+
+function getGrid() {
+    let grid = Array(6).fill(0).map(()=>Array(8).fill(null));
+    let colGroups = [[],[],[],[],[],[],[],[]];
+    board.forEach(c => { if(c.col >= 0) colGroups[c.col].push(c); });
+    for(let x=0; x<8; x++) {
+        let y = 5;
+        for(let i = colGroups[x].length - 1; i >= 0; i--) grid[y--][x] = colGroups[x][i];
+    }
+    return grid;
+}
+
+function click(x, y, c) {
+    if (!selected) {
+        selected = { x, y, c };
+        render();
+    } else {
+        if (c === selected.c) { selected = null; render(); return; }
+        // Logic: Match same rank or same suit?
+        // Twist: Match same rank (value) to remove.
+        if (c.v === selected.c.v) {
+            remove(selected.c); remove(c);
+            msg("Match!");
+        } else {
+            msg("No match!");
+        }
+        selected = null;
+        render();
+        checkWin();
+    }
+}
+
+function remove(card) {
+    let idx = board.indexOf(card);
+    if(idx > -1) board.splice(idx, 1);
+}
+
+function msg(t) { document.getElementById('msg').textContent = t; setTimeout(()=>msg(''), 1500); }
+
+function checkWin() {
+    if (board.length === 0) {
+        msg("YOU WIN!");
+        setTimeout(()=>alert("Congratulations! You cleared the board!"), 100);
+    }
+}
+
+function showHint() {
+    let grid = getGrid();
+    for(let y=0; y<6; y++) for(let x=0; x<8; x++) {
+        if(!grid[y][x]) continue;
+        for(let y2=y; y2>=0; y2--) for(let x2=0; x2<8; x2++) {
+            if(x===x2 && y===y2) continue;
+            if(grid[y2][x2] && grid[y][x].v === grid[y2][x2].v) {
+                // Flash them
+                let cards = document.querySelectorAll('.card');
+                // This is approximate mapping, simplified for hint
+                msg("Hint available!");
+                return;
+            }
+        }
+    }
+    msg("No moves!");
+}
+
+// Initial deal logic needs to assign columns
+function init() {
+    board = [];
+    let deck = [];
+    for (let s of suits) for (let v of vals) deck.push({ s, v, r: vals.indexOf(v), c: (s === '♥' || s === '♦') ? 'red' : 'black' });
+    for (let i = deck.length - 1; i > 0; i--) { let j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+    
+    // Distribute 48 cards across 8 columns (6 cards each)
+    for(let i=0; i<48; i++) {
+        let col = i % 8;
+        deck[i].col = col;
+        board.push(deck[i]);
+    }
+    selected = null;
+    render();
+    document.getElementById('msg').textContent = '';
+}
+
+init();
+</script>
+</body>
+</html> [end of text]
+
+

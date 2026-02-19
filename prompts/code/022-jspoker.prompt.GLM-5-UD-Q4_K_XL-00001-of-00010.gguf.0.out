@@ -1,0 +1,112 @@
+```html
+<!DOCTYPE html><html>
+<head>
+<meta charset="UTF-8">
+<title>Poker</title>
+<style>
+body { font-family: 'Segoe UI', sans-serif; background: #1a472a; color: #fff; text-align: center; padding: 20px; }
+#game { max-width: 900px; margin: 0 auto; }
+.card { display: inline-block; width: 70px; height: 100px; background: #fff; border-radius: 8px; margin: 5px; line-height: 100px; font-size: 24px; font-weight: bold; color: #000; box-shadow: 0 4px 8px rgba(0,0,0,0.3); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+.card:hover { transform: translateY(-10px); box-shadow: 0 8px 16px rgba(0,0,0,0.4); }
+.card.red { color: #c0392b; }
+.card.selected { transform: translateY(-20px); box-shadow: 0 12px 20px rgba(255,215,0,0.6); border: 3px solid gold; }
+.card.back { background: #2c3e50; color: #2c3e50; }
+.hand { margin: 20px 0; }
+.btn { background: #e67e22; border: none; color: #fff; padding: 12px 30px; font-size: 18px; border-radius: 5px; cursor: pointer; margin: 10px; transition: background 0.3s; }
+.btn:hover { background: #d35400; }
+.btn:disabled { background: #7f8c8d; cursor: not-allowed; }
+#message { font-size: 24px; margin: 20px; min-height: 30px; color: #f1c40f; }
+#credits { font-size: 20px; margin: 10px; }
+#bet-controls { margin: 20px 0; }
+#bet-controls input { width: 80px; padding: 8px; font-size: 16px; border-radius: 5px; border: none; }
+.opponent-hand .card { margin: 2px; width: 50px; height: 70px; line-height: 70px; font-size: 16px; }
+</style>
+</head>
+<body>
+<div id="game">
+<h1>Texas Hold'em Poker</h1>
+<div id="credits">Credits: <span id="player-credits">1000</span></div>
+<div id="message"></div>
+<div class="hand opponent-hand" id="opponent-hand"></div>
+<div class="hand" id="community-hand"></div>
+<div class="hand" id="player-hand"></div>
+<div id="bet-controls">
+Bet: <input type="number" id="bet-amount" value="20" min="10" max="500" step="10">
+<button class="btn" id="btn-bet" onclick="placeBet()">Bet</button>
+<button class="btn" id="btn-call" onclick="call()" style="display:none">Call</button>
+<button class="btn" id="btn-fold" onclick="fold()" style="display:none">Fold</button>
+<button class="btn" id="btn-deal" onclick="startGame()">Deal</button>
+</div>
+</div>
+<script>
+const suits = ['♠','♥','♦','♣'], ranks = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+let deck = [], playerHand = [], opponentHand = [], community = [], playerCredits = 1000, pot = 0, currentBet = 0, phase = 0;
+const $ = id => document.getElementById(id);
+const createDeck = () => { deck = []; for(let s of suits) for(let r of ranks) deck.push({s,r,v:ranks.indexOf(r)}); };
+const shuffle = () => { for(let i=deck.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];} };
+const deal = (n,h) => { for(let i=0;i<n;i++) h.push(deck.pop()); };
+const cardHTML = (c,back=false) => back ? `<div class="card back">?</div>` : `<div class="card ${c.s=='♥'||c.s=='♦'?'red':''}">${c.r}${c.s}</div>`;
+const render = () => {
+    $('player-hand').innerHTML = playerHand.map(c=>cardHTML(c)).join('');
+    $('opponent-hand').innerHTML = opponentHand.map(c=>cardHTML(c,phase<4)).join('');
+    $('community-hand').innerHTML = community.map(c=>cardHTML(c)).join('');
+    $('player-credits').textContent = playerCredits;
+    $('message').textContent = pot>0 ? `Pot: $${pot}` : '';
+};
+const showButtons = (deal,bet,call,fold) => { $('btn-deal').style.display=deal?'inline-block':'none'; $('btn-bet').style.display=bet?'inline-block':'none'; $('btn-call').style.display=call?'inline-block':'none'; $('btn-fold').style.display=fold?'inline-block':'none'; };
+const startGame = () => {
+    if(playerCredits<10){ $('message').textContent='Out of credits!'; return; }
+    createDeck(); shuffle();
+    playerHand=[]; opponentHand=[]; community=[]; pot=0; currentBet=20; phase=0;
+    deal(2,playerHand); deal(2,opponentHand);
+    $('bet-amount').value=20;
+    showButtons(false,true,false,false);
+    render();
+    $('message').textContent='Place your bet to see the Flop';
+};
+const placeBet = () => {
+    let bet = parseInt($('bet-amount').value);
+    if(bet>playerCredits) bet=playerCredits;
+    if(bet<10) bet=10;
+    playerCredits-=bet; pot+=bet*2; currentBet=bet;
+    phase++;
+    if(phase===1){ deal(3,community); $('message').textContent='Flop! Bet again for Turn'; }
+    else if(phase===2){ deal(1,community); $('message').textContent='Turn! Bet again for River'; }
+    else if(phase===3){ deal(1,community); $('message').textContent='River! Final bet or fold'; showButtons(false,true,true,true); }
+    else if(phase===4){ showdown(); return; }
+    render();
+};
+const call = () => { phase=4; showdown(); };
+const fold = () => { $('message').textContent='You folded. Opponent wins $'+pot; playerCredits+=Math.floor(pot/2); pot=0; showButtons(true,false,false,false); render(); };
+const getHandRank = hand => {
+    let all = hand.concat(community), vals = all.map(c=>c.v).sort((a,b)=>b-a), suitMap={}, valMap={};
+    for(let c of all){ suitMap[c.s]=(suitMap[c.s]||[]).concat(c); valMap[c.v]=(valMap[c.v]||0)+1; }
+    let counts = Object.values(valMap).sort((a,b)=>b-a), isFlush = Object.values(suitMap).some(a=>a.length>=5);
+    let straight = 0;
+    for(let i=0;i<=9;i++){ if([i,i+1,i+2,i+3,i+4].every(v=>vals.includes(v))){ straight=i+4; if(i===8&&vals.includes(14))straight=14; } }
+    if(straight&&isFlush) return [8,straight];
+    if(counts[0]===4) return [7,vals.find(v=>valMap[v]===4)];
+    if(counts[0]===3&&counts[1]===2) return [6,vals.find(v=>valMap[v]===3)];
+    if(isFlush) return [5,Math.max(...Object.values(suitMap).find(a=>a.length>=5).map(c=>c.v))];
+    if(straight) return [4,straight];
+    if(counts[0]===3) return [3,vals.find(v=>valMap[v]===3)];
+    if(counts[0]===2&&counts[1]===2) return [2,vals.filter(v=>valMap[v]===2).sort((a,b)=>b-a)];
+    if(counts[0]===2) return [1,vals.find(v=>valMap[v]===2)];
+    return [0,vals[0]];
+};
+const showdown = () => {
+    render();
+    let pRank = getHandRank(playerHand), oRank = getHandRank(opponentHand);
+    let result = pRank[0]>oRank[0]||(pRank[0]===oRank[0]&&pRank[1]>oRank[1]) ? 1 : (pRank[0]===oRank[0]&&pRank[1]===oRank[1]) ? 0 : -1;
+    if(result===1){ $('message').textContent='You win $'+pot+'!'; playerCredits+=pot; }
+    else if(result===0){ $('message').textContent='Tie! Pot split.'; playerCredits+=pot/2; }
+    else $('message').textContent='Opponent wins $'+pot;
+    pot=0; showButtons(true,false,false,false); render();
+};
+showButtons(true,false,false,false);
+</script>
+</body>
+</html>
+``` [end of text]
+
+

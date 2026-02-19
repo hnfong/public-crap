@@ -1,0 +1,137 @@
+### Q1 Analysis
+
+**Program:**
+```python
+import math
+x = 0.0
+while x < math.inf:
+    x += 1.0
+print(x)
+```
+
+**Reasoning:**
+1.  **Loop Condition:** The loop continues as long as `x < math.inf`. Since `math.inf` represents positive infinity, the loop runs until `x` becomes infinity or the program is interrupted.
+2.  **Operation:** Inside the loop, `x` is incremented by `1.0`.
+3.  **Floating Point Limit:** In IEEE 754 double-precision floating-point (which Python uses), numbers have a finite range. The maximum finite number is approximately $1.8 \times 10^{308}$.
+4.  **Overflow Behavior:** When a floating-point operation produces a result greater than the maximum representable finite number, the standard behavior (in the default rounding mode, round-to-nearest-ties-to-even) is to return positive infinity (`inf`).
+5.  **Execution Flow:**
+    *   `x` starts at 0.0.
+    *   It increments by 1.0: 1.0, 2.0, 3.0, ...
+    *   Eventually, `x` reaches the largest finite float, `MAX_FLOAT` (approx $1.7976931348623157 \times 10^{308}$).
+    *   The next iteration performs `x = MAX_FLOAT + 1.0`.
+    *   Due to the limited precision of a double (53 bits of significand), `MAX_FLOAT` is so large that the unit in the least significant place (ULP) is much greater than 1.0 (specifically, the ULP is $2^{971} \approx 2 \times 10^{292}$).
+    *   Mathematically, `MAX_FLOAT + 1.0` is just `MAX_FLOAT`. The addition rounds back to `MAX_FLOAT` because the magnitude of the addend (1.0) is too small to affect the significand of `MAX_FLOAT`.
+    *   **Infinite Loop:** Since `x` stops increasing once it hits `MAX_FLOAT`, the condition `x < math.inf` remains true forever. The loop never terminates.
+
+**Conclusion:**
+The program enters an infinite loop. There is no output.
+
+---
+
+### Q2 Analysis
+
+**Program:**
+```python
+import math
+x = 1.0
+while x < math.inf:
+    x = x * 1.001
+print(x)
+```
+
+**Reasoning:**
+1.  **Loop Condition:** Same as Q1, runs until `x` is infinity.
+2.  **Operation:** `x` is multiplied by `1.001` in each step.
+3.  **Growth Rate:** Unlike addition by a constant, multiplication by a constant factor ($>1$) causes exponential growth. The value of `x` increases rapidly ($1.001^n$).
+4.  **Overflow Behavior:**
+    *   Eventually, `x` will become very large, close to `MAX_FLOAT`.
+    *   Consider the step where `x` is the largest finite float, `MAX_FLOAT`.
+    *   The next operation is `x = MAX_FLOAT * 1.001`.
+    *   The result of this multiplication is mathematically $1.001 \times \text{MAX\_FLOAT}$, which is strictly greater than `MAX_FLOAT`.
+    *   Since this result exceeds the maximum finite representable number, IEEE 754 rules dictate that the result rounds to positive infinity (`inf`).
+5.  **Termination:**
+    *   `x` becomes `inf`.
+    *   The loop condition `x < math.inf` evaluates to `False` (infinity is not less than infinity).
+    *   The loop terminates.
+6.  **Output:** The program prints the final value of `x`, which is `inf`.
+
+**Comparison with Q1:**
+Yes, the result is different. Q1 enters an infinite loop because the increment `1.0` becomes insignificant relative to the magnitude of `x` near the overflow limit (stalling the growth). Q2 terminates because multiplication by `1.001` scales the value, forcing it to cross the overflow threshold into infinity.
+
+---
+
+### Q3 Analysis
+
+**Program:**
+```python
+import math
+x = 0.0
+inc = float(input("Enter a number"))
+while x < math.inf:
+    x += inc
+print("Done")
+```
+
+**Question:** Are there inputs that will lead to the output "Done"?
+
+**Reasoning:**
+For the program to print "Done", the loop must terminate. The loop terminates only if `x` becomes `inf` (positive infinity). This requires the operation `x += inc` to eventually result in an overflow to infinity.
+
+1.  **Case: Positive Input (`inc > 0`)**
+    *   If `inc` is a positive finite number, `x` will grow linearly.
+    *   Similar to Q1, once `x` becomes very large (near `MAX_FLOAT`), the value of `inc` might be too small to change `x` due to precision loss.
+    *   However, if `inc` is large enough, overflow occurs.
+    *   Specifically, if `inc` is greater than or equal to the ULP of `MAX_FLOAT` (which is approx $2 \times 10^{292}$), adding it to `MAX_FLOAT` will result in infinity.
+    *   Even smaller positive `inc` values might work if they accumulate enough to affect the exponent, but if `inc` is extremely small relative to `x`, the loop effectively stalls (infinite loop).
+    *   **Example 1:** `inc = 1e300`.
+        *   `x` grows: $0, 10^{300}, 2\times10^{300}, \dots$.
+        *   Eventually `x` approaches `MAX_FLOAT` ($1.8\times10^{308}$).
+        *   `MAX_FLOAT + 1e300` results in `inf`.
+        *   Loop terminates.
+
+2.  **Case: Negative Input (`inc < 0`)**
+    *   If `inc` is negative, `x` decreases ($0, -inc, -2inc, \dots$).
+    *   `x` becomes negative.
+    *   A negative number is always strictly less than positive infinity.
+    *   `x` will continue to decrease towards negative infinity (`-inf`).
+    *   Once `x` reaches `-inf`, the loop continues because `-inf < inf` is True.
+    *   This leads to an infinite loop.
+
+3.  **Case: Special Inputs**
+    *   **Infinity:** If the user inputs "inf", `inc` becomes `inf`.
+        *   Iteration 1: `x` (0.0) `+= inf` results in `inf`.
+        *   Check: `inf < inf` is False.
+        *   Loop terminates.
+    *   **NaN:** If the user inputs "nan", `inc` becomes `NaN`.
+        *   Iteration 1: `x` (0.0) `+= nan` results in `nan`.
+        *   Check: `nan < inf` is False (comparisons with NaN always return False).
+        *   Loop terminates.
+
+**Conclusion:**
+Yes, there are inputs that produce the output "Done".
+
+**Examples:**
+1.  **`1e300`** (or any sufficiently large positive number): The addition causes overflow to infinity.
+2.  **`inf`** (or "infinity"): Adding infinity immediately sets `x` to infinity.
+3.  **`nan`**: The comparison `nan < inf` fails immediately, exiting the loop.
+
+---
+
+### Final Answers
+
+**Q1.**
+The program will **not produce any output**; it will run indefinitely (infinite loop).
+*Reasoning:* As `x` approaches the maximum finite floating-point value (`MAX_FLOAT`), the value of `x` becomes so large that the unit in the last place (ULP) is greater than `1.0`. Consequently, `x += 1.0` rounds back to `x`, and `x` stops increasing. Since `x` never reaches infinity, the loop condition `x < math.inf` remains true forever.
+
+**Q2.**
+The eventual output is **`inf`**.
+*Reasoning:* This result is different from Q1. Because `x` is multiplied by `1.001` in each step, it grows exponentially. Once `x` is close to `MAX_FLOAT`, the multiplication `x * 1.001` produces a number larger than `MAX_FLOAT`, which results in positive infinity according to IEEE 754 standards. Once `x` becomes `inf`, the loop condition `x < math.inf` becomes false, and the program prints `inf`.
+
+**Q3.**
+Yes, there are inputs that will lead to the output "Done".
+Examples include:
+1.  **`1e300`** (or any very large positive number): The increments are large enough to eventually cause an overflow to infinity, terminating the loop.
+2.  **`inf`** (or `infinity`): `x` becomes infinity immediately in the first iteration, satisfying the termination condition.
+3.  **`nan`**: Any comparison involving NaN returns False, so the loop condition `x < math.inf` fails immediately. [end of text]
+
+
