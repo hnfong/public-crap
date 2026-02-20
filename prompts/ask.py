@@ -856,6 +856,7 @@ NAME_MATCH_OVERRIDE = [
     ("Arcee-SuperNova-v1-", Llama3TemplateMixin),
     ("dots.llm", DotsLLMTemplate),
     ("jan-nano-", LongContextChatMLTemplateMixin),
+    ("Kimi-K2.5-", KimiTemplateMixin),
     ("Kimi-K2-", KimiTemplateMixin),
     ("Kimi-Dev-", KimiTemplateMixin),
     ("Kimi-Linear-", KimiTemplateMixin),

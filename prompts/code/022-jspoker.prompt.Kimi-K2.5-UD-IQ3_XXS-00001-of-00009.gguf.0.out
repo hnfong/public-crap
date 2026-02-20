@@ -1,0 +1,116 @@
+```html
+<!DOCTYPE html><html>
+<head>
+<meta charset="UTF-8">
+<title>Poker</title>
+<style>
+body{font-family:monospace;background:#1a5;display:flex;flex-direction:column;align-items:center;padding:20px}
+#table{background:#363;border-radius:200px;padding:40px;width:600px;height:300px;position:relative;box-shadow:0 10px 30px #000}
+.card{width:60px;height:90px;background:#fff;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:24px;margin:2px;box-shadow:2px 2px 5px #000;position:relative}
+.card.red{color:#c00}
+.card::before{content:attr(data-suit);position:absolute;top:2px;left:4px;font-size:14px}
+.card::after{content:attr(data-suit);position:absolute;bottom:2px;right:4px;font-size:14px;transform:rotate(180deg)}
+.hand{position:absolute;display:flex}
+#dealer-hand{top:20px;left:50%;transform:translateX(-50%)}
+#player-hand{bottom:20px;left:50%;transform:translateX(-50%)}
+#community{top:50%;left:50%;transform:translate(-50%,-50%)}
+#controls{margin-top:20px;display:flex;gap:10px}
+button{padding:10px 20px;font-size:16px;cursor:pointer;background:#fc0;border:none;border-radius:5px}
+button:disabled{background:#888}
+#info{background:#fff;padding:10px;border-radius:5px;margin-top:10px;min-width:200px;text-align:center}
+#pot{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:#fc0;padding:5px 15px;border-radius:15px;font-weight:bold}
+</style>
+</head>
+<body>
+<h1>Texas Hold'em Poker</h1>
+<div id="table">
+<div id="pot">Pot: $0</div>
+<div class="hand" id="dealer-hand"></div>
+<div class="hand" id="community"></div>
+<div class="hand" id="player-hand"></div>
+</div>
+<div id="controls">
+<button onclick="deal()">Deal</button>
+<button onclick="bet(10)">Bet $10</button>
+<button onclick="bet(50)">Bet $50</button>
+<button onclick="call()">Call</button>
+<button onclick="fold()">Fold</button>
+<button onclick="check()">Check</button>
+</div>
+<div id="info">Money: $1000 | Bet: $0</div>
+<script>
+let deck=[],player=[],dealer=[],community=[],pot=0,playerBet=0,dealerBet=0,playerMoney=1000,phase=0,currentBet=0;
+const suits=['♠','♥','♦','♣'],ranks=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+function shuffle(){deck=[];for(let s of suits)for(let r of ranks)deck.push({r,s,v:ranks.indexOf(r)+2});for(let i=deck.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}}
+function draw(){return deck.pop()}
+function cardHTML(c){let cls=c.s=='♥'||c.s=='♦'?'card red':'card';return`<div class="${cls}" data-suit="${c.s}">${c.r}</div>`}
+function render(){
+document.getElementById('player-hand').innerHTML=player.map(cardHTML).join('');
+document.getElementById('dealer-hand').innerHTML=dealer.map((c,i)=>phase<4&&i<2?'<div class="card" style="background:#369">?</div>':cardHTML(c)).join('');
+document.getElementById('community').innerHTML=community.map(cardHTML).join('');
+document.getElementById('pot').textContent=`Pot: $${pot}`;
+document.getElementById('info').textContent=`Money: $${playerMoney} | Your Bet: $${playerBet} | To Call: $${currentBet-playerBet}`;
+}
+function deal(){
+if(playerMoney<10){alert('Game Over!');return}
+shuffle();player=[draw(),draw()];dealer=[draw(),draw()];community=[];pot=20;playerBet=10;dealerBet=10;playerMoney-=10;currentBet=10;phase=1;render();aiAct();
+}
+function bet(n){
+if(playerMoney<n)return;
+playerMoney-=n;playerBet+=n;pot+=n;if(playerBet>currentBet)currentBet=playerBet;render();aiAct();
+}
+function call(){
+let need=currentBet-playerBet;
+if(need>playerMoney)need=playerMoney;
+playerMoney-=need;playerBet+=need;pot+=need;render();nextPhase();
+}
+function fold(){alert('You fold. Dealer wins!');reset()}
+function check(){if(currentBet>playerBet){alert('Must call or fold');return}nextPhase()}
+function aiAct(){
+let need=currentBet-dealerBet;
+if(need>0&&Math.random()>0.3){dealerBet+=need;pot+=need;render()}
+else if(need>0&&Math.random()>0.7){alert('Dealer folds! You win!');playerMoney+=pot;reset();return}
+if(phase==1&&playerBet==dealerBet)nextPhase();
+}
+function nextPhase(){
+phase++;playerBet=dealerBet=currentBet=0;
+if(phase==2)community=[draw(),draw(),draw()];
+else if(phase<5)community.push(draw());
+else{showdown();return}
+render();aiAct();
+}
+function score(hand){
+let cards=[...hand,...community].sort((a,b)=>b.v-a.v);
+let isFlush=suits.some(s=>cards.filter(c=>c.s==s).length>=5);
+let isStraight=cards.some((c,i)=>i<3&&cards.slice(i,i+5).every((x,j)=>j==0||x.v==cards[i+j-1].v-1));
+let groups={};cards.forEach(c=>groups[c.r]=(groups[c.r]||0)+1);
+let counts=Object.values(groups).sort((a,b)=>b-a);
+if(isFlush&&isStraight)return[8,cards[0].v];
+if(counts[0]==4)return[7,cards.find(c=>groups[c.r]==4).v];
+if(counts[0]==3&&counts[1]==2)return[6,cards.find(c=>groups[c.r]==3).v];
+if(isFlush)return[5,cards.filter(c=>{let s=c.s;return cards.filter(x=>x.s==s).length>=5;})[0].v];
+if(isStraight)return[4,cards[0].v];
+if(counts[0]==3)return[3,cards.find(c=>groups[c.r]==3).v];
+if(counts[0]==2&&counts[1]==2)return[2,Math.max(...cards.filter(c=>groups[c.r]==2).map(c=>c.v))];
+if(counts[0]==2)return[1,cards.find(c=>groups[c.r]==2).v];
+return[0,cards[0].v];
+}
+function showdown(){
+phase=4;render();
+let ps=score(player),ds=score(dealer);
+let pn=['High Card','Pair','Two Pair','Three of a Kind','Straight','Flush','Full House','Four of a Kind','Straight Flush'][ps[0]];
+let dn=['High Card','Pair','Two Pair','Three of a Kind','Straight','Flush','Full House','Four of a Kind','Straight Flush'][ds[0]];
+let msg=`You: ${pn} vs Dealer: ${dn}\n`;
+if(ps[0]>ds[0]||(ps[0]==ds[0]&&ps[1]>ds[1])){msg+='You win!';playerMoney+=pot}
+else if(ps[0]<ds[0]||(ps[0]==ds[0]&&ps[1]<ds[1]))msg+='Dealer wins!';
+else{msg+='Push!';playerMoney+=pot/2}
+alert(msg);reset();
+}
+function reset(){pot=playerBet=dealerBet=currentBet=phase=0;player=dealer=community=[];render()}
+shuffle();render();
+</script>
+</body>
+</html>
+``` [end of text]
+
+
