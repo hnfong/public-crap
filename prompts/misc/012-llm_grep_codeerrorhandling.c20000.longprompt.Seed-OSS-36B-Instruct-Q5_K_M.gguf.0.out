@@ -1,0 +1,354 @@
+<seed:think>
+Got it, let's tackle this problem. The user wants me to find lines in the input that relate to error handling. First, I need to remember what error handling code looks like: try-except blocks, custom exception classes, raising exceptions, handling specific errors, logging errors, etc.
+
+First, let's look for custom exceptions. Lines 44-61 define several exception classes like DefinitionError, AmbiguousPronunciationError, etc. Those are part of error handling since they're custom errors.
+
+Next, try-except blocks. For example, in the MultilingualDefinition __init__ method (lines 171-221), there's a try block where they parse tags, and if a ValueError is raised, they handle it by setting _is_stub to True and logging. That's error handling.
+
+Also, lines 225-231: another try-except when parsing MultilingualExplanationAndExamples, catching ValueError and logging.
+
+Then, line 297-302: a try-except in shortened_pos method to catch exceptions when getting the shortened pos, logging with dj.DEBUG.
+
+Line 362-364: a try-except around opening a file in check_problems, catching Exception and logging with dj.ERROR.
+
+Line 419-421: except InvalidLangCodeFormat when parsing MultilingualFormat, handling by creating a single constructor instance.
+
+Line 495-499: in Example.parse, if there's an issue with choplang, but wait, line 497 uses choplang, but is there an except? Wait, line 485-486: if raw is empty, raises MissingItemError. That's error raising.
+
+Line 547-552: in ruby_html, a try-except around ruby_match_html, catching Exception, logging, and falling back to a different output. That's error handling.
+
+Line 697-699: in parse_written_form_and_pronunciation, checking for illegal characters and raising IllegalCharacterError. That's error raising as part of validation.
+
+Line 708-713: in parse_written_form_and_pronunciation, a try-except around canonicalizing jyutping, catching ValueError and raising InvalidJyutPingError. That's error handling/translation.
+
+Now, let's list all the lines that fit:
+
+Custom exceptions (lines 44-61):
+44:class DefinitionError(ValueError):
+45:    pass
+46:
+47:class AmbiguousPronunciationError(DefinitionError):
+48:    pass
+49:
+50:class InvalidJyutPingError(DefinitionError):
+51:    pass
+52:
+53:class IllegalCharacterError(DefinitionError):
+54:    def __init__(self, value):
+55:        self.errorMsg = value
+56:
+57:    def __str__(self):
+58:        return repr(self.errorMsg)
+59:
+60:class MissingItemError(DefinitionError):
+61:    pass
+
+Try-except blocks:
+Line 197-221: The big try block in MultilingualDefinition __init__ where they handle ValueError.
+Wait, line 209: except ValueError as e: that's the start of the except block. So lines 209-221:
+209:            except ValueError as e:
+210:                import dj
+211:                items_str = def_str
+212:                self._is_stub = True
+213:
+214:                 # XXX: this is a bit hackish for clearing any possible
+215:                 # changes in self._tags before the exception was thrown
+216:                self._tags = collections.OrderedDict()
+217:
+218:                if raise_on_error:
+219:                    raise e
+220:                else:
+221:                    dj.DEBUG("Got error: %s when parsing '%s'" % (e, def_str))
+
+Then lines 225-231:
+225:            try:
+226:                self._item_list.append(MultilingualExplanationAndExamples(explanation))
+227:            except ValueError as e:
+228:                import dj
+229:                dj.DEBUG("Got error: %s when parsing '%s'" % (e, explanation))
+230:                if raise_on_error:
+231:                    raise e
+
+Line 297-302:
+297:        try:
+298:            return [short_pos(pos) for pos in self._tags["pos"]]
+299:        except Exception as e:
+300:            import dj
+301:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+302:            return ""
+
+Line 362-364:
+362:        except Exception as e:
+363:            import dj
+364:            dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))
+
+Line 419-421:
+419:        except InvalidLangCodeFormat:
+420:            self._translations = [self.CONSTRUCTOR(raw.strip())]
+421:            self._originally_had_lang_code = False
+
+Line 547-552:
+547:        try:
+548:            return dj.mark_safe(self.ruby_match_html(formatter))
+549:        except Exception as e:
+550:            dj.ERROR(f"Can't format as ruby text! {self.text} {self.pronunciation} {e}")
+551:            # Fallback to something reasonable
+552:            return self.html() + " (" + self.pronunciation + ")"
+
+Error raising lines:
+Line 140: raise ValueError("Invalid part of speech") (in pos_valid)
+Line 146: raise ValueError("Invalid label name") (in label_valid)
+Line 182: raise ValueError("Unknown tag: %s" % k)
+Line 190-191: errmsg = "Tag '%s' cannot have value '%s'" % (k, v); raise ValueError(errmsg)
+Line 207: errmsg = "Required tag '%s' not found for '%s': '%s'!" % (req_tag, self, items_str); raise ValueError(errmsg)
+Line 234: raise ValueError("No valid item to parse")
+Line 286: raise MissingItemError("Example string missing") (in Example.parse)
+Line 395: raise InvalidLangCodeFormat("Invalid form") (in choplang)
+Line 699: raise IllegalCharacterError('Pronunciation cannot contain slashes or backslashes...')
+Line 713: raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+
+Also, lines where they handle exceptions by logging (using dj.DEBUG, dj.ERROR) are part of error handling.
+
+Now, I need to list each line with its line number, making sure to include all relevant lines. Let's go one by one:
+
+Custom exceptions:
+44:class DefinitionError(ValueError):
+45:    pass
+46:
+47:class AmbiguousPronunciationError(DefinitionError):
+48:    pass
+49:
+50:class InvalidJyutPingError(DefinitionError):
+51:    pass
+52:
+53:class IllegalCharacterError(DefinitionError):
+54:    def __init__(self, value):
+55:        self.errorMsg = value
+56:
+57:    def __str__(self):
+58:        return repr(self.errorMsg)
+59:
+60:class MissingItemError(DefinitionError):
+61:    pass
+
+Try-except blocks:
+209:            except ValueError as e:
+210:                import dj
+211:                items_str = def_str
+212:                self._is_stub = True
+213:
+214:                 # XXX: this is a bit hackish for clearing any possible
+215:                 # changes in self._tags before the exception was thrown
+216:                self._tags = collections.OrderedDict()
+217:
+218:                if raise_on_error:
+219:                    raise e
+220:                else:
+221:                    dj.DEBUG("Got error: %s when parsing '%s'" % (e, def_str))
+
+225:            try:
+226:                self._item_list.append(MultilingualExplanationAndExamples(explanation))
+227:            except ValueError as e:
+228:                import dj
+229:                dj.DEBUG("Got error: %s when parsing '%s'" % (e, explanation))
+230:                if raise_on_error:
+231:                    raise e
+
+297:        try:
+298:            return [short_pos(pos) for pos in self._tags["pos"]]
+299:        except Exception as e:
+300:            import dj
+301:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+302:            return ""
+
+362:        except Exception as e:
+363:            import dj
+364:            dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))
+
+419:        except InvalidLangCodeFormat:
+420:            self._translations = [self.CONSTRUCTOR(raw.strip())]
+421:            self._originally_had_lang_code = False
+
+547:        try:
+548:            return dj.mark_safe(self.ruby_match_html(formatter))
+549:        except Exception as e:
+550:            dj.ERROR(f"Can't format as ruby text! {self.text} {self.pronunciation} {e}")
+551:            # Fallback to something reasonable
+552:            return self.html() + " (" + self.pronunciation + ")"
+
+Error raising lines:
+140:    raise ValueError("Invalid part of speech")
+146:    raise ValueError("Invalid label name")
+182:                        raise ValueError("Unknown tag: %s" % k)
+190:                            errmsg = "Tag '%s' cannot have value '%s'" % (k, v)
+191:                            raise ValueError(errmsg)
+207:                            errmsg = "Required tag '%s' not found for '%s': '%s'!" % (req_tag, self, items_str)
+208:                            raise ValueError(errmsg)
+234:                raise ValueError("No valid item to parse")
+286:            raise MissingItemError("Example string missing")
+395:        raise InvalidLangCodeFormat("Invalid form")
+699:            raise IllegalCharacterError('Pronunciation cannot contain slashes or backslashes; if you want to add a different written/spoken form, add a separate form instead (i.e. 咖喱:gaa3 lei1,咖哩:gaa3 lei1)')
+713:                raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+
+Also, line 188-191: checking validator and raising error if not matched.
+
+Wait, line 188-191:
+188:                    else:
+189:                        if validator is not None and not validator.match(v):
+190:                            errmsg = "Tag '%s' cannot have value '%s'" % (k, v)
+191:                            raise ValueError(errmsg)
+
+That's part of error raising, so lines 189-191 are included.
+
+Also, line 202-208: checking required tags and raising error if missing.
+
+Line 202:                for req_tag in REQUIRED_TAGS:
+203:                    if req_tag not in tags:
+204:                        if req_tag == "pos" and unknown_pos:
+205:                            self._tags["pos"] = set([pos_valid("---")])
+206:                        else:
+207:                            errmsg = "Required tag '%s' not found for '%s': '%s'!" % (req_tag, self, items_str)
+208:                            raise ValueError(errmsg)
+
+So lines 207-208 are part of error raising.
+
+Now, I need to make sure all these lines are included with their line numbers. Let's compile the final list:</seed:think>44:class DefinitionError(ValueError):
+---
+45:    pass
+---
+46:
+---
+47:class AmbiguousPronunciationError(DefinitionError):
+---
+48:    pass
+---
+49:
+---
+50:class InvalidJyutPingError(DefinitionError):
+---
+51:    pass
+---
+52:
+---
+53:class IllegalCharacterError(DefinitionError):
+---
+54:    def __init__(self, value):
+---
+55:        self.errorMsg = value
+---
+56:
+---
+57:    def __str__(self):
+---
+58:        return repr(self.errorMsg)
+---
+59:
+---
+60:class MissingItemError(DefinitionError):
+---
+61:    pass
+---
+140:    raise ValueError("Invalid part of speech")
+---
+146:    raise ValueError("Invalid label name")
+---
+182:                        raise ValueError("Unknown tag: %s" % k)
+---
+189:                        if validator is not None and not validator.match(v):
+---
+190:                            errmsg = "Tag '%s' cannot have value '%s'" % (k, v)
+---
+191:                            raise ValueError(errmsg)
+---
+207:                            errmsg = "Required tag '%s' not found for '%s': '%s'!" % (req_tag, self, items_str)
+---
+208:                            raise ValueError(errmsg)
+---
+234:                raise ValueError("No valid item to parse")
+---
+286:            raise MissingItemError("Example string missing")
+---
+395:        raise InvalidLangCodeFormat("Invalid form")
+---
+699:            raise IllegalCharacterError('Pronunciation cannot contain slashes or backslashes; if you want to add a different written/spoken form, add a separate form instead (i.e. 咖喱:gaa3 lei1,咖哩:gaa3 lei1)')
+---
+713:                raise InvalidJyutPingError('Invalid jyutping in "%s"' % wr)
+---
+209:            except ValueError as e:
+---
+210:                import dj
+---
+211:                items_str = def_str
+---
+212:                self._is_stub = True
+---
+213:
+---
+214:                 # XXX: this is a bit hackish for clearing any possible
+---
+215:                 # changes in self._tags before the exception was thrown
+---
+216:                self._tags = collections.OrderedDict()
+---
+217:
+---
+218:                if raise_on_error:
+---
+219:                    raise e
+---
+220:                else:
+---
+221:                    dj.DEBUG("Got error: %s when parsing '%s'" % (e, def_str))
+---
+225:            try:
+---
+226:                self._item_list.append(MultilingualExplanationAndExamples(explanation))
+---
+227:            except ValueError as e:
+---
+228:                import dj
+---
+229:                dj.DEBUG("Got error: %s when parsing '%s'" % (e, explanation))
+---
+230:                if raise_on_error:
+---
+231:                    raise e
+---
+297:        try:
+---
+298:            return [short_pos(pos) for pos in self._tags["pos"]]
+---
+299:        except Exception as e:
+---
+300:            import dj
+---
+301:            dj.DEBUG("Cannot find shortened_pos: %s" % e)
+---
+302:            return ""
+---
+362:        except Exception as e:
+---
+363:            import dj
+---
+364:            dj.ERROR("Exception while checking problem for %d - %s" %(word_id, str(e)))
+---
+419:        except InvalidLangCodeFormat:
+---
+420:            self._translations = [self.CONSTRUCTOR(raw.strip())]
+---
+421:            self._originally_had_lang_code = False
+---
+547:        try:
+---
+548:            return dj.mark_safe(self.ruby_match_html(formatter))
+---
+549:        except Exception as e:
+---
+550:            dj.ERROR(f"Can't format as ruby text! {self.text} {self.pronunciation} {e}")
+---
+551:            # Fallback to something reasonable
+---
+552:            return self.html() + " (" + self.pronunciation + ")"
+--- [end of text]
+
+

@@ -1,7 +1,3 @@
-<think>
-
-</think>
-
 ```python
 def abbrev_num(x):
     if x < 1000:
@@ -20,47 +16,30 @@ def abbrev_num(x):
     value = x / (1000 ** magnitude)
     
     # Try formatting with one decimal place first
-    if magnitude > 0:
-        # Check if we can fit "X.YS" (4 chars)
-        rounded_one_decimal = round(value, 1)
-        # Handle case where rounding pushes it to next magnitude (e.g., 9.95 -> 10.0)
-        if rounded_one_decimal >= 10:
-            value = rounded_one_decimal / 10
-            magnitude += 1
-            if magnitude > len(suffixes):
-                # Fallback for extremely large numbers beyond T
-                return f"{int(round(value))}{suffixes[-1]}"
-            return f"{int(round(value))}{suffixes[magnitude-1]}"
-        
-        s_one = f"{rounded_one_decimal:.1f}{suffixes[magnitude-1]}"
-        if len(s_one) <= 4:
-            # Remove trailing .0 if present to save space or just keep it if it fits
-            if rounded_one_decimal == int(rounded_one_decimal):
-                s_clean = f"{int(rounded_one_decimal)}{suffixes[magnitude-1]}"
-                if len(s_clean) <= 4:
-                    return s_clean
-            return s_one
-        
-        # If "X.YS" is too long (e.g. 10.0K is 5 chars, or simply > 4), try integer rounding "XXS"
-        rounded_int = round(value)
-        if rounded_int >= 100:
-            # If rounding to int makes it 3 digits + suffix (4 chars total), that's fine.
-            # But if it becomes 1000, we need to bump magnitude.
-            if rounded_int == 1000:
-                rounded_int = 1
-                magnitude += 1
-                if magnitude > len(suffixes):
-                     return f"{rounded_int}{suffixes[-1]}"
-                return f"{rounded_int}{suffixes[magnitude-1]}"
-        
-        s_int = f"{rounded_int}{suffixes[magnitude-1]}"
-        if len(s_int) <= 4:
-            return s_int
-            
-        # Fallback: truncate to 3 digits + suffix if still failing (should rarely happen with logic above)
-        return f"{int(value)}{suffixes[magnitude-1]}"
+    if magnitude == 0:
+        return str(x)
     
-    return str(x)
+    # Format with one decimal
+    formatted = f"{value:.1f}{suffixes[magnitude-1]}"
+    
+    # Check if it fits in 4 characters
+    if len(formatted) <= 4:
+        return formatted
+    
+    # If not, round to nearest whole number
+    rounded_value = round(value)
+    
+    # Handle case where rounding increases magnitude (e.g., 999.9 -> 1000)
+    if rounded_value >= 1000 and magnitude < len(suffixes):
+        rounded_value = 1
+        magnitude += 1
+        if magnitude > len(suffixes):
+            # Fallback for very large numbers
+            return f"{int(value)}{suffixes[-1]}"
+        suffix = suffixes[magnitude-1]
+        return f"{rounded_value}{suffix}"
+    
+    return f"{rounded_value}{suffixes[magnitude-1]}"
 ``` [end of text]
 
 
