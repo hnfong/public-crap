@@ -1,0 +1,87 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class ByteSumCalculator {
+
+    public static void main(String[] args) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            StringBuilder inputBuffer = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                inputBuffer.append(line).append("\n");
+            }
+
+            String input = inputBuffer.toString();
+            double totalBytes = parseAndSum(input);
+
+            System.out.printf(Locale.US, "%.1f%n", totalBytes);
+            System.out.printf(Locale.US, "%.1f k%n", totalBytes / 1024.0);
+            System.out.printf(Locale.US, "%.1f M%n", totalBytes / (1024.0 * 1024.0));
+            System.out.printf(Locale.US, "%.1f G%n", totalBytes / (1024.0 * 1024.0 * 1024.0));
+
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+        }
+    }
+
+    private static double parseAndSum(String input) {
+        // Pattern explanation:
+        // (\d{1,3}(?:,\d{3})*(?:\.\d+)?) -> Matches numbers with optional commas and decimals
+        // ([kKmMgG])? -> Optional suffix (case insensitive)
+        // We use a regex to find all occurrences.
+        Pattern pattern = Pattern.compile("(\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?)([kKmMgG])?");
+        Matcher matcher = pattern.matcher(input);
+
+        double total = 0.0;
+
+        while (matcher.find()) {
+            String numberStr = matcher.group(1);
+            String suffix = matcher.group(2);
+
+            // Remove commas from the number string
+            numberStr = numberStr.replace(",", "");
+
+            double value;
+            try {
+                value = Double.parseDouble(numberStr);
+            } catch (NumberFormatException e) {
+                continue; // Skip invalid numbers
+            }
+
+            double multiplier = 1.0;
+            if (suffix != null) {
+                char s = Character.toUpperCase(suffix.charAt(0));
+                switch (s) {
+                    case 'K':
+                        multiplier = 1024.0;
+                        break;
+                    case 'M':
+                        multiplier = 1024.0 * 1024.0;
+                        break;
+                    case 'G':
+                        multiplier = 1024.0 * 1024.0 * 1024.0;
+                        break;
+                    default:
+                        multiplier = 1.0;
+                        break;
+                }
+            }
+
+            total += value * multiplier;
+        }
+
+        return total;
+    }
+}
+``` [end of text]
+
+

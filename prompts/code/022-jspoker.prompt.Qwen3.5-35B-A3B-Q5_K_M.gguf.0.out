@@ -1,0 +1,19 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><title>JS Poker</title><style>body{font-family:sans-serif;background:#222;color:#fff;text-align:center;padding:20px}#game{max-width:600px;margin:0 auto}#board{display:flex;justify-content:center;gap:10px;margin:20px 0}#board img{width:70px;height:100px;border:1px solid #555;background:#444;display:flex;align-items:center;justify-content:center;font-size:20px}#controls button{padding:10px 20px;margin:5px;font-size:16px;cursor:pointer}#status{font-size:18px;margin:15px 0;font-weight:bold;color:#ffeb3b}</style></head><body><div id="game"><h1>5 Card Draw</h1><div id="status">Click Deal to start</div><div id="board"></div><div id="controls"><button id="btnDeal">Deal</button><button id="btnHold" disabled>Hold Selected</button><button id="btnDraw" disabled>Draw</button></div></div><script>
+const suits=['♠','♥','♦','♣'],ranks=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+let deck=[],hand=[],held=[0,0,0,0,0],scores=[];
+const board=document.getElementById('board'),status=document.getElementById('status'),
+btnDeal=document.getElementById('btnDeal'),btnHold=document.getElementById('btnHold'),btnDraw=document.getElementById('btnDraw');
+
+function createDeck(){deck=[];for(let s of suits)for(let r of ranks)deck.push({s,r,v:ranks.indexOf(r)+2});deck.sort(()=>Math.random()-0.5);}
+function render(){board.innerHTML='';hand.forEach((c,i)=>{let el=document.createElement('div');el.className='card';el.style.background=c.s=='♥'||c.s=='♦'?'#d00':'#444';el.style.color=c.s=='♥'||c.s=='♦'?'#d00':'#fff';el.style.border='1px solid #777';el.style.width='70px';el.style.height='100px';el.style.display='flex';el.style.alignItems='center';el.style.justifyContent='center';el.style.fontSize='24px';el.style.cursor='pointer';el.innerText=c.s+c.r;if(held[i])el.style.border='2px solid #ffeb3b';el.onclick=()=>held[i]=!held[i];board.appendChild(el);});}
+function evalHand(h){let v=h.map(c=>c.v).sort((a,b)=>a-b),s=h.map(c=>c.s);let isFlush=s.every(x=>x==s[0]),isStr=v[4]-v[0]==4&&v[0]!=14,vStr=v[0]==14&&v[1]==2&&v[2]==3&&v[3]==4&&v[4]==5;let counts={},vStr2=v[0]==2&&v[1]==3&&v[2]==4&&v[3]==5&&v[4]==14;
+h.forEach(c=>counts[c.v]=(counts[c.v]||0)+1);let vals=Object.values(counts).sort((a,b)=>b-a);
+if(isFlush&&isStr)return 8;else if(vals[0]==4)return 7;else if(vals[0]==3&&vals[1]==2)return 6;else if(isFlush)return 5;else if(isStr)return 4;else if(vals[0]==3)return 3;else if(vals[0]==2&&vals[1]==2)return 2;else if(vals[0]==2)return 1;else return 0;}
+function scoreName(s){return['High Card','Pair','Two Pair','Three of a Kind','Straight','Flush','Full House','Four of a Kind','Straight Flush','Royal Flush'][s];}
+function play(){let h=hand.slice(0,5).filter((_,i)=>!held[i]);if(h.length>0){deck=deck.slice(0,5-h.length);hand=hand.slice(0,5-h.length).concat(deck);render();}let s=evalHand(hand);status.innerText=`Result: ${scoreName(s)} (${s})`;btnDeal.disabled=false;btnDraw.disabled=true;btnHold.disabled=true;}
+btnDeal.onclick=()=>{createDeck();hand=deck.splice(0,5);held=[0,0,0,0,0];render();status.innerText="Select cards to hold, then click Draw";btnDeal.disabled=true;btnDraw.disabled=false;btnHold.disabled=false;};
+btnDraw.onclick=play;
+btnHold.onclick=()=>{render();status.innerText="Click Draw to replace held cards";};
+</script></body></html> [end of text]
+
+
