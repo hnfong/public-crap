@@ -1,0 +1,102 @@
+<!DOCTYPE html><html><head><style>body{margin:0;background:#222;color:#fff;font-family:sans-serif;overflow:hidden;user-select:none}.card{position:absolute;width:60px;height:84px;background:#fff;border-radius:4px;box-shadow:2px 2px 5px rgba(0,0,0,0.3);display:flex;justify-content:center;align-items:center;font-size:20px;cursor:grab;transition:transform 0.1s}.card.red{color:#d00}.card.black{color:#000}.card.selected{box-shadow:0 0 10px #ff0;border:2px solid #ff0}.pile{position:absolute;width:60px;height:84px;border:2px dashed #555;border-radius:4px;display:flex;justify-content:center;align-items:center;font-size:12px;color:#888}.pile.empty{background:rgba(255,255,255,0.05)}.pile.top{border-color:#fff}.#win{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;justify-content:center;align-items:center;font-size:40px;color:#0f0;z-index:1000;display:none}</style></head><body><div id="win">YOU WIN!</div><script>
+const W=800,H=600;
+const S={x:50,y:50,w:60,h:84};
+const D=['♠','♥','♣','♦'];
+const V=[1,2,3,4,5,6,7,8,9,10,11,12,13];
+let deck=[],piles=[],sel=null,drag=null;
+const C=(c,v)=>({s:c,v:v,face:true});
+const R=()=>Math.random();
+const mkDeck=()=>{
+  deck=[];
+  D.forEach(s=>V.forEach(v=>deck.push(C(s,v))));
+  deck.sort(()=>R()-0.5);
+};
+const mkPiles=()=>{
+  piles=[[],[],[],[],[],[],[],[]];
+};
+const draw=()=>{
+  if(deck.length>0){
+    let c=deck.pop();
+    c.face=true;
+    piles[0].push(c);
+  }
+};
+const render=()=>{
+  document.body.innerHTML='';
+  const win=document.createElement('div');
+  win.id='win';win.innerText='YOU WIN!';
+  document.body.appendChild(win);
+  
+  piles.forEach((p,i)=>{
+    const el=document.createElement('div');
+    el.className='pile'+(i===0?' top':'');
+    el.style.left=S.x+'px';
+    el.style.top=(S.y+i*S.h+20)+'px';
+    if(p.length===0) el.innerText='Empty';
+    p.forEach((c,j)=>{
+      const card=document.createElement('div');
+      card.className='card'+(c.s==='♥'||c.s==='♦'?' red':' black');
+      card.style.left=(S.x+10)+'px';
+      card.style.top=(S.y+i*S.h+20+j*S.h)+'px';
+      card.innerText=c.v+D[D.indexOf(c.s)];
+      if(sel===c) card.classList.add('selected');
+      card.onmousedown=e=>{
+        e.stopPropagation();
+        sel=c;
+        drag={x:e.clientX,y:e.clientY,ox:card.offsetLeft,oy:card.offsetTop};
+        document.onmousemove=ev=>{
+          if(!drag)return;
+          card.style.left=(drag.ox+ev.clientX-drag.x)+'px';
+          card.style.top=(drag.oy+ev.clientY-drag.y)+'px';
+        };
+        document.onmouseup=()=>{
+          document.onmousemove=null;
+          document.onmouseup=null;
+          if(sel){
+            let target=-1;
+            for(let k=1;k<8;k++){
+              if(piles[k].length===0){
+                if(c.v===13){target=k;break;}
+              }else{
+                let top=piles[k][piles[k].length-1];
+                if(top.v===c.v+1 && top.s!==c.s){target=k;break;}
+              }
+            }
+            if(target>-1){
+              piles[target].push(c);
+              piles[0].pop();
+              sel=null;
+              checkWin();
+            }else{
+              sel=null;
+            }
+          }
+        };
+      };
+      el.appendChild(card);
+    });
+    document.body.appendChild(el);
+  });
+  
+  const btn=document.createElement('button');
+  btn.innerText='Draw';
+  btn.style.position='absolute';
+  btn.style.left=(S.x+100)+'px';
+  btn.style.top=(S.y+10)+'px';
+  btn.style.padding='5px 10px';
+  btn.onclick=draw;
+  document.body.appendChild(btn);
+};
+const checkWin=()=>{
+  if(piles[1].length===13&&piles[2].length===13&&piles[3].length===13&&piles[4].length===13){
+    document.getElementById('win').style.display='flex';
+  }
+};
+mkDeck();
+mkPiles();
+piles[0].push(deck.pop());
+piles[0][0].face=true;
+render();
+</script></body></html> [end of text]
+
+
