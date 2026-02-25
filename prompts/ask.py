@@ -544,6 +544,29 @@ class Qwen3ThinkingTemplateMixin(Qwen3InstructTemplateMixin):
     def extra_gguf_options(self):
         return ["-r", "<|im_end|>", "-c", "9216"]
 
+class Qwen35NoThinkingTemplateMixin:
+    # XXX: added /nothink to disable thinking by default
+    def templated_prompt(self):
+        if self.system_message():
+            return f"""
+<|im_start|>system
+{self.system_message()}<|im_end|>
+<|im_start|>user
+{self.prompt()}<|im_end|>
+<|im_start|>assistant
+<think>\n\n</think>
+            """.strip() + "\n\n"
+        else:
+            return f"""
+<|im_start|>user
+{self.prompt()} /nothink<|im_end|>
+<|im_start|>assistant
+<think>\n\n</think>
+            """.strip() + "\n\n"
+    def system_message(self):
+        # https://www.reddit.com/r/LocalLLaMA/comments/1gpwrq1/how_to_use_qwen25coderinstruct_without/
+        return "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."
+
 class Qwen3TemplateMixin:
     # XXX: added /nothink to disable thinking by default
     def templated_prompt(self):
@@ -894,6 +917,7 @@ NAME_MATCH_OVERRIDE = [
     ("OpenCoder-8B", ChatMLTemplateMixin),
     ("SuperNova-Medius", ChatMLTemplateMixin),
     ("Virtuoso-", ChatMLTemplateMixin),
+    ("Qwen3.5", Qwen35NoThinkingTemplateMixin),
     ("Qwen2", QwenTemplateMixin),
     ("Qwen3", Qwen3TemplateMixin),
     ("command-r-plus", CommandRPlusTemplateMixin),
