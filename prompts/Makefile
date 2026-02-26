@@ -6,7 +6,7 @@ VMODELS=mlx-community---gemma-3-12b-it-qat-6bit mlx-community---GLM-4.5V-5bit
 
 MLXLM_MODELS=mlx-community--GLM-4.5-4bit mlx-community--GLM-4.5-Air-4bit
 
-LONG_CTX_MODELS=$(shell cd ~/Downloads/; ls *.gguf test_models/*.gguf split_ggufs/*00001-of-*gguf test_models/split_ggufs/*00001-of-*gguf | grep -iE 'SuperNova-Medius|Meta-Llama-3.1-8B-Instruct|Llama-3.2-3B-Instruct|gemma-3-4b-it|gemma-3-12b-it|gemma-3-27b-it|qwq|jan-nano-128k|DeepSeek-R1-0528|Qwen3-30B-A3B-Instruct|QwenLong|Kimi-Linear|Seed-OSS|MiMo-7B')
+LONG_CTX_MODELS=$(shell cd ~/Downloads/; ls *.gguf test_models/*.gguf split_ggufs/*00001-of-*gguf test_models/split_ggufs/*00001-of-*gguf | grep -iE 'SuperNova-Medius|Meta-Llama-3.1-8B-Instruct|Llama-3.2-3B-Instruct|gemma-3-4b-it|gemma-3-12b-it|gemma-3-27b-it|qwq|jan-nano-128k|DeepSeek-R1-0528|Qwen3-30B-A3B-Instruct|QwenLong|Kimi-Linear|Seed-OSS|MiMo-7B|Qwen3.5-35B-')
 
 # For each model
 TARGETS=$(foreach model,$(MODELS),__DONE__.$(model))
