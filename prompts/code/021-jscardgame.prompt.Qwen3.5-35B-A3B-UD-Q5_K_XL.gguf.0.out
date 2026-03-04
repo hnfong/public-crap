@@ -1,0 +1,66 @@
+<!DOCTYPE html><html><head><style>body{margin:0;background:#222;color:#eee;font-family:sans-serif;overflow:hidden;user-select:none}.card{position:absolute;width:60px;height:84px;background:#fff;border-radius:4px;box-shadow:2px 2px 5px rgba(0,0,0,.3);display:flex;justify-content:center;align-items:center;font-size:20px;font-weight:bold;cursor:grab;transition:transform .1s}.card.red{color:#d00}.card.black{color:#000}.card:hover{transform:scale(1.05)}.pile{position:absolute;width:60px;height:84px;border:2px dashed #555;border-radius:4px;display:flex;justify-content:center;align-items:center;font-size:12px;color:#888}.pile.empty{background:rgba(255,255,255,.05)}.pile:hover{border-color:#888}.controls{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:10px}.btn{padding:8px 16px;background:#444;color:#fff;border:none;border-radius:4px;cursor:pointer}.btn:hover{background:#666}</style></head><body>
+<div id="game"></div>
+<div class="controls"><button class="btn" onclick="init()">New Game</button><button class="btn" onclick="undo()">Undo</button></div>
+<script>
+const G=document.getElementById('game'),S=[],U=[],C=[],W=60,H=84,cols=7,rows=4;
+const D=['♠','♥','♦','♣'],V=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const Cols=[[],[],[],[],[],[],[]],Piles=[[],[],[],[]];
+let idx=0,undoStack=[];
+
+function rnd(n){return Math.floor(Math.random()*n)}
+function mkCard(s,v){return{suit:D[s],val:V[v],color:(s==1||s==2)?'red':'black',id:idx++}}
+function drawDeck(){let d=[];for(let s=0;s<4;s++)for(let v=0;v<13;v++)d.push(mkCard(s,v));return d.sort(()=>Math.random()-0.5)}
+function render(){G.innerHTML='';let x=10,y=10;
+for(let i=0;i<7;i++){let p=document.createElement('div');p.className='pile empty';p.style.left=x+'px';p.style.top=y+'px';p.id='c'+i;G.appendChild(p);if(Cols[i].length){let c=Cols[i][Cols[i].length-1];let el=document.createElement('div');el.className='card '+c.color;el.innerText=c.val+c.suit;el.style.left=(x+10)+'px';el.style.top=(y+10)+'px';el.style.zIndex=Cols[i].length;el.draggable=true;el.ondragstart=e=>e.dataTransfer.setData('text/plain',JSON.stringify({type:'card',id:c.id,col:i}));el.onclick=()=>moveCard(i);G.appendChild(el);}}
+let deck=document.createElement('div');deck.className='pile empty';deck.style.left=x+'px';deck.style.top=y+300+'px';deck.innerText='Draw';deck.onclick=drawCard;G.appendChild(deck);
+for(let i=0;i<4;i++){let p=document.createElement('div');p.className='pile empty';p.style.left=x+350+'px';p.style.top=y+i*100+'px';p.id='p'+i;G.appendChild(p);}
+}
+function drawCard(){if(Cols[0].length){let c=Cols[0].pop();Cols[0].push(c);render();return;}
+let d=drawDeck();Cols[0].push(d);render();}
+function moveCard(fromCol){
+if(Cols[fromCol].length===0)return;
+let c=Cols[fromCol].pop();
+let target=-1;
+for(let i=0;i<4;i++){
+if(Piles[i].length===0){if(c.val==='A'){target=i;break;}}
+else{
+let top=Piles[i][Piles[i].length-1];
+if(top.suit===c.suit && parseInt(V.indexOf(top.val))+1===parseInt(V.indexOf(c.val))){target=i;break;}}
+}
+if(target!==-1){
+Piles[target].push(c);
+if(Cols[fromCol].length>0){
+let next=Cols[fromCol][Cols[fromCol].length-1];
+if(next.color!==c.color && parseInt(V.indexOf(next.val))-1===parseInt(V.indexOf(c.val))){
+Cols[fromCol].push(c);
+Cols[fromCol].pop();
+Cols[fromCol].push(next);
+Cols[fromCol].pop();
+}}
+}
+render();
+}
+function init(){
+Cols.forEach(c=>c.length=0);Piles.forEach(c=>c.length=0);undoStack=[];
+let deck=drawDeck();
+for(let i=0;i<7;i++){
+for(let j=0;j<=i;j++){
+if(j===i)Cols[i].push(deck.pop());
+else Cols[i].push(deck.pop());
+}
+}
+render();
+}
+function undo(){
+if(undoStack.length===0)return;
+let state=undoStack.pop();
+Cols.length=0;Piles.length=0;
+state.Cols.forEach(c=>Cols.push(c));
+state.Piles.forEach(c=>Piles.push(c));
+render();
+}
+setInterval(()=>{if(Cols[0].length===0 && Piles[0].length===4 && Piles[1].length===4 && Piles[2].length===4 && Piles[3].length===4)alert('You Win!');},1000);
+init();
+</script></body></html> [end of text]
+
+
