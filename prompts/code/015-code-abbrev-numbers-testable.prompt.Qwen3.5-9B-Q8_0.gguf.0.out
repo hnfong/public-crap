@@ -1,0 +1,51 @@
+```python
+def abbrev_num(x):
+    if x < 1000:
+        return str(x)
+    
+    suffixes = ["K", "M", "B", "T", "Qa"]
+    value = x
+    suffix_idx = 0
+    
+    while value >= 1000 and suffix_idx < len(suffixes):
+        value /= 1000
+        suffix_idx += 1
+    
+    # Format to 2 significant digits, ensuring total length <= 4
+    # If integer part is 2 digits (e.g., 99), we need 1 decimal.
+    # If integer part is 1 digit (e.g., 9), we can have 2 decimals or 1.
+    # We aim for the shortest string that represents the number reasonably.
+    
+    if value >= 100:
+        # e.g., 100.5 -> "100" (but loop condition prevents this usually, unless x is huge)
+        # Actually if x is 100,000 -> value=100, suffix="K" -> "100K" (4 chars)
+        s = f"{int(value)}{suffixes[suffix_idx]}"
+    elif value >= 10:
+        # e.g., 9.4 -> "9.4"
+        # We want to round to 1 decimal place if needed to keep length <= 4
+        # "9.4K" is 4 chars. "9.45K" is 5 chars.
+        rounded = round(value, 1)
+        if rounded == int(rounded):
+            s = f"{int(rounded)}{suffixes[suffix_idx]}"
+        else:
+            s = f"{rounded:.1f}{suffixes[suffix_idx]}"
+    else:
+        # e.g., 0.82 -> "0.82"
+        # "0.82K" is 5 chars. We need to round more aggressively or truncate.
+        # Requirement says "roughly represents". 
+        # If we have 0.82, maybe "0.8K"? That's 4 chars.
+        # Or if it's 0.95, maybe "1K"?
+        # Let's try to get 2 significant digits total including the leading zero if necessary, 
+        # but strictly <= 4 chars.
+        # Options: "0.8K" (4), "0.9K" (4), "1K" (3).
+        # Let's round to 1 decimal place.
+        rounded = round(value, 1)
+        if rounded == int(rounded):
+            s = f"{int(rounded)}{suffixes[suffix_idx]}"
+        else:
+            s = f"{rounded:.1f}{suffixes[suffix_idx]}"
+    
+    return s
+``` [end of text]
+
+

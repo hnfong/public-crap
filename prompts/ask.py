@@ -49,8 +49,8 @@ MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/"
 def model_glob(abbr):
     return glob.glob(f"{MODELS_PATH}/*{abbr}*.gguf") or glob.glob(f"{MODELS_PATH}/test_models/split_ggufs/*{abbr}*.gguf") 
 
-DEFAULT_MODEL = "Qwen3-30B-A3B-Instruct"
-DEFAULT_CODE_INSTRUCT_MODEL = "Qwen3-Coder-Next"
+DEFAULT_MODEL = "Qwen3.5-35B-A3"
+DEFAULT_CODE_INSTRUCT_MODEL = "Qwen3.5-35B-A3"
 DEFAULT_CODE_GENERATION_MODEL = "Qwen3-Coder-Next"  # FIM
 
 # Presets
@@ -545,7 +545,6 @@ class Qwen3ThinkingTemplateMixin(Qwen3InstructTemplateMixin):
         return ["-r", "<|im_end|>", "-c", "9216"]
 
 class Qwen35NoThinkingTemplateMixin:
-    # XXX: added /nothink to disable thinking by default
     def templated_prompt(self):
         if self.system_message():
             return f"""
@@ -559,7 +558,7 @@ class Qwen35NoThinkingTemplateMixin:
         else:
             return f"""
 <|im_start|>user
-{self.prompt()} /nothink<|im_end|>
+{self.prompt()}<|im_end|>
 <|im_start|>assistant
 <think>\n\n</think>
             """.strip() + "\n\n"
@@ -919,7 +918,7 @@ NAME_MATCH_OVERRIDE = [
     ("Virtuoso-", ChatMLTemplateMixin),
     ("Qwen3.5", Qwen35NoThinkingTemplateMixin),
     ("Qwen2", QwenTemplateMixin),
-    ("Qwen3", Qwen3TemplateMixin),
+    ("Qwen3-", Qwen3TemplateMixin),
     ("command-r-plus", CommandRPlusTemplateMixin),
     ("calme-3.2-instruct", ChatMLTemplateMixin),
     ("dolphin", ChatMLTemplateMixin),

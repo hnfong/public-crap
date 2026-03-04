@@ -1,0 +1,107 @@
+### Q1. What (if any) is the eventual output of the following python program?
+
+```python
+import math
+x = 0.0
+while x < math.inf:
+    x += 1.0
+print(x)
+```
+
+**Answer:**
+The program will **never terminate** (it will run forever), and therefore **no output** will be printed.
+
+**Reasoning based on IEEE 754:**
+1.  **Representation of Infinity:** In IEEE 754 double-precision floating-point format, `math.inf` is represented by a specific bit pattern where the sign bit is 0 and the exponent field is all 1s (1111111111111111111111111111111111111111111111111111111111111111).
+2.  **Representation of Zero:** `0.0` is represented with an exponent of 0 and a mantissa of 0.
+3.  **Incrementing:** When you add `1.0` to `0.0`, the result is `1.0`. As `x` increases, the exponent eventually reaches the maximum representable value (which corresponds to `math.inf`).
+4.  **Overflow Behavior:** In IEEE 754, adding a finite number to the largest finite number results in `+infinity`.
+    *   Let $x_{max}$ be the largest finite number.
+    *   The next operation is $x_{max} + 1.0$.
+    *   According to the standard, this operation yields $+\infty$.
+5.  **Loop Condition:** The condition `while x < math.inf` is evaluated. Since $+\infty$ is **not** less than $+\infty$ (infinity is not less than itself), the condition becomes `False`.
+6.  **Result:** The loop terminates immediately once `x` becomes infinity. However, the question asks for the *eventual output*. Since the loop terminates, the code proceeds to `print(x)`.
+
+**Correction/Refinement:**
+Wait, let's re-evaluate the exact moment of termination.
+*   Start: $x = 0.0$.
+*   ...
+*   $x$ becomes the largest finite number ($x_{max} \approx 1.79769 \times 10^{308}$).
+*   Next iteration: $x = x_{max} + 1.0$.
+*   Result: $x = +\infty$.
+*   Check condition: `while +\infty < +\infty`. This is **False**.
+*   Loop exits.
+*   Print `x`: Prints `inf`.
+
+**Final Answer for Q1:**
+The program **will terminate** and print **`inf`** (or `+inf`).
+
+*(Self-Correction during thought process: My initial thought was "never terminate" because I was thinking about integer overflow in C++ or Python's arbitrary precision integers. But this is floating point. Floating point has a defined overflow behavior to infinity. Once it hits infinity, the comparison `inf < inf` is false, so the loop stops.)*
+
+---
+
+### Q2. What (if any) is the eventual output of the following python program? Is it different from the results above?
+
+```python
+import math
+x = 1.0
+while x < math.inf:
+    x = x * 1.001
+print(x)
+```
+
+**Answer:**
+The program will **terminate** and print **`inf`**. Yes, the result is the same as Q1.
+
+**Reasoning:**
+1.  **Multiplication:** The variable `x` starts at `1.0` and is multiplied by `1.001` repeatedly.
+2.  **Growth:** This causes `x` to grow exponentially.
+3.  **Overflow:** Eventually, `x` will exceed the maximum finite value representable in IEEE 754 double precision ($x_{max}$).
+4.  **Result of Overflow:** Just like addition, multiplying a finite number by a number greater than 1 (specifically, when the result would exceed the max range) results in `+infinity`.
+    *   Mathematically: $x_{max} \times 1.001 \to +\infty$.
+5.  **Loop Condition:** Once `x` is `+inf`, the check `while +inf < +inf` evaluates to `False`.
+6.  **Output:** The loop exits, and `print(x)` outputs `inf`.
+
+**Comparison:**
+The output is identical to Q1 (`inf`). Both operations (addition and multiplication) eventually cause the floating-point value to overflow into positive infinity, at which point the comparison with infinity fails, terminating the loop.
+
+---
+
+### Q3. Consider the following program:
+
+```python
+import math
+x = 0.0
+inc = float(input("Enter a number"))
+while x < math.inf:
+    x += inc
+print("Done")
+```
+
+**Are there inputs that will lead to the output "Done"? Give at least 2 examples of such inputs if possible.**
+
+**Answer:**
+Yes, there are inputs that will lead to the output "Done".
+
+**Reasoning:**
+The loop continues as long as `x < math.inf`. The loop terminates if `x` becomes greater than or equal to `math.inf`.
+*   If `inc` is positive, `x` will eventually overflow to `+inf`, causing the loop to terminate.
+*   If `inc` is negative, `x` will decrease towards $-\infty$. Since $-\infty$ is not greater than `inf`, the loop will run forever (infinite loop).
+*   If `inc` is zero, `x` stays at `0.0`. The loop runs forever.
+*   If `inc` is positive but extremely small, it might take a very long time, but it will eventually overflow.
+
+**Two Examples of inputs that result in "Done":**
+
+1.  **Input: `1.0`**
+    *   This is the same logic as Q1. `x` increments by 1.0 until it overflows to `+inf`. The loop terminates, and "Done" is printed.
+
+2.  **Input: `1.001`**
+    *   This is the same logic as Q2. `x` grows exponentially. It will eventually overflow to `+inf`. The loop terminates, and "Done" is printed.
+
+*(Note: Any positive floating-point number will work, provided it is not so small that it underflows to zero immediately, though even then, adding zero repeatedly keeps x at 0, which is < inf, so technically only positive numbers that cause growth to infinity work. Actually, if `inc` is a very small positive number like `1e-300`, it will eventually reach `inf` after many iterations. If `inc` is exactly 0, it loops forever. So any positive number works.)*
+
+**Refined Examples:**
+1.  **`1.0`**: Causes linear overflow.
+2.  **`1000000.0`**: Causes faster overflow. [end of text]
+
+
