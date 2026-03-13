@@ -217,6 +217,7 @@ Computer technology related.
 - https://github.com/mypyc/mypyc
 - https://github.com/flonatel/pipexec - Build a network of processes and connecting pipes - and have them act like a single process.
 - https://github.com/chearon/dropflow - Dropflow is a CSS layout engine // It has a high quality text layout implementation // You can use it to generate PDFs or images on the backend with Node and node-canvas or render rich, wrapped text to a canvas in the browser
+- https://github.com/kaonashi-tyc/zi2zi-JiT - zi2zi-JiT is a conditional variant of JiT (Just image Transformer) designed for Chinese font style transfer. Given a source character and a style reference, it synthesizes the character in the target font style.
 
 
 #### Json
