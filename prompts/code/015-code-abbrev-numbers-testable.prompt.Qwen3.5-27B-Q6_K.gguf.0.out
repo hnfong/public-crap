@@ -1,0 +1,51 @@
+```python
+def abbrev_num(x):
+    x = int(x)
+    if x < 0:
+        return "-" + abbrev_num(-x)
+    
+    if x < 1000:
+        return str(x)
+    
+    suffixes = [
+        (1_000, "K"),
+        (1_000_000, "M"),
+        (1_000_000_000, "B"),
+        (1_000_000_000_000, "T"),
+    ]
+    
+    for divisor, suffix in suffixes:
+        if x < divisor * 1000:
+            # Try with one decimal place first
+            value = x / divisor
+            if value < 10:
+                # Format with one decimal, e.g., 8.2K
+                candidate = f"{value:.1f}{suffix}"
+                if len(candidate) <= 4:
+                    return candidate
+                # If too long, try rounding to integer
+                candidate = f"{round(value)}{suffix}"
+                if len(candidate) <= 4:
+                    return candidate
+            else:
+                # For values >= 10, use integer rounding
+                candidate = f"{round(value)}{suffix}"
+                if len(candidate) <= 4:
+                    return candidate
+                # Fallback: truncate to fit 4 chars if needed
+                # e.g., 99.9K -> 100K (5 chars) -> 100K is too long, so 100K not allowed
+                # In such edge cases, we might need to round up to next magnitude or truncate
+                # But per problem, we aim for <=4 chars. If 100K is 4 chars? "100K" is 4 chars.
+                # Wait: "100K" is 4 characters: '1','0','0','K' -> valid.
+                # So only when it exceeds 4 chars we adjust.
+                # Let's re-check: if value is 99.9, round to 100 -> "100K" (4 chars) -> OK.
+                # If value is 100.0 -> "100K" (4 chars) -> OK.
+                # If value is 1000 -> would have been caught by next suffix.
+                return candidate
+            return candidate
+    
+    # For extremely large numbers beyond T, just return as is or handle similarly
+    return str(x)
+``` [end of text]
+
+

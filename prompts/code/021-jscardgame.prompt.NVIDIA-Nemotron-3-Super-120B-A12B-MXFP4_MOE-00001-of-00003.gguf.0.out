@@ -1,0 +1,620 @@
+We need to output HTML with embedded JS, no explanations. Must start with <!DOCTYPE html><html>. Provide a simple solitaire-like game with twist. Keep code concise, reduce indentation. Use minimal whitespace? We can still have line breaks but indentation adds tokens. We'll try to keep code compact.
+
+We'll create a simple card matching game: like Klondike but twist: cards can be moved if sum equals 13? Or something.
+
+Simplify: Use a deck of 52 cards, display 7 piles like solitaire, but allow moving any face-up card onto another if they are same suit or rank difference 1 (like classic). Twist: allow "wild" Joker that can be any.
+
+But to keep code short, maybe implement a memory game: flip two cards, if match remove. Twist: after each mismatch, cards rotate.
+
+But requirement: similar to solitaire but add twist. Let's do a simple solitaire where you can move cards onto foundations if they are same color (instead of alternating colors). That's a twist.
+
+Implement basic UI: drag and drop? Too complex. Simpler: click to select a card, then click destination pile to move if valid.
+
+We'll represent cards as objects with suit and value. Display as Unicode symbols.
+
+We'll need to manage state: piles array of arrays, each pile is a stack; only top card is face-up (we can show all). For simplicity, all cards face-up.
+
+We'll implement: 7 tableau piles, each with increasing number of cards (1 to 7). Remaining cards as stock (draw pile) - clicking draws one card to waste pile. Foundations 4 piles, start empty. Goal: move all cards to foundations by suit ascending Ace to King (standard). Twist: you can move cards onto tableau if they are same color (instead of alternating). That's the twist.
+
+Implement drag via click: clicking a card selects it if it's face-up and movable (top of tableau or waste). Then clicking another pile attempts to move.
+
+We'll need to render.
+
+We'll keep code very short: use single-letter variables, minimal functions.
+
+Let's craft.
+
+HTML:
+
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Solitaire Twist</title></head>
+<body onload="init()">
+<div id="board"></div>
+<script>
+...code...
+</script>
+</body>
+</html>
+
+We need to start with <!DOCTYPE html><html> exactly as first line. So we output that line then continue.
+
+We'll avoid extra spaces? We'll keep minimal.
+
+Let's write code.
+
+We'll define suits: ['♠','♥','♦','♣']; values: A,2..10,J,Q,K.
+
+Map to strings.
+
+We'll create deck array of objects {s,v}. Shuffle.
+
+Initialize piles: tableau[7]; for i in 0..6: for j in 0..i: push deck.pop().
+
+Stock = remaining deck.
+
+Waste = [].
+
+Foundations = [[],[],[],[]].
+
+Selected = null.
+
+Render: clear board, create divs for each pile.
+
+We'll use CSS inline via style attribute for simplicity.
+
+We'll need event listeners: clicking a card element calls selectCard(pileType,index). We'll store data attributes.
+
+Simplify: each card rendered as <div class="c" data-p="t" data-i="0" data-j="0">A♠</div>. On click, call move(this).
+
+We'll have function c(e){...}.
+
+We'll need to check validity:
+
+If selected is null: if element is top of its pile (i.e., last element in that pile array) and (pile type is tableau or waste) then select it, highlight.
+
+If selected not null: attempt to move selected card to target pile if target is foundation or tableau.
+
+For foundation: can accept if pile empty and card value is A, or if top card same suit and value+1.
+
+For tableau (twist): can accept if pile empty or top card same color (both red or both black) and value-1? Actually classic solitaire builds down alternating colors. Twist: same color, build down? Let's define: you can place card on tableau if top card is same color and value is one less (like descending). That's a twist.
+
+We'll implement: target pile top card's value index; if selected card's value index == top-1 and same color.
+
+Color: red for hearts/diamonds, black for spades/clubs.
+
+If move valid: remove selected card from source pile, push to target pile, clear selection, re-render.
+
+If invalid: clear selection.
+
+Stock click: if stock not empty, move top card to waste (face-up). If stock empty, clicking waste can reset? We'll just allow draw one card at a time; if stock empty, clicking waste does nothing.
+
+We'll need to get source pile and index from element's data attributes.
+
+We'll store piles in objects: {t:tableau, w:waste, f:foundations, s:stock}. We'll map type char to array.
+
+When rendering, we need to know each card's position in its pile to set data-i (index in pile) and data-p (type). For top card we need to know it's last element.
+
+Simplify: when rendering, we iterate each pile and for each card create element with data-p=type, data-i=index (0-based). Then on click we can get the pile array and index.
+
+But we need to know if it's top: index == pile.length-1.
+
+Implement.
+
+We'll use function r(){...} to render.
+
+We'll use innerHTML to set board.
+
+We'll use CSS to display inline-block, margin, etc.
+
+Let's write code.
+
+We need to keep tokens low: use short variable names.
+
+Let's draft:
+
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Solitaire Twist</title></head>
+<body onload="i()">
+<div id=b></div>
+<script>
+const s=['♠','♥','♦','♣'],v=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+function sh(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const d=sh(s.flatMap(su=>v.map(va=>({s:su,v:va}))));
+const t=[[],[],[],[],[],[],[]];// tableau
+for(let i=0;i<7;i++)for(let j=0;j<=i;j++)t[i].push(d.pop());
+const w=[],f=[[],[],[],[]],st=d;
+let sel=null;
+function col(c){return c.s==='♥'||c.s==='♦'?'r':'b'}
+function valIdx(c){return v.indexOf(c.v)}
+function canMove(card,targetType,targetIdx){
+if(targetType==='f'){
+const pile=f[targetIdx];
+if(pile.length===0)return valIdx(card)===0;
+const top=pile[pile.length-1];
+return card.s===top.s&&valIdx(card)===valIdx(top)+1;
+}
+if(targetType==='t'){
+const pile=t[targetIdx];
+if(pile.length===0)return true;
+const top=pile[pile.length-1];
+return col(card)===col(top)&&valIdx(card)===valIdx(top)-1;
+}
+return false;
+}
+function doMove(fromType,fromIdx,toType,toIdx){
+let card;
+if(fromType==='t')card=t[fromIdx].splice(fromIdx,1)[0];
+else if(fromType==='w')card=w.splice(fromIdx,1)[0];
+else return;
+if(toType==='t')t[toIdx].push(card);
+else if(toType==='f')f[toIdx].push(card);
+else if(toType==='w')w.push(card);
+else if(toType==='s')st.push(card);
+}
+function r(){
+const b=document.getElementById('b');
+b.innerHTML='';
+// stock
+b.innerHTML+=`<div style="display:inline-block;margin:5px;"><div class="c" data-p="s" data-i="${st.length-1}" onclick="c(this)">${st.length?`${st[st.length-1].v}${st[st.length-1].s}`:''}</div></div>`;
+// waste
+b.innerHTML+=`<div style="display:inline-block;margin:5px;"><div class="c" data-p="w" data-i="${w.length-1}" onclick="c(this)">${w.length?`${w[w.length-1].v}${w[w.length-1].s}`:''}</div></div>`;
+// foundations
+for(let i=0;i<4;i++){
+const pile=f[i];
+b.innerHTML+=`<div style="display:inline-block;margin:5px;"><div class="c" data-p="f" data-i="${i}" onclick="c(this)">${pile.length?`${pile[pile.length-1].v}${pile[pile.length-1].s}`:''}</div></div>`;
+}
+// tableau
+for(let i=0;i<7;i++){
+const pile=t[i];
+b.innerHTML+=`<div style="display:inline-block;margin:5px;">`;
+for(let j=0;j<pile.length;j++){
+b.innerHTML+=`<div class="c" data-p="t" data-i="${i}" data-j="${j}" onclick="c(this)">${pile[j].v}${pile[j].s}</div>`;
+}
+b.innerHTML+=`</div>`;
+}
+}
+function c(e){
+const p=e.dataset.p;
+if(p==='s'){
+if(st.length){w.push(st.pop());r();}
+return;
+}
+const i=+e.dataset.i;
+const j=+e.dataset.j;
+let srcType,srcIdx;
+if(p==='t'){srcType='t';srcIdx=+e.dataset.i;const pile=t[srcIdx];if(j!==pile.length-1)return;sel={type:'t',idx:srcIdx};}
+else if(p==='w'){srcType='w';srcIdx=0;if(w.length-1!==i)return;sel={type:'w',idx:0};}
+else if(p==='f'){srcType='f';srcIdx=i;const pile=f[srcIdx];if(pile.length-1!==i)return;sel={type:'f',idx:srcIdx};}
+else return;
+if(!sel){return;}
+const card=srcType==='t'?t[sel.idx][sel.idx===undefined?0:sel.idx]:srcType==='w'?w[0]:f[sel.idx][0];// messy
+// Actually we need to get card correctly.
+}
+</script>
+</body>
+</html>
+
+This is getting messy and likely broken.
+
+We need to simplify further: Instead of complex data attributes, we can store each card element's reference to its pile and index via closure? But we need to keep code short.
+
+Alternative: Use a single array representing all cards positions and render via mapping; but too complex.
+
+Maybe we can implement a very simple game: click to draw card from stock to waste, then click waste card to move to foundations if possible; tableau not needed. But requirement similar to solitaire: we need tableau.
+
+Maybe we can implement a minimal solitaire where you can only move cards from tableau to foundations if same suit and ascending; you can move any face-up card (top of pile) to another tableau if same color and descending. That's what we attempted.
+
+We need to make code correct and short.
+
+Let's redesign data representation: We'll keep piles as arrays, and when rendering we will assign each card element a data attribute "p" for pile type and "i" for index in that pile (0-based). For tableau we also need to know which pile number; we can encode pile number in another attribute "x". So data-p = 't', data-x = pile index, data-i = card index in that pile.
+
+Similarly for foundations: data-p='f', data-x = foundation index.
+
+For waste: data-p='w', data-x = 0 (only one waste pile). For stock: data-p='s', data-x = 0.
+
+Then on click we can get type, x, i.
+
+We'll need to check if card is top: i == pile.length-1.
+
+Implementation:
+
+function c(e){
+const tp=e.dataset.p;
+const xi=+e.dataset.x;
+const ci=+e.dataset.i;
+let pile;
+if(tp==='t')pile=t[xi];
+else if(tp==='w')pile=w;
+else if(tp==='f')pile=f[xi];
+else if(tp==='s')pile=st;
+else return;
+if(ci!==pile.length-1)return; // not top
+if(!sel){sel={tp,xi,ci}; e.style.background='yellow'; return;}
+ // attempt move
+let card;
+if(sel.tp==='t')card=t[sel.xi].splice(sel.ci,1)[0];
+else if(sel.tp==='w')card=w.splice(sel.ci,1)[0];
+else if(sel.tp==='f')card=f[sel.xi].splice(sel.ci,1)[0];
+else return;
+let ok=false;
+if(tp==='t'){
+if(pile.length===0)ok=true;
+else{
+const top=pile[pile.length-1];
+ok=col(card)===col(top)&&valIdx(card)===valIdx(top)-1;
+}
+if(ok){pile.push(card);}
+}
+else if(tp==='f'){
+if(pile.length===0)ok=valIdx(card)===0;
+else{
+const top=pile[pile.length-1];
+ok=card.s===top.s&&valIdx(card)===valIdx(top)+1;
+}
+if(ok){pile.push(card);}
+}
+else if(tp==='w'){ // moving to waste? not needed
+}
+else if(tp==='s'){ // moving to stock? not needed
+}
+sel=null;
+r();
+}
+
+We also need to handle clicking stock to draw: if tp==='s' and pile length>0 then move top card to waste.
+
+Simplify: In click handler, if tp==='s' and pile.length>0 then w.push(pile.pop()); r(); return;
+
+Now we need to ensure we clear selection highlight.
+
+We'll also need to reset selection if click elsewhere.
+
+We'll also need to prevent moving card from foundations or waste unless top.
+
+Ok.
+
+Now we need to write code concisely.
+
+Let's craft final HTML with minimal whitespace.
+
+We'll try to remove unnecessary spaces and line breaks but keep readability low.
+
+We'll use single-letter variable names where possible.
+
+Let's define:
+
+const s=['♠','♥','♦','♣'],v=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+
+function sh(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*i+1|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+
+const d=sh(s.flatMap(su=>v.map(va=>({s:su,v:va}))));
+
+let t=[[],[],[],[],[],[],[]];for(let i=0;i<7;i++)for(let j=0;j<=i;j++)t[i].push(d.pop());
+
+let w=[],f=[[],[],[],[]],st=d,sel=null;
+
+function col(c){return c.s==='♥'||c.s==='♦'?0:1} // 0 red,1 black
+
+function vi(c){return v.indexOf(c.v)}
+
+function r(){
+const b=document.getElementById('b');
+b.innerHTML='';
+// stock
+b.innerHTML+=`<div style="display:inline-block;margin:2px;"><div class="c" data-p="s" data-x="0" data-i="${st.length-1}" onclick="c(this)">${st.length?st[st.length-1].v+st[st.length-1].s:''}</div></div>`;
+// waste
+b.innerHTML+=`<div style="display:inline-block;margin:2px;"><div class="c" data-p="w" data-x="0" data-i="${w.length-1}" onclick="c(this)">${w.length?w[w.length-1].v+w[w.length-1].s:''}</div></div>`;
+// foundations
+for(let i=0;i<4;i++){
+const p=f[i];
+b.innerHTML+=`<div style="display:inline-block;margin:2px;"><div class="c" data-p="f" data-x="${i}" data-i="${p.length-1}" onclick="c(this)">${p.length?p[p.length-1].v+p[p.length-1].s:''}</div></div>`;
+}
+// tableau
+for(let i=0;i<7;i++){
+const p=t[i];
+b.innerHTML+=`<div style="display:inline-block;margin:2px;">`;
+for(let j=0;j<p.length;j++){
+b.innerHTML+=`<div class="c" data-p="t" data-x="${i}" data-i="${j}" onclick="c(this)">${p[j].v+p[j].s}</div>`;
+}
+b.innerHTML+=`</div>`;
+}
+}
+
+function c(e){
+const tp=e.dataset.p;
+const xi=+e.dataset.x;
+const ci=+e.dataset.i;
+let pile;
+if(tp==='t')pile=t[xi];
+else if(tp==='w')pile=w;
+else if(tp==='f')pile=f[xi];
+else if(tp==='s')pile=st;
+else return;
+if(ci!==pile.length-1)return;
+if(!sel){sel={tp,xi,ci};e.style.background='#ff0';return;}
+let card;
+if(sel.tp==='t')card=t[sel.xi].splice(sel.ci,1)[0];
+else if(sel.tp==='w')card=w.splice(sel.ci,1)[0];
+else if(sel.tp==='f')card=f[sel.xi].splice(sel.ci,1)[0];
+else return;
+let ok=false;
+if(tp==='t'){
+if(pile.length===0)ok=true;
+else{
+const top=pile[pile.length-1];
+ok=col(card)===col(top)&&vi(card)===vi(top)-1;
+}
+if(ok){pile.push(card);}
+}
+else if(tp==='f'){
+if(pile.length===0)ok=vi(card)===0;
+else{
+const top=pile[pile.length-1];
+ok=card.s===top.s&&vi(card)===vi(top)+1;
+}
+if(ok){pile.push(card);}
+}
+sel=null;
+r();
+}
+
+We need to add <body onload="r()"> to init.
+
+Also need to define CSS for .c maybe cursor:pointer; width:50px; height:70px; etc.
+
+Let's add <style>.c{display:inline-block;width:50px;height:70px;line-height:70px;text-align:center;font-size:18px;margin:2px;border:1px solid #ccc;cursor:pointer;background:#f9f9f9;border-radius:4px;}</style>
+
+Now final HTML.
+
+We must ensure first line is exactly <!DOCTYPE html><html>. We'll output that then rest.
+
+Let's craft final string.
+
+We'll try to minimize spaces: but we need to keep valid JS.
+
+We'll produce:
+
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Solitaire Twist</title><style>.c{display:inline-block;width:50px;height:70px;line-height:70px;text-align:center;font-size:18px;margin:2px;border:1px solid #ccc;cursor:pointer;background:#f9f9f9;border-radius:4px;}</style></head>
+<body onload="r()">
+<div id=b></div>
+<script>
+const s=['♠','♥','♦','♣'],v=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+function sh(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*i+1|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+const d=sh(s.flatMap(su=>v.map(va=>({s:su,v:va}))));
+let t=[[],[],[],[],[],[],[]];for(let i=0;i<7;i++)for(let j=0;j<=i;j++)t[i].push(d.pop());
+let w=[],f=[[],[],[],[]],st=d,sel=null;
+function col(c){return c.s==='♥'||c.s==='♦'?0:1}
+function vi(c){return v.indexOf(c.v)}
+function r(){
+const b=document.getElementById('b');
+b.innerHTML='';
+b.innerHTML+=`<div style="display:inline-block;margin:2px;"><div class="c" data-p="s" data-x="0" data-i="${st.length-1}" onclick="c(this)">${st.length?st[st.length-1].v+st[st.length-1].s:''}</div></div>`;
+b.innerHTML+=`<div style="display:inline-block;margin:2px;"><div class="c" data-p="w" data-x="0" data-i="${w.length-1}" onclick="c(this)">${w.length?w[w.length-1].v+w[w.length-1].s:''}</div></div>`;
+for(let i=0;i<4;i++){
+const p=f[i];
+b.innerHTML+=`<div style="display:inline-block;margin:2px;"><div class="c" data-p="f" data-x="${i}" data-i="${p.length-1}" onclick="c(this)">${p.length?p[p.length-1].v+p[p.length-1].s:''}</div></div>`;
+}
+for(let i=0;i<7;i++){
+const p=t[i];
+b.innerHTML+=`<div style="display:inline-block;margin:2px;">`;
+for(let j=0;j<p.length;j++){
+b.innerHTML+=`<div class="c" data-p="t" data-x="${i}" data-i="${j}" onclick="c(this)">${p[j].v+p[j].s}</div>`;
+}
+b.innerHTML+=`</div>`;
+}
+}
+function c(e){
+const tp=e.dataset.p;
+const xi=+e.dataset.x;
+const ci=+e.dataset.i;
+let pile;
+if(tp==='t')pile=t[xi];
+else if(tp==='w')pile=w;
+else if(tp==='f')pile=f[xi];
+else if(tp==='s')pile=st;
+else return;
+if(ci!==pile.length-1)return;
+if(!sel){sel={tp,xi,ci};e.style.background='#ff0';return;}
+let card;
+if(sel.tp==='t')card=t[sel.xi].splice(sel.ci,1)[0];
+else if(sel.tp==='w')card=w.splice(sel.ci,1)[0];
+else if(sel.tp==='f')card=f[sel.xi].splice(sel.ci,1)[0];
+else return;
+let ok=false;
+if(tp==='t'){
+if(pile.length===0)ok=true;
+else{
+const top=pile[pile.length-1];
+ok=col(card)===col(top)&&vi(card)===vi(top)-1;
+}
+if(ok){pile.push(card);}
+}
+else if(tp==='f'){
+if(pile.length===0)ok=vi(card)===0;
+else{
+const top=pile[pile.length-1];
+ok=card.s===top.s&&vi(card)===vi(top)+1;
+}
+if(ok){pile.push(card);}
+}
+sel=null;
+r();
+}
+</script>
+</body>
+</html>
+
+We need to ensure no stray backticks inside script cause issues? We used template literals inside JS, that's fine.
+
+We need to ensure we didn't use any forbidden features like network requests. None.
+
+We used Math.random, okay.
+
+Now check for any syntax errors.
+
+Let's mentally review.
+
+- In sh function: const j=Math.random()*i+1|0; This yields integer between 0 and i inclusive? Actually Math.random()*i+1 gives range [1, i+1). Floor via |0 gives 0..i. Good.
+
+- In r: we set data-i for empty piles as -1 (when length 0). That's okay; element will show empty string.
+
+- In click handler: we check ci !== pile.length-1; for empty pile length 0, ci = -1, pile.length-1 = -1, so condition false, allowing click on empty pile? But we only want to allow clicking on empty pile to move a card onto it (destination). However we also want to allow selecting a card from empty pile? There is no card. Our code will treat ci==-1 as top? Actually for empty pile, there is no card element rendered because we only render if length>0? Wait we render element for stock and waste even if empty (we show empty string). For foundations and tableau we only render if length>0? In loops we render for each j<p.length, so if length 0, no inner divs. So there is no element to click on empty pile. So we won't have ci==-1 case because there is no element. For stock and waste we always render an element (even if empty). Clicking on empty stock or waste: ci = -1, pile.length-1 = -1, passes, but we then check if !sel and select it? That would select empty pile as source, which is wrong. We need to prevent selecting when pile length===0. So we should add check: if(pile.length===0)return; before checking top.
+
+Let's adjust: after getting pile, if(pile.length===0)return; (cannot select from empty). Then we can check top.
+
+Also for stock click to draw: we need to allow clicking stock even if empty? Actually if stock empty, clicking does nothing. We'll handle: if tp==='s' and pile.length>0 then move top card to waste.
+
+We'll adjust click handler accordingly.
+
+Let's rewrite click handler with these checks.
+
+We'll keep code concise but add needed checks.
+
+We'll do:
+
+function c(e){
+const tp=e.dataset.p;
+const xi=+e.dataset.x;
+const ci=+e.dataset.i;
+let pile;
+if(tp==='t')pile=t[xi];
+else if(tp==='w')pile=w;
+else if(tp==='f')pile=f[xi];
+else if(tp==='s')pile=st;
+else return;
+if(pile.length===0){if(tp==='s'&&st.length){w.push(st.pop());r();}return;}
+if(ci!==pile.length-1)return;
+if(!sel){sel={tp,xi,ci};e.style.background='#ff0';return;}
+let card;
+if(sel.tp==='t')card=t[sel.xi].splice(sel.ci,1)[0];
+else if(sel.tp==='w')card=w.splice(sel.ci,1)[0];
+else if(sel.tp==='f')card=f[sel.xi].splice(sel.ci,1)[0];
+else return;
+let ok=false;
+if(tp==='t'){
+if(pile.length===0)ok=true;
+else{
+const top=pile[pile.length-1];
+ok=col(card)===col(top)&&vi(card)===vi(top)-1;
+}
+if(ok){pile.push(card);}
+}
+else if(tp==='f'){
+if(pile.length===0)ok=vi(card)===0;
+else{
+const top=pile[pile.length-1];
+ok=card.s===top.s&&vi(card)===vi(top)+1;
+}
+if(ok){pile.push(card);}
+}
+sel=null;
+r();
+}
+
+We need to ensure we didn't reference undefined variables.
+
+Now we need to adjust stock click: we already handled empty case earlier: if pile.length===0 then if tp==='s'&&st.length? Actually we already returned if pile.length===0, but we want to allow draw from stock when stock not empty. So we need to check before returning: if pile.length===0 then if tp==='s' && st.length>0 then w.push(st.pop()); r(); return; else return.
+
+Thus:
+
+if(pile.length===0){
+if(tp==='s'&&st.length){w.push(st.pop());r();}
+return;
+}
+
+Now we also need to handle clicking waste to move card (already covered). Good.
+
+Now we need to ensure we didn't break anything else.
+
+Let's integrate into final script.
+
+Also we need to ensure we didn't use any variable names that conflict.
+
+Now produce final HTML.
+
+We'll try to keep indentation minimal but we can keep line breaks.
+
+Let's craft final answer.
+
+</think>
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Solitaire Twist</title><style>.c{display:inline-block;width:50px;height:70px;line-height:70px;text-align:center;font-size:18px;margin:2px;border:1px solid #ccc;cursor:pointer;background:#f9f9f9;border-radius:4px;}</style></head>
+<body onload="r()">
+<div id=b></div>
+<script>
+const s=['♠','♥','♦','♣'],v=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+function sh(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*i+1|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+const d=sh(s.flatMap(su=>v.map(va=>({s:su,v:va}))));
+let t=[[],[],[],[],[],[],[]];for(let i=0;i<7;i++)for(let j=0;j<=i;j++)t[i].push(d.pop());
+let w=[],f=[[],[],[],[]],st=d,sel=null;
+function col(c){return c.s==='♥'||c.s==='♦'?0:1}
+function vi(c){return v.indexOf(c.v)}
+function r(){
+const b=document.getElementById('b');
+b.innerHTML='';
+b.innerHTML+=`<div style="display:inline-block;margin:2px;"><div class="c" data-p="s" data-x="0" data-i="${st.length-1}" onclick="c(this)">${st.length?st[st.length-1].v+st[st.length-1].s:''}</div></div>`;
+b.innerHTML+=`<div style="display:inline-block;margin:2px;"><div class="c" data-p="w" data-x="0" data-i="${w.length-1}" onclick="c(this)">${w.length?w[w.length-1].v+w[w.length-1].s:''}</div></div>`;
+for(let i=0;i<4;i++){
+const p=f[i];
+b.innerHTML+=`<div style="display:inline-block;margin:2px;"><div class="c" data-p="f" data-x="${i}" data-i="${p.length-1}" onclick="c(this)">${p.length?p[p.length-1].v+p[p.length-1].s:''}</div></div>`;
+}
+for(let i=0;i<7;i++){
+const p=t[i];
+b.innerHTML+=`<div style="display:inline-block;margin:2px;">`;
+for(let j=0;j<p.length;j++){
+b.innerHTML+=`<div class="c" data-p="t" data-x="${i}" data-i="${j}" onclick="c(this)">${p[j].v+p[j].s}</div>`;
+}
+b.innerHTML+=`</div>`;
+}
+}
+function c(e){
+const tp=e.dataset.p;
+const xi=+e.dataset.x;
+const ci=+e.dataset.i;
+let pile;
+if(tp==='t')pile=t[xi];
+else if(tp==='w')pile=w;
+else if(tp==='f')pile=f[xi];
+else if(tp==='s')pile=st;
+else return;
+if(pile.length===0){
+if(tp==='s'&&st.length){w.push(st.pop());r();}
+return;
+}
+if(ci!==pile.length-1)return;
+if(!sel){sel={tp,xi,ci};e.style.background='#ff0';return;}
+let card;
+if(sel.tp==='t')card=t[sel.xi].splice(sel.ci,1)[0];
+else if(sel.tp==='w')card=w.splice(sel.ci,1)[0];
+else if(sel.tp==='f')card=f[sel.xi].splice(sel.ci,1)[0];
+else return;
+let ok=false;
+if(tp==='t'){
+if(pile.length===0)ok=true;
+else{
+const top=pile[pile.length-1];
+ok=col(card)===col(top)&&vi(card)===vi(top)-1;
+}
+if(ok){pile.push(card);}
+}
+else if(tp==='f'){
+if(pile.length===0)ok=vi(card)===0;
+else{
+const top=pile[pile.length-1];
+ok=card.s===top.s&&vi(card)===vi(top)+1;
+}
+if(ok){pile.push(card);}
+}
+sel=null;
+r();
+}
+</script>
+</body>
+</html> [end of text]
+
+

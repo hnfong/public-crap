@@ -1,0 +1,67 @@
+```python
+def abbrev_num(x):
+    if x < 1000:
+        return str(x)
+    
+    suffixes = ['K', 'M', 'B', 'T']
+    suffix_idx = 0
+    num = float(x)
+    
+    while num >= 1000 and suffix_idx < len(suffixes) - 1:
+        num /= 1000
+        suffix_idx += 1
+    
+    suffix = suffixes[suffix_idx]
+    
+    # Try formatting with one decimal place first
+    formatted = f"{num:.1f}"
+    
+    # If the formatted string (including suffix) exceeds 4 characters,
+    # try rounding to integer
+    if len(formatted) + len(suffix) > 4:
+        num = round(num)
+        formatted = str(int(num))
+    
+    # Final check: if still > 4 chars (e.g., 1000K -> 1000K is 5 chars, but logic above handles it)
+    # Actually, if num is 1000 after division, we should have moved to next suffix.
+    # But let's ensure we don't return something like "1000K" if it happened.
+    # The loop condition `num >= 1000` prevents this, except for edge cases like 999500 -> 999.5K -> 1000K?
+    # Let's re-evaluate: 999500 / 1000 = 999.5. formatted "999.5K" (6 chars).
+    # Round to int: 1000. "1000K" (5 chars).
+    # In this case, we should have incremented suffix.
+    # So we need a loop that checks length and adjusts.
+    
+    # Revised logic for robustness:
+    while True:
+        # Calculate potential string
+        if num == int(num):
+            s = f"{int(num)}{suffix}"
+        else:
+            s = f"{num:.1f}{suffix}"
+        
+        if len(s) <= 4:
+            return s
+        
+        # If too long, try rounding to integer
+        num_rounded = round(num)
+        s_rounded = f"{int(num_rounded)}{suffix}"
+        
+        if len(s_rounded) <= 4:
+            return s_rounded
+        
+        # If still too long, we must move to the next magnitude
+        # This happens if num is >= 1000 (e.g. 1000K -> 1M)
+        if num >= 1000:
+            num /= 1000
+            suffix_idx += 1
+            if suffix_idx < len(suffixes):
+                suffix = suffixes[suffix_idx]
+            else:
+                # Fallback if we run out of suffixes (e.g. 10^15)
+                return f"{int(round(num))}{suffix}"
+        else:
+            # Should not happen if logic is correct, but fallback
+            return s_rounded
+``` [end of text]
+
+

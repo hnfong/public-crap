@@ -892,6 +892,7 @@ NAME_MATCH_OVERRIDE = [
     ("GLM-4.7", GLM47TemplateMixin),
     ("gpt-oss", GPTOSSTemplateMixin),
     ("QwenLong-L1.5", Qwen3ThinkingTemplateMixin),
+    ("Nemotron-3-", ChatMLTemplateMixin),
 
     ("Step-3.5", ChatMLThinkingTemplateMixin),
     ("Light-IF", NoThinkingChatMLTemplateMixin),

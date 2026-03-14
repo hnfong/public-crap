@@ -1,0 +1,72 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class SumNumbers {
+    public static void main(String[] args) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringBuilder inputBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                inputBuilder.append(line).append(" ");
+            }
+            String input = inputBuilder.toString();
+
+            List<Double> values = extractAndConvertValues(input);
+            double totalSum = values.stream().mapToDouble(Double::doubleValue).sum();
+
+            System.out.printf("%.1f%n", totalSum);
+            System.out.printf("%.1f k%n", totalSum / 1024.0);
+            System.out.printf("%.1f M%n", totalSum / (1024.0 * 1024.0));
+            System.out.printf("%.1f G%n", totalSum / (1024.0 * 1024.0 * 1024.0));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static List<Double> extractAndConvertValues(String input) {
+        List<Double> values = new ArrayList<>();
+        // Pattern to match numbers with optional commas and optional suffix (k, K, m, M, g, G)
+        // Matches: 1.5, 1,500, 1.5G, 2K, 500,000K
+        Pattern pattern = Pattern.compile("(\\d+(?:,\\d{3})*(?:\\.\\d+)?)([kKmMgG])?");
+        Matcher matcher = pattern.matcher(input);
+
+        while (matcher.find()) {
+            String numberPart = matcher.group(1);
+            String suffix = matcher.group(2);
+
+            // Remove commas from the number part
+            String cleanNumber = numberPart.replace(",", "");
+            double value = Double.parseDouble(cleanNumber);
+
+            if (suffix != null) {
+                char suffixChar = suffix.toLowerCase().charAt(0);
+                switch (suffixChar) {
+                    case 'k':
+                        value *= 1024;
+                        break;
+                    case 'm':
+                        value *= 1024 * 1024;
+                        break;
+                    case 'g':
+                        value *= 1024 * 1024 * 1024;
+                        break;
+                    default:
+                        // Should not happen given the regex, but safe fallback
+                        break;
+                }
+            }
+            values.add(value);
+        }
+        return values;
+    }
+}
+``` [end of text]
+
+

@@ -1,0 +1,161 @@
+### Q1. What (if any) is the eventual output of the following python program?
+
+```python
+import math
+x = 0.0
+while x < math.inf:
+    x += 1.0
+print(x)
+```
+
+**Answer:**
+The program will **never terminate** (it will run indefinitely until interrupted or the system crashes due to resource exhaustion).
+
+**Reasoning:**
+1.  **IEEE 754 Representation**: In standard IEEE 754 double-precision (which Python uses), the number `1.0` is exactly representable.
+2.  **Addition Behavior**: When you add `1.0` to a finite number `x`, the result is the next representable floating-point number (or the closest one if rounding is required). Since `1.0` is large relative to the precision gap (machine epsilon) for small numbers, the addition `x + 1.0` always results in a strictly larger number than `x` as long as `x` is finite.
+3.  **Infinity**: The loop condition is `x < math.inf`. In IEEE 754, `math.inf` is a special value representing positive infinity. Any finite number is strictly less than infinity.
+4.  **No Saturation**: Unlike some integer types that might overflow and wrap around, or fixed-point arithmetic that might saturate, floating-point addition of a positive finite number to a finite number will eventually reach very large numbers, but it will **never** reach `math.inf` through repeated addition of `1.0`. The gap between the largest finite number (`~1.8e308`) and infinity is bridged only by operations that explicitly produce infinity (like dividing by zero or multiplying a large number by infinity), not by adding small finite increments.
+5.  **Conclusion**: `x` will grow until it reaches the maximum finite representable value (`sys.float_info.max`), and the next addition will result in `math.inf` **only if** the addition causes an overflow. However, `sys.float_info.max + 1.0` actually results in `math.inf` in IEEE 754 because the result is too large to be represented as a finite number.
+    *   *Correction/Refinement*: Let's re-evaluate the overflow point.
+    *   The maximum finite double is approximately $1.7976931348623157 \times 10^{308}$.
+    *   When `x` is close to this maximum, adding `1.0` is negligible compared to `x`. The gap between representable numbers at this magnitude is huge (much larger than 1.0).
+    *   Specifically, at $x \approx 10^{308}$, the machine epsilon (gap) is roughly $10^{308} \times 2^{-52} \approx 10^{292}$.
+    *   Therefore, `x + 1.0` will simply round back to `x` because `1.0` is far smaller than the precision gap.
+    *   **Result**: Once `x` reaches a value where the gap between representable numbers is greater than `1.0`, `x += 1.0` becomes a **no-op** (x remains unchanged). The loop condition `x < math.inf` remains true forever. The program enters an infinite loop.
+
+**Final Output:** The program hangs (infinite loop). It prints nothing.
+
+---
+
+### Q2. What (if any) is the eventual output of the following python program? Is it different from the results above?
+
+```python
+import math
+x = 1.0
+while x < math.inf:
+    x = x * 1.001
+print(x)
+```
+
+**Answer:**
+The program will eventually terminate and print **`inf`**.
+
+**Reasoning:**
+1.  **Multiplication vs. Addition**: Here, `x` is multiplied by `1.001` in each iteration. This is a geometric progression.
+2.  **Growth Rate**: Even though `1.001` is close to 1, repeated multiplication causes exponential growth.
+3.  **Overflow**: Unlike the addition case where the increment `1.0` eventually becomes smaller than the floating-point gap (causing stagnation), multiplication scales the number itself. As `x` grows, the gap between representable numbers grows proportionally, but the *step size* (`x * 0.001`) also grows proportionally.
+    *   The relative change is constant ($0.1\%$).
+    *   Eventually, `x` will exceed the maximum finite representable value (`sys.float_info.max`).
+4.  **IEEE 754 Overflow**: When a finite number multiplied by a factor results in a value larger than `sys.float_info.max`, IEEE 754 dictates that the result becomes `math.inf` (positive infinity).
+5.  **Loop Termination**: Once `x` becomes `math.inf`, the condition `x < math.inf` evaluates to `False` (since infinity is not less than infinity). The loop terminates.
+6.  **Output**: The program prints `inf`.
+
+**Comparison:**
+Yes, the result is different.
+*   **Q1** results in an **infinite loop** (hangs) because the additive step becomes insignificant relative to the magnitude of `x`.
+*   **Q2** results in **`inf`** because the multiplicative step maintains a constant relative growth rate, eventually causing an overflow to infinity.
+
+---
+
+### Q3. Consider the following program:
+
+```python
+import math
+x = 0.0
+inc = float(input("Enter a number"))
+while x < math.inf:
+    x += inc
+print("Done")
+```
+
+**Question:** Are there inputs that will lead to the output "Done"? Give at least 2 examples of such inputs if possible.
+
+**Answer:**
+**Yes**, there are inputs that will lead to the output "Done".
+
+For the loop to terminate, `x` must eventually become `math.inf` (or a value $\ge$ `math.inf`, though only `inf` is reachable via addition of finite numbers). This happens if the addition `x += inc` causes an overflow to infinity.
+
+This requires `inc` to be:
+1.  **Positive**: If `inc` is negative or zero, `x` will never reach infinity (it will stay 0 or go to negative infinity).
+2.  **Large enough**: If `inc` is a very small positive number (like `1.0`), we saw in Q1 that it gets stuck. However, if `inc` is large enough such that when `x` is near the maximum finite value, `x + inc` overflows to infinity, the loop will terminate.
+    *   Actually, a simpler case exists: If `inc` is already `math.inf` or a number so large that `0.0 + inc` is `inf` (which isn't possible for finite numbers, but `inc` itself could be `inf`).
+    *   Wait, let's look at the "stuck" condition again. The loop gets stuck if `x + inc == x`. This happens when `inc` is smaller than the machine epsilon relative to `x`.
+    *   To terminate, we need `x` to eventually reach a state where `x + inc` overflows to `inf`.
+    *   **Case A: `inc` is `math.inf`**.
+        *   Iteration 1: `x = 0.0 + inf` -> `x` becomes `inf`.
+        *   Loop check: `inf < inf` is False.
+        *   Loop ends. Prints "Done".
+    *   **Case B: `inc` is a very large finite number**.
+        *   If `inc` is large enough, the number of steps to reach the overflow threshold is small.
+        *   However, even with a large `inc`, as `x` grows, the gap grows. If `inc` is finite, eventually `x` will be so large that `x + inc` rounds to `x` (stagnation) *before* it overflows, unless `inc` is large enough to bridge the gap to infinity in one step from the max finite number?
+        *   Let's check the math. Max finite $M \approx 1.8 \times 10^{308}$.
+        *   If `x` is close to $M$, the gap is huge. If `inc` is, say, $10^{300}$, then `x + inc` might still be finite.
+        *   Actually, if `inc` is finite, `x` will eventually reach a point where `x + inc == x` (stagnation) because the gap between floating point numbers at $x$ is $x \times \epsilon$. If `inc < x \times \epsilon`, no change occurs.
+        *   Since `x` grows, the gap grows. Unless `inc` is infinite, `x` will eventually stagnate at a finite value.
+        *   **Wait, is this true?**
+        *   If `inc` is finite, `x` grows. Eventually `x` is so large that `inc` is negligible. `x` stops changing. The loop runs forever.
+        *   **Exception**: If `inc` is **`math.inf`**.
+        *   **Exception**: If `inc` is **NaN**? `x < inf` is False? No, `NaN < inf` is False. But `x += NaN` makes `x` NaN. `NaN < inf` is False. Loop terminates?
+            *   Let's check Python behavior: `float('nan') < float('inf')` is `False`.
+            *   If `inc` is `NaN`:
+                *   `x = 0.0 + NaN` -> `x` is `NaN`.
+                *   `while NaN < inf`: This evaluates to `False`.
+                *   Loop terminates. Prints "Done".
+        *   **Exception**: If `inc` is a number that causes immediate overflow?
+            *   If `inc` is finite, `0.0 + inc` is finite.
+            *   As established, finite `inc` leads to stagnation.
+            *   So the only finite inputs that work are those that cause immediate overflow? No, `0.0 + finite` is finite.
+            *   So, strictly speaking, for the loop to terminate via overflow, `inc` must be infinite.
+            *   Or, if `inc` is `NaN`.
+
+Let's re-verify the "stagnation" logic.
+If `inc` is finite and positive:
+1. `x` increases.
+2. Eventually `x` is large enough that `x + inc` rounds to `x`.
+3. `x` stops changing.
+4. `x < inf` is True.
+5. Infinite loop.
+
+So, for the loop to terminate, `inc` must be such that `x` becomes `inf` or `NaN` (which makes the condition false).
+
+**Examples of inputs:**
+
+1.  **`inf`** (or `math.inf`):
+    *   `x` becomes `inf` immediately.
+    *   `inf < inf` is `False`.
+    *   Loop terminates. Output: "Done".
+
+2.  **`nan`** (or `float('nan')`):
+    *   `x` becomes `nan` immediately.
+    *   `nan < inf` is `False` (comparisons with NaN are always false).
+    *   Loop terminates. Output: "Done".
+
+3.  **`-inf`**?
+    *   `x` becomes `-inf`.
+    *   `-inf < inf` is `True`.
+    *   `x += -inf` -> `-inf`.
+    *   Infinite loop. (Does not work).
+
+4.  **Very large finite number?**
+    *   As reasoned, it will stagnate. It will not reach `inf`.
+
+**Conclusion for Q3:**
+Yes, inputs exist.
+**Example 1:** `inf` (or `1e309`? No, `1e309` is parsed as `inf` in Python float input usually, but if the input string is "1e309", `float("1e309")` returns `inf`).
+**Example 2:** `nan` (input string "nan").
+
+If the question implies "finite numbers", the answer would be "No, finite positive numbers cause infinite loops due to precision loss." But the question asks for "inputs" generally.
+
+**Examples:**
+1.  `inf`
+2.  `nan`
+
+(Note: If the user enters a string that converts to `inf` like `1e400`, that counts as `inf`).
+
+**Summary of Q3 Answer:**
+Yes.
+1.  **Input: `inf`** (or any string representing infinity like `1e400`). The variable `x` becomes `inf` in the first iteration, making the condition `x < math.inf` false.
+2.  **Input: `nan`**. The variable `x` becomes `nan`. In IEEE 754, any comparison involving `nan` (including `<`) returns `False`. Thus, the loop condition fails immediately. [end of text]
+
+

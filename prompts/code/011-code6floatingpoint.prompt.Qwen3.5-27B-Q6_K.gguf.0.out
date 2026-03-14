@@ -1,0 +1,131 @@
+### Q1. What (if any) is the eventual output of the following python program?
+
+```python
+import math
+x = 0.0
+while x < math.inf:
+    x += 1.0
+print(x)
+```
+
+**Answer:**
+The program will **never print any output** (it will run indefinitely).
+
+**Reasoning:**
+1.  **IEEE 754 Double Precision Limits:** Python `float` uses IEEE 754 double-precision (64-bit) format. The largest finite number representable is approximately $1.7976931348623157 \times 10^{308}$ (often referred to as `sys.float_info.max`).
+2.  **The Loop Condition:** The loop continues as long as `x < math.inf`. Since `math.inf` is positive infinity, any finite number satisfies this condition.
+3.  **The Increment:** The variable `x` starts at `0.0` and increases by `1.0` in every iteration.
+4.  **Overflow Behavior:** Eventually, `x` will reach the maximum finite value. When `x` is at `sys.float_info.max` and we add `1.0`, the result is mathematically larger than the maximum representable finite number. According to IEEE 754 rules, this operation results in **positive infinity** (`inf`).
+5.  **The Trap:**
+    *   In the iteration where `x` becomes `inf`, the loop body finishes.
+    *   The loop condition `x < math.inf` is then evaluated.
+    *   Since `inf < inf` is **False**, the loop terminates.
+    *   **Wait, let's re-evaluate the specific transition.**
+    *   Let $M$ be the maximum finite float.
+    *   Iteration $N$: $x = M$. Condition $M < \text{inf}$ is True.
+    *   Update: $x = M + 1.0$. In IEEE 754, $M + 1.0$ overflows to `inf`.
+    *   Next Check: `inf < inf` is False.
+    *   Loop exits.
+    *   `print(x)` executes.
+
+**Correction to initial thought:** The loop **does** terminate.
+Let's trace carefully:
+1.  $x$ grows until it hits the maximum finite value ($M \approx 1.8 \times 10^{308}$).
+2.  The condition $M < \text{inf}$ is True.
+3.  $x$ becomes $M + 1.0$. Due to overflow, $x$ becomes `inf`.
+4.  The loop checks `inf < inf`. This is False.
+5.  The loop breaks.
+6.  `print(x)` prints `inf`.
+
+**Final Answer for Q1:**
+The eventual output is:
+```text
+inf
+```
+
+---
+
+### Q2. What (if any) is the eventual output of the following python program? Is it different from the results above?
+
+```python
+import math
+x = 1.0
+while x < math.inf:
+    x = x * 1.001
+print(x)
+```
+
+**Answer:**
+The eventual output is:
+```text
+inf
+```
+**Is it different?** No, the output is the same (`inf`), but the **mechanism** and **time** to reach it are different.
+
+**Reasoning:**
+1.  **Growth Rate:** Instead of adding a constant, this program multiplies by $1.001$. This is exponential growth.
+2.  **Overflow:** Similar to Q1, `x` will eventually exceed the maximum finite float value ($M$).
+3.  **The Transition:**
+    *   At some point, $x$ will be a large finite number $V$ such that $V < M$.
+    *   The condition $V < \text{inf}$ is True.
+    *   Update: $x = V \times 1.001$.
+    *   If $V \times 1.001 > M$, the result overflows to `inf`.
+    *   The next check `inf < inf` is False.
+    *   The loop terminates.
+4.  **Comparison:**
+    *   **Q1** takes roughly $1.8 \times 10^{308}$ iterations (linear growth). This would take longer than the age of the universe to run on any current computer.
+    *   **Q2** takes logarithmic iterations relative to the max value. $\log_{1.001}(10^{308}) \approx 700,000$ iterations. This will finish almost instantly.
+    *   However, the **final printed value** is identical: `inf`.
+
+---
+
+### Q3. Consider the following program:
+
+```python
+import math
+x = 0.0
+inc = float(input("Enter a number"))
+while x < math.inf:
+    x += inc
+print("Done")
+```
+
+**Question:** Are there inputs that will lead to the output "Done"? Give at least 2 examples of such inputs if possible.
+
+**Answer:**
+**Yes**, there are inputs that will lead to the output "Done".
+
+For the loop to terminate, the condition `x < math.inf` must eventually become `False`. This happens if `x` becomes `inf` (or greater, though `inf` is the only reachable state for addition).
+
+**Conditions for termination:**
+1.  **Positive `inc`:** If `inc` is positive, `x` will grow. Eventually, `x + inc` will overflow to `inf`, the loop will check `inf < inf` (False), and terminate.
+2.  **Zero `inc`:** If `inc` is `0.0`, `x` remains `0.0`. The condition `0.0 < inf` is always True. The loop is infinite. "Done" is **not** printed.
+3.  **Negative `inc`:** If `inc` is negative, `x` decreases towards negative infinity. `x` will never reach positive infinity. The loop is infinite. "Done" is **not** printed.
+4.  **NaN:** If `inc` is `NaN`, `x` becomes `NaN`. Comparisons with `NaN` (like `NaN < inf`) return `False`. The loop terminates immediately. "Done" **is** printed.
+
+**Examples of inputs that print "Done":**
+
+1.  **Any positive number:**
+    *   Input: `1.0`
+    *   Behavior: `x` increments by 1.0 until it overflows to `inf`. Loop terminates.
+2.  **A very small positive number:**
+    *   Input: `1e-300`
+    *   Behavior: `x` increments slowly but eventually overflows to `inf`. Loop terminates.
+3.  **NaN (Not a Number):**
+    *   Input: `nan` (or `NaN`)
+    *   Behavior: `x` becomes `nan`. The condition `nan < math.inf` evaluates to `False` immediately. The loop body is skipped (or terminates after the first check depending on exact flow, but here `x` starts at 0, adds `nan` -> `nan`, then check `nan < inf` is False).
+    *   *Correction on flow:*
+        *   `x = 0.0`
+        *   `inc = nan`
+        *   Check `0.0 < inf` (True).
+        *   `x += nan` -> `x` becomes `nan`.
+        *   Check `nan < inf` (False).
+        *   Loop ends. Print "Done".
+
+**Two specific examples:**
+1.  `1.0`
+2.  `nan` (or `NaN`)
+
+*(Note: Any positive float works, but `nan` is a distinct edge case that terminates immediately after one iteration).* [end of text]
+
+
