@@ -1,0 +1,96 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        List<String> numbers = new ArrayList<>();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            numbers.add(line);
+        }
+
+        double sum = 0;
+        for (String s : numbers) {
+            sum += parseNumber(s);
+        }
+
+        System.out.println(sum);
+        System.out.println(sum.toRoundingMode(RoundingMode.HALF_UP) + " k");
+        System.out.println(sum.toRoundingMode(RoundingMode.HALF_UP) + " M");
+        System.out.println(sum.toRoundingMode(RoundingMode.HALF_UP) + " G");
+    }
+
+    private static double parseNumber(String s) {
+        if (s == null || s.isEmpty()) return 0;
+
+        String[] parts = s.split("[,]");
+        double value = 0;
+        String suffix = "";
+
+        for (String part : parts) {
+            if (part.isEmpty()) continue;
+
+            // Remove trailing comma if present
+            if (part.endsWith(",")) {
+                part = part.substring(0, part.length() - 1);
+            }
+
+            // Handle commas in the number itself
+            if (part.contains(",")) {
+                int commaIndex = part.indexOf(",");
+                String numStr = part.substring(0, commaIndex);
+                String suffixStr = part.substring(commaIndex + 1);
+                value = parseNumber(numStr);
+                suffix = suffixStr;
+            } else {
+                value = parseNumber(part);
+                suffix = null;
+            }
+        }
+
+        if (suffix != null) {
+            value = parseNumberWithSuffix(value, suffix);
+        }
+
+        return value;
+    }
+
+    private static double parseNumberWithSuffix(double value, String suffix) {
+        if (suffix == null) return value;
+
+        String suffixStr = suffix;
+        if (suffixStr.isEmpty()) {
+            suffixStr = "0";
+        }
+
+        // Remove trailing comma if present
+        if (suffixStr.endsWith(",")) {
+            suffixStr = suffixStr.substring(0, suffixStr.length() - 1);
+        }
+
+        // Handle commas in the suffix
+        if (suffixStr.contains(",")) {
+            int commaIndex = suffixStr.indexOf(",");
+            String numStr = suffixStr.substring(0, commaIndex);
+            String suffixStr2 = suffixStr.substring(commaIndex + 1);
+            double numValue = parseNumber(numStr);
+            double suffixValue = parseNumberWithSuffix(numValue, suffixStr2);
+            return numValue + suffixValue;
+        } else {
+            double numValue = parseNumber(suffixStr);
+            return numValue;
+        }
+    }
+}
+``` [end of text]
+
+

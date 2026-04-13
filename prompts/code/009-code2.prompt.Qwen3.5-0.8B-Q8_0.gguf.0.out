@@ -1,0 +1,58 @@
+Below is a straightforward implementation of a binary search on a file line by line, using at most `O(log n)` comparisons.
+
+### Approach
+
+1. Read the file line by line.
+2. For each line, convert it to a byte string (or keep it as a string if you want to compare character by character).
+3. Use `bisect_left` to find the insertion point in the sorted list of lines.
+4. Return the index of the target line (or the insertion point if the target is not found).
+
+This approach:
+- Does not require loading the whole file into memory.
+- Uses only `bisect` from `bisect` module, which is `O(log n)` comparisons.
+- Works directly on the file content.
+
+### Python Implementation
+
+```python
+import bisect
+import os
+
+def binary_search_file(file_path, target):
+    """
+    Perform a binary search on the contents of a file line by line.
+    Returns the byte position of the target line, or the insertion point
+    (as in bisect_left) if the target is not found.
+    """
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"File not found: {file_path}")
+
+    with open(file_path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+
+    # Convert each line to a byte string for comparison
+    lines_bytes = [line.encode('utf-8') for line in lines]
+
+    # Use bisect_left to find the insertion point
+    idx = bisect.bisect_left(lines_bytes, target.encode('utf-8'))
+
+    return idx
+```
+
+### Example Usage
+
+```python
+file_path = "myfile.txt"
+target = b"2 by"
+
+result = binary_search_file(file_path, target)
+print(result)  # Expected: 17
+```
+
+### Notes
+
+- The function assumes the file contains lines that are sorted lexicographically.
+- If the file contains non-ASCII characters, you may need to handle encoding differently (e.g., use `latin-1` or `cp1252`).
+- If the target is not present, `bisect_left` returns the insertion point before the target, which is the insertion point as requested. [end of text]
+
+

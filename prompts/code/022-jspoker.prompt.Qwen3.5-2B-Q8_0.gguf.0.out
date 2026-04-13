@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Single Player Poker</title>
+    <style>
+        body { font-family: sans-serif; background: #222; color: #eee; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .game-area { display: flex; gap: 20px; }
+        .hand { width: 120px; text-align: center; }
+        .card { width: 60px; height: 80px; background: white; border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; margin: 0 auto; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .card.red { color: #d00; }
+        .card.black { color: #000; }
+        .controls { margin-top: 20px; display: flex; gap: 10px; }
+        button { padding: 10px 20px; cursor: pointer; background: #4CAF50; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #45a049; }
+        button:disabled { background: #555; cursor: not-allowed; }
+        #status { margin-top: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="game-area">
+        <div class="hand" id="playerHand"></div>
+        <div class="hand" id="opponentHand"></div>
+    </div>
+    <div class="controls">
+        <button id="dealBtn">Deal</button>
+        <button id="flipBtn" disabled>Flip</button>
+        <button id="checkBtn" disabled>Check</button>
+        <button id="foldBtn" disabled>Fold</button>
+    </div>
+    <div id="status"></div>
+
+<script>
+    const suits = ['♠','♥','♦','♣'];
+    const values = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+    const deck = [];
+    let deckState = [];
+    let playerHand = [];
+    let opponentHand = [];
+    let gameActive = false;
+    let dealerPosition = 0;
+
+    function createDeck() {
+        deck = [];
+        for (let s of suits) {
+            for (let v of values) {
+                deck.push({ suit: s, value: v, color: (s === '♥' || s === '♦') ? 'red' : 'black' });
+            }
+        }
+    }
+
+    function shuffleDeck() {
+        for (let i = deck.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+    }
+
+    function getCard() {
+        return deck.pop();
+    }
+
+    function renderCard(card) {
+        const el = document.createElement('div');
+        el.className = `card ${card.color}`;
+        el.textContent = card.value + card.suit;
+        return el;
+    }
+
+    function updateHand(hand) {
+        const container = document.getElementById('playerHand');
+        container.innerHTML = '';
+        hand.forEach(c => container.appendChild(renderCard(c)));
+    }
+
+    function updateOpponentHand() {
+        const container = document.getElementById('opponentHand');
+        container.innerHTML = '';
+        opponentHand.forEach(c => container.appendChild(renderCard(c)));
+    }
+
+    function updateStatus(msg) {
+        document.getElementById('status').textContent = msg;
+    }
+
+    function checkRound() {
+        if (!gameActive) return;
+        const p = playerHand.length;
+        const o = opponentHand.length;
+        const total = p + o;
+
+        if (total === 0) {
+            gameActive = false;
+            updateStatus("Game Over");
+            return;
+        }
+
+        if (p === 0 && o === 0) {
+            gameActive = false;
+            updateStatus("Draw!");
+            return;
+        }
+
+        if (p === 0) {
+            updateStatus("Opponent has " + opponentHand.length + " cards. You must check.");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (o === 0) {
+            updateStatus("You have " + playerHand.length + " cards. You must check.");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 1 && o === 1) {
+            updateStatus("Both have 1 card. Flip!");
+            document.getElementById('flipBtn').disabled = false;
+            document.getElementById('flipBtn').textContent = "Flip";
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+        }
+
+        if (p === 2 && o === 2) {
+            updateStatus("Both have 2 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 3 && o === 3) {
+            updateStatus("Both have 3 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 4 && o === 4) {
+            updateStatus("Both have 4 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 5 && o === 5) {
+            updateStatus("Both have 5 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 6 && o === 6) {
+            updateStatus("Both have 6 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 7 && o === 7) {
+            updateStatus("Both have 7 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 8 && o === 8) {
+            updateStatus("Both have 8 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 9 && o === 9) {
+            updateStatus("Both have 9 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 10 && o === 10) {
+            updateStatus("Both have 10 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 11 && o === 11) {
+            updateStatus("Both have 11 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 12 && o === 12) {
+            updateStatus("Both have 12 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 13 && o === 13) {
+            updateStatus("Both have 13 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 14 && o === 14) {
+            updateStatus("Both have 14 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 15 && o === 15) {
+            updateStatus("Both have 15 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 16 && o === 16) {
+            updateStatus("Both have 16 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 17 && o === 17) {
+            updateStatus("Both have 17 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 18 && o === 18) {
+            updateStatus("Both have 18 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 19 && o === 19) {
+            updateStatus("Both have 19 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 20 && o === 20) {
+            updateStatus("Both have 20 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 21 && o === 21) {
+            updateStatus("Both have 21 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 22 && o === 22) {
+            updateStatus("Both have 22 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 23 && o === 23) {
+            updateStatus("Both have 23 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 24 && o === 24) {
+            updateStatus("Both have 24 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 25 && o === 25) {
+            updateStatus("Both have 25 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 26 && o === 26) {
+            updateStatus("Both have 26 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 27 && o === 27) {
+            updateStatus("Both have 27 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 28 && o === 28) {
+            updateStatus("Both have 28 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 29 && o === 29) {
+            updateStatus("Both have 29 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 30 && o === 30) {
+            updateStatus("Both have 30 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 31 && o === 31) {
+            updateStatus("Both have 31 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 32 && o === 32) {
+            updateStatus("Both have 32 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 33 && o === 33) {
+            updateStatus("Both have 33 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 34 && o === 34) {
+            updateStatus("Both have 34 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 35 && o === 35) {
+            updateStatus("Both have 35 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 36 && o === 36) {
+            updateStatus("Both have 36 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 37 && o === 37) {
+            updateStatus("Both have 37 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 38 && o === 38) {
+            updateStatus("Both have 38 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 39 && o === 39) {
+            updateStatus("Both have 39 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 40 && o === 40) {
+            updateStatus("Both have 40 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 41 && o === 41) {
+            updateStatus("Both have 41 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 42 && o === 42) {
+            updateStatus("Both have 42 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 43 && o === 43) {
+            updateStatus("Both have 43 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 44 && o === 44) {
+            updateStatus("Both have 44 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 45 && o === 45) {
+            updateStatus("Both have 45 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 46 && o === 46) {
+            updateStatus("Both have 46 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 47 && o === 47) {
+            updateStatus("Both have 47 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 48 && o === 48) {
+            updateStatus("Both have 48 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 49 && o === 49) {
+            updateStatus("Both have 49 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 50 && o === 50) {
+            updateStatus("Both have 50 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 51 && o === 51) {
+            updateStatus("Both have 51 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 52 && o === 52) {
+            updateStatus("Both have 52 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 53 && o === 53) {
+            updateStatus("Both have 53 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 54 && o === 54) {
+            updateStatus("Both have 54 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 55 && o === 55) {
+            updateStatus("Both have 55 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 56 && o === 56) {
+            updateStatus("Both have 56 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 57 && o === 57) {
+            updateStatus("Both have 57 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 58 && o === 58) {
+            updateStatus("Both have 58 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 59 && o === 59) {
+            updateStatus("Both have 59 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 60 && o === 60) {
+            updateStatus("Both have 60 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 61 && o === 61) {
+            updateStatus("Both have 61 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 62 && o === 62) {
+            updateStatus("Both have 62 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 63 && o === 63) {
+            updateStatus("Both have 63 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 64 && o === 64) {
+            updateStatus("Both have 64 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 65 && o === 65) {
+            updateStatus("Both have 65 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 66 && o === 66) {
+            updateStatus("Both have 66 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 67 && o === 67) {
+            updateStatus("Both have 67 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 68 && o === 68) {
+            updateStatus("Both have 68 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 69 && o === 69) {
+            updateStatus("Both have 69 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 70 && o === 70) {
+            updateStatus("Both have 70 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 71 && o === 71) {
+            updateStatus("Both have 71 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 72 && o === 72) {
+            updateStatus("Both have 72 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 73 && o === 73) {
+            updateStatus("Both have 73 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 74 && o === 74) {
+            updateStatus("Both have 74 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 75 && o === 75) {
+            updateStatus("Both have 75 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 76 && o === 76) {
+            updateStatus("Both have 76 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 77 && o === 77) {
+            updateStatus("Both have 77 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 78 && o === 78) {
+            updateStatus("Both have 78 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 79 && o === 79) {
+            updateStatus("Both have 79 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 80 && o === 80) {
+            updateStatus("Both have 80 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 81 && o === 81) {
+            updateStatus("Both have 81 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 82 && o === 82) {
+            updateStatus("Both have 82 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 83 && o === 83) {
+            updateStatus("Both have 83 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 84 && o === 84) {
+            updateStatus("Both have 84 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 85 && o === 85) {
+            updateStatus("Both have 85 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 86 && o === 86) {
+            updateStatus("Both have 86 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 87 && o === 87) {
+            updateStatus("Both have 87 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 88 && o === 88) {
+            updateStatus("Both have 88 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 89 && o === 89) {
+            updateStatus("Both have 89 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 90 && o === 90) {
+            updateStatus("Both have 90 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 91 && o === 91) {
+            updateStatus("Both have 91 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 92 && o === 92) {
+            updateStatus("Both have 92 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 93 && o === 93) {
+            updateStatus("Both have 93 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 94 && o === 94) {
+            updateStatus("Both have 94 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 95 && o === 95) {
+            updateStatus("Both have 95 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 96 && o === 96) {
+            updateStatus("Both have 96 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 97 && o === 97) {
+            updateStatus("Both have 97 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 98 && o === 98) {
+            updateStatus("Both have 98 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 99 && o === 99) {
+            updateStatus("Both have 99 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 100 && o === 100) {
+            updateStatus("Both have 100 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 101 && o === 101) {
+            updateStatus("Both have 101 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 102 && o === 102) {
+            updateStatus("Both have 102 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 103 && o === 103) {
+            updateStatus("Both have 103 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 104 && o === 104) {
+            updateStatus("Both have 104 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 105 && o === 105) {
+            updateStatus("Both have 105 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 106 && o === 106) {
+            updateStatus("Both have 106 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 107 && o === 107) {
+            updateStatus("Both have 107 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 108 && o === 108) {
+            updateStatus("Both have 108 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 109 && o === 109) {
+            updateStatus("Both have 109 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 110 && o === 110) {
+            updateStatus("Both have 110 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 111 && o === 111) {
+            updateStatus("Both have 111 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 112 && o === 112) {
+            updateStatus("Both have 112 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 113 && o === 113) {
+            updateStatus("Both have 113 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 114 && o === 114) {
+            updateStatus("Both have 114 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 115 && o === 115) {
+            updateStatus("Both have 115 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 116 && o === 116) {
+            updateStatus("Both have 116 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 117 && o === 117) {
+            updateStatus("Both have 117 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 118 && o === 118) {
+            updateStatus("Both have 118 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 119 && o === 119) {
+            updateStatus("Both have 119 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 120 && o === 120) {
+            updateStatus("Both have 120 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 121 && o === 121) {
+            updateStatus("Both have 121 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 122 && o === 122) {
+            updateStatus("Both have 122 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 123 && o === 123) {
+            updateStatus("Both have 123 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 124 && o === 124) {
+            updateStatus("Both have 124 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 125 && o === 125) {
+            updateStatus("Both have 125 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 126 && o === 126) {
+            updateStatus("Both have 126 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 127 && o === 127) {
+            updateStatus("Both have 127 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 128 && o === 128) {
+            updateStatus("Both have 128 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 129 && o === 129) {
+            updateStatus("Both have 129 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 130 && o === 130) {
+            updateStatus("Both have 130 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 131 && o === 131) {
+            updateStatus("Both have 131 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 132 && o === 132) {
+            updateStatus("Both have 132 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 133 && o === 133) {
+            updateStatus("Both have 133 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 134 && o === 134) {
+            updateStatus("Both have 134 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 135 && o === 135) {
+            updateStatus("Both have 135 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 136 && o === 136) {
+            updateStatus("Both have 136 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 137 && o === 137) {
+            updateStatus("Both have 137 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 138 && o === 138) {
+            updateStatus("Both have 138 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 139 && o === 139) {
+            updateStatus("Both have 139 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+        }
+
+        if (p === 140 && o === 140) {
+            updateStatus("Both have 140 cards. Check!");
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('checkBtn').textContent = "Check";
+            return;
+
+

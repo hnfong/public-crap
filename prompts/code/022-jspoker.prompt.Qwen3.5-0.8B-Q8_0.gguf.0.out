@@ -1,0 +1,572 @@
+<!DOCTYPE html><html>
+<head>
+    <title>JS Poker</title>
+    <style>
+        body { font-family: sans-serif; background: #222; color: #eee; padding: 20px; }
+        .game { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .hand { background: #333; padding: 15px; border-radius: 5px; margin-bottom: 10px; }
+        .card { width: 50px; height: 70px; background: #444; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; margin: 5px; }
+        .card.red { color: #ff0000; }
+        .card.black { color: #000000; }
+        .suit { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+        .player { display: flex; gap: 10px; }
+        .player-card { width: 50px; height: 70px; background: #444; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; margin: 5px; }
+        .player-card.red { color: #ff0000; }
+        .player-card.black { color: #000000; }
+        .action { display: flex; gap: 10px; margin-top: 10px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .message { margin-top: 10px; font-size: 14px; color: #aaa; }
+    </style>
+</head>
+<body>
+    <div class="game">
+        <div class="hand">
+            <div class="player">
+                <div class="player-card">A</div>
+                <div class="player-card">K</div>
+                <div class="player-card">Q</div>
+                <div class="player-card">J</div>
+                <div class="player-card">10</div>
+                <div class="player-card">9</div>
+                <div class="player-card">8</div>
+                <div class="player-card">7</div>
+                <div class="player-card">6</div>
+                <div class="player-card">5</div>
+                <div class="player-card">4</div>
+                <div class="player-card">3</div>
+                <div class="player-card">2</div>
+                <div class="player-card">1</div>
+            </div>
+            <div class="hand">
+                <div class="player-card">A</div>
+                <div class="player-card">K</div>
+                <div class="player-card">Q</div>
+                <div class="player-card">J</div>
+                <div class="player-card">10</div>
+                <div class="player-card">9</div>
+                <div class="player-card">8</div>
+                <div class="player-card">7</div>
+                <div class="player-card">6</div>
+                <div class="player-card">5</div>
+                <div class="player-card">4</div>
+                <div class="player-card">3</div>
+                <div class="player-card">2</div>
+                <div class="player-card">1</div>
+            </div>
+        </div>
+        <div class="hand">
+            <div class="player">
+                <div class="player-card">A</div>
+                <div class="player-card">K</div>
+                <div class="player-card">Q</div>
+                <div class="player-card">J</div>
+                <div class="player-card">10</div>
+                <div class="player-card">9</div>
+                <div class="player-card">8</div>
+                <div class="player-card">7</div>
+                <div class="player-card">6</div>
+                <div class="player-card">5</div>
+                <div class="player-card">4</div>
+                <div class="player-card">3</div>
+                <div class="player-card">2</div>
+                <div class="player-card">1</div>
+            </div>
+            <div class="hand">
+                <div class="player-card">A</div>
+                <div class="player-card">K</div>
+                <div class="player-card">Q</div>
+                <div class="player-card">J</div>
+                <div class="player-card">10</div>
+                <div class="player-card">9</div>
+                <div class="player-card">8</div>
+                <div class="player-card">7</div>
+                <div class="player-card">6</div>
+                <div class="player-card">5</div>
+                <div class="player-card">4</div>
+                <div class="player-card">3</div>
+                <div class="player-card">2</div>
+                <div class="player-card">1</div>
+            </div>
+        </div>
+        <div class="action">
+            <button onclick="moveCard('A', 'K')">A K</button>
+            <button onclick="moveCard('K', 'Q')">K Q</button>
+            <button onclick="moveCard('Q', 'J')">Q J</button>
+            <button onclick="moveCard('J', '10')">J 10</button>
+            <button onclick="moveCard('10', '9')">10 9</button>
+            <button onclick="moveCard('9', '8')">9 8</button>
+            <button onclick="moveCard('8', '7')">8 7</button>
+            <button onclick="moveCard('7', '6')">7 6</button>
+            <button onclick="moveCard('6', '5')">6 5</button>
+            <button onclick="moveCard('5', '4')">5 4</button>
+            <button onclick="moveCard('4', '3')">4 3</button>
+            <button onclick="moveCard('3', '2')">3 2</button>
+            <button onclick="moveCard('2', '1')">2 1</button>
+        </div>
+        <div class="message" id="msg">Ready?</div>
+    </div>
+
+    <script>
+        const deck = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1'];
+        const suits = ['♠', '♥', '♦', '♣'];
+        const colors = ['♠', '♥', '♦', '♣'];
+        const player = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1'];
+        const action = ['A K', 'K Q', 'Q J', 'J 10', '10 9', '9 8', '8 7', '7 6', '6 5', '5 4', '4 3', '3 2', '2 1'];
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function createDeck() {
+            return shuffle([...player, ...deck, ...player]);
+        }
+
+        function createHand() {
+            return shuffle([...player, ...deck, ...player]);
+        }
+
+        function drawCard() {
+            const card = createDeck()[0];
+            const suit = card[1];
+            const color = card[2];
+            const rank = card[3];
+            return { card, suit, color, rank };
+        }
+
+        function updateHand() {
+            const hand = createHand();
+            const suits = hand.map(c => c[1]);
+            const colors = hand.map(c => c[2]);
+            const ranks = hand.map(c => c[3]);
+            const suitsSorted = [...suits].sort(() => Math.random() - 0.5);
+            const colorsSorted = [...colors].sort(() => Math.random() - 0.5);
+            const ranksSorted = [...ranks].sort(() => Math.random() - 0.5);
+
+            document.getElementById('msg').innerText = `Hand: ${ranksSorted.join(' ')}`;
+        }
+
+        function moveCard(card, target) {
+            const deck = createDeck();
+            const cardIndex = deck.indexOf(card);
+            const targetIndex = deck.indexOf(target);
+            if (cardIndex === -1 || targetIndex === -1) return;
+
+            const temp = deck[cardIndex];
+            deck[cardIndex] = deck[targetIndex];
+            deck[targetIndex] = temp;
+
+            const cardObj = deck[cardIndex];
+            const targetObj = deck[targetIndex];
+
+            const newHand = [...player];
+            newHand.push(cardObj);
+            newHand.push(targetObj);
+
+            const newAction = action[cardIndex];
+            const newTarget = action[targetIndex];
+
+            document.getElementById('msg').innerText = `Moved ${newAction} to ${newTarget}`;
+            document.getElementById('msg').style.color = '#007bff';
+            document.getElementById('msg').style.opacity = '1';
+
+            setTimeout(() => {
+                document.getElementById('msg').style.color = '#aaa';
+                document.getElementById('msg').style.opacity = '0.5';
+                updateHand();
+            }, 500);
+        }
+
+        function checkWin() {
+            const hand = createHand();
+            const suits = hand.map(c => c[1]);
+            const colors = hand.map(c => c[2]);
+            const ranks = hand.map(c => c[3]);
+            const suitsSorted = [...suits].sort(() => Math.random() - 0.5);
+            const colorsSorted = [...colors].sort(() => Math.random() - 0.5);
+            const ranksSorted = [...ranks].sort(() => Math.random() - 0.5);
+
+            const firstCard = suitsSorted[0];
+            const secondCard = suitsSorted[1];
+            const thirdCard = suitsSorted[2];
+            const fourthCard = suitsSorted[3];
+            const fifthCard = suitsSorted[5];
+            const sixthCard = suitsSorted[6];
+            const seventhCard = suitsSorted[7];
+            const eighthCard = suitsSorted[8];
+            const ninthCard = suitsSorted[9];
+            const tenthCard = suitsSorted[10];
+            const eleventhCard = suitsSorted[11];
+            const twelfthCard = suitsSorted[12];
+            const thirteenthCard = suitsSorted[13];
+            const fourteenthCard = suitsSorted[14];
+            const fifteenthCard = suitsSorted[15];
+            const sixteenthCard = suitsSorted[16];
+            const seventeenthCard = suitsSorted[17];
+            const eighteenthCard = suitsSorted[18];
+            const nineteenthCard = suitsSorted[19];
+            const twentiethCard = suitsSorted[20];
+            const twentyFirstCard = suitsSorted[21];
+            const twentySecondCard = suitsSorted[22];
+            const twentyThirdCard = suitsSorted[23];
+            const twentyFourthCard = suitsSorted[24];
+            const twentyFifthCard = suitsSorted[25];
+            const twentySixthCard = suitsSorted[26];
+            const twentySeventhCard = suitsSorted[27];
+            const twentyEighthCard = suitsSorted[28];
+            const twentyNinthCard = suitsSorted[29];
+            const twentyEleventhCard = suitsSorted[30];
+            const twentyTwelfthCard = suitsSorted[31];
+            const twentyThirteenthCard = suitsSorted[32];
+            const twentyFourteenthCard = suitsSorted[33];
+            const twentyFifteenthCard = suitsSorted[34];
+            const twentySixteenthCard = suitsSorted[35];
+            const twentySeventeenthCard = suitsSorted[36];
+            const twentyEighteenthCard = suitsSorted[37];
+            const twentyNineteenthCard = suitsSorted[38];
+            const twentyTwentyFirstCard = suitsSorted[39];
+            const twentyTwentySecondCard = suitsSorted[40];
+            const twentyTwentyThirdCard = suitsSorted[41];
+            const twentyTwentyFourthCard = suitsSorted[42];
+            const twentyTwentyFifthCard = suitsSorted[43];
+            const twentyTwentySixthCard = suitsSorted[44];
+            const twentyTwentySeventhCard = suitsSorted[45];
+            const twentyTwentyEighthCard = suitsSorted[46];
+            const twentyTwentyNinthCard = suitsSorted[47];
+            const twentyTwentyEleventhCard = suitsSorted[48];
+            const twentyTwentyTwelfthCard = suitsSorted[49];
+            const twentyTwentyThirteenthCard = suitsSorted[50];
+            const twentyTwentyFourteenthCard = suitsSorted[51];
+            const twentyTwentyFifteenthCard = suitsSorted[52];
+            const twentyTwentySixteenthCard = suitsSorted[53];
+            const twentyTwentySeventeenthCard = suitsSorted[54];
+            const twentyTwentyEighteenthCard = suitsSorted[55];
+            const twentyTwentyNineteenthCard = suitsSorted[56];
+            const twentyTwentyTwentyFirstCard = suitsSorted[57];
+            const twentyTwentyTwentySecondCard = suitsSorted[58];
+            const twentyTwentyTwentyThirdCard = suitsSorted[59];
+            const twentyTwentyTwentyFourthCard = suitsSorted[60];
+            const twentyTwentyTwentyFifthCard = suitsSorted[61];
+            const twentyTwentyTwentySixthCard = suitsSorted[62];
+            const twentyTwentyTwentySeventhCard = suitsSorted[63];
+            const twentyTwentyTwentyEighthCard = suitsSorted[64];
+            const twentyTwentyTwentyNinthCard = suitsSorted[65];
+            const twentyTwentyTwentyEleventhCard = suitsSorted[66];
+            const twentyTwentyTwentyTwelfthCard = suitsSorted[67];
+            const twentyTwentyTwentyThirteenthCard = suitsSorted[68];
+            const twentyTwentyTwentyFourteenthCard = suitsSorted[69];
+            const twentyTwentyTwentyFifteenthCard = suitsSorted[70];
+            const twentyTwentyTwentySixteenthCard = suitsSorted[71];
+            const twentyTwentyTwentySeventeenthCard = suitsSorted[72];
+            const twentyTwentyTwentyEighteenthCard = suitsSorted[73];
+            const twentyTwentyTwentyNineteenthCard = suitsSorted[74];
+            const twentyTwentyTwentyTwentyFirstCard = suitsSorted[75];
+            const twentyTwentyTwentyTwentySecondCard = suitsSorted[76];
+            const twentyTwentyTwentyTwentyThirdCard = suitsSorted[77];
+            const twentyTwentyTwentyTwentyFourthCard = suitsSorted[78];
+            const twentyTwentyTwentyTwentyFifthCard = suitsSorted[79];
+            const twentyTwentyTwentyTwentySixthCard = suitsSorted[80];
+            const twentyTwentyTwentyTwentySeventhCard = suitsSorted[81];
+            const twentyTwentyTwentyTwentyEighthCard = suitsSorted[82];
+            const twentyTwentyTwentyTwentyNinthCard = suitsSorted[83];
+            const twentyTwentyTwentyTwentyEleventhCard = suitsSorted[84];
+            const twentyTwentyTwentyTwentyTwelfthCard = suitsSorted[85];
+            const twentyTwentyTwentyTwentyThirteenthCard = suitsSorted[86];
+            const twentyTwentyTwentyTwentyFourteenthCard = suitsSorted[87];
+            const twentyTwentyTwentyTwentyFifteenthCard = suitsSorted[88];
+            const twentyTwentyTwentyTwentySixteenthCard = suitsSorted[89];
+            const twentyTwentyTwentyTwentySeventeenthCard = suitsSorted[90];
+            const twentyTwentyTwentyTwentyEighteenthCard = suitsSorted[91];
+            const twentyTwentyTwentyTwentyNineteenthCard = suitsSorted[92];
+            const twentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[93];
+            const twentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[94];
+            const twentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[95];
+            const twentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[96];
+            const twentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[97];
+            const twentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[98];
+            const twentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[99];
+            const twentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[100];
+            const twentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[101];
+            const twentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[102];
+            const twentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[103];
+            const twentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[104];
+            const twentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[105];
+            const twentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[106];
+            const twentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[107];
+            const twentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[108];
+            const twentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[109];
+            const twentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[110];
+            const twentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[111];
+            const twentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[112];
+            const twentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[113];
+            const twentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[114];
+            const twentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[115];
+            const twentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[116];
+            const twentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[117];
+            const twentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[118];
+            const twentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[119];
+            const twentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[120];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[121];
+            const twentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[122];
+            const twentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[123];
+            const twentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[124];
+            const twentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[125];
+            const twentyTwentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[126];
+            const twentyTwentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[127];
+            const twentyTwentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[128];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[129];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[130];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[131];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[132];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[133];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[134];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[135];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[136];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[137];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[138];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[139];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[140];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[141];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[142];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[143];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[144];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[145];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[146];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[147];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[148];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[149];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[150];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[151];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[152];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[153];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[154];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[155];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[156];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[157];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[158];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[159];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[160];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[161];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[162];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[163];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[164];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[165];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[166];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[167];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[168];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[169];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[170];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[171];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[172];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[173];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[174];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[175];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[176];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[177];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[178];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[179];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[180];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[181];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[182];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[183];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[184];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[185];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[186];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[187];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[188];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[189];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[190];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[191];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[192];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[193];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[194];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[195];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[196];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[197];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[198];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[199];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[200];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[201];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[202];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[203];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[204];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[205];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[206];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[207];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[208];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[209];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[210];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[211];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[212];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[213];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[214];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[215];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[216];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[217];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[218];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[219];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[220];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[221];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[222];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[223];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[224];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[225];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[226];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[227];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[228];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[229];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[230];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[231];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[232];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[233];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[234];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[235];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[236];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[237];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[238];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[239];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[240];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[241];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[242];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[243];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[244];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[245];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[246];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[247];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[248];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[249];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[250];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[251];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[252];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[253];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[254];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[255];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[256];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[257];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[258];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[259];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[260];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[261];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[262];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[263];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[264];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[265];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[266];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[267];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[268];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[269];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[270];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[271];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[272];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[273];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[274];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[275];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[276];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[277];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[278];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[279];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[280];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[281];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[282];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[283];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[284];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[285];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[286];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[287];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[288];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[289];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[290];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[291];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[292];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[293];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[294];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[295];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[296];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[297];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[298];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[299];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[300];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[301];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[302];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[303];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[304];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[305];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[306];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[307];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[308];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[309];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[310];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[311];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[312];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[313];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[314];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[315];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[316];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[317];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[318];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[319];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[320];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[321];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[322];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[323];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[324];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[325];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[326];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[327];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[328];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[329];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[330];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[331];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[332];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[333];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[334];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[335];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[336];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[337];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[338];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[339];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[340];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[341];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[342];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[343];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[344];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[345];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[346];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[347];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[348];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[349];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[350];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[351];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[352];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[353];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[354];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[355];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[356];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[357];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[358];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[359];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventeenthCard = suitsSorted[360];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighteenthCard = suitsSorted[361];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNineteenthCard = suitsSorted[362];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFirstCard = suitsSorted[363];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySecondCard = suitsSorted[364];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirdCard = suitsSorted[365];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourthCard = suitsSorted[366];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifthCard = suitsSorted[367];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixthCard = suitsSorted[368];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySeventhCard = suitsSorted[369];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEighthCard = suitsSorted[370];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyNinthCard = suitsSorted[371];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyEleventhCard = suitsSorted[372];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyTwelfthCard = suitsSorted[373];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyThirteenthCard = suitsSorted[374];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFourteenthCard = suitsSorted[375];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentyFifteenthCard = suitsSorted[376];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySixteenthCard = suitsSorted[377];
+            const twentyTwentyTwentyTwentyTwentyTwentyTwentyTwentySe
+

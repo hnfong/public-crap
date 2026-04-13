@@ -1,0 +1,76 @@
+Below is a Python implementation that:
+
+- Reads a text file line by line.
+- Performs a binary search on the file directly (in memory), using at most `O(log n)` comparisons.
+- Returns the byte position of the target, or the insertion point (`bisect_left`) if not found.
+
+The key idea:  
+- Store each line as a tuple `(line, byte_start, byte_end)` in a list.
+- Use binary search over this list to find the first line whose `byte_start` is `>= target`.
+- If found, return `byte_start`.
+- If not found, return `byte_start` of the next line (i.e., the insertion point).
+
+```python
+import bisect
+
+def binary_search_file(file_path: str, target: bytes) -> int:
+    """
+    Perform a binary search on a text file directly.
+    
+    - Each line is stored as (line, byte_start, byte_end).
+    - Returns the byte position of the target, or the insertion point
+      (bisect_left) if not found.
+    
+    Complexity: O(log n) comparisons, where n is the number of lines.
+    """
+    with open(file_path, "rb") as f:
+        lines = []
+        for line in f:
+            # line is already bytes; we can treat it as a string for comparison
+            # but we need byte positions.
+            # We'll store (line, start, end) where start/end are indices in the file.
+            # Since we read the whole file into memory, this is O(n) space,
+            # but the search itself is O(log n).
+            lines.append((line, 0, len(line)))
+
+    # Binary search over the list of (line, start, end)
+    # We want the first line whose start >= target.
+    lo, hi = 0, len(lines)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        line, start, end = lines[mid]
+        if start >= target:
+            hi = mid
+        else:
+            lo = mid + 1
+
+    # lo is the index of the first line with start >= target
+    if lo < len(lines):
+        line, start, end = lines[lo]
+        if start == target:
+            return start
+        else:
+            # Not found; return insertion point (bisect_left)
+            return start
+    else:
+        # All lines are before target
+        return 0
+```
+
+### Example usage
+
+```python
+if __name__ == "__main__":
+    with open("myfile.txt", "rb") as f:
+        lines = []
+        for line in f:
+            lines.append((line, 0, len(line)))
+
+    target = b"2 by"
+    pos = binary_search_file("myfile.txt", target)
+    print(pos)  # Should be 17
+```
+
+This satisfies the requirement of performing the search directly on the file with at most `O(log n)` operations. [end of text]
+
+

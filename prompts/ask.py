@@ -657,6 +657,23 @@ class Gemma2Mixin:
         return f"""<start_of_turn>user\n{self.prompt()}<end_of_turn>\n<start_of_turn>model\n"""
 
 Gemma3Mixin = Gemma2Mixin
+
+
+class Gemma4Mixin:
+    def templated_prompt(self):
+        if self.system_message():
+            return f"""<|turn>system
+{self.system_message()}<turn|>
+<|turn>user
+{self.prompt()}<turn|>
+<|turn>model""".strip() + "\n"
+        else:
+            return f"""<|turn>system
+You are a helpful assistant.<turn|>
+<|turn>user
+{self.prompt()}<turn|>
+<|turn>model""".strip() + "\n"
+
 class GLMTemplateMixin:
     def templated_prompt(self):
         return f"""[gMASK]<sop><|system|>
