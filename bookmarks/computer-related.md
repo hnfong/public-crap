@@ -483,6 +483,7 @@ Computer technology related.
 
 - https://www.reddit.com/r/LocalLLaMA/comments/1ljw728/neuraltranslate_nahuatl_to_spanish_llm_gemma_3/ - NeuralTranslate: Nahuatl to Spanish LLM! (Gemma 3 27b fine-tune)
 - https://www.reddit.com/r/LocalLLaMA/comments/1m7gwuo/continued_pretraining_of_llama_38b_on_a_new/ - Trying to perform CPT of llama on a new language
+- https://github.com/bstnxbt/dflash-mlx - MLX Speculative Decoding with Draft Models
 
 
 

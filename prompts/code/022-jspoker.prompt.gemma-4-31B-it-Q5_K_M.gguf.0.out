@@ -1,0 +1,60 @@
+<|channel>thought
+<channel|><!DOCTYPE html><html><head><title>Poker</title><style>body{background:#2d5a27;color:#fff;font-family:sans-serif;text-align:center}#game{max-width:600px;margin:auto}.card{display:inline-block;width:60px;height:90px;background:#fff;color:#000;border-radius:5px;margin:5px;line-height:90px;font-weight:bold;vertical-align:top}</style></head><body>
+<h1>Video Poker</h1><div id="msg">Press Deal to Start</div><div id="cards"></div><div id="ctrl"><button id="btn" onclick="act()">Deal</button></div>
+<script>
+let deck=[],hand=[],state='DEAL';
+const suits=['♠','♥','♦','♣'],vals=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+const getScore=(h)=>{
+  let v=h.map(c=>vals.indexOf(c.v)),s=h.map(c=>c.s);
+  v.sort((a,b)=>a-b);
+  let counts={},dups=[];
+  v.forEach(x=>counts[x]=(counts[x]||0)+1);
+  Object.values(counts).forEach(c=>dups.push(c));
+  dups.sort((a,b)=>b-a);
+  let flush=new Set(s).size===1,straight=v.every((x,i)=>i===0||x===v[i-1]+1);
+  if(flush&&straight)return"Royal/Straight Flush";
+  if(dups[0]===4)return"Four of a Kind";
+  if(dups[0]===3&&dups[1]===2)return"Full House";
+  if(flush)return"Flush";
+  if(straight)return"Straight";
+  if(dups[0]===3)return"Three of a Kind";
+  if(dups[0]===2&&dups[1]===2)return"Two Pair";
+  if(dups[0]===2)return"One Pair";
+  return"High Card";
+};
+function render(){
+  const div=document.getElementById('cards');
+  div.innerHTML='';
+  hand.forEach((c,i)=>{
+    const el=document.createElement('div');
+    el.className='card';
+    el.innerHTML=`${c.v}${c.s}`;
+    el.style.color=c.s==='♥'||c.s==='♦'?'red':'black';
+    if(state==='HOLD')el.onclick=()=>{c.hold=!c.hold;render()};
+    div.appendChild(el);
+  });
+}
+function act(){
+  const btn=document.getElementById('btn');
+  if(state==='DEAL'){
+    deck=[];suits.forEach(s=>vals.forEach(v=>deck.push({v,s})));
+    deck.sort(()=>Math.random()-.5);
+    hand=deck.splice(0,5).map(c=>({...c,hold:false}));
+    state='HOLD';
+    btn.innerText='Draw';
+    document.getElementById('msg').innerText='Select cards to hold';
+  }else if(state==='HOLD'){
+    hand=hand.map(c=>c.hold?c:deck.splice(0,1));
+    state='RESULT';
+    btn.innerText='Play Again';
+    document.getElementById('msg').innerText='Result: '+getScore(hand);
+  }else{
+    state='DEAL';
+    btn.innerText='Deal';
+    document.getElementById('msg').innerText='Press Deal to Start';
+  }
+  render();
+}
+</script></body></html> [end of text]
+
+

@@ -1,0 +1,97 @@
+<|channel>thought
+<channel|><!DOCTYPE html>
+<html>
+<head>
+<style>
+body{font-family:sans-serif;background:#222;color:#fff;text-align:center}
+#table{margin:20px auto;width:400px;padding:20px;border:4px solid #555;border-radius:50px;background:#282}
+.card{display:inline-block;width:50px;height:70px;background:#fff;color:#000;border-radius:5px;margin:5px;line-height:70px;font-weight:bold;vertical-align:top}
+.red{color:red}
+button{padding:10px 20px;margin:5px;cursor:pointer}
+</style>
+</head>
+<body>
+<h2>Simple Texas Hold'em</h2>
+<div id="table">
+  <div>CPU: <span id="cpu-status"></span><div id="cpu-cards"></div></div>
+  <div id="community"></div>
+  <div>YOU: <span id="player-status"></span><div id="player-cards"></div></div>
+</div>
+<div id="controls">
+  <button onclick="game.deal()">New Game</button>
+  <button onclick="game.action('fold')">Fold</button>
+  <button onclick="game.action('call')">Call/Check</button>
+</div>
+<p id="msg"></p>
+<script>
+const SUITS = ['♠','♥','♦','♣'], VALS = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'], RANK = { '2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14 };
+const game = {
+  deck: [], p: [], c: [], comm: [], stage: 0,
+  deal() {
+    this.deck = []; this.p = []; this.c = []; this.comm = []; this.stage = 0;
+    for(let s of SUITS) for(let v of VALS) this.deck.push({v, s, r: RANK[v]});
+    this.deck.sort(() => Math.random() - 0.5);
+    this.p = [this.deck.pop(), this.deck.pop()];
+    this.c = [this.deck.pop(), this.deck.pop()];
+    this.render();
+    document.getElementById('msg').innerText = "Your turn. Bet?";
+  },
+  render() {
+    const draw = (arr, el) => {
+      document.getElementById(el).innerHTML = arr.map(k => `<div class="card ${k.s==='♥'||k.s==='♦'?'red':''}">${k.v}${k.s}</div>`).join('');
+    };
+    draw(this.p, 'player-cards');
+    draw(this.c, 'cpu-cards');
+    draw(this.comm, 'community');
+    document.getElementById('player-status').innerText = "";
+    document.getElementById('cpu-status').innerText = "";
+  },
+  action(act) {
+    if(act === 'fold') return this.end("You folded. CPU wins.");
+    this.stage++;
+    if(this.stage === 1) this.comm.push(this.deck.pop(), this.deck.pop(), this.deck.pop());
+    else if(this.stage === 2) this.comm.push(this.deck.pop());
+    else if(this.stage === 3) return this.showdown();
+    else return this.showdown();
+    this.render();
+  },
+  showdown() {
+    this.render();
+    const pScore = this.eval(this.p.concat(this.comm));
+    const cScore = this.eval(this.c.concat(this.comm));
+    if(pScore > cScore) this.end("You win!");
+    else if(cScore > pScore) this.end("CPU wins!");
+    else this.end("Tie!");
+  },
+  end(m) {
+    document.getElementById('msg').innerText = m;
+    document.getElementById('cpu-status').innerText = "Revealed";
+    this.render();
+  },
+  eval(hand) {
+    const sorted = hand.sort((a,b) => b.r - a.r);
+    const counts = {};
+    sorted.forEach(c => counts[c.r] = (counts[c.r] || 0) + 1);
+    const v = Object.values(counts);
+    const isFlush = SUITS.some(s => hand.filter(c => c.s === s).length >= 5);
+    const isStraight = (function(){
+      let s = [...new Set(sorted.map(c => c.r))].sort((a,b)=>b-a);
+      for(let i=0; i<=s.length-5; i++) if(s[i]-s[i+4] === 4) return true;
+      return false;
+    })();
+    if(isFlush && isStraight) return 9;
+    if(v.includes(4)) return 8;
+    if(v.includes(3) && v.includes(2)) return 7;
+    if(isFlush) return 6;
+    if(isStraight) return 5;
+    if(v.includes(3)) return 4;
+    if(v.filter(x => x === 2).length >= 2) return 3;
+    if(v.includes(2)) return 2;
+    return sorted[0].r;
+  }
+};
+</script>
+</body>
+</html> [end of text]
+
+

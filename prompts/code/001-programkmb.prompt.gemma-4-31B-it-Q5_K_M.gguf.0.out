@@ -1,0 +1,81 @@
+<|channel>thought
+<channel|>```java
+import java.util.*;
+import java.util.regex.*;
+import java.io.*;
+
+public class DataSumCalculator {
+
+    public static void main(String[] args) {
+        StringBuilder inputBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                inputBuilder.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+            System.exit(1);
+        }
+
+        String input = inputBuilder.toString();
+        double totalBytes = calculateTotalBytes(input);
+
+        printResults(totalBytes);
+    }
+
+    private static double calculateTotalBytes(String input) {
+        double total = 0;
+        // Regex explanation:
+        // ([0-9,.]+) : Matches digits, commas, and dots (the number part)
+        // ([kKmMgG]?) : Matches optional suffix k, m, or g (case insensitive)
+        Pattern pattern = Pattern.compile("([0-9,.]+)\\s*([kKmMgG]?)");
+        Matcher matcher = pattern.matcher(input);
+
+        while (matcher.find()) {
+            String numberStr = matcher.group(1);
+            String suffix = matcher.group(2);
+
+            try {
+                // Remove commas used as thousand separators
+                String sanitizedNumber = numberStr.replace(",", "");
+                double value = Double.parseDouble(sanitizedNumber);
+                total += value * getMultiplier(suffix);
+            } catch (NumberFormatException e) {
+                // Skip strings that look like numbers but aren't valid doubles (e.g., "1.2.3")
+                continue;
+            }
+        }
+        return total;
+    }
+
+    private static double getMultiplier(String suffix) {
+        if (suffix == null || suffix.isEmpty()) {
+            return 1.0;
+        }
+        switch (suffix.toLowerCase()) {
+            case "k":
+                return 1024.0;
+            case "m":
+                return 1024.0 * 1024.0;
+            case "g":
+                return 1024.0 * 1024.0 * 1024.0;
+            default:
+                return 1.0;
+        }
+    }
+
+    private static void printResults(double totalBytes) {
+        double kb = totalBytes / 1024.0;
+        double mb = totalBytes / (1024.0 * 1024.0);
+        double gb = totalBytes / (1024.0 * 1024.0 * 1024.0);
+
+        System.out.printf(Locale.US, "%.1f%n", totalBytes);
+        System.out.printf(Locale.US, "%.1f k%n", kb);
+        System.out.printf(Locale.US, "%.1f M%n", mb);
+        System.out.printf(Locale.US, "%.1f G%n", gb);
+    }
+}
+``` [end of text]
+
+

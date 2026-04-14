@@ -1,0 +1,114 @@
+<|channel>thought
+<channel|><!DOCTYPE html>
+<html>
+<head>
+<title>Neon Solitaire</title>
+<style>
+body{background:#111;color:#fff;font-family:sans-serif;display:flex;flex-direction:column;align-items:center;margin:0;overflow:hidden}
+#g{display:grid;grid-template-columns:repeat(7,80px);gap:10px;padding:20px;background:#222;border-radius:8px;margin-top:20px}
+.c{width:80px;height:110px;border:1px solid #444;border-radius:5px;position:relative;cursor:pointer;user-select:none;background:#1a1a1a}
+.c.f{background:#333;color:#333}
+.c.f::after{content:'●';position:absolute;top:40%;left:35%;color:#555}
+.v{position:absolute;top:5px;left:5px;font-weight:bold;font-size:14px}
+.s{position:absolute;bottom:5px;right:5px;font-size:14px}
+.r-h{color:#ff4d4d} .r-d{color:#4d94ff} .r-c{color:#4dff4d} .r-s{color:#ffff4d}
+#m{margin-top:10px;font-size:18px}
+</style>
+</head>
+<body>
+<div id="m">Score: <span id="sc">0</span></div>
+<div id="g"></div>
+<script>
+const suits=['♥','♦','♣','♠'],colors=['r-h','r-d','r-c','r-s'],vals=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+let deck=[],pile=[],score=0,drag=null;
+const g=document.getElementById('g'),sc=document.getElementById('sc');
+
+const createDeck=()=>{
+  deck=[];
+  for(let s=0;s<4;s++)for(let v=0;v<13;v++)deck.push({s,v,f:true});
+  for(let i=deck.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [deck[i],deck[j]]=[deck[j],deck[i]];
+  }
+};
+
+const render=()=>{
+  g.innerHTML='';
+  for(let i=0;i<7;i++){
+    const slot=document.createElement('div');
+    slot.className='c';
+    slot.dataset.idx=i;
+    slot.onclick=()=>draw();
+    if(pile[i]&&pile[i].length>0){
+      pile[i].forEach((card,ci)=>{
+        const el=document.createElement('div');
+        el.className=`c ${card.f?'f':''}`;
+        el.style.position='absolute';
+        el.style.top=ci*20+'px';
+        if(!card.f){
+          el.innerHTML=`<div class="v ${colors[card.s]}">${vals[card.v]}</div><div class="s ${colors[card.s]}">${suits[card.s]}</div>`;
+          el.draggable=true;
+          el.ondragstart=(e)=>{drag={card,fromI:i,fromC:ci};e.dataTransfer.setData('text','')};
+        }
+        slot.appendChild(el);
+      });
+    }
+    g.appendChild(slot);
+  }
+};
+
+const draw=()=>{
+  if(deck.length){
+    const c=deck.pop();
+    c.f=true;
+    pile[0].push(c);
+  }else{
+    deck=pile[0].filter(c=>c.f);
+    pile[0]=[];
+    deck.forEach(c=>c.f=true);
+  }
+  render();
+};
+
+const init=()=>{
+  createDeck();
+  pile=Array.from({length:7},()=>[]);
+  for(let i=0;i<7;i++)for(let j=0;j<=i;j++)pile[i].push(deck.pop());
+  g.ondragover=e=>e.preventDefault();
+  g.ondrop=e=>{
+    e.preventDefault();
+    const target=e.target.closest('.c');
+    if(!target||!drag)return;
+    const ti=parseInt(target.dataset.idx);
+    const targetPile=pile[ti];
+    const topCard=targetPile[targetPile.length-1];
+    
+    let valid=false;
+    if(!topCard && drag.card.v===12){
+      valid=true;
+    } else if(topCard && !drag.card.f && !topCard.f){
+      const diffV=topCard.v-drag.card.v;
+      const diffS=drag.card.s-topCard.s;
+      if(diffV===1 && (drag.card.s%2===topCard.s%2===0?diffS===1:diffS===-1))valid=true;
+      // Simplified logic for brevity: alternating color, descending value
+      if(topCard.v === drag.card.v + 1 && (topCard.s%2 !== drag.card.s%2)) valid=true;
+    }
+
+    if(valid){
+      pile[drag.fromI].splice(drag.fromC,1);
+      pile[ti].push(drag.card);
+      drag.card.f=false;
+      score+=10;
+      sc.innerText=score;
+    }
+    render();
+  };
+  render();
+};
+
+init();
+</script>
+</body>
+</html> [end of text]
+
+

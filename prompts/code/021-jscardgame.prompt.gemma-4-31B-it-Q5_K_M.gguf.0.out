@@ -1,0 +1,61 @@
+<|channel>thought
+<channel|><!DOCTYPE html><html><head><title>Zen Stack</title><style>
+body{background:#222;color:#fff;font-family:sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;overflow:hidden}
+#game{display:grid;grid-template-columns:repeat(4,100px);gap:20px}
+.slot{width:100px;height:140px;border:2px dashed #555;border-radius:8px;position:relative;cursor:pointer}
+.card{width:100px;height:140px;background:#eee;color:#000;border-radius:8px;position:absolute;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:bold;box-shadow:0 4px 8px rgba(0,0,0,0.5);user-select:none;transition:transform 0.1s}
+.card.red{color:red}
+.card.hidden{background:#446;color:#446}
+#msg{margin-bottom:20px;font-size:20px}
+</style></head><body>
+<div id="msg">Stack cards in descending order (A=1, K=13). Alternate colors!</div>
+<div id="game"></div>
+<script>
+const gameDiv=document.getElementById('game'),msg=document.getElementById('msg');
+let deck=[],selected=null;
+const suits=['♠','♥','♦','♣'],colors={ '♠':'black','♣':'black','♥':'red','♦':'red'};
+for(let s of suits)for(let v=1;v<=13;v++)deck.push({v,s,c:colors[s]});
+deck.sort(()=>Math.random()-.5);
+const slots=[[],[],[],[]];
+for(let i=0;i<4;i++){
+    const div=document.createElement('div');
+    div.className='slot';
+    div.onclick=()=>clickSlot(i);
+    gameDiv.appendChild(div);
+}
+function render(){
+    document.querySelectorAll('.slot').forEach((s,i)=>{
+        s.innerHTML='';
+        slots[i].forEach((c,j)=>{
+            const card=document.createElement('div');
+            card.className=`card ${c.c}`;
+            card.style.top=`${j*20}px`;
+            card.innerText=`${c.v}${c.s}`;
+            s.appendChild(card);
+        });
+    });
+}
+function clickSlot(i){
+    if(selected===null){
+        if(slots[i].length>0){selected=i;msg.innerText=`Selected slot ${i+1}`; }
+    }else{
+        const from=selected,to=i;
+        const card=slots[from][slots[from].length-1];
+        const target=slots[to][slots[to].length-1];
+        if(from!==to && (!target || (target.v===card.v+1 && target.c!==card.c))){
+            slots[to].push(slots[from].pop());
+            msg.innerText="Nice move!";
+        }else{
+            msg.innerText="Invalid move!";
+        }
+        selected=null;
+    }
+    render();
+    if(slots.some(s=>s.length===13))msg.innerText="YOU WIN!";
+}
+// Initial deal
+while(deck.length>0)slots[Math.floor(Math.random()*4)].push(deck.pop());
+render();
+</script></body></html> [end of text]
+
+

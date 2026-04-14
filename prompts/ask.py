@@ -940,6 +940,7 @@ NAME_MATCH_OVERRIDE = [
     ("command-r-plus", CommandRPlusTemplateMixin),
     ("calme-3.2-instruct", ChatMLTemplateMixin),
     ("dolphin", ChatMLTemplateMixin),
+    ("gemma-4", Gemma4Mixin),
     ("gemma-2", Gemma2Mixin),
     ("gemma-3", Gemma3Mixin),
     ("glm-4", GLMTemplateMixin),

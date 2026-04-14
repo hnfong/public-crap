@@ -1,0 +1,106 @@
+<|channel>thought
+<channel|>```java
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.Locale;
+
+/**
+ * A production-ready utility to parse, sum, and format data size strings.
+ * Supports suffixes k/K, m/M, g/G (base 1024) and comma thousand separators.
+ */
+public class DataSizeSummator {
+
+    private static final long KILO = 1024L;
+    private static final long MEGA = KILO * 1024L;
+    private static final long GIGA = MEGA * 1024L;
+
+    // Regex breakdown:
+    // ([\d,]+(?:\.\d+)?) : Captures digits, commas, and optional decimal point
+    // \s*                : Optional whitespace
+    // ([kKmMgG]?)        : Captures optional suffix
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("([\\d,]+(?:\\.\\d+)?)\\s*([kKmMgG]?)");
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        StringBuilder inputBuilder = new StringBuilder();
+
+        while (scanner.hasNextLine()) {
+            inputBuilder.append(scanner.nextLine()).append(" ");
+        }
+        scanner.close();
+
+        double totalBytes = parseAndSum(inputBuilder.toString());
+
+        if (totalBytes <= 0) {
+            // If no numbers were found, we output 0.0 as per standard math expectations
+            System.out.printf(Locale.US, "%.1f%n", 0.0);
+            System.out.printf(Locale.US, "%.1f k%n", 0.0);
+            System.out.printf(Locale.US, "%.1f M%n", 0.0);
+            System.out.printf(Locale.US, "%.1f G%n", 0.0);
+            return;
+        }
+
+        printResults(totalBytes);
+    }
+
+    /**
+     * Parses the input string for numeric patterns and calculates the total sum in bytes.
+     * 
+     * @param input The raw input string.
+     * @return The total sum in bytes.
+     */
+    private static double parseAndSum(String input) {
+        double sum = 0;
+        Matcher matcher = NUMBER_PATTERN.matcher(input);
+
+        while (matcher.find()) {
+            try {
+                String numberPart = matcher.group(1).replace(",", "");
+                String suffix = matcher.group(2).toLowerCase();
+
+                double value = Double.parseDouble(numberPart);
+                sum += convertToBytes(value, suffix);
+            } catch (NumberFormatException e) {
+                // In a production environment, we might log this error.
+                // For this task, we skip malformed numeric segments.
+            }
+        }
+        return sum;
+    }
+
+    /**
+     * Converts a value and its suffix into a base byte value.
+     * 
+     * @param value The numeric value.
+     * @param suffix The suffix (k, m, g, or empty).
+     * @return The value in bytes.
+     */
+    private static double convertToBytes(double value, String suffix) {
+        switch (suffix) {
+            case "k":
+                return value * KILO;
+            case "m":
+                return value * MEGA;
+            case "g":
+                return value * GIGA;
+            default:
+                return value;
+        }
+    }
+
+    /**
+     * Prints the total bytes and its conversions to K, M, and G.
+     * 
+     * @param totalBytes The total sum in bytes.
+     */
+    private static void printResults(double totalBytes) {
+        System.out.printf(Locale.US, "%.1f%n", totalBytes);
+        System.out.printf(Locale.US, "%.1f k%n", totalBytes / KILO);
+        System.out.printf(Locale.US, "%.1f M%n", totalBytes / MEGA);
+        System.out.printf(Locale.US, "%.1f G%n", totalBytes / GIGA);
+    }
+}
+``` [end of text]
+
+
