@@ -1,0 +1,195 @@
+```html
+<!DOCTYPE html><html>
+<head>
+<meta charset="utf-8">
+<title>Gravity Solitaire</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;user-select:none}
+body{background:#0a0e14;color:#c9d1d9;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;overflow-x:hidden}
+#hud{display:flex;gap:24px;padding:12px 20px;align-items:center;width:100%;max-width:760px;justify-content:space-between}
+#hud>div{display:flex;align-items:center;gap:6px}
+#hud span{font-size:13px;color:#8b949e}
+#hud b{font-size:18px;color:#e6edf3;min-width:40px}
+#btns{display:flex;gap:8px}
+button{background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;transition:background .15s}
+button:hover{background:#30363d}
+#board{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:8px;max-width:760px;width:100%}
+.cell{aspect-ratio:5/7;border-radius:8px;background:#161b22;border:2px solid #21262d;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s,box-shadow .12s,border-color .15s;position:relative;overflow:hidden}
+.cell:hover{transform:scale(1.04);z-index:2}
+.cell.sel{border-color:#f0883e;box-shadow:0 0 16px #f0883e55}
+.cell.hint{border-color:#3fb950;box-shadow:0 0 12px #3fb95044}
+.card{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:6px;font-weight:700;position:relative}
+.card.red{background:linear-gradient(135deg,#3d1a1a,#2d1515);color:#f85149;border:1px solid #5c2e2e}
+.card.blk{background:linear-gradient(135deg,#1a1a2e,#15152d);color:#79c0ff;border:1px solid #2e2e5c}
+.card .rk{font-size:clamp(16px,3.5vw,26px);line-height:1}
+.card .st{font-size:clamp(12px,2.5vw,18px);margin-top:2px}
+.card .cr{position:absolute;top:3px;left:5px;font-size:clamp(8px,1.5vw,11px)}
+.card .cb{position:absolute;bottom:3px;right:5px;font-size:clamp(8px,1.5vw,11px);transform:rotate(180deg)}
+.cell.empty{background:#0d1117;border:2px dashed #21262d}
+.cell.empty:hover{border-color:#30363d}
+#msg{position:fixed;top:0;left:0;right:0;bottom:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);z-index:100;flex-direction:column;gap:16px}
+#msg.show{display:flex}
+#msg h2{font-size:36px;color:#f0883e}
+#msg p{color:#8b949e;font-size:16px}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+.cell.pop{animation:pop .25s ease}
+@keyframes fall{from{transform:translateY(calc(-100% - 6px));opacity:.5}to{transform:translateY(0);opacity:1}}
+.cell.fall{animation:fall .2s ease-out}
+</style>
+</head>
+<body>
+<div id="hud">
+<div><span>Score</span><b id="sc">0</b></div>
+<div><span>Moves</span><b id="mv">0</b></div>
+<div><span>Removed</span><b id="rm">0</b></div>
+<div id="btns"><button onclick="newGame()">New</button><button onclick="showHint()">Hint</button></div>
+</div>
+<div id="board"></div>
+<div id="msg"><h2 id="mt"></h2><p id="mp"></p><button onclick="newGame();document.getElementById('msg').classList.remove('show')">Play Again</button></div>
+<script>
+const R=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const S=['♠','♥','♦','♣'];
+const RC=['blk','red','red','blk'];
+let grid,sel,score,moves,removed,hints;
+
+function mkDeck(){
+let d=[];
+for(let s=0;s<4;s++)for(let r=0;r<13;r++)d.push({r,s});
+for(let i=d.length-1;i>0;i--){let j=Math.random()*i+1|0;[d[i],d[j]]=[d[j],d[i]]}
+return d;
+}
+
+function newGame(){
+grid=Array.from({length:7},()=>Array(7).fill(null));
+let d=mkDeck();
+for(let c=0;c<7;c++)for(let r=0;r<7;r++)grid[c][r]=d.pop();
+sel=null;score=0;moves=0;removed=0;hints=[];
+document.getElementById('msg').classList.remove('show');
+render();
+}
+
+function isAdj(c1,r1,c2,r2){return Math.abs(c1-c2)<=1&&Math.abs(r1-r2)<=1&&!(c1===c2&&r1===r2)}
+
+function canMv(a,b){
+if(!a||!b)return false;
+if(a.r!==b.r&&RC[a.s]!==RC[b.s])return false;
+return true;
+}
+
+function gravity(){
+let fell=false;
+for(let c=0;c<7;c++){
+let cards=grid[c].filter(x=>x);
+let empties=7-cards.length;
+if(empties>0){
+grid[c]=Array(empties).fill(null).concat(cards);
+fell=true;
+}
+}
+return fell;
+}
+
+function checkWin(){
+for(let c=0;c<7;c++)for(let r=0;r<7;r++)if(grid[c][r])return false;
+return true;
+}
+
+function checkLose(){
+for(let c=0;c<7;c++)for(let r=0;r<7;r++){
+let a=grid[c][r];
+if(!a)continue;
+for(let dc=-1;dc<=1;dc++)for(let dr=-1;dr<=1;dr++){
+if(!dc&&!dr)continue;
+let nc=c+dc,nr=r+dr;
+if(nc>=0&&nc<7&&nr>=0&&nr<7&&grid[nc][nr]&&canMv(a,grid[nc][nr]))return false;
+}
+}
+return true;
+}
+
+function findHints(){
+hints=[];
+for(let c=0;c<7;c++)for(let r=0;r<7;r++){
+let a=grid[c][r];
+if(!a)continue;
+for(let dc=-1;dc<=1;dc++)for(let dr=-1;dr<=1;dr++){
+if(!dc&&!dr)continue;
+let nc=c+dc,nr=r+dr;
+if(nc>=0&&nc<7&&nr>=0&&nr<7&&grid[nc][nr]&&canMv(a,grid[nc][nr])){
+hints.push([c,r,nc,nr]);return;
+}
+}
+if(hints.length)return;
+}
+}
+
+function showHint(){
+findHints();
+render();
+}
+
+function click(c,r){
+if(!grid[c][r]&&!sel)return;
+if(!sel){
+sel={c,r};render();return;
+}
+if(sel.c===c&&sel.r===r){sel=null;render();return;}
+if(!grid[c][r]){sel=null;render();return;}
+let a=grid[sel.c][sel.r],b=grid[c][r];
+if(isAdj(sel.c,sel.r,c,r)&&canMv(a,b)){
+grid[sel.c][sel.r]=null;grid[c][r]=null;
+removed+=2;score+=10+(RC[a.s]===RC[b.s]?5:0);moves++;
+sel=null;hints=[];
+gravity();
+render();
+// animate the cells that had gravity
+setTimeout(()=>{
+document.querySelectorAll('.cell.fall').forEach(el=>el.classList.remove('fall'));
+},250);
+if(checkWin()){
+document.getElementById('mt').textContent='You Win!';
+document.getElementById('mp').textContent=`Score: ${score} | Moves: ${moves}`;
+document.getElementById('msg').classList.add('show');
+} else if(checkLose()){
+document.getElementById('mt').textContent='No Moves!';
+document.getElementById('mp').textContent=`Score: ${score} | Removed: ${removed}/49`;
+document.getElementById('msg').classList.add('show');
+}
+} else {
+sel={c,r};render();
+}
+}
+
+function render(){
+let board=document.getElementById('board');
+board.innerHTML='';
+// track which cells had cards before gravity (for animation)
+for(let c=0;c<7;c++)for(let r=0;r<7;r++){
+let cell=document.createElement('div');
+cell.className='cell';
+let card=grid[c][r];
+if(card){
+let isSel=sel&&sel.c===c&&sel.r===r;
+let isHint=hints.some(h=>(h[0]===c&&h[1]===r)||(h[2]===c&&h[3]===r));
+cell.classList.add(RC[card.s]);
+if(isSel)cell.classList.add('sel');
+if(isHint)cell.classList.add('hint');
+cell.innerHTML=`<div class="card ${RC[card.s]}"><span class="cr">${R[card.r]}${S[card.s]}</span><span class="rk">${R[card.r]}</span><span class="st">${S[card.s]}</span><span class="cb">${R[card.r]}${S[card.s]}</span></div>`;
+} else {
+cell.classList.add('empty');
+}
+cell.onclick=()=>click(c,r);
+board.appendChild(cell);
+}
+document.getElementById('sc').textContent=score;
+document.getElementById('mv').textContent=moves;
+document.getElementById('rm').textContent=removed;
+}
+
+newGame();
+</script>
+</body>
+</html>
+``` [end of text]
+
+

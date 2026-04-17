@@ -1068,7 +1068,11 @@ def generate_options(cmd_opts, model_info, prompt, model_path, prompt_temp_path)
                     results += ["-c", "%d" % min(int(opts.get("-c") or 2147483647), int(tok_m.group(1)) + int(opts.get("-d")))]
                     tok_success = True
 
-            if not tok_success:
+            # Temporary workaround for https://github.com/ggml-org/llama.cpp/issues/22026
+            if not tok_success and 'GLM-5.1' in model:
+                    results += ["-c", "%d" % 5600]
+
+            elif not tok_success:
                 sys.stderr.write("Error: cannot determine number of tokens in prompt!\n")
                 sys.stderr.write("Command: %s\n" % " ".join(tokenize_cmd))
                 sys.stderr.write("Exit code: %d\n" % tok_p.returncode)

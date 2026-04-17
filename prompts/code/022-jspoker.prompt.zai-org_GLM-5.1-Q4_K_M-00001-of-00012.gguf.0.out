@@ -1,0 +1,230 @@
+```html
+<!DOCTYPE html><html>
+<head>
+<meta charset="utf-8">
+<title>Poker</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a472a;color:#fff;font-family:Georgia,serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:10px}
+h1{font-size:1.8em;margin:8px 0;text-shadow:0 2px 4px rgba(0,0,0,.5)}
+#info{display:flex;gap:30px;margin:8px 0;font-size:1.1em}
+#info span{background:rgba(0,0,0,.3);padding:4px 14px;border-radius:8px}
+#board{display:flex;gap:8px;margin:12px 0;min-height:120px;align-items:center;justify-content:center}
+.card{width:70px;height:100px;background:#fff;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.4em;font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,.4);transition:transform .2s}
+.card.red{color:#d32f2f}
+.card.black{color:#222}
+.card.back{background:linear-gradient(135deg,#1565c0,#0d47a1);color:transparent;font-size:2em}
+.card.back::after{content:'♠';color:rgba(255,255,255,.15);font-size:2em}
+.card:hover{transform:translateY(-4px)}
+#hands{display:flex;gap:60px;margin:16px 0;align-items:flex-start}
+.hand-area{text-align:center}
+.hand-area h3{margin-bottom:8px;font-size:1em;opacity:.8}
+.hand-area .cards{display:flex;gap:6px;justify-content:center}
+#msg{font-size:1.2em;margin:10px 0;min-height:1.5em;text-align:center;font-weight:bold}
+#controls{display:flex;gap:10px;margin:10px 0;flex-wrap:wrap;justify-content:center}
+button{padding:10px 22px;font-size:1em;border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-weight:bold;transition:background .2s,transform .1s}
+button:active{transform:scale(.96)}
+button:disabled{opacity:.4;cursor:default;transform:none}
+#btnDeal{background:#43a047;color:#fff}
+#btnFold{background:#e53935;color:#fff}
+#btnCheck{background:#fb8c00;color:#fff}
+#btnCall{background:#1e88e5;color:#fff}
+#btnRaise{background:#8e24aa;color:#fff}
+#btnNew{background:#fff;color:#1a472a}
+#raiseSlider{width:160px;accent-color:#8e24aa}
+#raiseVal{font-size:.9em;min-width:50px;display:inline-block}
+</style>
+</head>
+<body>
+<h1>Texas Hold'em Poker</h1>
+<div id="info"><span>Chips: <b id="pChips">1000</b></span><span>Pot: <b id="pot">0</b></span><span>Blinds: 10/20</span></div>
+<div id="board"></div>
+<div id="hands">
+<div class="hand-area"><h3>You</h3><div class="cards" id="pHand"></div></div>
+<div class="hand-area"><h3>Opponent</h3><div class="cards" id="aHand"></div></div>
+</div>
+<div id="msg"></div>
+<div id="controls">
+<button id="btnDeal" onclick="deal()">Deal</button>
+<button id="btnFold" onclick="pAct('fold')" disabled>Fold</button>
+<button id="btnCheck" onclick="pAct('check')" disabled>Check</button>
+<button id="btnCall" onclick="pAct('call')" disabled>Call</button>
+<button id="btnRaise" onclick="pAct('raise')" disabled>Raise</button>
+<input type="range" id="raiseSlider" min="0" max="1000" oninput="document.getElementById('raiseVal').textContent=this.value" style="display:none">
+<span id="raiseVal" style="display:none"></span>
+<button id="btnNew" onclick="newGame()" style="display:none">New Game</button>
+</div>
+<script>
+const S=['♠','♥','♦','♣'],R=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+let deck,ph,ah,board,pot,pChips,aChips,pBet,aBet,phase,dealer,raiseAmt;
+const $=id=>document.getElementById(id);
+function mkDeck(){let d=[];for(let s of S)for(let i=0;i<13;i++)d.push({s,r:R[i],v:i+2});return d}
+function shuffle(d){for(let i=d.length-1;i>0;i--){let j=Math.random()*(i+1)|0;[d[i],d[j]]=[d[j],d[i]]}return d}
+function cardHTML(c,back){
+if(back)return`<div class="card back"></div>`;
+let red=c.s==='♥'||c.s==='♦';
+return`<div class="card ${red?'red':'black'}"><div>${c.r}</div><div>${c.s}</div></div>`;
+}
+function showCards(el,cards,back){el.innerHTML=cards.map(c=>cardHTML(c,back)).join('')}
+function showBoard(){$('board').innerHTML=board.map(c=>cardHTML(c)).join('')}
+function updInfo(){$('pChips').textContent=pChips;$('pot').textContent=pot}
+function setMsg(m){$('msg').textContent=m}
+function setBtns(deal,fold,check,call,raise){
+$('btnDeal').disabled=!deal;$('btnFold').disabled=!fold;$('btnCheck').disabled=!check;
+$('btnCall').disabled=!call;$('btnRaise').disabled=!raise;
+let rs=$('raiseSlider'),rv=$('raiseVal');
+if(raise){rs.style.display='';rv.style.display='';rs.min=aBet-pBet+20;rs.max=pChips;rs.value=rs.min;rv.textContent=rs.value;raiseAmt=+rs.min}
+else{rs.style.display='none';rv.style.display='none'}
+}
+// Hand evaluation
+function combos(arr,k){if(k===0)return[[]];if(!arr.length)return[];let[f,...r]=arr;return combos(r,k-1).map(c=>[f,...c]).concat(combos(r,k))}
+function eval5(cards){
+let vs=cards.map(c=>c.v).sort((a,b)=>b-a),ss=cards.map(c=>c.s);
+let flush=ss.every(s=>s===ss[0]);
+let straight=false,hi=vs[0];
+if(new Set(vs).size===5){
+if(vs[0]-vs[4]===4)straight=true;
+if(vs[0]===14&&vs[1]===5&&vs[2]===4&&vs[3]===3&&vs[4]===2){straight=true;hi=5}
+}
+let cnt={};vs.forEach(v=>cnt[v]=(cnt[v]||0)+1);
+let grp=Object.entries(cnt).map(([v,c])=>({v:+v,c})).sort((a,b)=>b.c-a.c||b.v-a.v);
+let pat=grp.map(g=>g.c).join('');
+let rank,score;
+if(flush&&straight){rank=hi===14&&vs[1]===13?9:8;score=[rank,hi]}
+else if(pat==='41'){rank=7;score=[7,grp[0].v,grp[1].v]}
+else if(pat==='32'){rank=6;score=[6,grp[0].v,grp[1].v]}
+else if(flush){rank=5;score=[5,...vs]}
+else if(straight){rank=4;score=[4,hi]}
+else if(pat==='311'){rank=3;score=[3,grp[0].v,grp[1].v,grp[2].v]}
+else if(pat==='221'){rank=2;score=[2,grp[0].v,grp[1].v,grp[2].v]}
+else if(pat==='2111'){rank=1;score=[1,grp[0].v,grp[1].v,grp[2].v,grp[3].v]}
+else{rank=0;score=[0,...vs]}
+return{rank,score};
+}
+function bestHand(cards){
+if(cards.length<5)return{rank:-1,score:[-1]};
+let best=null;
+for(let c of combos(cards,5)){let e=eval5(c);if(!best||cmpScore(e.score,best.score)>0)best=e}
+return best;
+}
+function cmpScore(a,b){for(let i=0;i<Math.max(a.length,b.length);i++){let d=(a[i]||0)-(b[i]||0);if(d)return d}return 0}
+function handName(r){return['High Card','Pair','Two Pair','Three of a Kind','Straight','Flush','Full House','Four of a Kind','Straight Flush','Royal Flush'][r]||''}
+// Game logic
+function init(){
+pChips=1000;aChips=1000;dealer=0;
+$('btnNew').style.display='none';$('btnDeal').style.display='';
+deal();
+}
+function deal(){
+if(pChips<=0||aChips<=0){endGame();return}
+deck=shuffle(mkDeck());ph=[deck.pop(),deck.pop()];ah=[deck.pop(),deck.pop()];
+board=[];pot=0;pBet=0;aBet=0;phase='preflop';
+showCards($('pHand'),ph);showCards($('aHand'),ah,true);
+$('board').innerHTML='';setMsg('');updInfo();
+// Post blinds
+let sb=dealer===0?10:20,bb=dealer===0?20:10;
+if(dealer===0){pBet=sb;aBet=bb}else{pBet=bb;aBet=sb}
+pChips-=pBet;aChips-=aBet;pot=pBet+aBet;
+updInfo();
+if(dealer===0){setMsg('You post SB '+sb+', Opponent posts BB '+bb);aiTurn()}
+else{setMsg('Opponent posts SB '+sb+', You post BB '+bb);playerTurn()}
+}
+function playerTurn(){
+let canCheck=pBet>=aBet, callAmt=aBet-pBet;
+setBtns(false,!canCheck,canCheck,callAmt>0,callAmt<pChips);
+if(callAmt>0)$('btnCall').textContent='Call '+callAmt;
+else $('btnCall').textContent='Check';
+}
+function pAct(act){
+if(act==='fold'){setMsg('You fold. Opponent wins!');aChips+=pot;pot=0;updInfo();setBtns(0,0,0,0,0);showNext();return}
+if(act==='check'){pBet=Math.max(pBet,aBet)}
+if(act==='call'){let c=Math.min(aBet-pBet,pChips);pChips-=c;pBet+=c;pot+=c}
+if(act==='raise'){raiseAmt=+$('raiseSlider').value;let total=raiseAmt;pChips-=(total-pBet);pot+=(total-pBet);pBet=total}
+updInfo();setBtns(0,0,0,0,0);
+if(pChips===0||aChips===0){allIn();return}
+aiTurn();
+}
+function aiTurn(){
+setTimeout(()=>{
+let decision=aiDecide();
+if(decision==='fold'){setMsg('Opponent folds. You win!');pChips+=pot;pot=0;updInfo();showNext();return}
+if(decision==='check'){aBet=Math.max(aBet,pBet);setMsg('Opponent checks')}
+if(decision==='call'){let c=Math.min(pBet-aBet,aChips);aChips-=c;aBet+=c;pot+=c;setMsg('Opponent calls')}
+if(decision==='raise'){let r=aiRaise();let c=r-aBet;aChips-=c;aBet=r;pot+=c;setMsg('Opponent raises to '+r)}
+updInfo();
+if(aChips===0||pChips===0){allIn();return}
+if(pBet===aBet)nextPhase();
+else playerTurn();
+},600);
+}
+function aiDecide(){
+let str=aiStrength();
+if(pBet>aBet){
+let callAmt=pBet-aBet;
+if(str>0.7)return'raise';
+if(str>0.35||callAmt<=20)return'call';
+return Math.random()<0.2?'call':'fold';
+}
+if(str>0.75)return'raise';
+if(str>0.3)return'check';
+return Math.random()<0.15?'raise':'check';
+}
+function aiStrength(){
+let all=[...ah,...board];
+if(all.length<5){
+let v1=ah[0].v,v2=ah[1].v;
+let s=0.3;
+if(v1===v2)s+=0.35;
+if(v1>=12||v2>=12)s+=0.15;
+if(ah[0].s===ah[1].s)s+=0.1;
+s+=Math.max(v1,v2)/14*0.15;
+return Math.min(s,1);
+}
+let h=bestHand(all);
+return 0.2+h.rank*0.08+Math.random()*0.1;
+}
+function aiRaise(){
+let base=aBet+20+Math.floor(Math.random()*40);
+return Math.min(base,aChips+aBet);
+}
+function nextPhase(){
+pBet=0;aBet=0;
+if(phase==='preflop'){phase='flop';board.push(deck.pop(),deck.pop(),deck.pop());showBoard();setMsg('--- Flop ---')}
+else if(phase==='flop'){phase='turn';board.push(deck.pop());showBoard();setMsg('--- Turn ---')}
+else if(phase==='turn'){phase='river';board.push(deck.pop());showBoard();setMsg('--- River ---')}
+else if(phase==='river'){showdown();return}
+setTimeout(()=>{if(dealer===0)aiTurn();else playerTurn()},400);
+}
+function allIn(){
+while(board.length<5)board.push(deck.pop());
+showBoard();phase='river';
+setTimeout(showdown,800);
+}
+function showdown(){
+showCards($('aHand'),ah,false);
+let pBest=bestHand([...ph,...board]),aBest=bestHand([...ah,...board]);
+let c=cmpScore(pBest.score,aBest.score);
+let pName=handName(pBest.rank),aName=handName(aBest.rank);
+if(c>0){setMsg('You win! '+pName+' beats '+aName);pChips+=pot}
+else if(c<0){setMsg('Opponent wins! '+aName+' beats '+pName);aChips+=pot}
+else{setMsg('Split pot! Both '+pName);pChips+=Math.floor(pot/2);aChips+=pot-Math.floor(pot/2)}
+pot=0;updInfo();showNext();
+}
+function showNext(){
+$('btnNew').style.display='none';
+if(pChips<=0||aChips<=0){$('btnNew').style.display='';$('btnDeal').style.display='none';return}
+setTimeout(()=>{dealer=1-dealer;$('btnDeal').disabled=false;$('btnDeal').style.display=''},1200);
+}
+function endGame(){
+if(pChips<=0)setMsg('Game Over - You are out of chips!');
+else setMsg('You win the game! Opponent is out of chips!');
+$('btnNew').style.display='';$('btnDeal').style.display='none';
+}
+function newGame(){init()}
+init();
+</script>
+</body>
+</html>
+``` [end of text]
+
+
