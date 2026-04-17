@@ -1,0 +1,93 @@
+```python
+import os
+
+def binary_search_file(file_path, target):
+    """
+    Perform a binary search on a file containing lexicographically sorted lines.
+    
+    Args:
+        file_path: Path to the text file.
+        target: The byte string to search for.
+        
+    Returns:
+        The byte position of the target line, or the insertion point (as in bisect_left).
+    """
+    # Get the file size
+    file_size = os.path.getsize(file_path)
+    
+    if file_size == 0:
+        return 0
+    
+    # We need to find the byte offset of each line.
+    # Since lines are variable length, we can't directly index by line number.
+    # However, we can use binary search on the byte offsets.
+    
+    # First, let's find the total number of lines by scanning the file.
+    # But scanning all lines is O(n), which we want to avoid.
+    # Instead, we can do binary search on byte offsets, and for each offset,
+    # we need to find the start of the line containing that offset.
+    
+    # Strategy:
+    # Binary search on byte offsets in [0, file_size].
+    # For a given mid offset, we need to find the line that starts at or before mid,
+    # and check if that line matches the target.
+    
+    # To find the line start for a given byte offset, we need to scan backwards from
+    # that offset to find the previous newline. This could be O(line_length) in the worst case.
+    # But since we're doing binary search, and each step involves scanning backwards,
+    # the total complexity depends on the average line length.
+    
+    # However, the problem states "at most O(log(n)) operations". If n is the number of lines,
+    # then O(log(n)) binary search steps. Each step requires finding the line start,
+    # which might take O(L) where L is the average line length. So total is O(L * log(n)).
+    # This is acceptable if L is small or bounded.
+    
+    # Let's implement this approach.
+    
+    lo = 0
+    hi = file_size
+    
+    while lo < hi:
+        mid = (lo + hi) // 2
+        
+        # Find the start of the line containing byte offset mid
+        line_start = mid
+        while line_start > 0:
+            # Check if the byte at line_start is a newline
+            with open(file_path, 'rb') as f:
+                f.seek(line_start)
+                byte = f.read(1)
+                if byte == b'\n':
+                    line_start += 1
+                    break
+                line_start -= 1
+        else:
+            # We reached the beginning of the file
+            line_start = 0
+        
+        # Now read the entire line starting at line_start
+        with open(file_path, 'rb') as f:
+            f.seek(line_start)
+            line = f.readline()
+        
+        # Compare the line with the target
+        # The target is a prefix of the line for matching purposes?
+        # Looking at the example: target is b"2 by", and the line is b"2 by bus\n"
+        # So we need to check if the line starts with the target.
+        
+        if line.startswith(target):
+            # Found a line that starts with target
+            # But we need to find the leftmost such line (bisect_left behavior)
+            # So we continue searching to the left
+            hi = line_start
+        elif line < target:
+            # The line is less than the target, so the insertion point is to the right
+            lo = line_start + len(line)
+        else:
+            # The line is greater than the target, so the insertion point is to the left
+            hi = line_start
+    
+    return lo
+``` [end of text]
+
+

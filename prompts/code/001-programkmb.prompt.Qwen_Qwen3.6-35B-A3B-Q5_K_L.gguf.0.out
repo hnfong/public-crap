@@ -1,0 +1,87 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Main {
+
+    public static void main(String[] args) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            StringBuilder input = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                input.append(line).append("\n");
+            }
+
+            String text = input.toString();
+            List<Double> values = extractNumbers(text);
+            double totalBytes = 0;
+            for (double val : values) {
+                totalBytes += val;
+            }
+
+            System.out.printf("%.1f%n", totalBytes);
+            System.out.printf("%.1f k%n", totalBytes / 1024);
+            System.out.printf("%.1f M%n", totalBytes / (1024.0 * 1024));
+            System.out.printf("%.1f G%n", totalBytes / (1024.0 * 1024 * 1024));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static List<Double> extractNumbers(String text) {
+        List<Double> values = new ArrayList<>();
+        // Pattern to match numbers (with optional commas and decimal points) followed by optional suffix
+        // Numbers can have commas as thousand separators, e.g., 1,000,000
+        // Numbers can have decimal points, e.g., 1.5
+        // Suffixes: k, K, m, M, g, G (optional)
+        Pattern pattern = Pattern.compile("\\b(\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?|\\d+(?:\\.\\d+)?)([kKmMgG])?\\b");
+        Matcher matcher = pattern.matcher(text);
+
+        while (matcher.find()) {
+            String numberStr = matcher.group(1);
+            String suffix = matcher.group(2);
+
+            // Remove commas from the number string
+            numberStr = numberStr.replace(",", "");
+
+            double value;
+            try {
+                value = Double.parseDouble(numberStr);
+            } catch (NumberFormatException e) {
+                continue;
+            }
+
+            // Apply suffix multiplier
+            if (suffix != null) {
+                switch (suffix) {
+                    case "k":
+                    case "K":
+                        value *= 1024;
+                        break;
+                    case "m":
+                    case "M":
+                        value *= 1024 * 1024;
+                        break;
+                    case "g":
+                    case "G":
+                        value *= 1024 * 1024 * 1024;
+                        break;
+                }
+            }
+
+            values.add(value);
+        }
+
+        return values;
+    }
+}
+``` [end of text]
+
+

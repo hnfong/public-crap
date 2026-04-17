@@ -1,0 +1,184 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Neon Solitaire</title><style>
+body{margin:0;background:#111;color:#0f0;font-family:monospace;overflow:hidden;user-select:none}
+#game{position:relative;width:100vw;height:100vh}
+.card{position:absolute;width:60px;height:84px;background:#222;border:1px solid #0f0;border-radius:4px;display:flex;justify-content:center;align-items:center;font-size:20px;cursor:pointer;transition:top .2s,left .2s,box-shadow .2s}
+.card.selected{box-shadow:0 0 10px #0f0;background:#333}
+.card.red{color:#f00;border-color:#f00}
+.card.black{color:#0f0;border-color:#0f0}
+.pile{position:absolute;width:60px;height:84px;border:1px dashed #444;border-radius:4px}
+#ui{position:absolute;top:10px;left:10px;z-index:10}
+button{background:#000;color:#0f0;border:1px solid #0f0;padding:5px 10px;cursor:pointer}
+#msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:40px;color:#fff;text-shadow:0 0 10px #0f0;display:none}
+</style></head><body>
+<div id="game"><div id="ui"><button onclick="init()">New Game</button><span id="score">Score: 0</span></div><div id="msg">YOU WIN!</div></div>
+<script>
+const S=['♠','♥','♦','♣'],V=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+let deck=[],hands=[],piles=[],foundations=[],sel=null,score=0;
+const G=document.getElementById('game');
+function init(){
+G.innerHTML='<div id="ui"><button onclick="init()">New Game</button><span id="score">Score: 0</span></div><div id="msg">YOU WIN!</div>';
+deck=[];
+for(let s of S)for(let v of V)deck.push({s,v,c:(s=='♥'||s=='♦')?'red':'black',id:s+v});
+deck.sort(()=>Math.random()-.5);
+hands=[[],[],[],[],[]];
+piles=[[],[],[],[],[]];
+foundations=[[],[],[],[]];
+sel=null;score=0;
+for(let i=0;i<5;i++){
+hands[i].push(deck.pop());
+piles[i].push(deck.pop());
+}
+render();
+}
+function render(){
+document.querySelectorAll('.card,.pile').forEach(e=>e.remove());
+document.getElementById('score').innerText='Score: '+score;
+// Piles
+for(let i=0;i<5;i++){
+let p=document.createElement('div');p.className='pile';
+p.style.left=(100+i*80)+'px';p.style.top='100px';
+p.onclick=()=>clickPile(i);
+G.appendChild(p);
+if(piles[i].length){
+let c=piles[i][piles[i].length-1];
+drawCard(c,100+i*80,100,true);
+}
+}
+// Hands
+for(let i=0;i<5;i++){
+let h=document.createElement('div');h.className='pile';
+h.style.left=(100+i*80)+'px';h.style.top='300px';
+h.onclick=()=>clickHand(i);
+G.appendChild(h);
+if(hands[i].length){
+let c=hands[i][hands[i].length-1];
+drawCard(c,100+i*80,300,false);
+}
+}
+// Foundations
+for(let i=0;i<4;i++){
+let f=document.createElement('div');f.className='pile';
+f.style.left=(100+i*80)+'px';f.style.top='500px';
+f.onclick=()=>clickFound(i);
+G.appendChild(f);
+if(foundations[i].length){
+let c=foundations[i][foundations[i].length-1];
+drawCard(c,100+i*80,500,false);
+}
+}
+}
+function drawCard(c,x,y,faceUp){
+let d=document.createElement('div');
+d.className='card '+(c.c);
+d.style.left=x+'px';d.style.top=y+'px';
+d.innerText=c.v+c.s;
+if(!faceUp)d.innerText='?';
+if(sel&&sel.id===c.id)d.classList.add('selected');
+d.onclick=(e)=>{e.stopPropagation();handleClick(c,x,y)};
+G.appendChild(d);
+}
+function handleClick(c,x,y){
+if(sel){
+if(sel.id===c.id){sel=null;render();return;}
+// Try move to pile
+if(y>80&&y<200){
+let pi=Math.floor((x-100)/80);
+if(pi>=0&&pi<5&&canMoveToPile(sel,piles[pi])){
+moveToPile(sel,pi);sel=null;render();checkWin();return;
+}
+}
+// Try move to hand
+if(y>280&&y<400){
+let hi=Math.floor((x-100)/80);
+if(hi>=0&&hi<5&&canMoveToHand(sel,hands[hi])){
+moveToHand(sel,hi);sel=null;render();checkWin();return;
+}
+}
+// Try move to foundation
+if(y>480&&y<600){
+let fi=Math.floor((x-100)/80);
+if(fi>=0&&fi<4&&canMoveToFound(sel,foundations[fi])){
+moveToFound(sel,fi);sel=null;render();checkWin();return;
+}
+}
+sel=null;render();
+}else{
+// Select
+if(y>80&&y<200){
+let pi=Math.floor((x-100)/80);
+if(pi>=0&&pi<5&&piles[pi].length)sel=piles[pi][piles[pi].length-1];
+}
+if(y>280&&y<400){
+let hi=Math.floor((x-100)/80);
+if(hi>=0&&hi<5&&hands[hi].length)sel=hands[hi][hands[hi].length-1];
+}
+if(y>480&&y<600){
+let fi=Math.floor((x-100)/80);
+if(fi>=0&&fi<4&&foundations[fi].length)sel=foundations[fi][foundations[fi].length-1];
+}
+render();
+}
+}
+function canMoveToPile(c,pile){
+if(!pile.length)return true;
+let top=pile[pile.length-1];
+return c.c!==top.c&&parseInt(c.v)<parseInt(top.v);
+}
+function canMoveToHand(c,hand){
+if(!hand.length)return true;
+let top=hand[hand.length-1];
+return c.c!==top.c&&parseInt(c.v)<parseInt(top.v);
+}
+function canMoveToFound(c,found){
+if(!found.length)return c.v==='A';
+let top=found[found.length-1];
+return c.s===top.s&&parseInt(c.v)===parseInt(top.v)+1;
+}
+function moveToPile(c,pi){
+let src=findSource(c);
+if(src==='pile'){piles[pi].push(c);srcArr=srcArr||[];}
+else if(src==='hand'){hands[pi].push(c);}
+else if(src==='found'){foundations[pi].push(c);}
+score+=10;
+}
+function moveToHand(c,hi){
+let src=findSource(c);
+if(src==='pile'){piles[hi].push(c);}
+else if(src==='hand'){hands[hi].push(c);}
+else if(src==='found'){foundations[hi].push(c);}
+score+=5;
+}
+function moveToFound(c,fi){
+let src=findSource(c);
+if(src==='pile'){piles[fi].push(c);}
+else if(src==='hand'){hands[fi].push(c);}
+else if(src==='found'){foundations[fi].push(c);}
+score+=20;
+}
+function findSource(c){
+for(let i=0;i<5;i++)if(piles[i].includes(c))return 'pile';
+for(let i=0;i<5;i++)if(hands[i].includes(c))return 'hand';
+for(let i=0;i<4;i++)if(foundations[i].includes(c))return 'found';
+return 'none';
+}
+function clickPile(i){
+if(piles[i].length)sel=piles[i][piles[i].length-1];
+render();
+}
+function clickHand(i){
+if(hands[i].length)sel=hands[i][hands[i].length-1];
+render();
+}
+function clickFound(i){
+if(foundations[i].length)sel=foundations[i][foundations[i].length-1];
+render();
+}
+function checkWin(){
+let w=true;
+for(let i=0;i<4;i++)if(foundations[i].length!==13)w=false;
+if(w)document.getElementById('msg').style.display='block';
+}
+init();
+</script></body></html> [end of text]
+
+
