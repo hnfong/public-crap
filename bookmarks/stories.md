@@ -104,6 +104,7 @@
 - https://en.wikipedia.org/wiki/John_Titor - John Titor and TimeTravel_0 are pseudonyms used in communications and on internet forums between 1998 and 2001 by an individual claiming to be an American military time traveler from the year 2036
 - https://thereader.mitpress.mit.edu/aldous-huxleys-deep-reflection/ 
 - https://zh.wikipedia.org/wiki/%E6%9C%97%E5%98%8E%E6%8B%89%E5%A7%86
+- https://en.wikipedia.org/wiki/Silver_Thursday
 
 
 

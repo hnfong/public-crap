@@ -230,6 +230,9 @@ Computer technology related.
 - https://news.ycombinator.com/item?id=40864541
 - https://news.ycombinator.com/item?id=41482661
 
+## Fancy AI products
+
+- https://marble.worldlabs.ai/
 
 ## Machine Learning
 

@@ -1,0 +1,68 @@
+```java
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        StringBuilder input = new StringBuilder();
+        while (scanner.hasNextLine()) {
+            input.append(scanner.nextLine()).append("\n");
+        }
+        scanner.close();
+        
+        String text = input.toString();
+        
+        // Pattern to match numbers (with optional commas and decimal point) followed by optional suffix
+        // Numbers can be like: 1.5, 500,000, 2, 4.2
+        // Suffixes: k, K, m, M, g, G
+        // The pattern captures the number part and the suffix part separately
+        Pattern pattern = Pattern.compile("(\\d+(?:,\\d{3})*(?:\\.\\d+)?)([kKmMgG])?");
+        Matcher matcher = pattern.matcher(text);
+        
+        double totalBytes = 0.0;
+        
+        while (matcher.find()) {
+            String numberStr = matcher.group(1);
+            String suffix = matcher.group(2);
+            
+            // Remove commas from the number string
+            String cleanNumberStr = numberStr.replace(",", "");
+            
+            double value;
+            try {
+                value = Double.parseDouble(cleanNumberStr);
+            } catch (NumberFormatException e) {
+                continue; // Skip invalid numbers
+            }
+            
+            // Apply suffix multiplier
+            if (suffix != null) {
+                char s = suffix.charAt(0);
+                if (s == 'k' || s == 'K') {
+                    value *= 1024;
+                } else if (s == 'm' || s == 'M') {
+                    value *= 1024 * 1024;
+                } else if (s == 'g' || s == 'G') {
+                    value *= 1024 * 1024 * 1024;
+                }
+            }
+            
+            totalBytes += value;
+        }
+        
+        // Calculate sums in different units
+        double totalK = totalBytes / 1024.0;
+        double totalM = totalBytes / (1024.0 * 1024.0);
+        double totalG = totalBytes / (1024.0 * 1024.0 * 1024.0);
+        
+        // Print results
+        System.out.printf("%.1f%n", totalBytes);
+        System.out.printf("%.1f k%n", totalK);
+        System.out.printf("%.1f M%n", totalM);
+        System.out.printf("%.1f G%n", totalG);
+    }
+} [end of text]
+
+
