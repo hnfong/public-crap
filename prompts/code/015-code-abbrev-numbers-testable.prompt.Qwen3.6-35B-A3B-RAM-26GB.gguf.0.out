@@ -1,0 +1,108 @@
+```python
+def abbrev_num(x):
+    """
+    Convert an integer to a compact, human-readable string representation.
+    
+    Examples:
+    2 => "2"
+    8180 => "8.2K"
+    9385832 => "9.4M"
+    74581 => "75K" (rounded to nearest K, 4 chars max)
+    """
+    if x < 0:
+        sign = "-"
+        x = -x
+    else:
+        sign = ""
+    
+    if x < 1000:
+        return sign + str(x)
+    
+    # Define suffixes
+    suffixes = ['', 'K', 'M', 'B', 'T']
+    
+    # Determine the appropriate suffix
+    # We want to find the largest suffix such that x / (1000^n) >= 1
+    # But we also need to consider the character limit of 4
+    
+    # Calculate the order of magnitude
+    import math
+    if x == 0:
+        return "0"
+    
+    # Find the index of the suffix
+    # 1000^1 = 1K, 1000^2 = 1M, etc.
+    order = int(math.log10(x)) // 3
+    if order >= len(suffixes):
+        order = len(suffixes) - 1
+    
+    divisor = 1000 ** order
+    scaled = x / divisor
+    suffix = suffixes[order]
+    
+    # Now we need to format the number to fit within 4 characters (including sign)
+    # Available characters for the number part: 4 - len(sign) - len(suffix)
+    available = 4 - len(sign) - len(suffix)
+    
+    if available <= 0:
+        # This shouldn't happen for reasonable inputs, but handle it
+        # Just use one decimal place
+        formatted = f"{scaled:.1f}"
+        return sign + formatted + suffix
+    
+    # Determine how many decimal places we can use
+    # We want to round to the nearest value that fits in 'available' characters
+    # available characters for the numeric part (before suffix)
+    
+    # Try with 0 decimal places first
+    if available >= 2:
+        # Can fit at least "X" or "XX"
+        # Try rounding to integer
+        rounded_int = round(scaled)
+        if rounded_int >= 1000:
+            # This means we should have gone to a higher suffix
+            # But our order calculation should have prevented this
+            # For safety, let's handle it
+            order += 1
+            if order >= len(suffixes):
+                order = len(suffixes) - 1
+            divisor = 1000 ** order
+            scaled = x / divisor
+            suffix = suffixes[order]
+            available = 4 - len(sign) - len(suffix)
+            rounded_int = round(scaled)
+        
+        if available >= len(str(rounded_int)):
+            return sign + str(rounded_int) + suffix
+    
+    # Try with 1 decimal place
+    if available >= 3:
+        # Can fit "X.X" or "XX.X"
+        rounded_1dp = round(scaled, 1)
+        formatted_1dp = f"{rounded_1dp:.1f}"
+        if len(formatted_1dp) <= available:
+            return sign + formatted_1dp + suffix
+    
+    # Try with 2 decimal places
+    if available >= 4:
+        rounded_2dp = round(scaled, 2)
+        formatted_2dp = f"{rounded_2dp:.2f}"
+        if len(formatted_2dp) <= available:
+            return sign + formatted_2dp + suffix
+    
+    # Fallback: try to find the best representation
+    # Try different precisions and pick the one that fits
+    for decimals in range(0, 3):
+        rounded = round(scaled, decimals)
+        if decimals == 0:
+            formatted = str(int(rounded))
+        else:
+            formatted = f"{rounded:.{decimals}f}"
+        if len(formatted) <= available:
+            return sign + formatted + suffix
+    
+    # Last resort: just use the integer part
+    return sign + str(int(round(scaled))) + suffix
+``` [end of text]
+
+

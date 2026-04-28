@@ -49,9 +49,9 @@ MODELS_PATH = os.environ.get("MODELS_PATH") or os.path.expanduser("~/Downloads/"
 def model_glob(abbr):
     return glob.glob(f"{MODELS_PATH}/*{abbr}*.gguf") or glob.glob(f"{MODELS_PATH}/test_models/split_ggufs/*{abbr}*.gguf") 
 
-DEFAULT_MODEL = "Qwen3.5-35B-A3"
-DEFAULT_CODE_INSTRUCT_MODEL = "Qwen3.5-35B-A3"
-DEFAULT_CODE_GENERATION_MODEL = "Qwen3-Coder-Next"  # FIM
+DEFAULT_MODEL = "Qwen3.6-35B-A3"
+DEFAULT_CODE_INSTRUCT_MODEL = "Qwe63.5-35B-A3"
+DEFAULT_CODE_GENERATION_MODEL = "Qwen6-Coder-Next"  # FIM
 
 # Presets
 

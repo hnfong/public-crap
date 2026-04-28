@@ -1,0 +1,141 @@
+```python
+import os
+
+def binary_search_file(file_path, target):
+    """
+    Perform binary search on a file containing sorted lines.
+    
+    Args:
+        file_path: Path to the file with sorted lines.
+        target: The byte string to search for.
+        
+    Returns:
+        The byte position of the target line, or the insertion point (bisect_left).
+    """
+    # Get file size
+    file_size = os.path.getsize(file_path)
+    
+    if file_size == 0:
+        return 0
+    
+    # We need to find the byte offset of each line.
+    # Since lines are variable length, we can't directly index by line number.
+    # However, we can use binary search on the byte offsets.
+    
+    # First, let's find the total number of lines by reading the file.
+    # But we want O(log n) operations, so we shouldn't read all lines.
+    # Instead, we'll binary search on byte offsets.
+    
+    # The idea:
+    # 1. Binary search on byte offsets in the range [0, file_size].
+    # 2. For a given byte offset, we need to find the start of the line containing that offset.
+    # 3. Then compare the line with the target.
+    
+    # To find the start of the line containing a byte offset:
+    # - If offset is 0, the line starts at 0.
+    # - Otherwise, we need to find the last newline before offset.
+    #   But finding the last newline efficiently is tricky without reading.
+    #   However, we can use a technique: read backwards from offset to find the newline.
+    #   But this could be O(line_length) in the worst case, which might not be O(log n).
+    
+    # Alternative approach:
+    # Precompute line offsets? But that would require reading the whole file, which is O(n).
+    
+    # Let's think again. The problem says "using at most O(log(n)) operations".
+    # If we define an operation as a file seek/read, then:
+    # - Binary search over line indices would be O(log n) seeks, but we need to know line indices.
+    # - Without precomputed indices, we need to find line boundaries.
+    
+    # A common technique for binary searching a file with variable-length records:
+    # 1. Binary search on byte offsets.
+    # 2. For each probe offset, find the start of the line by seeking backwards to the previous newline.
+    # 3. Read the line and compare.
+    
+    # The cost of finding the previous newline: in the worst case, it's O(line_length).
+    # But if we assume lines are reasonably short, this might be acceptable.
+    # However, the problem states O(log n) operations, where n is the number of lines.
+    
+    # Let's assume that "operations" refers to the number of file seeks/reads, and that
+    # reading a line is O(1) in terms of the number of operations (even if the line is long).
+    # This is a bit of a stretch, but it's the standard interpretation for this type of problem.
+    
+    # Steps:
+    # 1. Binary search on the byte offset range [0, file_size].
+    # 2. For a given mid offset, find the start of the line containing mid.
+    # 3. Read the line.
+    # 4. Compare the line with target.
+    # 5. Adjust the search range.
+    
+    # To find the start of the line containing offset:
+    # - If offset == 0, start = 0.
+    # - Otherwise, seek to offset, then read backwards byte by byte until we find a newline.
+    #   But reading backwards is not directly supported in Python's file API.
+    #   Alternative: seek to offset, then seek backwards one byte at a time until we find '\n'.
+    #   This is O(line_length) seeks, which is bad.
+    
+    # Better approach: use os.lseek with SEEK_SET and read chunks backwards.
+    # Or, read the file into memory? But that's O(n) space.
+    
+    # Let's use a different strategy:
+    # We'll maintain a list of line start offsets. But building this list is O(n).
+    
+    # Hmm, the problem might expect us to assume that we can seek to any byte offset and read a line efficiently.
+    # Let's implement the standard approach:
+    
+    low = 0
+    high = file_size
+    
+    while low < high:
+        mid = (low + high) // 2
+        
+        # Find the start of the line containing byte offset mid
+        line_start = mid
+        if mid > 0:
+            # Seek to mid
+            with open(file_path, 'rb') as f:
+                f.seek(mid)
+                # Read backwards to find the previous newline
+                # We'll read a chunk and scan backwards
+                # To avoid reading too much, let's read 1KB at a time backwards
+                chunk_size = 1024
+                found_newline = False
+                while line_start > 0:
+                    # Determine how much to read
+                    read_size = min(chunk_size, line_start)
+                    f.seek(line_start - read_size)
+                    chunk = f.read(read_size)
+                    # Scan backwards in the chunk for '\n'
+                    for i in range(len(chunk) - 1, -1, -1):
+                        if chunk[i] == ord('\n'):
+                            line_start = line_start - read_size + i + 1
+                            found_newline = True
+                            break
+                    if found_newline:
+                        break
+                    line_start = line_start - read_size
+        
+        # Now line_start is the start of the line containing mid
+        # Read the line
+        with open(file_path, 'rb') as f:
+            f.seek(line_start)
+            line = f.readline()
+        
+        # Compare line with target
+        if line == target:
+            # Found the line, but we need bisect_left, so we need to find the first occurrence
+            # Actually, since lines are sorted and unique? The problem doesn't say unique.
+            # For bisect_left, we need the first position where target could be inserted.
+            # If line == target, we need to check if there are earlier occurrences.
+            # But in a sorted file, if we find a match, we need to search to the left.
+            # Let's adjust: if line >= target, move high to mid (but we need to be careful with byte offsets).
+            # Actually, let's just use the standard bisect logic.
+            high = line_start
+        elif line < target:
+            low = line_start + len(line)
+        else:
+            high = line_start
+    
+    return low
+``` [end of text]
+
+
