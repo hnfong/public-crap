@@ -50,7 +50,7 @@ def model_glob(abbr):
     return glob.glob(f"{MODELS_PATH}/*{abbr}*.gguf") or glob.glob(f"{MODELS_PATH}/test_models/split_ggufs/*{abbr}*.gguf") 
 
 DEFAULT_MODEL = "Qwen3.6-35B-A3"
-DEFAULT_CODE_INSTRUCT_MODEL = "Qwe63.5-35B-A3"
+DEFAULT_CODE_INSTRUCT_MODEL = "Qwen3.6-35B-A3"
 DEFAULT_CODE_GENERATION_MODEL = "Qwen6-Coder-Next"  # FIM
 
 # Presets
@@ -1153,6 +1153,9 @@ if __name__ == "__main__":
 
     assert_count = 0
     ggg = model_glob(model_name)
+    if len(ggg) > 1:
+        sys.stderr.write(f"Error: more than one model matched: {ggg}")
+        sys.exit(1)
     for model in ggg or [model_name]:
         if '-of-000' in model and '01-of-000' not in model:
             # Only use the first shard
