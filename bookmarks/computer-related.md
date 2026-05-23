@@ -124,6 +124,7 @@ Computer technology related.
 - ☆ https://docs.pygfx.org/stable/index.html Pygfx (pronounced “py-graphics”) is built on wgpu, enabling superior performance and reliability compared to OpenGL-based solutions.
 - ☆ https://www.ironcalc.com/ - Open Source Online Spreadsheet
 - ☆ https://github.com/danielgatis/rembg - Background Removal Python Lib
+- ☆ https://github.com/FiloSottile/age - age is a simple, modern and secure file encryption tool, format, and Go library. It features small explicit keys, post-quantum support, no config options, and UNIX-style composability.
 - https://www.oilshell.org/ - Oil is a new shell language built as a better, more reliable alternative to bash, designed for easier scripting and a smoother upgrade path for existing code. It aims to fix shell's longstanding issues while remaining compatible with current scripts.
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
