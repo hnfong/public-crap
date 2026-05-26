@@ -423,6 +423,17 @@ Assistant:
         return ["-r", "<|im_end|>"]
 
 
+class ChatMLTemplateWithDefaultSystemPromptMixin:
+    def templated_prompt(self):
+        return f"""
+<s><|im_start|>system
+You are a helpful assistant<|im_end|>
+<|im_start|>user
+{self.prompt()}<|im_end|>
+<|im_start|>assistant
+<think>\n\n</think>
+        """.strip() + "\n\n"
+
 class ChatMLTemplateMixin:
     def templated_prompt(self):
         if self.system_message():
@@ -910,6 +921,7 @@ NAME_MATCH_OVERRIDE = [
     ("gpt-oss", GPTOSSTemplateMixin),
     ("QwenLong-L1.5", Qwen3ThinkingTemplateMixin),
     ("Nemotron-3-", ChatMLTemplateMixin),
+    ("MiniCPM5", ChatMLTemplateWithDefaultSystemPromptMixin),
 
     ("Step-3.5", ChatMLThinkingTemplateMixin),
     ("Light-IF", NoThinkingChatMLTemplateMixin),
