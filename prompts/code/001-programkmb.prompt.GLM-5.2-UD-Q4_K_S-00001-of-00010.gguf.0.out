@@ -1,0 +1,87 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Main {
+    public static void main(String[] args) {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append('\n');
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading from standard input: " + e.getMessage());
+            return;
+        }
+
+        String input = sb.toString();
+        double totalBytes = extractAndSum(input);
+
+        double kilobytes = totalBytes / 1024.0;
+        double megabytes = kilobytes / 1024.0;
+        double gigabytes = megabytes / 1024.0;
+
+        System.out.printf("%.1f%n", totalBytes);
+        System.out.printf("%.1f k%n", kilobytes);
+        System.out.printf("%.1f M%n", megabytes);
+        System.out.printf("%.1f G%n", gigabytes);
+    }
+
+    private static double extractAndSum(String input) {
+        // Regex explanation:
+        // \d{1,3}(?:,\d{3})+|\d+(?:\.\d+)? : Matches numbers with comma thousand separators OR plain integers/decimals
+        // \.\d+                          : Matches numbers starting with a decimal point (e.g. .5)
+        // \s*                            : Optional whitespace before the suffix
+        // ([kKmMgG])?                    : Optional suffix (k, K, m, M, g, G)
+        Pattern pattern = Pattern.compile("(?:\\d{1,3}(?:,\\d{3})+|\\d+(?:\\.\\d+)?|\\.\\d+)\\s*([kKmMgG])?");
+        Matcher matcher = pattern.matcher(input);
+        double sum = 0.0;
+
+        while (matcher.find()) {
+            String numberStr = matcher.group(0).trim();
+            String suffix = matcher.group(1);
+
+            // Remove thousand separators (commas)
+            String cleanNumberStr = numberStr.replaceAll(",", "");
+            
+            // Remove the suffix if present so it can be parsed as a double
+            if (suffix != null) {
+                cleanNumberStr = cleanNumberStr.substring(0, cleanNumberStr.length() - suffix.length()).trim();
+            }
+
+            try {
+                double value = Double.parseDouble(cleanNumberStr);
+                if (suffix != null) {
+                    switch (suffix) {
+                        case "k":
+                        case "K":
+                            value *= 1024.0;
+                            break;
+                        case "m":
+                        case "M":
+                            value *= 1024.0 * 1024.0;
+                            break;
+                        case "g":
+                        case "G":
+                            value *= 1024.0 * 1024.0 * 1024.0;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                sum += value;
+            } catch (NumberFormatException e) {
+                // Safely ignore malformed numbers, though the regex should prevent this
+            }
+        }
+
+        return sum;
+    }
+}
+``` [end of text]
+
+

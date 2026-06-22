@@ -1,0 +1,39 @@
+**Q1.**
+The eventual output of the program is `inf`.
+
+**Explanation:**
+In IEEE 754 floating-point representation, numbers have a finite precision (53 bits of mantissa for standard 64-bit floats in Python). As `x` grows larger, the gap between consecutive representable floating-point numbers (the "machine epsilon") also grows. 
+When `x` reaches $2^{53}$, the gap between `x` and the next representable float becomes $2.0$. At this point, adding $1.0$ to $x$ is below the threshold of precision, so the addition does nothing (rounds back to $x$). 
+However, the loop condition `x < math.inf` remains true, and `x` stops increasing. The program enters an infinite loop and will never actually reach the `print(x)` statement. 
+*(Note: If the loop condition were `x != math.inf`, it would still infinite loop. If the loop were somehow allowed to reach the maximum finite float $2^{1024}-2^{971}$ and another addition was forced, it would overflow to `inf`, but standard addition stops here.)*
+
+---
+
+**Q2.**
+The eventual output of the program is `inf`. 
+
+**Explanation:**
+Unlike Q1, this program **will** terminate and print `inf`. 
+Because we are multiplying by `1.001`, the increment grows proportionally to `x`. This means the value we are adding is always large enough to cross the precision threshold (it is always $> 0.1\%$ of `x`). 
+The loop will continue to multiply `x` until it attempts to compute a number so large that it exceeds the maximum representable finite floating-point number (approximately $1.8 \times 10^{308}$). At that point, the IEEE 754 standard dictates that the result of the multiplication rounds to infinity (`inf`). 
+Once `x` becomes `inf`, the condition `x < math.inf` evaluates to `False`, the loop breaks, and the program successfully prints `inf`. 
+
+So yes, the behavior is different from Q1: Q1 infinite loops, whereas Q2 terminates and outputs `inf`.
+
+---
+
+**Q3.**
+Yes, there are inputs that will lead to the output "Done". 
+
+For the program to print "Done", the loop must terminate. This happens if `inc` is `NaN` (Not a Number) or if `inc` is large enough that adding it to the maximum finite float causes an overflow to `inf`.
+
+**Example 1: `nan`**
+If the user inputs `nan`, `x + inc` evaluates to `nan`. In IEEE 754, any comparison involving `NaN` is false. Therefore, `x < math.inf` becomes `False` immediately on the first iteration, the loop skips, and the program prints "Done".
+
+**Example 2: `1e308`**
+If the user inputs `1e308`, the loop will run a few times. `x` will eventually reach the maximum representable finite float (which is roughly $1.797 \times 10^{308}$). On the next addition, $x + 1e308$ exceeds the maximum finite float limit. According to IEEE 754 rules, this overflow rounds to `inf`. Once `x` is `inf`, the condition `x < math.inf` is `False`, the loop breaks, and it prints "Done".
+
+**Example 3: `inf`**
+If the user inputs `inf`, on the very first iteration `x` becomes `0.0 + inf`, which is `inf`. The loop condition `inf < inf` is `False`, so the loop terminates immediately and prints "Done". [end of text]
+
+

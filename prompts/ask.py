@@ -691,6 +691,11 @@ class GLMTemplateMixin:
 {self.system_message()}<|user|>
 {self.prompt()}<|assistant|>"""
 
+class GLMNoThinkTemplateMixin:
+    def templated_prompt(self):
+        return f"""[gMASK]<sop><|system|>
+{self.system_message()}<|user|>
+{self.prompt()}<|assistant|><think></think>"""
 
 class MiniMaxTemplateMixin:
     # Yes this isn't messed up terminal escape codes. It's really like this.
@@ -916,6 +921,7 @@ NAME_MATCH_OVERRIDE = [
     ("Seed-", SeedTemplateMixin),
     ("Olmo-", ChatMLTemplateMixin),
 
+    ("GLM-5.2", GLMNoThinkTemplateMixin),
     ("GLM-4.5", GLM45TemplateMixin),
     ("GLM-4.7", GLM47TemplateMixin),
     ("gpt-oss", GPTOSSTemplateMixin),

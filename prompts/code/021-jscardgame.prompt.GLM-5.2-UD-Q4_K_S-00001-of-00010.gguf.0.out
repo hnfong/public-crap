@@ -1,0 +1,96 @@
+```html
+<!DOCTYPE html><html>
+<head>
+<meta charset="UTF-8">
+<title>Elemental Solitaire</title>
+<style>
+body { background: #0a0a1a; color: #fff; font-family: sans-serif; text-align: center; margin: 20px; }
+#game { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+.pile { width: 80px; min-height: 120px; border: 2px dashed #444; border-radius: 8px; padding: 5px; background: rgba(255,255,255,0.05); }
+.card { width: 70px; height: 100px; border-radius: 6px; margin: 0 auto 5px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; padding: 5px; box-sizing: border-box; font-weight: bold; user-select: none; }
+.red { background: #e74c3c; color: #fff; }
+.blue { background: #3498db; color: #fff; }
+.green { background: #2ecc71; color: #fff; }
+.yellow { background: #f1c40f; color: #000; }
+.card.back { background: #2c3e50; color: #7f8c8d; display: flex; align-items: center; justify-content: center; }
+.card.selected { box-shadow: 0 0 15px #fff; transform: scale(1.05); }
+#status { margin: 20px; font-size: 1.2em; }
+button { background: #e67e22; color: white; border: none; padding: 10px 20px; font-size: 1em; cursor: pointer; border-radius: 5px; margin: 5px; }
+</style>
+</head>
+<body>
+<h1>Elemental Solitaire</h1>
+<p>Clear the board by matching cards of the same element (color) or same rank (number). Click a card, then click an adjacent card to merge them!</p>
+<div id="game"></div>
+<div id="status">Cards Left: 0</div>
+<button onclick="init()">New Game</button>
+<script>
+const E = ['red', 'blue', 'green', 'yellow'];
+const R = ['1','2','3','4','5','6','7','8','9','10','J','Q','K'];
+let board, sel;
+
+function init() {
+  board = [];
+  sel = null;
+  let deck = [];
+  for (let e of E) for (let r of R) deck.push({e, r});
+  for (let i = deck.length - 1; i > 0; i--) { let j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+  for (let i = 0; i < 4; i++) {
+    let p = [];
+    for (let j = 0; j < 13; j++) p.push(deck.pop());
+    board.push(p);
+  }
+  render();
+}
+
+function render() {
+  const g = document.getElementById('game');
+  g.innerHTML = '';
+  let count = 0;
+  board.forEach((p, pi) => {
+    let div = document.createElement('div');
+    div.className = 'pile';
+    p.forEach((c, ci) => {
+      count++;
+      let cd = document.createElement('div');
+      cd.className = 'card ' + c.e;
+      if (sel && sel.p === pi && sel.c === ci) cd.classList.add('selected');
+      cd.innerHTML = `<div>${c.r}</div><div style="text-align:right">${c.e[0].toUpperCase()}</div>`;
+      cd.onclick = () => click(pi, ci);
+      div.appendChild(cd);
+    });
+    g.appendChild(div);
+  });
+  document.getElementById('status').innerText = `Cards Left: ${count}`;
+  if (count === 0) setTimeout(() => alert('You Win!'), 100);
+}
+
+function click(p, c) {
+  if (!sel) { sel = {p, c}; render(); return; }
+  if (sel.p === p && sel.c === c) { sel = null; render(); return; }
+  
+  let c1 = board[sel.p][sel.c];
+  let c2 = board[p][c];
+  
+  // Check adjacency (same pile or neighboring pile)
+  if (Math.abs(sel.p - p) > 1) { sel = null; render(); return; }
+  
+  if (c1.e === c2.e || c1.r === c2.r) {
+    // Merge: remove both, collapse piles
+    board[sel.p].splice(sel.c, 1);
+    board[p].splice(c, 1);
+    sel = null;
+    render();
+  } else {
+    sel = {p, c};
+    render();
+  }
+}
+
+init();
+</script>
+</body>
+</html>
+``` [end of text]
+
+

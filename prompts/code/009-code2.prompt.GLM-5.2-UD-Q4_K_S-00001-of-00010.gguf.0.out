@@ -1,0 +1,91 @@
+To perform a binary search directly on a text file in $O(\log n)$ time complexity, we must avoid reading the entire file into memory. Instead, we can treat the file as an array of bytes and use the file's size to establish our search boundaries. 
+
+### Algorithm Discussion
+
+1. **Boundaries:** We maintain two pointers, `low` and `high`, representing byte offsets in the file. `low` starts at 0, and `high` starts at the file's size.
+2. **Midpoint Calculation:** We calculate `mid = (low + high) // 2`. 
+3. **Line Alignment:** Because `mid` can fall in the middle of a line, we cannot simply read from `mid`. We must find the start of the line containing `mid`. We do this by seeking backwards from `mid` until we hit a newline character (`\n`) or reach the beginning of the file (`low`). 
+4. **Reading and Comparing:** Once the start of the line is found, we read the line and strip the trailing newline. We then compare this line with our `target`.
+5. **Adjusting Boundaries:** 
+   - If the line is less than the `target`, our target must be further down. We set `low` to the byte position immediately after the end of the current line.
+   - If the line is greater than or equal to the `target`, our target could be this line or an earlier one. We set `high` to the start of the current line.
+6. **Termination:** The loop terminates when `low >= high`. At this point, `low` will point to the exact byte position where the `target` is found, or the lexicographical insertion point (exactly mimicking Python's `bisect_left` behavior).
+
+### Python Implementation
+
+```python
+import os
+
+def binary_search_file(file_path, target):
+    """
+    Performs a binary search on a file sorted in lexicographical order.
+    Returns the byte position of the target, or the insertion point (bisect_left).
+    """
+    # Ensure target is in bytes for proper lexicographical comparison
+    if isinstance(target, str):
+        target = target.encode('utf-8')
+        
+    file_size = os.path.getsize(file_path)
+    low = 0
+    high = file_size
+    
+    with open(file_path, 'rb') as f:
+        while low < high:
+            mid = (low + high) // 2
+            
+            # 1. Find the start of the line containing the 'mid' byte
+            line_start = mid
+            if line_start > low:
+                f.seek(line_start)
+                # Read backwards in small chunks to find the previous newline
+                while line_start > low:
+                    read_size = min(64, line_start - low)
+                    f.seek(line_start - read_size)
+                    chunk = f.read(read_size)
+                    nl_idx = chunk.rfind(b'\n')
+                    if nl_idx != -1:
+                        line_start = line_start - read_size + nl_idx + 1
+                        break
+                    line_start -= read_size
+                else:
+                    line_start = low # Reached 'low' without finding a newline
+            
+            # 2. Read the line starting at 'line_start'
+            f.seek(line_start)
+            line = f.readline()
+            
+            # 3. Strip trailing newlines to compare purely the string content
+            line_stripped = line.rstrip(b'\r\n')
+            
+            # 4. Compare and adjust boundaries
+            if line_stripped < target:
+                # Target must be further down the file
+                low = line_start + len(line)
+            else:
+                # Target is either found here or before this line
+                high = line_start
+                
+    return low
+
+```
+
+### Example Usage
+
+If you have a file named `myfile.txt` with the following exact content:
+```text
+1 I go to school
+2 by bus
+foo bar
+hello world
+zoo zoo zoo
+```
+
+Running the search:
+```python
+pos = binary_search_file("myfile.txt", b"2 by")
+print(pos)  # Output: 17
+```
+
+*(Note: The first line `1 I go to school\n` is 17 bytes long, so `2 by bus` correctly starts at byte offset 17. If you search for a string that doesn't exist but belongs lexicographically between `foo bar` and `hello world`, like `b"g"`, it will return 25, which is the byte offset of `hello world`—acting exactly like `bisect_left`)*. [end of text]
+
+

@@ -1,0 +1,127 @@
+```html
+<!DOCTYPE html><html>
+<head>
+<meta charset="utf-8">
+<title>Jacks or Better Poker</title>
+<style>
+body { font-family: sans-serif; background: #0a4d2e; color: #fff; text-align: center; margin: 20px; }
+h1 { margin: 5px; }
+#game { display: flex; flex-direction: column; align-items: center; }
+#credits { font-size: 1.2em; margin: 10px; font-weight: bold; }
+#paytable { border-collapse: collapse; margin: 10px auto; background: rgba(0,0,0,0.3); }
+#paytable td { padding: 4px 10px; border: 1px solid #555; }
+#paytable .hl { background: #d4af37; color: #000; font-weight: bold; }
+#cards { display: flex; gap: 10px; margin: 20px; }
+.card { width: 80px; height: 120px; background: #fff; color: #000; border-radius: 8px; border: 2px solid #333; display: flex; flex-direction: column; justify-content: space-between; padding: 5px; font-size: 18px; font-weight: bold; cursor: pointer; user-select: none; }
+.card.red { color: #d00; }
+.card.back { background: repeating-linear-gradient(45deg, #b33, #b33 10px, #800 10px, #800 20px); color: transparent; border-color: #500; }
+.card.hold { border-color: #ff0; box-shadow: 0 0 10px #ff0; }
+.card .tl { align-self: flex-start; }
+.card .br { align-self: flex-end; transform: rotate(180deg); }
+.card .c { font-size: 40px; align-self: center; margin: auto; }
+#controls { margin: 10px; }
+button { background: #444; color: #fff; border: 1px solid #888; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; margin: 5px; }
+button:hover { background: #666; }
+button:disabled { background: #222; color: #666; cursor: not-allowed; }
+#msg { height: 24px; font-size: 1.2em; color: #ff0; margin: 10px; font-weight: bold; }
+</style>
+</head>
+<body>
+<div id="game">
+<h1>Jacks or Better</h1>
+<div id="credits">Credits: <span id="cred">100</span></div>
+<table id="paytable"></table>
+<div id="cards"></div>
+<div id="msg"></div>
+<div id="controls">
+  <button id="deal" onclick="deal()">Deal</button>
+  <button id="draw" onclick="draw()" disabled>Draw</button>
+</div>
+</div>
+<script>
+const R = ['2','3','4','5','6','7','8','9','T','J','Q','K','A'];
+const S = ['♠','♥','♦','♣'];
+const P = [
+  ["Royal Flush",800],["Straight Flush",50],["Four of a Kind",25],
+  ["Full House",9],["Flush",6],["Straight",4],["Three of a Kind",3],
+  ["Two Pair",2],["Jacks or Better",1]
+];
+let D=[], H=[], C=100, Ph=0;
+
+function deck() {
+  let d=[];
+  for(let s=0;s<4;s++) for(let r=0;r<13;r++) d.push({r,s});
+  for(let i=d.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]];}
+  return d;
+}
+
+function evalHand(h) {
+  let r=h.map(c=>c.r).sort((a,b)=>a-b), s=h.map(c=>c.s);
+  let f=s.every(x=>x===s[0]);
+  let st=r[4]-r[0]===4 && new Set(r).size===5;
+  if(!st && r[0]===0 && r[1]===1 && r[2]===2 && r[3]===3 && r[4]===12) st=true;
+  let c={};
+  r.forEach(x=>c[x]=(c[x]||0)+1);
+  let v=Object.values(c).sort((a,b)=>b-a);
+  if(f&&st&&r[0]===8) return 0;
+  if(f&&st) return 1;
+  if(v[0]===4) return 2;
+  if(v[0]===3&&v[1]===2) return 3;
+  if(f) return 4;
+  if(st) return 5;
+  if(v[0]===3) return 6;
+  if(v[0]===2&&v[1]===2) return 7;
+  if(v[0]===2 && Object.keys(c).some(k=>c[k]===2 && +k>=9)) return 8;
+  return -1;
+}
+
+function render() {
+  document.getElementById('cred').textContent=C;
+  let pt='<tbody>';
+  P.forEach((p,i)=>pt+=`<tr id="pt${i}"><td>${p[0]}</td><td>${p[1]}</td></tr>`);
+  document.getElementById('paytable').innerHTML=pt+'</tbody>';
+  let cd=document.getElementById('cards');
+  cd.innerHTML='';
+  H.forEach((c,i)=>{
+    let d=document.createElement('div');
+    d.className='card '+(c.s===1||c.s===2?'red':'')+(c.h?' hold':'');
+    d.onclick=()=>{ if(Ph){c.h=!c.h; render();} };
+    d.innerHTML=`<div class="tl">${R[c.r]}${S[c.s]}</div><div class="c">${S[c.s]}</div><div class="br">${R[c.r]}${S[c.s]}</div>`;
+    cd.appendChild(d);
+  });
+}
+
+function deal() {
+  if(C<1) return;
+  C--; Ph=1;
+  D=deck(); H=[];
+  for(let i=0;i<5;i++) H.push({...D.pop(), h:0});
+  document.getElementById('msg').textContent='';
+  document.getElementById('deal').disabled=true;
+  document.getElementById('draw').disabled=false;
+  render();
+}
+
+function draw() {
+  Ph=0;
+  for(let i=0;i<5;i++) if(!H[i].h) H[i]={...D.pop(), h:0};
+  let w=evalHand(H);
+  if(w>=0) {
+    C+=P[w][1];
+    document.getElementById('msg').textContent=`${P[w][0]}! Won ${P[w][1]}`;
+    document.getElementById('pt'+w).classList.add('hl');
+    setTimeout(()=>document.getElementById('pt'+w).classList.remove('hl'),2000);
+  } else {
+    document.getElementById('msg').textContent='Game Over';
+  }
+  document.getElementById('deal').disabled=false;
+  document.getElementById('draw').disabled=true;
+  render();
+}
+render();
+</script>
+</body>
+</html>
+``` [end of text]
+
+
