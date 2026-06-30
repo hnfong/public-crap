@@ -105,7 +105,8 @@
 - https://thereader.mitpress.mit.edu/aldous-huxleys-deep-reflection/ 
 - https://zh.wikipedia.org/wiki/%E6%9C%97%E5%98%8E%E6%8B%89%E5%A7%86
 - https://en.wikipedia.org/wiki/Silver_Thursday
-
+- https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61127-1/fulltext
+  - Brain of a white-collar worker - Massive ventricular enlargement, in a patient with normal social functioning
 
 
 ### Interesting / Fun stories
