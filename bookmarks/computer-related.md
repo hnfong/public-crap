@@ -125,6 +125,8 @@ Computer technology related.
 - ☆ https://www.ironcalc.com/ - Open Source Online Spreadsheet
 - ☆ https://github.com/danielgatis/rembg - Background Removal Python Lib
 - ☆ https://github.com/FiloSottile/age - age is a simple, modern and secure file encryption tool, format, and Go library. It features small explicit keys, post-quantum support, no config options, and UNIX-style composability.
+- ☆ https://fil-c.org/how - Fil-C is a fanatically compatible memory-safe implementation of C and C++. Lots of software compiles and runs with Fil-C with zero or minimal changes. All memory safety errors are caught as Fil-C panics.
+- ☆ https://github.com/sbryngelson/ANEForge - Train and run neural networks directly on the Apple Neural Engine, from Python, with no CoreML
 - https://www.oilshell.org/ - Oil is a new shell language built as a better, more reliable alternative to bash, designed for easier scripting and a smoother upgrade path for existing code. It aims to fix shell's longstanding issues while remaining compatible with current scripts.
 - https://www.brow.sh/ - Browsh is a fully-modern text-based browser
 - http://xapian.org/docs/bindings/python/ - Xapian is an Open Source Search Engine Library, released under the GPL v2+. It's written in C++, with bindings
