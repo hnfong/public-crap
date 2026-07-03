@@ -1,0 +1,51 @@
+We can’t directly index lines in a file like an array, but we can simulate binary search by seeking to byte positions and reading lines.  
+
+The idea:  
+- Open the file in binary mode.  
+- Maintain `low` and `high` as byte positions.  
+- At each step, seek to the middle byte, then adjust to the start of the current line (by reading backwards until a newline).  
+- Compare the line with the target.  
+- Continue until `low >= high`.  
+
+Here’s the implementation:
+
+```python
+import os
+
+def binary_search_file(file_path, target):
+    """
+    Perform binary search on a sorted text file.
+    Returns the byte position of the target, or the insertion point (bisect_left).
+    """
+    with open(file_path, 'rb') as f:
+        f.seek(0, os.SEEK_END)
+        low = 0
+        high = f.tell()  # byte size of file
+
+        while low < high:
+            mid = (low + high) // 2
+            # Move to mid, then back to start of line
+            f.seek(mid)
+            # If not at start of file, read until newline to get full line
+            if mid != 0:
+                f.readline()  # skip partial line
+            line_start = f.tell()
+            line = f.readline()
+            if not line:
+                # If mid is near EOF, adjust high
+                high = mid
+                continue
+
+            # Compare line with target (strip newline)
+            line_stripped = line.rstrip(b'\n\r')
+            if line_stripped < target:
+                low = f.tell()  # move past this line
+            elif line_stripped > target:
+                high = line_start
+            else:
+                return line_start  # exact match
+
+        return low  # insertion point
+``` [end of text]
+
+

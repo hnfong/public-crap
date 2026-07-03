@@ -1,0 +1,90 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
+import java.util.Locale;
+
+public class NumberSumCalculator {
+    public static void main(String[] args) {
+        StringBuilder inputBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                inputBuilder.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+            System.exit(1);
+        }
+
+        String input = inputBuilder.toString();
+        double totalSum = 0.0;
+
+        NumberFormat format = NumberFormat.getInstance(Locale.US);
+        format.setGroupingUsed(true);
+
+        int index = 0;
+        while (index < input.length()) {
+            // Skip non-digit characters (including commas that are part of numbers will be handled by NumberFormat)
+            char c = input.charAt(index);
+            if (!Character.isDigit(c) && c != ',' && c != '.') {
+                index++;
+                continue;
+            }
+
+            // Try to parse a number starting at this position
+            ParsePosition pos = new ParsePosition(index);
+            Number number = format.parse(input, pos);
+            if (number == null || pos.getIndex() == index) {
+                index++;
+                continue;
+            }
+
+            double value = number.doubleValue();
+            int parseEnd = pos.getIndex();
+
+            // Check for optional suffix
+            double multiplier = 1.0;
+            if (parseEnd < input.length()) {
+                char suffix = input.charAt(parseEnd);
+                switch (suffix) {
+                    case 'k':
+                    case 'K':
+                        multiplier = 1024.0;
+                        parseEnd++;
+                        break;
+                    case 'm':
+                    case 'M':
+                        multiplier = 1024.0 * 1024.0;
+                        parseEnd++;
+                        break;
+                    case 'g':
+                    case 'G':
+                        multiplier = 1024.0 * 1024.0 * 1024.0;
+                        parseEnd++;
+                        break;
+                }
+            }
+
+            totalSum += value * multiplier;
+            index = parseEnd;
+        }
+
+        // Print total sum
+        System.out.println(totalSum);
+
+        // Print in kilobytes (K)
+        System.out.printf("%.1f k%n", totalSum / 1024.0);
+
+        // Print in megabytes (M)
+        System.out.printf("%.1f M%n", totalSum / (1024.0 * 1024.0));
+
+        // Print in gigabytes (G)
+        System.out.printf("%.1f G%n", totalSum / (1024.0 * 1024.0 * 1024.0));
+    }
+}
+``` [end of text]
+
+

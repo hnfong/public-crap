@@ -1,0 +1,105 @@
+<!DOCTYPE html><html><head><title>Poker</title><style>
+body{font-family:monospace;background:#0a0a0a;color:#fff;text-align:center}
+#table{background:#1a5c2a;border-radius:20px;padding:20px;max-width:700px;margin:20px auto;box-shadow:0 0 30px rgba(0,0,0,.5)}
+.card{display:inline-block;width:60px;height:90px;background:#fff;color:#000;border-radius:8px;margin:5px;font-size:24px;line-height:90px;text-align:center;font-weight:bold;box-shadow:2px 2px 5px rgba(0,0,0,.3)}
+.card.red{color:#d00}
+#controls{margin:20px}
+button{padding:10px 30px;font-size:18px;margin:5px;border:none;border-radius:5px;cursor:pointer;background:#f0c040;color:#000;font-weight:bold}
+button:disabled{opacity:.4;cursor:default}
+#info{font-size:18px;margin:10px}
+#hand{min-height:100px}
+#community{min-height:100px}
+#chips{font-size:20px;margin:10px}
+</style></head><body>
+<h1>♠️ Poker ♥️</h1>
+<div id="table">
+<div id="chips">Chips: 1000</div>
+<div id="community"></div>
+<div id="hand"></div>
+<div id="info">Press Deal to start</div>
+<div id="controls">
+<button id="dealBtn">Deal</button>
+<button id="foldBtn" disabled>Fold</button>
+<button id="callBtn" disabled>Call</button>
+<button id="raiseBtn" disabled>Raise</button>
+</div>
+</div>
+<script>
+let deck=[],hand=[],community=[],chips=1000,bet=0,pot=0,phase=0,folded=0;
+const $=id=>document.getElementById(id);
+const suits=['♠','♥','♦','♣'],vals=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.random()*i|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function newDeck(){let d=[];for(let s of suits)for(let v of vals)d.push(v+s);return shuffle(d)}
+function cardHTML(c){let r=c.slice(0,-1),s=c.slice(-1);return`<div class="card${s=='♥'||s=='♦'?' red':''}">${r}${s}</div>`}
+function rankVal(r){return vals.indexOf(r)}
+function handRank(h){let r=h.map(c=>rankVal(c.slice(0,-1))).sort((a,b)=>a-b),s=h.map(c=>c.slice(-1));
+let flush=s.every(x=>x===s[0]),straight=0,counts={},pairs=[];
+for(let v of r)counts[v]=(counts[v]||0)+1;
+let k=Object.keys(counts).map(Number).sort((a,b)=>a-b);
+if(r[4]-r[0]==4&&new Set(r).size==5)straight=1;
+if(r[0]==0&&r[1]==1&&r[2]==2&&r[3]==3&&r[4]==12)straight=1,r=[0,1,2,3,12];
+let maxC=Math.max(...Object.values(counts));
+for(let v in counts)if(counts[v]==2)pairs.push(+v);
+if(flush&&straight)return r[4]==12?10:9;
+if(maxC==4)return 8;
+if(maxC==3&&pairs.length==1)return 7;
+if(flush)return 6;
+if(straight)return 5;
+if(maxC==3)return 4;
+if(pairs.length==2)return 3;
+if(pairs.length==1)return 2;
+return 1}
+function compareHands(a,b){let ra=handRank(a),rb=handRank(b);if(ra!=rb)return ra-rb;
+let va=a.map(c=>rankVal(c.slice(0,-1))).sort((x,y)=>y-x),vb=b.map(c=>rankVal(c.slice(0,-1))).sort((x,y)=>y-x);
+for(let i=0;i<5;i++)if(va[i]!=vb[i])return va[i]-vb[i];return 0}
+function bestHand(){let best=null,bestR=-1;
+function combos(arr,k){if(k==0)return[[]];if(arr.length==0)return[];let [f,...r]=arr;let inc=combos(r,k-1).map(c=>[f,...c]);return inc.concat(combos(r,k))}
+let all=hand.concat(community);
+if(all.length<5)return null;
+let c=combos(all,5);
+for(let h of c){let r=handRank(h);if(r>bestR||(r==bestR&&compareHands(h,best)>0)){best=h;bestR=r}}
+return best}
+function updateUI(){let h=hand.map(cardHTML).join(''),c=community.map(cardHTML).join('');
+$('hand').innerHTML=h?'<b>Your hand:</b><br>'+h:'';
+$('community').innerHTML=c?'<b>Community:</b><br>'+c:'';
+$('chips').textContent='Chips: '+chips+' | Pot: '+pot;
+let names=['','High Card','Pair','Two Pair','Three of a Kind','Straight','Flush','Full House','Four of a Kind','Straight Flush','Royal Flush'];
+let b=bestHand();if(b)$('info').textContent='Best: '+names[handRank(b)];else $('info').textContent=folded?'You folded':'Press Deal';
+$('dealBtn').disabled=phase!=0;$('foldBtn').disabled=phase==0||folded;$('callBtn').disabled=phase==0||folded;$('raiseBtn').disabled=phase==0||folded;}
+function deal(){if(chips<10)return alert('Out of chips! Refresh to restart.');
+deck=newDeck();hand=[deck.pop(),deck.pop()];community=[];pot=0;bet=10;folded=0;phase=1;
+chips-=10;pot+=10;updateUI();$('info').textContent='Pre-flop - Call 10 or raise';}
+function fold(){folded=1;updateUI();}
+function call(){if(phase==1){chips-=10;pot+=10;community.push(deck.pop(),deck.pop(),deck.pop());phase=2;bet=0;
+$('info').textContent='Flop - Check or bet';}
+else if(phase==2){community.push(deck.pop());phase=3;$('info').textContent='Turn - Check or bet';}
+else if(phase==3){community.push(deck.pop());phase=4;$('info').textContent='River - Check or bet';}
+else if(phase==4){showdown();return}
+updateUI();}
+function raise(){let amt=20;if(chips<amt)return alert('Not enough chips');
+chips-=amt;pot+=amt;bet=amt;
+if(phase==1){community.push(deck.pop(),deck.pop(),deck.pop());phase=2;$('info').textContent='Flop - You raised';}
+else if(phase==2){community.push(deck.pop());phase=3;$('info').textContent='Turn - You raised';}
+else if(phase==3){community.push(deck.pop());phase=4;$('info').textContent='River - You raised';}
+else if(phase==4){showdown();return}
+updateUI();}
+function showdown(){let player=bestHand();
+let compHand=[deck.pop(),deck.pop()];
+let compBest=null,compR=-1;
+function combos(arr,k){if(k==0)return[[]];if(arr.length==0)return[];let [f,...r]=arr;let inc=combos(r,k-1).map(c=>[f,...c]);return inc.concat(combos(r,k))}
+let all=compHand.concat(community);
+if(all.length>=5){let c=combos(all,5);for(let h of c){let r=handRank(h);if(r>compR||(r==compR&&compareHands(h,compBest)>0)){compBest=h;compR=r}}}
+let names=['','High Card','Pair','Two Pair','Three of a Kind','Straight','Flush','Full House','Four of a Kind','Straight Flush','Royal Flush'];
+let msg='';
+if(!player||!compBest){msg='Error';}
+else{let cmp=compareHands(player,compBest);
+if(cmp>0){chips+=pot;msg='You win '+pot+' chips! '+names[handRank(player)]+' beats '+names[handRank(compBest)];}
+else if(cmp<0){msg='Computer wins with '+names[handRank(compBest)];}
+else{chips+=Math.floor(pot/2);msg='Split pot! Both have '+names[handRank(player)];}}
+$('info').textContent=msg;
+$('hand').innerHTML+='<br><b>Computer:</b> '+compHand.map(cardHTML).join('');
+phase=0;folded=0;updateUI();}
+updateUI();
+</script></body></html> [end of text]
+
+

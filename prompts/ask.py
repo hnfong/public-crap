@@ -753,6 +753,13 @@ class DeepSeekV3Mixin:
         else:
             return f"""<｜User｜>{self.prompt()}<｜Assistant｜>"""
 
+class DeepSeekV4NoThinkingMixin:
+    def templated_prompt(self):
+        if self.system_message():
+            return f"""{self.system_message()}<｜User｜>{self.prompt()}<｜Assistant｜></think>"""
+        else:
+            return f"""<｜User｜>{self.prompt()}<｜Assistant｜></think>"""
+
 class Mistral3InstructTemplate:
     def templated_prompt(self):
         # wtf? If we really believe the chat_template above, this is the result. But it doesn't work.
@@ -942,6 +949,7 @@ NAME_MATCH_OVERRIDE = [
     ("DeepSeek-V2.5", DeepSeekV25Mixin),
     ("DeepSeek-V3-", DeepSeekV3Mixin),
     ("DeepSeek-V3-", DeepSeekV3Mixin),
+    ("DeepSeek-V4-", DeepSeekV4NoThinkingMixin),
     ("DeepSeek-V3.1", DeepSeekV3Mixin),
     ("DeepSeek-R1", DeepSeekR1DistillMixin),  # Distills, basically
     ("Mimo", LongContextChatMLTemplateMixin),
