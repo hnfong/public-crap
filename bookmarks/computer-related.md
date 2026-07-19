@@ -93,6 +93,7 @@ Computer technology related.
 
 ## Open Source Tools
 
+- ☆ https://github.com/xtool-org/xtool - Cross-platform Xcode replacement. Build and deploy iOS apps with SwiftPM on Linux, Windows, and macOS.
 - ☆ https://pyautogui.readthedocs.io/en/latest/ - PyAutoGUI lets your Python scripts control the mouse and keyboard to automate interactions with other applications. The API is designed to be simple. PyAutoGUI works on Windows, macOS, and Linux
 - ☆ https://streamlit.io/playground - A faster way to build and share data apps Turn your data scripts into shareable web apps in minutes. All in pure Python. No front‑end experience required.
 - ☆ https://github.com/enigo-rs/enigo?tab=readme-ov-file - Cross platform input simulation in Rust
@@ -672,6 +673,7 @@ Computer technology related.
 
 ## HOWTOs, Beginners instructions, Learn stuff
 
+- ☆ https://scottwillsey.com/building-and-shipping-mac-and-ios-apps-without-ever-opening-xcode/
 - ☆ https://p403n1x87.github.io/running-c-unit-tests-with-pytest.html https://news.ycombinator.com/item?id=30301880
 - http://gitready.com/ - Git learning site
 - http://learnvimscriptthehardway.stevelosh.com/ - Learn Vimscript the Hard Way
