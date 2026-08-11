@@ -2,6 +2,7 @@
 
 ## Actual stories
 
+- ☆ https://en.wikipedia.org/wiki/Christopher_Thomas_Knight - North Pond Hermit
 - ☆ https://abcnews.go.com/Health/Wellness/teen-girl-vagina-pregnant-sperm-survival-oral-sex/story?id=9732562
   - 
 - ☆ https://www.youtube.com/watch?v=eoC_YA0RB3g - Aubrey Marcus podcast with Matias De Stefano & Robert Grant

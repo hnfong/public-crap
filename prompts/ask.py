@@ -898,6 +898,19 @@ class LingTemplateMixin:
 <role>SYSTEM</role>{self.system_message()}<|role_end|><role>HUMAN</role>{self.prompt()}<|role_end|><role>ASSISTANT</role>
 """.strip()
 
+class MuseGlimmerTemplateMixin:
+    def templated_prompt(self):
+        return f"""
+<|start|>system<|message|>{self.system_message()}
+
+Knowledge cutoff: 2026-01-04.
+Current date: 2026-01-04.
+
+Reasoning strength: low.
+
+# Valid recipients: "self", "user".<|eot|><|start|>user<|message|>{self.prompt()}<|eot|><|start|>assistant
+""".strip()
+
 def mixer(clz1, clz2):
     class MixedClass(clz1, clz2):
         pass
@@ -935,6 +948,8 @@ NAME_MATCH_OVERRIDE = [
     ("QwenLong-L1.5", Qwen3ThinkingTemplateMixin),
     ("Nemotron-3-", ChatMLTemplateMixin),
     ("MiniCPM5", ChatMLTemplateWithDefaultSystemPromptMixin),
+
+    ("Glimmer", MuseGlimmerTemplateMixin),
 
     ("Step-3.5", ChatMLThinkingTemplateMixin),
     ("Light-IF", NoThinkingChatMLTemplateMixin),
