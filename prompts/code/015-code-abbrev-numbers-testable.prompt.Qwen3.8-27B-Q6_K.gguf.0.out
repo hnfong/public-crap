@@ -1,0 +1,105 @@
+```python
+def abbrev_num(x):
+    if x < 0:
+        return '-' + abbrev_num(-x)
+    
+    if x < 1000:
+        return str(x)
+    
+    # Determine the order of magnitude
+    # We want to represent as X.YK, X.YM, etc.
+    # But keep it <= 4 chars if possible
+    
+    # Let's think about this differently.
+    # For numbers >= 1000, we divide by 1000, 1000000, 1000000000, etc.
+    # and add the appropriate suffix.
+    
+    suffixes = ['', 'K', 'M', 'B', 'T', 'P', 'E']
+    
+    # Find the appropriate suffix
+    for i in range(len(suffixes) - 1, -1, -1):
+        if x >= 10 ** (i * 3):
+            suffix = suffixes[i]
+            divisor = 10 ** (i * 3)
+            break
+    else:
+        return str(x)
+    
+    value = x / divisor
+    
+    # Now we need to format value with the suffix such that total length <= 4 if possible
+    # The suffix is 1 character (K, M, B, etc.)
+    # So we have 3 characters for the number part if we want total <= 4.
+    # But wait, the examples show:
+    # 8180 => 8.2K (4 chars)
+    # 9385832 => 9.4M (4 chars)
+    # 74581 => 75K (3 chars)
+    
+    # So the strategy:
+    # If value < 10: we can use one decimal place, giving us "X.Y" + suffix = 4 chars
+    # If value >= 10: we can use no decimal place, giving us "XX" + suffix = 3 chars, or "XXX" + suffix = 4 chars
+    
+    # Let's be more precise:
+    # We want the total string length to be <= 4.
+    # Suffix is 1 char.
+    # So the numeric part should be <= 3 chars.
+    
+    # If value < 10:
+    #   We can represent as "X.Y" (3 chars) + suffix (1 char) = 4 chars total
+    #   Or "X" (1 char) + suffix = 2 chars, but that loses precision
+    #   The examples suggest using one decimal when value < 10
+    #   8.2K for 8180: 8180/1000 = 8.18, rounded to 8.2
+    #   9.4M for 9385832: 9385832/1000000 = 9.385832, rounded to 9.4
+    
+    # If value >= 10:
+    #   We can represent as "XX" (2 chars) + suffix = 3 chars
+    #   Or "XXX" (3 chars) + suffix = 4 chars
+    #   74581: 74581/1000 = 74.581, rounded to 75 (nearest integer) => "75K" (3 chars)
+    #   What about 99999? 99999/1000 = 99.999, rounded to 100 => "100K" (4 chars)
+    #   What about 100000? That would be 100K, but actually 100000 should be 100K or 0.1M?
+    #   Let's check: 100000 >= 1000, so we use K. 100000/1000 = 100. So "100K" (4 chars).
+    #   But 100000 is also >= 1000000? No, 100000 < 1000000. So K is correct.
+    
+    # Let me reconsider the threshold. The problem says "roughly represents the number in compact, human readable form"
+    # and "give the order of magnitude".
+    
+    # Let me think about when to use which suffix.
+    # 1000-9999: K, value 1-9.999
+    # 10000-99999: K, value 10-99.999
+    # 100000-999999: K, value 100-999.999
+    # 1000000-9999999: M, value 1-9.999
+    # etc.
+    
+    # So for value < 10: use one decimal place
+    # For value >= 10: use no decimal place (round to nearest integer)
+    
+    if value < 10:
+        # Round to one decimal place
+        rounded = round(value, 1)
+        # Format: if the rounded value is like 8.0, should we show "8.0K" or "8K"?
+        # The example shows 8.2K, so we keep the decimal.
+        # But what if it's 8.0? "8.0K" is 4 chars. "8K" is 2 chars.
+        # The problem says "roughly represents" and "couple significant digits".
+        # Let's keep one decimal place for consistency when value < 10.
+        # Actually, let me check: if value is 8.0, "8.0K" seems fine.
+        # But wait, what about 1000? 1000/1000 = 1.0. "1.0K" (4 chars) or "1K" (2 chars)?
+        # The problem doesn't specify, but "1K" seems more natural.
+        # Let me re-read: "represent the number with a couple significant digits"
+        # So maybe we should use significant digits approach.
+        
+        # Let me try a different approach:
+        # If value < 10: format with one decimal place, but strip trailing .0
+        # If value >= 10: round to nearest integer
+        
+        if rounded == int(rounded):
+            # It's a whole number
+            return f"{int(rounded)}{suffix}"
+        else:
+            return f"{rounded}{suffix}"
+    else:
+        # Round to nearest integer
+        rounded = round(value)
+        return f"{int(rounded)}{suffix}"
+``` [end of text]
+
+

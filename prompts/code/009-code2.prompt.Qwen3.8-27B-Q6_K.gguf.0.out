@@ -1,0 +1,131 @@
+```python
+def binary_search_file(file_path, target):
+    """
+    Perform a binary search on a text file with lines sorted in lexicographical order.
+    
+    Args:
+        file_path: Path to the text file
+        target: The target bytes to search for (prefix match on a line)
+    
+    Returns:
+        The byte position of the target, or the insertion point (as in bisect_left)
+    """
+    import os
+    
+    file_size = os.path.getsize(file_path)
+    
+    if file_size == 0:
+        return 0
+    
+    # We need to find the line that starts with `target` or where `target` would be inserted.
+    # The file contains lines sorted in lexicographical order.
+    # Each line is terminated by a newline character (except possibly the last line).
+    
+    # We'll do a binary search on the byte positions of line starts.
+    # First, let's figure out how to get the line at a given byte position.
+    
+    def get_line_start_at_or_before(pos):
+        """
+        Given a byte position, find the start of the line that contains this position.
+        Returns the byte offset of the start of that line.
+        """
+        with open(file_path, 'rb') as f:
+            f.seek(pos)
+            # Read backwards to find the start of the line
+            # We need to find the previous newline or the beginning of the file
+            # Let's read a chunk and search backwards
+            # Actually, let's seek to the beginning and read line by line until we pass pos
+            # But that's O(n). Instead, let's use a different approach.
+            
+            # Let's seek to pos and then read backwards byte by byte until we find a newline or start of file
+            # This could be slow for long lines, but let's try a smarter approach.
+            
+            # Alternative: seek to pos, then seek backwards in chunks
+            # For simplicity, let's just read from the start up to pos and find the last newline
+            # But that's O(pos) which is bad.
+            
+            # Let's use a different strategy: we'll maintain a list of line start positions
+            # But we can't precompute that without reading the whole file.
+            
+            # Actually, for binary search, we need to be able to compare the line at a given position
+            # with the target. Let's think differently.
+            
+            # We'll do binary search on the line index, but we need to map line index to byte position.
+            # Let's first read all line start positions.
+            pass
+    
+    # Let's take a different approach: read all line start positions first
+    line_starts = []
+    with open(file_path, 'rb') as f:
+        pos = 0
+        while True:
+            line_starts.append(pos)
+            line = f.readline()
+            if not line:
+                break
+            pos += len(line)
+    
+    n_lines = len(line_starts)
+    
+    if n_lines == 0:
+        return 0
+    
+    # Now do binary search on the lines
+    # We want to find the first line that is >= target (in lexicographical order)
+    # bisect_left semantics: return the insertion point
+    
+    lo = 0
+    hi = n_lines  # exclusive
+    
+    while lo < hi:
+        mid = (lo + hi) // 2
+        # Read the line at line_starts[mid]
+        with open(file_path, 'rb') as f:
+            f.seek(line_starts[mid])
+            line = f.readline()
+        
+        # Compare line with target
+        # We want to check if line starts with target, or if line < target
+        # For bisect_left, we want the first position where line >= target
+        
+        # Compare: if line < target, go right; else go left
+        # But we need to be careful: we're comparing the line content with target
+        # The line includes the newline character, but target is just the prefix
+        
+        # Let's compare: if line (without newline) < target, then this line is too small
+        # Actually, we should compare the line content with target as a prefix
+        
+        # If line starts with target, then this is a match, and we should return this position
+        # For bisect_left, if there are multiple lines starting with target, we return the first one
+        
+        # Let's compare: 
+        # If line < target (lexicographically), then we need to go right
+        # If line >= target, we go left
+        
+        # But how to compare? line is bytes, target is bytes
+        # We can compare line[:len(target)] with target, but that's not quite right
+        # because if line is shorter than target, we need to handle that
+        
+        # Actually, for lexicographical comparison:
+        # line < target if line is a prefix of target and shorter, or at the first differing position, line has a smaller byte
+        
+        # Let's just do: if line < target, go right; else go left
+        # But line includes the newline, which might affect comparison
+        
+        # Let's strip the newline for comparison
+        line_content = line.rstrip(b'\n')
+        
+        if line_content < target:
+            lo = mid + 1
+        else:
+            hi = mid
+    
+    # lo is the insertion point (index of the first line >= target)
+    if lo < n_lines:
+        return line_starts[lo]
+    else:
+        # Insertion point is at the end
+        return line_starts[-1] + len(open(file_path, 'rb').readline()) if n_lines > 0 else 0
+``` [end of text]
+
+

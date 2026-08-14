@@ -1,0 +1,85 @@
+```java
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        StringBuilder input = new StringBuilder();
+        while (scanner.hasNextLine()) {
+            input.append(scanner.nextLine()).append("\n");
+        }
+        scanner.close();
+
+        String text = input.toString();
+
+        // Pattern to match numbers with optional commas as thousand separators,
+        // optional decimal part, and optional suffix (k, K, m, M, g, G)
+        // The number part: digits with optional commas, optional decimal
+        // Suffix: optional k/K/m/M/g/G
+        
+        // We need to be careful: commas are thousand separators, so they appear within the integer part
+        // Pattern: (\d{1,3}(?:,\d{3})*|\d+)(?:\.\d+)?\s*([kKmMgG])?
+        
+        Pattern pattern = Pattern.compile("(\\d{1,3}(?:,\\d{3})*|\\d+)(?:\\.\\d+)?\\s*([kKmMgG])?");
+        Matcher matcher = pattern.matcher(text);
+        
+        double total = 0.0;
+        
+        while (matcher.find()) {
+            String numberPart = matcher.group(1);
+            String suffix = matcher.group(2);
+            
+            // Remove commas from number part
+            numberPart = numberPart.replace(",", "");
+            
+            double value;
+            try {
+                value = Double.parseDouble(numberPart);
+            } catch (NumberFormatException e) {
+                continue;
+            }
+            
+            if (suffix != null) {
+                char s = suffix.charAt(0);
+                switch (s) {
+                    case 'k':
+                    case 'K':
+                        value *= 1024;
+                        break;
+                    case 'm':
+                    case 'M':
+                        value *= 1024 * 1024;
+                        break;
+                    case 'g':
+                    case 'G':
+                        value *= 1024L * 1024 * 1024;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
+            total += value;
+        }
+        
+        // Print total sum
+        System.out.printf("%.1f%n", total);
+        
+        // Print in kilobytes
+        double kb = total / 1024;
+        System.out.printf("%.1f k%n", kb);
+        
+        // Print in megabytes
+        double mb = total / (1024 * 1024);
+        System.out.printf("%.1f M%n", mb);
+        
+        // Print in gigabytes
+        double gb = total / (1024L * 1024 * 1024);
+        System.out.printf("%.1f G%n", gb);
+    }
+}
+``` [end of text]
+
+

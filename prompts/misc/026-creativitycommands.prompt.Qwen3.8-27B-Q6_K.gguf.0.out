@@ -1,0 +1,83 @@
+### Probable Output
+
+The command will output the **20 most frequently occurring words** in your fan fiction file, sorted in ascending order of frequency (so the most frequent word will be at the very bottom of the output).
+
+Each line will look like this:
+`   <count> <word>`
+
+For example, if "the" appears 500 times, "and" appears 450 times, and "was" appears 400 times, the last three lines of the output might look like:
+```
+  400 was
+  450 and
+  500 the
+```
+
+*(Note: The exact words and counts depend entirely on the content of `wowfanfic.txt`. However, in English text, the top words are almost always function words like "the", "and", "to", "of", "a", "in", "that", "he", "was", "for", "it", "with", "as", "his", "on", "they", "at", "be", "this", "have".)*
+
+---
+
+### Step-by-Step Explanation of the Command
+
+Let’s break down the pipeline:
+
+1.  **`cat wowfanfic.txt`**
+    - Reads the entire content of the file and sends it to standard output.
+
+2.  **`| perl -ne '@a = split(/\s/); foreach (@a) { print $_ . "\n"; }'`**
+    - `-n`: Loops over each line of input.
+    - `split(/\s/)`: Splits the line into words based on whitespace (spaces, tabs, newlines).
+    - `foreach (@a) { print $_ . "\n"; }`: Prints each word on its own separate line.
+    - **Result:** A list of all words in the text, one per line.
+
+3.  **`| sort`**
+    - Sorts the list of words alphabetically. This is required for `uniq` to work correctly.
+
+4.  **`| uniq -c`**
+    - Counts consecutive identical lines.
+    - `-c`: Prepends the count to each line.
+    - **Result:** Lines like `  500 the`, `  450 and`, etc.
+
+5.  **`| sort -n`**
+    - Sorts the lines numerically based on the count (the first number on each line).
+    - By default, `sort` is ascending, so the least frequent words come first, and the most frequent come last.
+
+6.  **`| tail -n 20`**
+    - Takes the last 20 lines of the input.
+    - Since the list is sorted by frequency (ascending), the last 20 lines are the **20 most frequent words**.
+
+---
+
+### Explanation with Respect to Basic Linguistic Principles
+
+This command is a simple implementation of **frequency analysis**, a fundamental tool in linguistics and computational linguistics. Here’s how it relates to linguistic principles:
+
+#### 1. **Function Words vs. Content Words**
+   - In natural languages like English, **function words** (also called grammatical words) are far more frequent than **content words** (lexical words).
+   - Function words include articles (*the, a, an*), prepositions (*in, on, at*), conjunctions (*and, but, or*), pronouns (*he, she, it*), and auxiliary verbs (*is, was, have*).
+   - Content words include nouns (*warrior, orc, dragon*), verbs (*fight, run, cast*), adjectives (*strong, dark, ancient*), and adverbs (*quickly, loudly*).
+   - **Linguistic Principle:** Zipf’s Law states that the frequency of a word is inversely proportional to its rank in the frequency table. The most frequent word (usually "the") is about twice as frequent as the second most frequent, three times as frequent as the third, and so on.
+   - **Expected Result:** The top 20 words will almost certainly be dominated by function words. You will rarely see specific WoW terms like "Azeroth", "Loki", or "Hearthstone" in the top 20 unless the text is extremely short or highly repetitive in a non-linguistic way.
+
+#### 2. **Morphological Simplicity**
+   - The `split(/\s/)` command splits on whitespace only. It does **not** perform lemmatization or stemming.
+   - This means that different forms of the same word are treated as distinct:
+     - "run", "runs", "running", and "ran" are counted separately.
+     - "orc", "orcs" are counted separately.
+   - **Linguistic Principle:** This reflects a **surface-level analysis** rather than a deep morphological analysis. In a more sophisticated linguistic analysis, you would use a stemmer (e.g., Porter Stemmer) to group "running" and "run" together, which would change the frequency counts.
+
+#### 3. **Case Sensitivity**
+   - The command is **case-sensitive**. "The" and "the" are treated as different words.
+   - **Linguistic Principle:** In natural language processing (NLP), it is standard practice to convert all text to lowercase before frequency analysis to avoid this issue. Since this command does not do that, if your fan fiction uses "The" at the start of sentences, it will be counted separately from "the" in the middle of sentences. This may slightly reduce the count for "the" and increase the count for "The", but "the" will still likely dominate.
+
+#### 4. **Punctuation**
+   - The `split(/\s/)` does not remove punctuation. So "the," and "the" are treated as different words.
+   - **Linguistic Principle:** This is a common limitation in simple text processing. A more robust linguistic analysis would strip punctuation before tokenization. This may cause words like "the," to appear as separate entries, potentially pushing "the" down the list slightly, but it will still be among the top.
+
+#### 5. **Corpus Size and Distribution**
+   - The result depends on the **corpus** (your fan fiction). If the text is very short, the distribution may not follow Zipf’s Law closely. If it is long and typical of English prose, the top words will be highly predictable.
+   - **Linguistic Principle:** Frequency distributions are stable across large corpora of a given language. This is why frequency analysis is a reliable tool for language identification, text classification, and stylistic analysis.
+
+### Summary
+The command will reveal the **most common function words** in your fan fiction, reflecting the basic statistical properties of English (or whatever language the text is in). It is a simple but powerful tool for understanding the **lexical profile** of a text. [end of text]
+
+
