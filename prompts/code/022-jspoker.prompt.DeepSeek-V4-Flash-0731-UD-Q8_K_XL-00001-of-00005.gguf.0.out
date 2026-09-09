@@ -1,0 +1,148 @@
+<!DOCTYPE html><html>
+<head><title>Poker</title><style>
+body{font-family:monospace;background:#0a3d0a;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh;margin:0}
+#game{background:#1a5c1a;padding:20px;border-radius:10px;box-shadow:0 0 20px #000}
+h2{margin:0 0 10px;text-align:center}
+#table{background:#2d7a2d;border-radius:10px;padding:15px;min-width:600px}
+#community{display:flex;justify-content:center;gap:8px;margin:10px 0;min-height:80px}
+.card{width:60px;height:84px;background:#fff;color:#000;border-radius:5px;display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:20px;font-weight:bold;box-shadow:2px 2px 5px rgba(0,0,0,0.5)}
+.card.red{color:#d00}
+.card.hidden{background:#333;color:#333;font-size:0}
+#player{display:flex;justify-content:center;gap:8px;margin:10px 0}
+#controls{display:flex;justify-content:center;gap:10px;margin:10px 0}
+button{padding:10px 20px;font-size:16px;border:none;border-radius:5px;cursor:pointer;background:#ffd700;color:#000;font-weight:bold}
+button:disabled{background:#888;cursor:not-allowed}
+#info{text-align:center;margin:10px 0;font-size:18px}
+#pot{text-align:center;font-size:20px;margin:5px}
+</style></head>
+<body>
+<div id="game">
+<h2>♠️ POKER ♥️</h2>
+<div id="pot">Pot: $0</div>
+<div id="table">
+<div id="community"></div>
+<div id="player"></div>
+<div id="info">Welcome! Place your bet.</div>
+<div id="controls">
+<button id="foldBtn">Fold</button>
+<button id="checkBtn">Check</button>
+<button id="betBtn">Bet $10</button>
+<button id="newBtn" style="display:none">New Hand</button>
+</div>
+</div>
+</div>
+<script>
+const suits=['♠','♥','♦','♣'];
+const ranks=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+let deck=[],playerHand=[],community=[],pot=0,playerMoney=1000,currentBet=0,playerBet=0,gamePhase='preflop',gameOver=false;
+
+function createDeck(){
+deck=[];
+for(let s=0;s<4;s++)for(let r=0;r<13;r++)deck.push({rank:r, suit:s});
+shuffle(deck);
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
+function cardHTML(c,hidden=false){
+if(hidden)return '<div class="card hidden">?</div>';
+let r=ranks[c.rank],s=suits[c.suit],red=(c.suit===1||c.suit===2);
+return `<div class="card ${red?'red':''}">${r}<br>${s}</div>`;
+}
+function render(){
+document.getElementById('community').innerHTML=community.map(c=>cardHTML(c)).join('');
+document.getElementById('player').innerHTML=playerHand.map(c=>cardHTML(c)).join('');
+document.getElementById('pot').textContent='Pot: $'+pot;
+document.getElementById('info').textContent=gameOver?getResult():`Your money: $${playerMoney} | Your bet: $${playerBet} | Current bet: $${currentBet}`;
+document.getElementById('foldBtn').disabled=gameOver||gamePhase==='preflop'&&playerBet===0;
+document.getElementById('checkBtn').disabled=gameOver||(gamePhase==='preflop'&&playerBet===0)||playerBet===currentBet;
+document.getElementById('betBtn').disabled=gameOver||playerBet>=currentBet+10||playerMoney<10;
+document.getElementById('newBtn').style.display=gameOver?'inline-block':'none';
+}
+function startHand(){
+createDeck();
+playerHand=[deck.pop(),deck.pop()];
+community=[];pot=0;currentBet=10;playerBet=10;playerMoney-=10;pot+=10;gamePhase='preflop';gameOver=false;
+render();
+}
+function fold(){
+gameOver=true;pot+=playerBet;playerBet=0;render();
+}
+function check(){
+if(playerBet<currentBet){playerBet=currentBet;let diff=currentBet-playerBet;playerMoney-=diff;pot+=diff;}
+else if(gamePhase==='preflop'){playerBet=10;playerMoney-=10;pot+=10;}
+advancePhase();
+}
+function bet(){
+let amount=10;
+if(playerMoney<amount)amount=playerMoney;
+playerBet+=amount;playerMoney-=amount;pot+=amount;
+if(playerBet>currentBet)currentBet=playerBet;
+advancePhase();
+}
+function advancePhase(){
+if(gamePhase==='preflop'){
+gamePhase='flop';
+community.push(deck.pop(),deck.pop(),deck.pop());
+}
+else if(gamePhase==='flop'){
+gamePhase='turn';
+community.push(deck.pop());
+}
+else if(gamePhase==='turn'){
+gamePhase='river';
+community.push(deck.pop());
+}
+else{
+gameOver=true;
+}
+render();
+}
+function getResult(){
+let hand=evaluateHand(playerHand,community);
+let result='';
+if(hand.rank===8)result='Straight Flush!';
+else if(hand.rank===7)result='Four of a Kind!';
+else if(hand.rank===6)result='Full House!';
+else if(hand.rank===5)result='Flush!';
+else if(hand.rank===4)result='Straight!';
+else if(hand.rank===3)result='Three of a Kind!';
+else if(hand.rank===2)result='Two Pair!';
+else if(hand.rank===1)result='One Pair!';
+else result='High Card';
+let win=hand.rank>=4?pot:0;
+playerMoney+=win;
+return `${result} - You win $${win}!`;
+}
+function evaluateHand(player,comm){
+let all=player.concat(comm);
+let counts={};
+all.forEach(c=>counts[c.rank]=(counts[c.rank]||0)+1);
+let values=Object.values(counts).sort((a,b)=>b-a);
+let ranks=Object.keys(counts).map(Number).sort((a,b)=>b-a);
+let flush=all.every(c=>c.suit===all[0].suit);
+let straight=false;
+if(ranks.length>=5){
+for(let i=0;i<=ranks.length-5;i++){
+if(ranks[i]-ranks[i+4]===4){straight=true;break;}
+}
+if(ranks.includes(12)&&ranks.includes(0)&&ranks.includes(1)&&ranks.includes(2)&&ranks.includes(3))straight=true;
+}
+if(flush&&straight)return{rank:8};
+if(values[0]===4)return{rank:7};
+if(values[0]===3&&values[1]===2)return{rank:6};
+if(flush)return{rank:5};
+if(straight)return{rank:4};
+if(values[0]===3)return{rank:3};
+if(values[0]===2&&values[1]===2)return{rank:2};
+if(values[0]===2)return{rank:1};
+return{rank:0};
+}
+document.getElementById('foldBtn').onclick=fold;
+document.getElementById('checkBtn').onclick=check;
+document.getElementById('betBtn').onclick=bet;
+document.getElementById('newBtn').onclick=startHand;
+startHand();
+</script>
+</body>
+</html> [end of text]
+
+

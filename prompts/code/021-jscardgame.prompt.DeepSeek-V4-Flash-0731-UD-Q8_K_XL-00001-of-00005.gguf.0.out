@@ -1,0 +1,256 @@
+<!DOCTYPE html><html>
+<head><title>Solitaire Twist</title><style>
+body{background:#2d5a3d;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;font-family:sans-serif}
+#game{background:#1a3a2a;padding:20px;border-radius:15px;box-shadow:0 0 30px rgba(0,0,0,.5)}
+table{border-collapse:collapse}
+td{width:90px;height:130px;border:2px dashed #4a7a5a;border-radius:8px;text-align:center;vertical-align:top;padding:5px;background:#2a4a3a}
+td.pile{background:#3a5a4a;border-style:solid;border-color:#6a9a7a}
+.card{width:80px;height:120px;background:white;border-radius:6px;margin:2px auto;box-shadow:2px 2px 5px rgba(0,0,0,.4);position:relative;cursor:pointer;transition:transform .1s}
+.card:hover{transform:scale(1.05)}
+.card.red{color:#c0392b}
+.card.black{color:#2c3e50}
+.card .rank{font-size:20px;font-weight:bold;position:absolute;top:5px;left:8px}
+.card .suit{font-size:28px;position:absolute;bottom:5px;right:8px}
+.card.face-down{background:repeating-linear-gradient(45deg,#4a6a8a,#4a6a8a 10px,#3a5a7a 10px,#3a5a7a 20px)}
+#message{color:#ffd700;font-size:20px;text-align:center;margin-top:10px;min-height:25px}
+#score{color:white;font-size:18px;text-align:center;margin-bottom:10px}
+button{background:#ffd700;border:none;padding:8px 20px;border-radius:5px;font-size:16px;cursor:pointer;margin:5px}
+</style></head>
+<body>
+<div id="game">
+<div id="score">Score: 0</div>
+<table id="board"><tr id="toprow"></tr><tr id="bottomrow"></tr></table>
+<div id="message"></div>
+<button onclick="newGame()">New Game</button>
+</div>
+<script>
+// Solitaire Twist: "Elemental Solitaire" - cards have elements (fire/water/earth/air) that must match when building
+const suits=['♠','♥','♦','♣'];
+const ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const elements=['🔥','💧','🌿','💨'];
+let deck=[],tableau=[],foundation=[],waste=[],stock=[],score=0,selected=null;
+
+function createDeck(){
+deck=[];
+for(let s=0;s<4;s++)for(let r=0;r<13;r++)deck.push({suit:s,rank:r,element:Math.floor(Math.random()*4),faceUp:false});
+shuffle(deck);
+}
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
+
+function newGame(){
+createDeck();
+tableau=[[],[],[],[],[],[],[]];
+foundation=[[],[],[],[]];
+waste=[];stock=[...deck];score=0;selected=null;
+// deal 7 piles
+for(let i=0;i<7;i++){
+for(let j=0;j<=i;j++){
+let card=stock.pop();
+card.faceUp=(j===i);
+tableau[i].push(card);
+}
+}
+render();
+updateMessage('Click a face-up card to select it');
+}
+
+function render(){
+let topRow=document.getElementById('toprow');
+let bottomRow=document.getElementById('bottomrow');
+topRow.innerHTML='';bottomRow.innerHTML='';
+// top row: stock, waste, 4 foundations
+let stockTd=document.createElement('td');
+stockTd.innerHTML=stock.length?`<div class="card face-down" onclick="drawStock()"></div>`:`<div style="color:#aaa">Empty</div>`;
+topRow.appendChild(stockTd);
+let wasteTd=document.createElement('td');
+if(waste.length){
+let c=waste[waste.length-1];
+wasteTd.innerHTML=cardHTML(c,true);
+wasteTd.onclick=()=>selectCard(c,'waste');
+}else wasteTd.innerHTML='<div style="color:#aaa">Empty</div>';
+topRow.appendChild(wasteTd);
+for(let f=0;f<4;f++){
+let td=document.createElement('td');
+td.className='pile';
+if(foundation[f].length){
+let c=foundation[f][foundation[f].length-1];
+td.innerHTML=cardHTML(c,true);
+td.onclick=()=>selectCard(c,'foundation',f);
+}else{
+td.innerHTML=`<div style="color:#aaa">${['🔥','💧','🌿','💨'][f]}<br>Foundation</div>`;
+td.onclick=()=>selectFoundation(f);
+}
+topRow.appendChild(td);
+}
+// bottom row: tableau
+for(let i=0;i<7;i++){
+let td=document.createElement('td');
+td.className='pile';
+if(tableau[i].length){
+let pileHTML='';
+for(let j=0;j<tableau[i].length;j++){
+let c=tableau[i][j];
+pileHTML+=cardHTML(c,c.faceUp);
+}
+td.innerHTML=pileHTML;
+td.onclick=(e)=>{
+let idx=Math.floor((e.clientY-td.getBoundingClientRect().top)/25);
+if(idx>=tableau[i].length)idx=tableau[i].length-1;
+if(idx>=0&&tableau[i][idx].faceUp)selectCard(tableau[i][idx],'tableau',i);
+};
+}else{
+td.innerHTML='<div style="color:#aaa">Empty</div>';
+td.onclick=()=>selectEmptyTableau(i);
+}
+bottomRow.appendChild(td);
+}
+updateScore();
+}
+
+function cardHTML(c,faceUp){
+if(!faceUp)return '<div class="card face-down"></div>';
+let color=c.suit===0||c.suit===3?'black':'red';
+let suitSym=suits[c.suit];
+let elemSym=elements[c.element];
+return `<div class="card ${color}" style="margin-top:${c.faceUp?0:0}"><div class="rank">${ranks[c.rank]}${elemSym}</div><div class="suit">${suitSym}</div></div>`;
+}
+
+function drawStock(){
+if(stock.length===0){
+// recycle waste
+if(waste.length===0){updateMessage('No cards left!');return;}
+stock=[...waste].reverse();
+waste=[];
+stock.forEach(c=>c.faceUp=false);
+}else{
+let c=stock.pop();
+c.faceUp=true;
+waste.push(c);
+}
+selected=null;
+render();
+}
+
+function selectCard(c,source,index){
+if(!c.faceUp){updateMessage('Card is face down');return;}
+if(selected){
+// try to move selected to this card's pile
+if(source==='tableau'){
+if(canPlaceOnTableau(selected,c)){
+moveToTableau(selected,index);
+}else updateMessage('Invalid move');
+}else if(source==='foundation'){
+if(canPlaceOnFoundation(selected,index)){
+moveToFoundation(selected,index);
+}else updateMessage('Invalid move');
+}else if(source==='waste'){
+// can't place on waste
+updateMessage('Cannot place there');
+}
+selected=null;
+render();
+return;
+}
+selected={card:c,source:source,index:index};
+updateMessage(`Selected ${ranks[c.rank]} of ${suits[c.suit]} (${elements[c.element]})`);
+}
+
+function selectFoundation(f){
+if(selected){
+if(canPlaceOnFoundation(selected.card,f)){
+moveToFoundation(selected.card,f);
+selected=null;
+render();
+}else updateMessage('Invalid foundation move');
+}
+}
+
+function selectEmptyTableau(i){
+if(selected){
+if(selected.card.rank===12){ // King
+moveToTableau(selected.card,i);
+selected=null;
+render();
+}else updateMessage('Only Kings can start a pile');
+}
+}
+
+function canPlaceOnTableau(card,target){
+// descending, opposite color, and element must be different from target's element
+if(target.rank!==card.rank+1)return false;
+let targetColor=target.suit===0||target.suit===3?'black':'red';
+let cardColor=card.suit===0||card.suit===3?'black':'red';
+if(targetColor===cardColor)return false;
+if(target.element===card.element)return false;
+return true;
+}
+
+function canPlaceOnFoundation(card,f){
+if(foundation[f].length===0)return card.rank===0; // Ace
+let top=foundation[f][foundation[f].length-1];
+return card.rank===top.rank+1&&card.element===top.element;
+}
+
+function moveToTableau(card,index){
+// remove from source
+removeFromSource(card);
+tableau[index].push(card);
+card.faceUp=true;
+// flip top of source if needed
+flipTop();
+score+=10;
+checkWin();
+}
+
+function moveToFoundation(card,f){
+removeFromSource(card);
+foundation[f].push(card);
+card.faceUp=true;
+flipTop();
+score+=20;
+checkWin();
+}
+
+function removeFromSource(card){
+if(selected.source==='waste'){
+let idx=waste.indexOf(card);
+if(idx!==-1)waste.splice(idx,1);
+}else if(selected.source==='tableau'){
+let pile=tableau[selected.index];
+let idx=pile.indexOf(card);
+if(idx!==-1)pile.splice(idx);
+}else if(selected.source==='foundation'){
+let pile=foundation[selected.index];
+let idx=pile.indexOf(card);
+if(idx!==-1)pile.splice(idx);
+}
+}
+
+function flipTop(){
+for(let i=0;i<7;i++){
+if(tableau[i].length&&!tableau[i][tableau[i].length-1].faceUp){
+tableau[i][tableau[i].length-1].faceUp=true;
+score+=5;
+}
+}
+}
+
+function checkWin(){
+let total=foundation.reduce((a,b)=>a+b.length,0);
+if(total===52){
+updateMessage('🎉 You won! Score: '+score);
+}else{
+updateMessage('Score: '+score);
+}
+}
+
+function updateScore(){document.getElementById('score').textContent='Score: '+score;}
+
+function updateMessage(msg){document.getElementById('message').textContent=msg;}
+
+newGame();
+</script>
+</body></html> [end of text]
+
+

@@ -1,0 +1,57 @@
+We can perform a binary search on a file by seeking to the middle of the file, then adjusting the search range based on comparisons.  
+
+Here’s a step-by-step approach:
+
+1. Open the file in binary mode.
+2. Set `low = 0` and `high = file_size`.
+3. While `low < high`:
+   - Compute `mid = (low + high) // 2`.
+   - Seek to `mid`.
+   - Read a line (but we might be in the middle of a line, so we need to move to the start of the next line).
+   - Compare the line with the target.
+   - Adjust `low` or `high` accordingly.
+4. Return the position of the target or the insertion point.
+
+We need to handle the case where `mid` lands in the middle of a line: we should move to the beginning of the next line before reading.
+
+Here’s the implementation:
+
+```python
+def binary_search_file(file_path, target):
+    with open(file_path, 'rb') as f:
+        f.seek(0, 2)  # go to end
+        high = f.tell()
+        low = 0
+        
+        while low < high:
+            mid = (low + high) // 2
+            f.seek(mid)
+            # Move to the start of the next line
+            if mid != 0:
+                f.readline()  # skip partial line
+            pos = f.tell()
+            line = f.readline()
+            if not line:
+                # If we're at EOF, move high to pos
+                high = pos
+                continue
+            
+            # Compare line (strip newline) with target
+            line = line.rstrip(b'\n')
+            if line < target:
+                low = pos + len(line) + 1  # move past this line
+            else:
+                high = pos
+        
+        return low
+```
+
+**Explanation:**
+- We use `low` and `high` as byte positions.
+- At each step, we seek to the middle, skip to the start of the next line, and read a full line.
+- If the line is less than the target, we move `low` past this line; otherwise, we set `high` to the start of this line.
+- The loop ends when `low == high`, which is the insertion point (or position of the target if it exists).
+
+This performs O(log n) file seeks and reads, where `n` is the number of lines. [end of text]
+
+
