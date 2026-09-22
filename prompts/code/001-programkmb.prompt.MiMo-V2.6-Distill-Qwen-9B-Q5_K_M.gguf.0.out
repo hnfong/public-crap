@@ -1,0 +1,116 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Reads a multi-line text from standard input, extracts numeric quantities with
+ * optional binary suffixes (k, K, m, M, g, G), converts them to base bytes,
+ * and reports the total together with its equivalent in kilobytes, megabytes
+ * and gigabytes.
+ */
+public final class QuantitySummarizer {
+
+    /** Matches a number (with optional thousands separators) followed by an optional suffix. */
+    private static final Pattern QUANTITY_PATTERN = Pattern.compile(
+            "(?<!\\d)([0-9]+(?:[.,][0-9]+)?)([kKmMgG])?(?=\\s*[,;)]|$)");
+
+    private static final String COMMA = ",";
+    private static final String PERIOD = ".";
+    private static final String SPACE = " ";
+
+    private QuantitySummarizer() {
+    }
+
+    public static void main(String[] args) {
+        String input = readInput();
+        List<BigDecimal> quantities = extractQuantities(input);
+        BigDecimal total = sumQuantities(quantities);
+        printSummary(total);
+    }
+
+    /** Reads all of standard input, preserving line structure. */
+    private static String readInput() {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringBuilder buffer = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line);
+                buffer.append('\n');
+            }
+            return buffer.toString();
+        } catch (IOException exception) {
+            throw new IllegalStateException("Failed to read standard input", exception);
+        }
+    }
+
+    /**
+     * Extracts every quantity from the input. Thousands separators are removed
+     * before parsing, and both lowercase and uppercase suffixes are accepted.
+     */
+    private static List<BigDecimal> extractQuantities(String input) {
+        List<BigDecimal> quantities = new ArrayList<>();
+        Matcher matcher = QUANTITY_PATTERN.matcher(input);
+        while (matcher.find()) {
+            String numberPart = matcher.group(1);
+            String suffix = matcher.group(2);
+            if (numberPart.contains(COMMA)) {
+                numberPart = numberPart.replace(COMMA, PERIOD);
+            }
+            quantities.add(parseQuantity(numberPart, suffix));
+        }
+        return quantities;
+    }
+
+    private static BigDecimal parseQuantity(String numberPart, String suffix) {
+        BigDecimal value = new BigDecimal(numberPart);
+        switch (suffix.toLowerCase(Locale.ROOT)) {
+            case "k":
+                return value.multiply(BigDecimal.valueOf(1024));
+            case "m":
+                return value.multiply(BigDecimal.valueOf(1024 * 1024));
+            case "g":
+                return value.multiply(BigDecimal.valueOf(1024 * 1024 * 1024));
+            default:
+                return value;
+        }
+    }
+
+    private static BigDecimal sumQuantities(List<BigDecimal> quantities) {
+        BigDecimal total = BigDecimal.ZERO;
+        for (BigDecimal quantity : quantities) {
+            total = total.add(quantity);
+        }
+        return total;
+    }
+
+    private static void printSummary(BigDecimal total) {
+        printValue(total, "Total:");
+        printValue(convert(total, 1024), "Kilobytes:");
+        printValue(convert(total, 1024 * 1024), "Megabytes:");
+        printValue(convert(total, 1024 * 1024 * 1024), "Gigabytes:");
+    }
+
+    private static void printValue(BigDecimal value, String label) {
+        System.out.printf("%s%s%n", label, format(value));
+    }
+
+    /** Formats a value with exactly one decimal place, using half-up rounding. */
+    private static String format(BigDecimal value) {
+        return value.setScale(1, RoundingMode.HALF_UP).toPlainString();
+    }
+
+    private static BigDecimal convert(BigDecimal bytes, long divisor) {
+        return bytes.divide(BigDecimal.valueOf(divisor), 1, RoundingMode.HALF_UP);
+    }
+}
+``` [end of text]
+
+

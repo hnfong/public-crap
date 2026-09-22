@@ -1,0 +1,69 @@
+**Q1.** The program will **never terminate** — it will run forever (or until the process is killed by the OS for using too much memory/time).
+
+**Reasoning:** In IEEE 754 double precision, the largest finite value is approximately `1.7976931348623157e+308`. When `x` reaches this maximum finite value, adding `1.0` produces no change because `1.0` is far below the ULP (unit in the last place) at that magnitude — the result rounds back to the same value. So `x` stops increasing at `inf`-adjacent finite max, and the condition `x < math.inf` remains `True` forever. The loop never exits, so `print(x)` is never reached.
+
+(Note: `x` will eventually equal `inf` only if the addition could overflow, but at the max finite value, `max + 1.0 == max`, so it never actually becomes `inf`.)
+
+---
+
+**Q2.** Same behavior — the program will **never terminate**.
+
+**Reasoning:** With `x = 1.0` and `x *= 1.001`, the value grows exponentially. Once `x` reaches the maximum finite double (~1.8e308), multiplying by `1.001` overflows to `inf`. At that point, `inf * 1.001 == inf`, so the condition `x < math.inf` becomes `False` and the loop exits.
+
+Wait — let me reconsider. Actually, `x * 1.001` when `x` is near the max finite value: the product exceeds the max finite value, so it rounds to `inf`. Then `inf < inf` is `False`, loop exits, and `print(x)` outputs `inf`.
+
+So Q2 **does** terminate and prints `inf`, while Q1 does not terminate. They are different.
+
+Let me double-check Q1 more carefully. At max finite value `M ≈ 1.7976931348623157e+308`, `M + 1.0`: the ULP at this magnitude is 2048 (since the exponent is 1023, mantissa spacing is 2^(1023-52) = 2^979... no wait). Let me compute: for numbers in [2^1023, 2^1024), ULP = 2^(1023-52) = 2^971 ≈ 1.0e292. So `M + 1.0` rounds to `M` (since 1.0 < ULP/2). So yes, `x` stays at `M` forever, and `M < inf` is `True` forever. Loop never terminates.
+
+For Q2: `x` grows by factor 1.001 each iteration. Starting from 1.0, it reaches max finite value and then overflows to `inf`. So it terminates and prints `inf`.
+
+So the answers differ: Q1 loops forever, Q2 terminates printing `inf`.
+
+---
+
+**Q3.** Yes, there are inputs that lead to "Done".
+
+The loop terminates when `x` reaches `inf` (or when `x >= inf`, which only happens if `x` becomes `inf`).
+
+- If `inc > 0`: `x` increases by `inc` each iteration. Eventually `x` overflows to `inf`, and `inf < inf` is `False`, so loop exits and prints "Done". Examples: `inc = 1.0`, `inc = 100.0`, `inc = 1e300`.
+- If `inc == 0`: `x` never changes, stays at `0.0`, loop runs forever. No output.
+- If `inc < 0`: `x` decreases, stays below `inf` forever. Loop runs forever. No output.
+
+So inputs that work: any positive number. Examples: `1.0` and `1e300`.
+
+Let me verify: with `inc = 1e300`, `x` goes 0, 1e300, 2e300, ..., up to ~1.8e308, then next addition overflows to `inf`. Loop exits, prints "Done". Yes.
+
+With `inc = 1.0`, it takes ~1.8e308 iterations — practically infinite in practice (would take forever), but theoretically terminates. The question asks for inputs that lead to "Done" — mathematically yes, but practically `1.0` would take too long. Better examples: `1e300` and `1e308` (both would overflow quickly).
+
+Actually `1e308`: x goes 0, 1e308, 2e308 → overflows to inf. Yes, terminates quickly.
+
+So examples: `1e300` and `1e308`.
+
+Let me write the final answer.</think>
+
+**Q1.** The program will **never terminate** — it runs forever (or until killed by the OS).
+
+**Reasoning:** In IEEE 754 double precision, the largest finite value is ≈ `1.7976931348623157e+308`. At that magnitude, the ULP (spacing between representable numbers) is ≈ `2^971 ≈ 1.0e292`, which is vastly larger than `1.0`. So once `x` reaches the max finite value, `x += 1.0` rounds back to the same value — `x` never increases further and never becomes `inf`. The condition `x < math.inf` stays `True` forever, so the loop never exits and `print(x)` is never reached.
+
+---
+
+**Q2.** The program **does terminate** and prints `inf`.
+
+**Reasoning:** With `x = 1.0` and `x *= 1.001`, the value grows exponentially. Once `x` reaches the max finite double (~1.8e308), multiplying by `1.001` overflows to `inf`. Then `inf * 1.001 == inf`, so the condition `x < math.inf` becomes `False` and the loop exits. `print(x)` outputs `inf`.
+
+So **Q1 and Q2 differ**: Q1 loops forever, Q2 terminates printing `inf`.
+
+---
+
+**Q3.** Yes, there are inputs that lead to "Done".
+
+The loop exits when `x` becomes `inf` (since `inf < inf` is `False`).
+
+- **`inc > 0`**: `x` increases each iteration and eventually overflows to `inf`, so the loop terminates and prints "Done". Examples: `1e300` and `1e308`.
+- **`inc == 0`**: `x` never changes (stays `0.0`), loop runs forever.
+- **`inc < 0`**: `x` decreases, stays below `inf` forever, loop runs forever.
+
+So any positive input works. Examples: `1e300` and `1e308` (both overflow to `inf` quickly). [end of text]
+
+

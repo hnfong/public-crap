@@ -918,6 +918,7 @@ def mixer(clz1, clz2):
 
 NAME_MATCH_OVERRIDE = [
     # More specific first
+    ("MiMo-V2.6-Distill-Qwen-9B", Qwen35NoThinkingTemplateMixin),
     ("Nemotron-Research-Reasoning-Qwen", NemotronQwen3Reasoning),
     ("Qwen3-4B-Instruct", Qwen3InstructTemplateMixin),
     ("Qwen3-30B-A3B-Instruct", Qwen3InstructTemplateMixin),

@@ -1,0 +1,73 @@
+# Binary Search on a Text File
+
+## The Core Idea
+
+A file is a **random-access** medium: reading at any byte offset costs O(1) (a single `seek` + `read`). So we can binary-search *byte offsets* directly, without ever loading the whole file into memory.
+
+The trick is to convert the search problem into a **monotonic predicate** over byte positions:
+
+- Define `f(pos) = "the target appears at or before byte position `pos`"`.
+- This predicate is **monotonic** (once true, it stays true for all larger positions), because a target occurrence at position `p` implies every position ≥ `p` is "at or after" that occurrence.
+- Binary search on a monotonic predicate finds the **first** position where the target occurs — exactly the `bisect_left` semantics you asked for.
+
+## The Algorithm
+
+```python
+import bisect
+
+def binary_search_file(file_path, target):
+    """
+    Binary-search a text file for `target` (bytes).
+
+    Returns the byte offset of the first occurrence of `target`,
+    or the insertion point (bisect_left semantics) if it is absent.
+    """
+    with open(file_path, "rb") as f:
+        lo, hi = 0, f.seek(0, 2)          # file size = upper bound on occurrences
+
+        while lo < hi:
+            mid = (lo + hi) // 2
+            f.seek(mid)
+            if f.read(len(target)) == target:
+                # Candidate — but is it the *first* occurrence?
+                # Shrink hi to this position and continue left.
+                hi = mid
+            else:
+                # Either the bytes don't match, or we're past the end.
+                lo = mid + 1
+        return lo
+```
+
+### Why this works
+
+- `hi` starts at the file size. If the target never occurs, the loop ends with `lo == hi == insertion point`.
+- When `f.read(len(target)) == target` at `mid`, `mid` is a genuine occurrence, so the first occurrence is ≤ `mid`; set `hi = mid`.
+- Otherwise the target cannot start at `mid`, so the first occurrence is > `mid`; set `lo = mid + 1`.
+- The loop terminates with `lo == hi`, which is precisely the `bisect_left` answer.
+
+## Complexity
+
+- **Time:** O(log n) file *positions*, each costing O(1) seek + O(m) read where `m = len(target)`. So O(m · log n) total — the read length is a constant per iteration, not a per-byte scan.
+- **Space:** O(1) beyond the file handle.
+
+## Example
+
+```python
+data = b"1 I go to school\n2 by bus\nfoo bar\nhello world\nzoo zoo zoo\n"
+open("myfile.txt", "wb").write(data)
+
+print(binary_search_file("myfile.txt", b"2 by"))   # 17
+print(binary_search_file("myfile.txt", b"bus"))    # 20
+print(binary_search_file("myfile.txt", b"zzz"))    # 50 (insertion point = file size)
+```
+
+`b"2 by"` starts at byte 17 (`"1 I go to school\n"` is 17 bytes), so the function returns `17`.
+
+## Notes & Caveats
+
+- **Line-oriented files:** If the file is guaranteed to be newline-terminated, you can also binary-search *line indices* by seeking to `line_number * average_line_length` — but the byte-offset version above is simpler and needs no such assumption.
+- **Partial reads at EOF:** `f.read(len(target))` returns fewer bytes at the end of the file; comparing against `target` yields `False`, which is handled correctly by the `else` branch.
+- **Efficiency vs. `str.find`:** For small files, `data.find(target)` is often faster in practice due to optimized C code. The binary-search approach shines on **large files** where loading everything into memory is infeasible.
+- **Robustness:** If the file changes while searching (rare), the monotonicity assumption could break; for most use cases this is acceptable. [end of text]
+
+
