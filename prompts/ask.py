@@ -942,6 +942,7 @@ NAME_MATCH_OVERRIDE = [
     ("Seed-", SeedTemplateMixin),
     ("Olmo-", ChatMLTemplateMixin),
 
+    ("GLM-5.3", GLMNoThinkTemplateMixin),
     ("GLM-5.2", GLMNoThinkTemplateMixin),
     ("GLM-4.5", GLM45TemplateMixin),
     ("GLM-4.7", GLM47TemplateMixin),
