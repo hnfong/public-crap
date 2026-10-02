@@ -1,0 +1,76 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class NumberSum {
+
+    private static final Pattern NUMBER_PATTERN = Pattern.compile(
+        "(\\d{1,3}(?:,\\d{3})+(?:\\.\\d+)?|\\d+(?:\\.\\d+)?)\\s*([kKmMgG]?)"
+    );
+
+    private static final double KILO = 1024.0;
+    private static final double MEGA = KILO * KILO;
+    private static final double GIGA = MEGA * KILO;
+
+    public static void main(String[] args) {
+        StringBuilder input = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                input.append(line).append('\n');
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+            System.exit(1);
+        }
+
+        double totalBytes = 0.0;
+        Matcher matcher = NUMBER_PATTERN.matcher(input);
+        while (matcher.find()) {
+            String numberPart = matcher.group(1).replace(",", "");
+            double value = Double.parseDouble(numberPart);
+            String suffix = matcher.group(2);
+            switch (suffix) {
+                case "k":
+                case "K":
+                    value *= KILO;
+                    break;
+                case "m":
+                case "M":
+                    value *= MEGA;
+                    break;
+                case "g":
+                case "G":
+                    value *= GIGA;
+                    break;
+                default:
+                    break;
+            }
+            totalBytes += value;
+        }
+
+        System.out.printf("%.1f%n", totalBytes);
+        System.out.printf("%.1f k%n", totalBytes / KILO);
+        System.out.printf("%.1f M%n", totalBytes / MEGA);
+        System.out.printf("%.1f G%n", totalBytes / GIGA);
+    }
+}
+```
+
+Wait — I need to double-check the expected output format. The example shows `7264621772.8` (one decimal place) for the total, and `7094357.2 k`, `6928.1 M`, `6.8 G`. Let me verify the math:
+
+- 1.5G = 1610612736
+- 2K = 2048
+- 3M = 3145728
+- 4.2G = 4509715660.8
+- 500,000K = 512000000
+- 600M = 629145600
+
+Sum = 1610612736 + 2048 + 3145728 + 4509715660.8 + 512000000 + 629145600 = 7264621772.8 ✓
+
+The output format matches. However, I notice the first line in the example output has no suffix, which my program handles correctly. The program is complete and correct as written above. [end of text]
+
+

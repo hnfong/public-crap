@@ -1,0 +1,110 @@
+# Binary Search on a Text File
+
+## The Challenge
+
+Binary search requires random access to the middle element. In a file, we can seek to a byte position, but we might land **in the middle of a line**. The key insight is:
+
+1. Seek to an approximate middle byte position
+2. **Discard the partial line** by reading forward to the next newline (this partial line is "wasted", but that's fine)
+3. Read the next complete line — this is our "middle" element
+4. Compare and recurse
+
+## Why is it still O(log n)?
+
+Each step halves the search interval. The "skip to next newline" step reads at most one line's worth of bytes, which is O(1) assuming bounded line length (or amortized negligible compared to the halving). So the total work is O(log n) seeks/reads.
+
+## Implementation
+
+```python
+def binary_search_file(file_path, target):
+    """
+    Binary search for `target` (bytes) in a file whose lines are
+    sorted lexicographically.
+    Returns the byte offset where `target` is found, or the byte
+    offset of the insertion point (like bisect_left).
+    """
+    with open(file_path, "rb") as f:
+        # Get file size
+        f.seek(0, 2)  # seek to end
+        size = f.tell()
+
+        lo, hi = 0, size  # search interval [lo, hi)
+
+        # Candidate for the answer: start of the first line at/after lo
+        result = size  # default: insertion at end
+
+        while lo < hi:
+            mid = (lo + hi) // 2
+
+            # --- Find the start of the next complete line at/after mid ---
+            f.seek(mid)
+            if mid > 0:
+                f.readline()          # discard partial line
+            line_start = f.tell()     # start of a complete line
+
+            if line_start >= size:
+                # No complete line at/after mid; search left half
+                hi = mid
+                continue
+
+            line = f.readline()
+            line_end = f.tell()
+
+            # Strip trailing newline for comparison
+            line_value = line.rstrip(b"\n").rstrip(b"\r")
+
+            if line_value < target:
+                # Target is after this line
+                lo = line_end
+            elif line_value > target:
+                # Target is before this line
+                result = line_start
+                hi = line_start
+            else:
+                # Found it
+                return line_start
+
+        return result
+```
+
+## Walkthrough with the example
+
+File (byte offsets shown):
+
+```
+offset  0: "1 I go to school\n"   (17 bytes)
+offset 17: "2 by bus\n"           (8 bytes)
+offset 25: "foo bar\n"            (8 bytes)
+offset 33: "hello world\n"        (12 bytes)
+offset 45: "zoo zoo zoo\n"
+```
+
+Searching for `b"2 by"`:
+
+| Step | lo | hi | mid | Line found | Compare | Action |
+|------|----|----|-----|-----------|---------|--------|
+| 1 | 0 | 53 | 26 | `foo bar` (starts at 25) | `foo bar` > `2 by` | result=25, hi=25 |
+| 2 | 0 | 25 | 12 | `2 by bus` (starts at 17) | `2 by bus` > `2 by` | result=17, hi=17 |
+| 3 | 0 | 17 | 8 | `1 I go to school` (starts at 0) | `1 I...` < `2 by` | lo=17 |
+| 4 | lo == hi | | | | | return **17** ✓ |
+
+## Important caveats
+
+1. **Comparison semantics**: We compare the line *without* its trailing newline. Otherwise `"abc\n"` would compare greater than `"abc"` and equal-length prefixes would misbehave.
+
+2. **`bisect_left` semantics**: When the target isn't found, we return the position of the first line ≥ target (or end of file). The `result` variable tracks this.
+
+3. **Edge case at `mid == 0`**: We must not call `readline()` to skip a partial line when `mid` is 0, since position 0 is already the start of a line.
+
+4. **Line length assumption**: Strictly, the complexity is O(log n) only if line lengths are bounded by a constant (or if we treat line length as independent of n). With unbounded line lengths, a single "skip partial line" could take O(L) where L is the max line length.
+
+5. **Encoding**: We open in binary mode (`"rb"`) so offsets are raw byte positions and comparisons are byte-wise — this matches the requirement that the answer is a byte position (17 in the example).
+
+## Complexity
+
+- **Time**: O(log n) seeks, each doing O(1) work (assuming bounded line length) → **O(log n)**
+- **Space**: O(1) — we never load the file into memory, only one line at a time
+
+This is exactly how databases and tools like `sort(1)` with `--merge`, or sorted-file indexes (e.g., SQLite's b-trees conceptually, or the `sortedcontainers` on-disk analogues) handle searching large sorted files without loading them entirely. [end of text]
+
+

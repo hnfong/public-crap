@@ -1,0 +1,147 @@
+# Intended Purpose
+
+This is an attempt at implementing **Quicksort**. The intent is to recursively partition the list around a pivot (`p = a[0]`), sort the partitions, and concatenate the results.
+
+# Code Review
+
+## Critical Bug: Missing Recursion
+
+The function **never calls itself**. It partitions the list once and returns `l + [p] + r`, which is *not* sorted — it's merely partitioned. For example:
+
+```python
+s([3, 1, 4, 1, 5, 9, 2, 6])
+# Returns [1, 1, 2, 3, 4, 5, 9, 6]  ← not sorted!
+```
+
+The fix is `return s(l) + [p] + s(r)`.
+
+## Efficiency Issues
+
+1. **Two passes over the data**: The list comprehensions for `l` and `r` each iterate over `a[1:]` separately. A single pass partitioning into both lists would halve the traversal work.
+
+2. **Slicing copies**: `a[1:]` creates a copy of nearly the entire list — and it's done *twice* per call. Combined with the comprehensions building new lists, this generates substantial garbage.
+
+3. **Poor pivot choice**: Always picking `a[0]` degrades to **O(n²)** on already-sorted or reverse-sorted input — a very common real-world case. Random pivot selection or median-of-three avoids this.
+
+4. **Not in-place**: This implementation uses O(n) extra space per level. Classic quicksort partitions in place with O(log n) auxiliary space (for recursion).
+
+## Style Issues
+
+- **Non-descriptive names**: `s`, `a`, `p`, `l`, `r` are cryptic. `quick_sort`, `arr`, `pivot`, `left`, `right` would be clearer.
+- **One-liner guard clause**: `if len(a) <= 1: return a` is legal but discouraged by PEP 8; use two lines.
+- **`[p,]`**: The trailing comma is unnecessary; `[p]` suffices.
+- **No docstring or type hints.**
+
+## Minor Notes
+
+- The `<=` / `>` split is correct for handling duplicates (all-equal input still terminates, though it hits worst-case O(n²) time — but not infinite recursion).
+- Python's recursion limit (~1000) could be hit on adversarial or large sorted inputs even after fixing the bug.
+
+# Rust Implementation
+
+Here's a corrected, idiomatic Rust version. I've implemented an **in-place quicksort** with median-of-three pivot selection (avoiding the sorted-input worst case), falling back to insertion sort for small partitions — a standard optimization:
+
+```rust
+/// Sorts a slice in ascending order using an in-place quicksort
+/// with median-of-three pivot selection.
+pub fn quick_sort<T: Ord>(arr: &mut [T]) {
+    if arr.len() <= 1 {
+        return;
+    }
+    quick_sort_inner(arr);
+}
+
+fn quick_sort_inner<T: Ord>(arr: &mut [T]) {
+    // Insertion sort for small partitions: lower overhead than
+    // recursing further.
+    const INSERTION_SORT_THRESHOLD: usize = 16;
+
+    if arr.len() <= INSERTION_SORT_THRESHOLD {
+        insertion_sort(arr);
+        return;
+    }
+
+    // Median-of-three pivot selection: avoids O(n^2) behavior on
+    // sorted or reverse-sorted input.
+    let mid = arr.len() / 2;
+    let last = arr.len() - 1;
+    if arr[mid] < arr[0] {
+        arr.swap(0, mid);
+    }
+    if arr[last] < arr[0] {
+        arr.swap(0, last);
+    }
+    if arr[last] < arr[mid] {
+        arr.swap(mid, last);
+    }
+    // Median is now at `mid`; move it to position 0 to serve as pivot.
+    arr.swap(0, mid);
+
+    // Lomuto partition: everything <= pivot goes to the left.
+    // After the loop, `partition_point` holds the pivot's final spot.
+    let mut partition_point = 0;
+    for i in 1..arr.len() {
+        if arr[i] <= arr[0] {
+            partition_point += 1;
+            arr.swap(partition_point, i);
+        }
+    }
+    arr.swap(0, partition_point);
+
+    let (left, right) = arr.split_at_mut(partition_point);
+    quick_sort_inner(left);
+    quick_sort_inner(&mut right[1..]); // skip the settled pivot
+}
+
+fn insertion_sort<T: Ord>(arr: &mut [T]) {
+    for i in 1..arr.len() {
+        let mut j = i;
+        while j > 0 && arr[j - 1] > arr[j] {
+            arr.swap(j - 1, j);
+            j -= 1;
+        }
+    }
+}
+```
+
+### Design notes on the Rust version
+
+- **In-place partitioning** eliminates the O(n) per-level allocations of the Python approach; auxiliary space is O(log n) for recursion.
+- **Median-of-three** pivot fixes the sorted/reverse-sorted worst case that plagued the original's `a[0]` choice.
+- **Insertion sort cutoff** is a standard quicksort optimization — small partitions sort faster without recursion overhead.
+- **Generic over `T: Ord`** rather than hardcoding a numeric type.
+- **`split_at_mut`** lets us recurse on both halves without cloning, which the borrow checker verifies is safe.
+- One caveat: like the original, this is a teaching implementation. For production, use the standard library's `arr.sort()` (a stable merge sort / pattern-defeating quicksort hybrid, which is highly optimized).
+
+A quick test to confirm correctness:
+
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn sorts_correctly() {
+        let mut v = vec![3, 1, 4, 1, 5, 9, 2, 6];
+        quick_sort(&mut v);
+        assert_eq!(v, vec![1, 1, 2, 3, 4, 5, 6, 9]);
+    }
+
+    #[test]
+    fn handles_edge_cases() {
+        let mut empty: Vec<i32> = vec![];
+        quick_sort(&mut empty);
+        assert!(empty.is_empty());
+
+        let mut single = vec![42];
+        quick_sort(&mut single);
+        assert_eq!(single, vec![42]);
+
+        let mut sorted = (0..100).collect::<Vec<_>>();
+        quick_sort(&mut sorted);
+        assert!(sorted.windows(2).all(|w| w[0] <= w[1]));
+    }
+}
+``` [end of text]
+
+

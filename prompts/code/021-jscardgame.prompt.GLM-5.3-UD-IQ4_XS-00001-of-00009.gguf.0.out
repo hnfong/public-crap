@@ -1,0 +1,241 @@
+<!DOCTYPE html><html>
+<head>
+<meta charset="utf-8">
+<title>Gravity Solitaire</title>
+<style>
+body{background:#1a1a2e;color:#eee;font-family:monospace;text-align:center;margin:0;padding:10px;user-select:none}
+#game{display:inline-block;position:relative}
+.card{position:absolute;width:70px;height:100px;border-radius:6px;background:#fff;cursor:pointer;
+box-shadow:0 2px 4px rgba(0,0,0,.5);font-size:14px;transition:left .15s,top .15s}
+.card.red{color:#d22}.card.black{color:#222}
+.card .corner{position:absolute;top:3px;left:5px;font-weight:bold;font-size:15px}
+.card .pip{position:absolute;bottom:4px;right:6px;font-size:26px;opacity:.85}
+.card.face{background:linear-gradient(135deg,#fff,#dde)}
+.card.back{background:repeating-linear-gradient(45deg,#336,#224 10px,#336 20px);border:2px solid #fff}
+.card.sel{outline:3px solid gold;transform:translateY(-6px)}
+.pile{position:absolute;width:70px;height:100px;border:2px dashed #444;border-radius:6px}
+#msg{font-size:18px;margin:8px;min-height:24px}
+button{background:#446;color:#fff;border:none;padding:8px 20px;font-size:16px;margin:5px;cursor:pointer;border-radius:4px;font-family:monospace}
+button:hover{background:#66a}
+h1{margin:5px;font-size:22px;color:#8af}
+</style>
+</head>
+<body>
+<h1>⚡ GRAVITY SOLITAIRE ⚡</h1>
+<div id="msg"></div>
+<div id="game"></div>
+<div>
+<button onclick="newGame()">New Game</button>
+<button onclick="drawCard()">Draw</button>
+<button onclick="hint()">Hint</button>
+<span id="score"></span>
+</div>
+<script>
+const W=70,H=100,GAP=15,STACK=28;
+let deck=[],waste=[],found=[[],[],[],[]],cols=[[],[],[],[]],sel=null,score=0,moves=0;
+const S=['♠','♥','♦','♣'],R=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const game=document.getElementById('game');
+game.style.width=(4*(W+GAP)+GAP)+'px';
+game.style.height=(H+STACK*12+40)+'px';
+
+function newGame(){
+  deck=[];waste=[];found=[[],[],[],[]];cols=[[],[],[],[]];sel=null;score=0;moves=0;
+  for(let s=0;s<4;s++)for(let r=0;r<13;r++)deck.push({s,r,up:false});
+  for(let i=deck.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[deck[i],deck[j]]=[deck[j],deck[i]];}
+  for(let c=0;c<4;c++)for(let n=0;n<5;n++){const card=deck.pop();card.up=(n===4);cols[c].push(card);}
+  waste=deck;deck=[];
+  document.getElementById('msg').textContent='Build foundations A→K. Gravity pulls cards down!';
+  render();
+}
+
+function drawCard(){
+  if(waste.length){const c=waste.pop();c.up=true;deck.push(c);render();}
+  else if(deck.length){while(deck.length)waste.push(deck.pop());render();}
+}
+
+function canStack(card,col){
+  const top=cols[col][cols[col].length-1];
+  if(!top)return card.r===12; // King starts empty column
+  if(!top.up)return false;
+  return card.r===top.r-1 && card.s%2!==top.s%2;
+}
+
+function canFound(card,f){
+  if(!found[f].length)return card.r===0;
+  const top=found[f][found[f].length-1];
+  return card.s===top.s && card.r===top.r+1;
+}
+
+function clickCard(card,ci,ri){
+  if(!card.up){ // Flip face-down card
+    if(ri===cols[ci].length-1){card.up=true;score+=5;render();}
+    return;
+  }
+  if(sel){
+    if(sel.ci===ci&&sel.ri===ri){sel=null;render();return;}
+    tryMove(sel,ci);return;
+  }
+  sel={ci,ri};render();
+}
+
+function tryMove(s,ci){
+  const stack=cols[s.ci].slice(s.ri);
+  if(canStack(stack[0],ci)){
+    cols[s.ci].splice(s.ri);cols[ci].push(...stack);
+    const nc=cols[s.ci][cols[s.ci].length-1];
+    if(nc&&!nc.up){nc.up=true;score+=10;}
+    score+=3;moves++;sel=null;gravity();render();
+  } else sel=null,render();
+}
+
+function clickWaste(){
+  const card=deck[deck.length-1];
+  if(!card)return;
+  if(sel&&sel.waste){
+    // try foundations
+    for(let f=0;f<4;f++)if(canFound(card,f)){found[f].push(deck.pop());score+=15;moves++;sel=null;gravity();render();return;}
+    sel=null;render();return;
+  }
+  if(sel){sel=null;render();return;}
+  sel={waste:true};render();
+}
+
+function clickFound(f){
+  if(!sel)return;
+  if(sel.waste){
+    const card=deck[deck.length-1];
+    if(card&&canFound(card,f)){found[f].push(deck.pop());score+=15;moves++;sel=null;gravity();render();}
+    return;
+  }
+  const card=cols[sel.ci][sel.ri];
+  if(card&&sel.ri===cols[sel.ci].length-1&&canFound(card,f)){
+    found[f].push(cols[sel.ci].pop());score+=15;moves++;
+    const nc=cols[sel.ci][cols[sel.ci].length-1];
+    if(nc&&!nc.up){nc.up=true;score+=10;}
+    sel=null;gravity();render();
+  }
+}
+
+// GRAVITY TWIST: after each move, face-up cards "fall" to fill gaps left of them
+function gravity(){
+  for(let c=0;c<4;c++){
+    const col=cols[c];
+    for(let i=0;i<col.length;i++){
+      if(!col[i].up){
+        // find next face-up card above, it falls down onto the face-down card
+        for(let j=i+1;j<col.length;j++){
+          if(col[j].up){
+            // card falls: swap positions if it can stack
+            if(canStack(col[j],c)&&j===i+1)break;
+            // gravity: face-up card slides down over gap
+            if(j>i+1){
+              const [card]=col.splice(j,1);
+              col.splice(i+1,0,card);
+              score+=2;
+            }
+            break;
+          }
+        }
+      }
+    }
+  }
+  checkWin();
+}
+
+function checkWin(){
+  if(found.every(f=>f.length===13)){
+    document.getElementById('msg').textContent='🏆 YOU WIN! Score: '+score+' in '+moves+' moves!';
+  }
+}
+
+function hint(){
+  for(let c=0;c<4;c++){
+    const col=cols[c];
+    for(let i=col.length-1;i>=0;i--){
+      if(!col[i].up)break;
+      for(let d=0;d<4;d++){
+        if(d!==c&&canStack(col[i],d)){
+          document.getElementById('msg').textContent='Try moving '+R[col[i].r]+S[col[i].s]+' from column '+(c+1)+' to '+(d+1);
+          return;
+        }
+        if(col[i]===col[col.length-1]&&canFound(col[i],0)){
+          document.getElementById('msg').textContent='Send '+R[col[i].r]+S[col[i].s]+' to foundation!';
+          return;
+        }
+      }
+    }
+  }
+  document.getElementById('msg').textContent='Try drawing from the pile.';
+}
+
+function render(){
+  game.innerHTML='';
+  // Pile outlines
+  const piles=[
+    {x:GAP,y:GAP,label:'DRAW'},{x:GAP+W+GAP/2,y:GAP,label:''},
+    ...[0,1,2,3].map(f=>({x:GAP*2+W*2+f*(W+GAP/2),y:GAP,label:'F'+(f+1)})),
+    ...[0,1,2,3].map(c=>({x:GAP+c*(W+GAP),y:H+GAP*2,label:''}))
+  ];
+  piles.forEach(p=>{
+    const d=document.createElement('div');d.className='pile';
+    d.style.left=p.x+'px';d.style.top=p.y+'px';
+    if(p.label){d.textContent=p.label;d.style.color='#666';d.style.textAlign='center';d.style.lineHeight=H+'px';}
+    game.appendChild(d);
+  });
+  // Draw pile click zone
+  const dz=document.createElement('div');dz.className='pile';
+  dz.style.left=GAP+'px';dz.style.top=GAP+'px';dz.style.cursor='pointer';
+  dz.onclick=drawCard;game.appendChild(dz);
+  if(waste.length){
+    const d=cardEl({s:1,r:0,up:false});d.style.left=GAP+'px';d.style.top=GAP+'px';game.appendChild(d);
+  }
+  // Deck (waste shown)
+  if(deck.length){
+    const c=deck[deck.length-1];
+    const d=cardEl(c);d.style.left=(GAP+W+GAP/2)+'px';d.style.top=GAP+'px';
+    d.onclick=clickWaste;d.classList.toggle('sel',!!(sel&&sel.waste));
+    game.appendChild(d);
+  }
+  // Foundations
+  found.forEach((f,i)=>{
+    if(f.length){
+      const d=cardEl(f[f.length-1]);
+      d.style.left=(GAP*2+W*2+i*(W+GAP/2))+'px';d.style.top=GAP+'px';
+      d.onclick=()=>clickFound(i);game.appendChild(d);
+    } else {
+      const fd=game.children[4+i];fd.onclick=()=>clickFound(i);fd.style.cursor='pointer';
+    }
+  });
+  // Columns
+  cols.forEach((col,ci)=>{
+    col.forEach((card,ri)=>{
+      const d=cardEl(card);
+      d.style.left=(GAP+ci*(W+GAP))+'px';
+      d.style.top=(H+GAP*2+ri*STACK)+'px';
+      d.onclick=()=>clickCard(card,ci,ri);
+      if(sel&&sel.ci===ci&&sel.ri===ri)d.classList.add('sel');
+      game.appendChild(d);
+    });
+    // column click zone for empty
+    if(!col.length){
+      const p=game.children[8+ci];p.onclick=()=>{if(sel)tryMove(sel,ci);};
+    }
+  });
+  document.getElementById('score').textContent=' Score: '+score+' | Moves: '+moves+' | Stock: '+waste.length;
+}
+
+function cardEl(c){
+  const d=document.createElement('div');
+  if(!c.up){d.className='card back';return d;}
+  const red=c.s===1||c.s===2;
+  d.className='card face '+(red?'red':'black');
+  d.innerHTML='<div class="corner">'+R[c.r]+'</div><div class="pip">'+S[c.s]+'</div>';
+  return d;
+}
+
+newGame();
+</script>
+</body>
+</html> [end of text]
+
+

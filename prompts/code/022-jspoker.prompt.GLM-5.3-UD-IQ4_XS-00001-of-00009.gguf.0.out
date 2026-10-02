@@ -1,0 +1,88 @@
+<!DOCTYPE html><html>
+<head><meta charset="utf-8"><title>Poker</title>
+<style>
+body{font-family:monospace;background:#1a5c2e;color:#fff;text-align:center;padding:10px}
+#table{max-width:700px;margin:auto;background:#2e7d32;border-radius:20px;padding:20px;box-shadow:inset 0 0 60px rgba(0,0,0,.4)}
+.card{display:inline-block;width:60px;height:85px;background:#fff;color:#000;border-radius:6px;margin:3px;font-size:14px;line-height:1.1;padding:3px;vertical-align:top;box-shadow:2px 2px 5px rgba(0,0,0,.5);text-align:left}
+.red{color:#d00}
+.hidden{background:#4a6fa5;color:#4a6fa5}
+button{font-family:monospace;font-size:16px;margin:5px;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;background:#ffc107;color:#000;font-weight:bold}
+button:disabled{opacity:.4;cursor:default}
+#msg{font-size:20px;margin:10px;min-height:28px;font-weight:bold}
+.row{margin:8px}
+.chips{font-size:18px}
+.hand{min-height:95px}
+</style>
+</head>
+<body>
+<div id="table">
+<h1>♠ ♥ Jacks or Better Video Poker ♦ ♣</h1>
+<div id="msg">Place your bet!</div>
+<div class="row chips">Credits: <span id="credits">100</span> &nbsp; Bet: <span id="bet">5</span></div>
+<div class="row"><button id="bBet">Bet +1</button><button id="bMax">Bet Max</button><button id="bDeal">Deal</button></div>
+<div class="row hand" id="hand"></div>
+<div class="row"><button id="bDraw" disabled>Draw</button></div>
+<div class="row" id="paytable"></div>
+</div>
+<script>
+const S=['♠','♥','♦','♣'],R=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+const PAYS=[['Royal Flush',800],['Straight Flush',50],['Four of a Kind',25],['Full House',9],['Flush',6],['Straight',4],['Three of a Kind',3],['Two Pair',2],['Jacks or Better',1]];
+let deck=[],hand=[],held=[0,0,0,0,0],credits=100,bet=5,phase=0;
+const $=id=>document.getElementById(id);
+
+$('paytable').innerHTML=PAYS.map((p,i)=>`<div id="pt${i}">${p[0]}: ${p[1]}x</div>`).join('');
+
+function newDeck(){deck=[];for(let s=0;s<4;s++)for(let r=0;r<13;r++)deck.push({s,r});for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}}
+
+function cardHTML(c,hidden){if(hidden)return `<div class="card hidden">?</div>`;const red=(c.s===1||c.s===2);return `<div class="card${red?' red':''}" style="cursor:pointer" onclick="toggle(${hand.indexOf(c)})">${R[c.r]}<br>${S[c.s]}</div>`;}
+
+function toggle(i){if(phase!==1)return;held[i]^=1;render();}
+
+function render(){$('hand').innerHTML=hand.map((c,i)=>cardHTML(c,phase===0)+(held[i]&&phase===1?'<div style="font-size:20px">HELD</div>':'')).join('');$('credits').textContent=credits;$('bet').textContent=bet;}
+
+function evaluate(h){
+const rs=h.map(c=>c.r).sort((a,b)=>a-b),ss=h.map(c=>c.s);
+const flush=ss.every(s=>s===ss[0]);
+let straight=rs.every((r,i)=>r===rs[0]+i);
+if(rs.join()==='012312')straight=false;
+if(rs[0]===0&&rs.slice(1).join()==='101112')straight=true;
+const counts={};rs.forEach(r=>counts[r]=(counts[r]||0)+1);
+const vals=Object.values(counts).sort((a,b)=>b-a);
+const high=rs[0]>=9||rs[0]===0;
+if(flush&&straight&&rs[0]===9)return 0;
+if(flush&&straight)return 1;
+if(vals[0]===4)return 2;
+if(vals[0]===3&&vals[1]===2)return 3;
+if(flush)return 4;
+if(straight)return 5;
+if(vals[0]===3)return 6;
+if(vals[0]===2&&vals[1]===2)return 7;
+if(vals[0]===2&&rs.some(r=>r>=9||r===0))return 8;
+return -1;
+}
+
+function highlight(res){PAYS.forEach((p,i)=>{const el=$('pt'+i);el.style.background='';el.style.color='';});if(res>=0){const el=$('pt'+res);el.style.background='#ffc107';el.style.color='#000';}}
+
+$('bBet').onclick=()=>{if(phase)return;bet=bet%25+1;$('bet').textContent=bet;};
+$('bMax').onclick=()=>{if(phase)return;bet=25;$('bet').textContent=bet;};
+$('bDeal').onclick=()=>{
+if(phase)return;
+if(credits<bet){$('msg').textContent='Not enough credits!';return;}
+credits-=bet;held=[0,0,0,0,0];newDeck();hand=[deck.pop(),deck.pop(),deck.pop(),deck.pop(),deck.pop()];
+phase=1;$('msg').textContent='Click cards to hold, then Draw.';$('bDraw').disabled=false;$('bDeal').disabled=true;$('bBet').disabled=true;$('bMax').disabled=true;highlight(-1);render();
+};
+$('bDraw').onclick=()=>{
+if(phase!==1)return;
+hand=hand.map((c,i)=>held[i]?c:deck.pop());
+phase=0;$('bDraw').disabled=true;$('bDeal').disabled=false;$('bBet').disabled=false;$('bMax').disabled=false;
+const res=evaluate(hand);highlight(res);
+if(res>=0){const win=bet*PAYS[res][1];credits+=win;$('msg').textContent=`${PAYS[res][0]}! You win ${win} credits!`;}
+else $('msg').textContent='No win. Try again!';
+render();
+};
+render();
+</script>
+</body>
+</html> [end of text]
+
+

@@ -1,0 +1,100 @@
+# Q1: Adding 1.0 repeatedly
+
+```python
+import math
+x = 0.0
+while x < math.inf:
+    x += 1.0
+print(x)
+```
+
+**Answer: The program eventually outputs `inf`.**
+
+**Reasoning:**
+
+Starting from 0.0 and adding 1.0 each iteration, x takes the values 1.0, 2.0, 3.0, ... These are all exactly representable in IEEE 754 double precision (integers up to 2⁵³ are exact).
+
+However, once x reaches 2⁵³ = 9007199254740992, something important happens: the spacing between consecutive representable doubles becomes **2.0**. So:
+
+- At x = 2⁵³, computing x + 1.0 gives... 2⁵³ (the result 2⁵³ + 1 is not representable; it rounds back down to 2⁵³, since the tie rounds to even).
+
+Wait — let's be careful. At x = 2⁵³, the next representable value is 2⁵³ + 2. The value 2⁵³ + 1 is exactly halfway between 2⁵³ and 2⁵³ + 2, and round-to-nearest-even rounds it to 2⁵³ (which has an even mantissa). So x gets stuck at 2⁵³!
+
+**Correction: x gets stuck at 2⁵³ = 9007199254740992.0, and the program loops forever (infinite loop), producing NO output.**
+
+Let me verify: 2⁵³ = 9007199254740992. Its mantissa is 1.0 × 2⁵³, stored as 1.000...0 × 2⁵² with 52 trailing zero bits — even. The next float up is 2⁵³ + 2. Adding 1.0 to 2⁵³ yields the exact value 2⁵³ + 1, which is a tie, and ties round to even mantissa → 2⁵³. So x never increases past 2⁵³, and since 2⁵³ < inf, the loop never terminates.
+
+**Answer: No output — the program loops forever, stuck at x = 2⁵³ = 9007199254740992.0.**
+
+---
+
+# Q2: Multiplying by 1.001 repeatedly
+
+```python
+import math
+x = 1.0
+while x < math.inf:
+    x = x * 1.001
+print(x)
+```
+
+**Answer: The program eventually outputs `inf`.**
+
+**Reasoning:**
+
+Multiplication behaves differently from addition. Since 1.001 > 1, each multiplication strictly increases x (multiplying a positive finite float by a number greater than 1 always yields a result ≥ x, and since 1.001 is not exactly 1, the result is strictly greater — the relative spacing of floats means multiplication by a constant > 1 always moves x up by at least one ULP).
+
+So x grows without bound. Eventually x becomes so large that x × 1.001 exceeds the largest finite double (≈ 1.797 × 10³⁰⁸), and the result rounds to **+infinity**. Then the loop condition `x < math.inf` fails, and the program prints `inf`.
+
+**Yes, this is different from Q1:** Q1 loops forever with no output; Q2 terminates and prints `inf`.
+
+---
+
+# Q3: Adding a user-supplied increment
+
+```python
+import math
+x = 0.0
+inc = float(input("Enter a number"))
+while x < math.inf:
+    x += inc
+print("Done")
+```
+
+**Are there inputs that lead to "Done"? Yes.**
+
+**Example 1: `inc = inf`** (e.g., the user types `inf` or `infinity`)
+
+- First iteration: x = 0.0 + inf = inf
+- Loop condition: inf < inf is False → loop exits
+- **Output: "Done"** ✓
+
+**Example 2: `inc = nan`** (e.g., the user types `nan`)
+
+- First iteration: x = 0.0 + nan = nan
+- Loop condition: nan < inf is False (all comparisons with NaN are False) → loop exits
+- **Output: "Done"** ✓
+
+**Example 3: `inc = 1e308`**
+
+- Iteration 1: x = 1e308
+- Iteration 2: x = 1e308 + 1e308 = 2e308, which overflows to **inf**
+- Loop condition: inf < inf is False → loop exits
+- **Output: "Done"** ✓
+
+**Example 4: `inc = 1.7976931348623157e308`** (the largest finite double, DBL_MAX)
+
+- Iteration 1: x = DBL_MAX
+- Iteration 2: x = DBL_MAX + DBL_MAX = inf (overflow)
+- Loop exits, **Output: "Done"** ✓
+
+**Counter-examples (inputs that loop forever):**
+
+- `inc = 1.0` — same as Q1, gets stuck at 2⁵³
+- `inc = 0.0` — x stays 0.0 forever
+- `inc = -1.0` — x decreases without bound toward −∞ but never reaches −inf (it gets stuck at −2⁵³), so the loop runs forever
+- Any small positive inc (e.g., 0.5, 2.0) — x eventually gets stuck at a value where adding inc no longer changes x (for inc = 2.0, x gets stuck at 2⁵⁴, since 2⁵⁴ + 2 rounds back down to 2⁵⁴)
+
+**Summary:** "Done" is printed only when `inc` is inf, NaN, or a number large enough that x + inc overflows to infinity in one step (roughly |inc| ≥ 2⁵³ × (largest representable gap considerations), practically inc ≥ ~1e308 or so — precisely, any inc such that some x + inc overflows to ±inf, or inc is inf/NaN). [end of text]
+
+
