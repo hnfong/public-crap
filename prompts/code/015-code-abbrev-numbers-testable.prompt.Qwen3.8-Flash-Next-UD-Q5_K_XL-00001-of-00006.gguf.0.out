@@ -1,0 +1,83 @@
+```python
+def abbrev_num(x):
+    """
+    Convert an integer to a compact human-readable string representation.
+    Output should be <= 4 characters if possible.
+    """
+    if x < 0:
+        return "-" + abbrev_num(-x)
+    
+    if x < 1000:
+        return str(x)
+    
+    # Define suffixes and their divisors
+    suffixes = [
+        ('K', 1000),
+        ('M', 1000000),
+        ('B', 1000000000),
+        ('T', 1000000000000),
+    ]
+    
+    # Find the appropriate suffix
+    for suffix, divisor in suffixes:
+        if x < divisor * 1000:
+            # We'll use this suffix
+            value = x / divisor
+            # Try to format with <= 4 characters
+            # First try: no decimal, just integer part + suffix
+            int_val = round(value)
+            candidate = f"{int_val}{suffix}"
+            if len(candidate) <= 4:
+                return candidate
+            
+            # Try with one decimal place
+            # Round to 1 decimal place
+            rounded = round(value, 1)
+            # Format to remove trailing .0
+            if rounded == int(rounded):
+                candidate = f"{int(rounded)}{suffix}"
+            else:
+                candidate = f"{rounded}{suffix}"
+            
+            if len(candidate) <= 4:
+                return candidate
+            
+            # Try with no decimal but different rounding
+            # If still too long, try truncating or other approaches
+            # For very large numbers, we might need to go to next suffix
+            # But let's try one more thing: format with 1 decimal but ensure <= 4 chars
+            # If value >= 100, then "100K" is 4 chars, "100.0K" is 6 chars
+            # If value >= 10, "10.5K" is 5 chars, "11K" is 3 chars
+            # If value < 10, "9.5K" is 4 chars
+            
+            # Let's try rounding to nearest integer if decimal version is too long
+            int_val = round(value)
+            candidate = f"{int_val}{suffix}"
+            if len(candidate) <= 4:
+                return candidate
+            
+            # If still too long, move to next suffix
+            continue
+    
+    # If we've gone through all suffixes, use the largest one
+    # This handles very large numbers
+    value = x / 1000000000000
+    int_val = round(value)
+    candidate = f"{int_val}T"
+    if len(candidate) <= 4:
+        return candidate
+    
+    rounded = round(value, 1)
+    if rounded == int(rounded):
+        candidate = f"{int(rounded)}T"
+    else:
+        candidate = f"{rounded}T"
+    
+    if len(candidate) <= 4:
+        return candidate
+    
+    # Last resort: just return the integer part with T
+    return f"{int(value)}T"
+``` [end of text]
+
+

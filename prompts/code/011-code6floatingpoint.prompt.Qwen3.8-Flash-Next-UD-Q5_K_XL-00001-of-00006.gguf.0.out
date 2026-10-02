@@ -1,0 +1,154 @@
+### Q1. Analysis
+
+**Code:**
+```python
+import math
+x = 0.0
+while x < math.inf:
+    x += 1.0
+print(x)
+```
+
+**Step-by-Step Deduction:**
+
+1.  **Initialization**: `x` is initialized to `0.0`.
+2.  **Loop Condition**: The loop continues as long as `x < math.inf`. In IEEE 754, `math.inf` represents positive infinity. Any finite floating-point number is less than infinity.
+3.  **Iteration**: In each iteration, `1.0` is added to `x`.
+    *   Iteration 1: `x = 1.0`
+    *   Iteration 2: `x = 2.0`
+    *   ...
+    *   Iteration $N$: `x = N`
+4.  **Floating Point Precision and Overflow**:
+    *   Python floats are typically 64-bit double-precision IEEE 754 numbers.
+    *   The maximum finite value for a double-precision float is approximately $1.7976931348623157 \times 10^{308}$ (`sys.float_info.max`).
+    *   As `x` grows, it eventually reaches the maximum finite representable value.
+    *   When `x` is at the maximum finite value and we add `1.0`, the result exceeds the maximum representable finite value.
+    *   According to IEEE 754 standards, when an arithmetic operation results in a value too large to be represented as a finite number, the result is **positive infinity** (`inf`).
+5.  **Termination**:
+    *   Once `x` becomes `inf`, the condition `x < math.inf` evaluates to `inf < inf`, which is **False**.
+    *   The loop terminates.
+6.  **Output**: The program prints the current value of `x`, which is `inf`.
+
+**Note on Time Complexity**: While the loop *will* eventually terminate mathematically and logically according to IEEE 754 rules, the number of iterations required is approximately $10^{308}$. This is physically impossible to execute in any real-world computer within the lifetime of the universe. However, the question asks for the "eventual output" assuming the logic holds, not whether it is practically executable. In theoretical computer science contexts involving IEEE 754 semantics, the answer is `inf`.
+
+**Answer:**
+The eventual output is `inf`.
+
+---
+
+### Q2. Analysis
+
+**Code:**
+```python
+import math
+x = 1.0
+while x < math.inf:
+    x = x * 1.001
+print(x)
+```
+
+**Step-by-Step Deduction:**
+
+1.  **Initialization**: `x` is initialized to `1.0`.
+2.  **Loop Condition**: `x < math.inf`.
+3.  **Iteration**: In each iteration, `x` is multiplied by `1.001`.
+    *   This is exponential growth: $x_n = 1.0 \times (1.001)^n$.
+4.  **Growth Rate Comparison**:
+    *   In Q1, `x` grew linearly ($x_n = n$). It took $\approx 10^{308}$ steps to reach infinity.
+    *   In Q2, `x` grows exponentially. Exponential growth reaches very large numbers much faster than linear growth.
+    *   We need to find $n$ such that $(1.001)^n > 10^{308}$.
+    *   Taking the natural logarithm: $n \cdot \ln(1.001) > 308 \cdot \ln(10)$.
+    *   $\ln(1.001) \approx 0.0009995$.
+    *   $308 \cdot \ln(10) \approx 308 \cdot 2.3026 \approx 709.2$.
+    *   $n > 709.2 / 0.0009995 \approx 709,554$.
+5.  **Termination**:
+    *   After approximately 710,000 iterations, `x` will exceed the maximum finite float value.
+    *   The multiplication result will overflow to `inf`.
+    *   The condition `inf < inf` becomes False.
+    *   The loop terminates.
+6.  **Output**: The program prints `inf`.
+
+**Comparison with Q1**:
+*   **Output**: The output is the same (`inf`).
+*   **Practicality**: This program is **different** in terms of execution time. Q1 is practically impossible to run to completion. Q2 will finish in a fraction of a second on a modern computer.
+
+**Answer:**
+The eventual output is `inf`. Yes, it is different from the results above in terms of **practical executability** (this one finishes quickly, whereas Q1 would take longer than the age of the universe), but the final printed value is the same.
+
+---
+
+### Q3. Analysis
+
+**Code:**
+```python
+import math
+x = 0.0
+inc = float(input("Enter a number"))
+while x < math.inf:
+    x += inc
+print("Done")
+```
+
+**Question:** Are there inputs that will lead to the output "Done"?
+
+**Step-by-Step Deduction:**
+
+To print "Done", the loop must terminate. The loop terminates when `x < math.inf` is False. This happens if `x` becomes `inf` or `nan` (though `nan < inf` is False, `nan` usually arises from invalid operations like `inf - inf`, which isn't directly happening here unless `inc` is `nan`).
+
+Let's analyze the behavior of `x += inc` for different types of `inc`:
+
+1.  **Case 1: `inc` is a positive finite number.**
+    *   `x` starts at 0.0 and increases linearly.
+    *   Eventually, `x` will overflow to `inf`.
+    *   Loop terminates. Output: "Done".
+    *   *Example Input:* `1.0`
+
+2.  **Case 2: `inc` is `math.inf` (or a string that parses to it, like `"inf"`).**
+    *   Iteration 1: `x = 0.0 + inf = inf`.
+    *   Condition check: `inf < inf` is False.
+    *   Loop terminates. Output: "Done".
+    *   *Example Input:* `inf`
+
+3.  **Case 3: `inc` is a negative finite number.**
+    *   `x` starts at 0.0 and decreases.
+    *   `x` will eventually underflow to `-inf`.
+    *   Condition check: `-inf < inf` is **True**.
+    *   The loop continues forever (or until `x` becomes `nan` if it oscillates, but simple addition of a negative constant to a negative number just goes to `-inf`).
+    *   Wait, does `-inf < inf` evaluate to True? Yes.
+    *   So, if `inc` is negative, `x` goes to `-inf`, and the loop **never terminates**.
+    *   *Correction*: If `x` becomes `-inf`, the condition `-inf < inf` is True. The loop continues. `x += inc` keeps `x` at `-inf`. Infinite loop.
+
+4.  **Case 4: `inc` is `0.0`.**
+    *   `x` remains `0.0`.
+    *   `0.0 < inf` is True.
+    *   Infinite loop.
+
+5.  **Case 5: `inc` is `nan`.**
+    *   Iteration 1: `x = 0.0 + nan = nan`.
+    *   Condition check: `nan < inf` is **False** (any comparison with NaN is False).
+    *   Loop terminates. Output: "Done".
+    *   *Example Input:* `nan`
+
+6.  **Case 6: `inc` is `-inf`.**
+    *   Iteration 1: `x = 0.0 + (-inf) = -inf`.
+    *   Condition check: `-inf < inf` is **True**.
+    *   Loop continues. Infinite loop.
+
+**Conclusion:**
+Yes, there are inputs that lead to "Done". These are inputs where `inc` is positive (causing overflow to `+inf`) or `inc` is `nan` (causing the condition to fail immediately).
+
+**Examples:**
+1.  `1.0` (Positive finite number -> overflows to `inf`)
+2.  `inf` (Positive infinity -> `x` becomes `inf` immediately)
+3.  `nan` (Not a Number -> comparison fails immediately)
+
+**Answer:**
+Yes, there are inputs that will lead to the output "Done".
+
+Two examples of such inputs are:
+1.  `1.0`
+2.  `inf`
+
+(Other valid examples include `nan`, `1e308`, etc.) [end of text]
+
+

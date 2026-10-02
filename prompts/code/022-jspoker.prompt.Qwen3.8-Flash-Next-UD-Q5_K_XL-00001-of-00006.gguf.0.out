@@ -1,0 +1,56 @@
+<!DOCTYPE html><html>
+<head>
+<meta charset="UTF-8">
+<title>Poker</title>
+<style>
+body{font-family:sans-serif;background:#2c3e50;color:#ecf0f1;display:flex;flex-direction:column;align-items:center;padding:20px}
+#game{background:#34495e;padding:20px;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.5);width:600px}
+#chips{font-size:20px;margin-bottom:10px}
+#pot{font-size:18px;margin-bottom:10px;color:#f1c40f}
+#player-hand,#dealer-hand{display:flex;gap:10px;margin:10px 0;min-height:100px}
+.card{width:60px;height:90px;background:white;color:black;border-radius:5px;display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:16px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,0.3)}
+.card.red{color:red}
+.card.hidden{background:#2980b9;color:white}
+#controls{margin-top:20px;display:flex;gap:10px;justify-content:center}
+button{padding:10px 20px;font-size:16px;border:none;border-radius:5px;cursor:pointer;background:#27ae60;color:white}
+button:hover{background:#2ecc71}
+button:disabled{background:#7f8c8d;cursor:not-allowed}
+#message{margin-top:15px;font-size:18px;text-align:center;min-height:24px}
+</style>
+</head>
+<body>
+<div id="game">
+<div id="chips">Chips: <span id="chips-val">1000</span></div>
+<div id="pot">Pot: <span id="pot-val">0</span></div>
+<div>Dealer</div>
+<div id="dealer-hand"></div>
+<div>You</div>
+<div id="player-hand"></div>
+<div id="message"></div>
+<div id="controls">
+<button id="deal-btn" onclick="deal()">Deal</button>
+<button id="call-btn" onclick="call()" disabled>Call</button>
+<button id="raise-btn" onclick="raise()" disabled>Raise</button>
+<button id="fold-btn" onclick="fold()" disabled>Fold</button>
+</div>
+</div>
+<script>
+const suits=['♠','♥','♦','♣'];
+const ranks=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+let deck=[],playerHand=[],dealerHand=[],chips=1000,pot=0,bet=0,playerBet=0,dealerBet=0,gameState='idle';
+function createDeck(){deck=[];for(let s of suits)for(let r of ranks)deck.push({rank:r,suit:s});for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}}
+function renderCard(c,hidden=false){const d=document.createElement('div');d.className='card'+(hidden?' hidden':'')+(c&&['♥','♦'].includes(c.suit)?' red':'');if(hidden)d.textContent='?';else{d.innerHTML=`<div>${c.rank}</div><div>${c.suit}</div>`}return d}
+function renderHands(){const ph=document.getElementById('player-hand');const dh=document.getElementById('dealer-hand');ph.innerHTML='';dh.innerHTML='';playerHand.forEach(c=>ph.appendChild(renderCard(c)));dealerHand.forEach(c=>dh.appendChild(renderCard(c,gameState==='player-turn'||gameState==='dealer-turn')))}
+function updateUI(){document.getElementById('chips-val').textContent=chips;document.getElementById('pot-val').textContent=pot;document.getElementById('deal-btn').disabled=gameState!=='idle';document.getElementById('call-btn').disabled=gameState!=='player-turn';document.getElementById('raise-btn').disabled=gameState!=='player-turn';document.getElementById('fold-btn').disabled=gameState!=='player-turn'}
+function deal(){if(chips<10){alert('Not enough chips');return}createDeck();playerHand=[deck.pop(),deck.pop()];dealerHand=[deck.pop(),deck.pop()];pot=0;bet=10;playerBet=0;dealerBet=0;chips-=bet;playerBet=bet;pot+=bet;gameState='player-turn';renderHands();updateUI();document.getElementById('message').textContent='Your turn. Call, Raise, or Fold?'}
+function call(){if(gameState!=='player-turn')return;const toCall=bet-playerBet;if(toCall>chips){alert('Not enough chips to call');return}chips-=toCall;playerBet+=toCall;pot+=toCall;gameState='dealer-turn';renderHands();updateUI();setTimeout(dealerAction,1000)}
+function raise(){if(gameState!=='player-turn')return;const raiseAmt=20;if(chips<raiseAmt){alert('Not enough chips to raise');return}chips-=raiseAmt;playerBet+=raiseAmt;pot+=raiseAmt;bet+=raiseAmt;gameState='dealer-turn';renderHands();updateUI();setTimeout(dealerAction,1000)}
+function fold(){if(gameState!=='player-turn')return;gameState='idle';document.getElementById('message').textContent='You folded. Dealer wins.';updateUI()}
+function dealerAction(){if(gameState!=='dealer-turn')return;const toCall=bet-dealerBet;if(toCall>0&&Math.random()<0.7){if(chips>=toCall){chips-=toCall;dealerBet+=toCall;pot+=toCall;gameState='player-turn';renderHands();updateUI();document.getElementById('message').textContent='Dealer called. Your turn.'}else{gameState='idle';document.getElementById('message').textContent='Dealer folded. You win!';chips+=pot;pot=0;updateUI()}}else if(toCall===0||Math.random()<0.5){gameState='player-turn';renderHands();updateUI();document.getElementById('message').textContent='Dealer checked. Your turn.'}else{gameState='idle';document.getElementById('message').textContent='Dealer folded. You win!';chips+=pot;pot=0;updateUI()}}
+function evaluate(hand){const ranks=hand.map(c=>ranks.indexOf(c.rank)).sort((a,b)=>a-b);const suits=hand.map(c=>c.suit);const isFlush=suits.every(s=>s===suits[0]);const isStraight=ranks[1]-ranks[0]===1&&ranks[2]-ranks[1]===1&&ranks[3]-ranks[2]===1&&ranks[4]-ranks[3]===1;const counts={};ranks.forEach(r=>counts[r]=(counts[r]||0)+1);const vals=Object.values(counts).sort((a,b)=>b-a);if(isFlush&&isStraight)return[9,'Straight Flush'];if(vals[0]===4)return[8,'Four of a Kind'];if(vals[0]===3&&vals[1]===2)return[7,'Full House'];if(isFlush)return[6,'Flush'];if(isStraight)return[5,'Straight'];if(vals[0]===3)return[4,'Three of a Kind'];if(vals[0]===2&&vals[1]===2)return[3,'Two Pair'];if(vals[0]===2)return[2,'Pair'];return[1,'High Card']}
+function showdown(){const p=evaluate(playerHand);const d=evaluate(dealerHand);document.getElementById('message').textContent=`You: ${p[1]}, Dealer: ${d[1]}`;if(p[0]>d[0]){chips+=pot;document.getElementById('message').textContent+=' You win!'}else if(p[0]<d[0]){document.getElementById('message').textContent+=' Dealer wins.'}else{chips+=pot/2;document.getElementById('message').textContent+=' Tie!'}pot=0;gameState='idle';renderHands();updateUI()}
+</script>
+</body>
+</html> [end of text]
+
+
