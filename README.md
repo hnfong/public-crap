@@ -7,6 +7,20 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 2026
 
+- [14-LLMs: The actual "Chinese Room Experiment"](writings/2026/14-LLMs_cl__The_actual_"Chinese_Room_Experiment".md)
+- [13-香港科技發展與地緣政治](writings/2026/13-香港科技發展與地緣政治.md)
+- [13-A Simple, Straightforward Guide to Time Travel](writings/2026/13-A_Simple_cm__Straightforward_Guide_to_Time_Travel.md)
+- [12-信心不足，必然絕望](writings/2026/12-信心不足_CM_必然絕望.md)
+- [12-universal turing machines as an analogy for general experiential simulators](writings/2026/12-universal_turing_machines_as_an_analogy_for_general_experiential_simulators.md)
+- [11-The last occupation will be prophet](writings/2026/11-The_last_occupation_will_be_prophet.md)
+- [10-post scarcity macro analysis](writings/2026/10-post_scarcity_macro_analysis.md)
+- [09-荆軻刺秦](writings/2026/09-荆軻刺秦.md)
+- [08-The Post-Scarcity Information Economy](writings/2026/08-The_Post-Scarcity_Information_Economy.md)
+- [07-What is Computation?](writings/2026/07-What_is_Computation_qm_.md)
+- [06-Life is stranger than fiction](writings/2026/06-Life_is_stranger_than_fiction.md)
+- [05-Investing in the post-scarcity era](writings/2026/05-Investing_in_the_post-scarcity_era.md)
+- [04-God is a simp](writings/2026/04-God_is_a_simp.md)
+- [03-If you can imagine greatness, you have summoned it already](writings/2026/03-If_you_can_imagine_greatness_cm__you_have_summoned_it_already.md)
 - [02-啱嘅感覺](writings/2026/02-啱嘅感覺.md)
 - [01-通脹](writings/2026/01-通脹.md)
 
@@ -380,6 +394,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [law](outline/law.md)
 - [incantations](outline/incantations.md)
 - [glossary](outline/glossary.md)
+- [foods](outline/foods.md)
 - [decline of magic](outline/decline_of_magic.md)
 - [curious-coincidences](outline/curious-coincidences.md)
 - [computer-test](outline/computer-test.md)
@@ -398,4 +413,5 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 - [law-politics](bookmarks/law-politics.md)
 - [general](bookmarks/general.md)
 - [contents](bookmarks/contents.md)
+- [concepts](bookmarks/concepts.md)
 - [computer-related](bookmarks/computer-related.md)
