@@ -1,0 +1,79 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class NumberSumCalculator {
+
+    private static final Pattern NUMBER_PATTERN = Pattern.compile(
+            "(\\d[\\d,]*\\.?\\d*|\\d*\\.\\d+)\\s*([kKmMgG]?)"
+    );
+
+    public static void main(String[] args) throws IOException {
+        StringBuilder inputBuilder = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            inputBuilder.append(line).append("\n");
+        }
+        reader.close();
+
+        String input = inputBuilder.toString();
+        double totalBytes = parseAndSum(input);
+
+        System.out.println(totalBytes);
+        System.out.printf("%.1f k%n", totalBytes / 1024.0);
+        System.out.printf("%.1f M%n", totalBytes / (1024.0 * 1024.0));
+        System.out.printf("%.1f G%n", totalBytes / (1024.0 * 1024.0 * 1024.0));
+    }
+
+    private static double parseAndSum(String input) {
+        double total = 0.0;
+        Matcher matcher = NUMBER_PATTERN.matcher(input);
+
+        while (matcher.find()) {
+            String numberStr = matcher.group(1);
+            String suffix = matcher.group(2);
+
+            double value = parseNumber(numberStr);
+            double multiplier = getMultiplier(suffix);
+
+            total += value * multiplier;
+        }
+
+        return total;
+    }
+
+    private static double parseNumber(String numberStr) {
+        String cleaned = numberStr.replace(",", "");
+        return Double.parseDouble(cleaned);
+    }
+
+    private static double getMultiplier(String suffix) {
+        if (suffix == null || suffix.isEmpty()) {
+            return 1.0;
+        }
+
+        char c = suffix.charAt(0);
+        switch (c) {
+            case 'k':
+            case 'K':
+                return 1024.0;
+            case 'm':
+            case 'M':
+                return 1024.0 * 1024.0;
+            case 'g':
+            case 'G':
+                return 1024.0 * 1024.0 * 1024.0;
+            default:
+                return 1.0;
+        }
+    }
+}
+``` [end of text]
+
+
