@@ -1,0 +1,106 @@
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Main {
+
+    private static final Pattern NUMBER_PATTERN =
+            Pattern.compile("(?<![0-9.])([0-9][0-9,]*(?:\\.[0-9]+)?)([kKmMgG])?(?![0-9.])");
+
+    private static final BigDecimal KILO = BigDecimal.valueOf(1024);
+    private static final BigDecimal MEGA = KILO.multiply(KILO);
+    private static final BigDecimal GIGA = MEGA.multiply(KILO);
+
+    public static void main(String[] args) {
+        String input = readAllInput();
+        BigDecimal total = sumNumbers(input);
+        printResults(total);
+    }
+
+    private static String readAllInput() {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in, StandardCharsets.UTF_8))) {
+            char[] buffer = new char[8192];
+            int read;
+            while ((read = reader.read(buffer)) != -1) {
+                sb.append(buffer, 0, read);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading input: " + e.getMessage());
+            System.exit(1);
+        }
+        return sb.toString();
+    }
+
+    private static BigDecimal sumNumbers(String input) {
+        BigDecimal total = BigDecimal.ZERO;
+        Matcher matcher = NUMBER_PATTERN.matcher(input);
+        while (matcher.find()) {
+            String numberPart = matcher.group(1).replace(",", "");
+            BigDecimal value;
+            try {
+                value = new BigDecimal(numberPart);
+            } catch (NumberFormatException e) {
+                continue;
+            }
+            String suffix = matcher.group(2);
+            if (suffix != null) {
+                char c = Character.toLowerCase(suffix.charAt(0));
+                switch (c) {
+                    case 'k':
+                        value = value.multiply(KILO);
+                        break;
+                    case 'm':
+                        value = value.multiply(MEGA);
+                        break;
+                    case 'g':
+                        value = value.multiply(GIGA);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            total = total.add(value);
+        }
+        return total;
+    }
+
+    private static void printResults(BigDecimal total) {
+        System.out.println(format(total));
+        System.out.println(format(total.divide(KILO, MathContext.DECIMAL64)));
+        System.out.println(format(total.divide(MEGA, MathContext.DECIMAL64)));
+        System.out.println(format(total.divide(GIGA, MathContext.DECIMAL64)));
+    }
+
+    private static String format(BigDecimal value) {
+        return value.setScale(1, RoundingMode.HALF_UP).toPlainString();
+    }
+}
+```
+
+Let me verify with the example:
+
+- 1.5G = 1.5 × 1073741824 = 1610612736
+- 2K = 2048
+- 3M = 3145728
+- 4.2G = 4.2 × 1073741824 = 4509715660.8
+- 500,000K = 512000000
+- 600M = 629145600
+
+Total = 1610612736 + 2048 + 3145728 + 4509715660.8 + 512000000 + 629145600 = 7264621772.8 ✓
+
+In K: 7264621772.8 / 1024 = 7094357.2 ✓
+In M: 7264621772.8 / 1048576 = 6928.08... → 6928.1 ✓
+In G: 7264621772.8 / 1073741824 = 6.765... → 6.8 ✓
+
+The output matches the expected example. [end of text]
+
+

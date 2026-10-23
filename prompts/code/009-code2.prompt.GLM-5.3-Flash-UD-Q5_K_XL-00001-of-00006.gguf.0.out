@@ -1,0 +1,127 @@
+# Binary Search on a Sorted File
+
+## The Idea
+
+A file is just a sequence of bytes, and we can seek to any byte offset in O(1). The challenge is that we don't know where lines begin/end without reading. The trick:
+
+1. **Binary search over byte offsets** `[lo, hi)` in the file.
+2. At each probe offset `mid`, **scan forward to the next newline** to find the start of a complete line (at most one line-length of extra reading — this is fine as long as lines are O(1)-ish or we accept the standard "record-based" model).
+3. Compare that line with the target and recurse into the left or right half.
+
+Each step halves the search space, so we perform **O(log n)** seeks/reads (where n = file size in bytes; equivalently O(log n) probes for n lines under the record model).
+
+## Handling the "mid lands mid-line" problem
+
+If `mid` points into the middle of a line, we skip forward to the next `\n` and treat the *following* line as our probe. This keeps correctness: every probe examines a real line boundary, and the interval still shrinks.
+
+## Edge cases
+
+- **Empty file** → return 0.
+- **Target smaller than everything** → return 0.
+- **Target larger than everything** → return file size (insertion point at end).
+- **Duplicate lines** → like `bisect_left`, return the *first* line ≥ target.
+- **Trailing newline** on the last line must be handled (the final line may lack `\n`).
+
+## Implementation
+
+```python
+def binary_search_file(file_path, target):
+    """
+    Binary search a lexicographically sorted text file for `target` (bytes).
+    Returns the byte offset of the first line >= target,
+    or the insertion point if not found (bisect_left semantics).
+    """
+    target = target.rstrip(b"\n")
+
+    with open(file_path, "rb") as f:
+        # Get file size
+        f.seek(0, 2)          # seek to end
+        hi = f.tell()         # exclusive upper bound
+        lo = 0                # inclusive lower bound
+
+        if hi == 0:
+            return 0
+
+        while lo < hi:
+            mid = (lo + hi) // 2
+
+            # Move mid forward to the start of the next complete line.
+            f.seek(mid)
+            # If mid == 0, we're already at a line start.
+            if mid > 0:
+                # Skip to just after the next newline.
+                # (If mid is at a line start, the previous byte is '\n'
+                #  or mid is 0; reading forward handles both.)
+                while True:
+                    byte = f.read(1)
+                    if byte == b"\n":
+                        break
+                    if f.tell() >= hi:
+                        # No newline before hi: no valid line starts in [mid, hi)
+                        # Treat as "probe line is beyond range" -> go left.
+                        byte = None
+                        break
+                if byte is None:
+                    hi = mid
+                    continue
+                mid = f.tell()
+
+            # Read the line starting at mid.
+            f.seek(mid)
+            line = f.readline()          # includes trailing '\n' if present
+            line = line.rstrip(b"\n")
+
+            if line < target:
+                lo = f.tell()            # next line start (or EOF)
+            else:
+                hi = mid                 # mid line >= target: answer is here or left
+
+        return lo
+```
+
+## Walkthrough of the Example
+
+File (offsets shown):
+
+```
+offset: 0    "1 I go to school\n"   (17 bytes: 0..16)
+offset: 17   "2 by bus\n"           (9 bytes: 17..25)
+offset: 26   "foo bar\n"
+offset: 34   "hello world\n"
+offset: 46   "zoo zoo zoo"          (no trailing newline, size 57)
+```
+
+Searching for `b"2 by"`:
+
+| step | lo | hi | mid | mid lands in | probe line | action |
+|------|----|----|-----|--------------|------------|--------|
+| 1 | 0 | 57 | 28 | middle of `"foo bar"` → skip to 34 | `"hello world"` ≥ target | hi = 34 |
+| 2 | 0 | 34 | 17 | exactly at line start | `"2 by bus"` ≥ target | hi = 17 |
+| 3 | 0 | 17 | 8 | middle of `"1 I go..."` → skip to 17 | `"2 by bus"` ≥ target | hi = 17 |
+| 4 | 0 | 17 | 8 | skip to 17, but 17 ≥ hi → no line | — | hi = 8 |
+| 5 | 0 | 8 | 4 | middle of line 1 → skip to 17? No: 17 ≥ hi → hi = 4 |
+| 6 | 0 | 4 | 2 | mid of line 1 → skip to 17 ≥ hi → hi = 2 |
+| 7 | 0 | 2 | 1 | mid of line 1 → skip to 17 ≥ hi → hi = 1 |
+| 8 | 0 | 1 | 0 | line start | `"1 I go to school"` < target | lo = 17 |
+
+Loop ends: `lo == hi == 17`. ✓
+
+```python
+>>> binary_search_file("myfile.txt", b"2 by")
+17
+```
+
+## Complexity
+
+- **Probes:** O(log S) iterations where S = file size in bytes.
+- **Per probe:** one seek + reading at most one line (to skip to `\n`) + one `readline`. Under the standard assumption that line length is bounded (or treating a line as one record read), each probe is O(1) I/O operations.
+- **Total:** **O(log n)** seek/read operations — we never read the whole file.
+
+## Notes & Caveats
+
+- **Encoding:** we work in bytes, so comparison is bytewise — consistent with "lexicographical" for ASCII/UTF-8 (UTF-8 preserves code-point order).
+- **Very long lines:** the skip-to-newline scan is O(line length). If lines can be huge, you can instead binary-search *within* the skip using `read` chunks, but for typical text this is unnecessary.
+- **`bisect_right` variant:** change `line < target` to `line <= target`.
+- **Windows line endings:** strip `b"\r\n"` too: `line.rstrip(b"\r\n")` and skip accordingly. [end of text]
+
+

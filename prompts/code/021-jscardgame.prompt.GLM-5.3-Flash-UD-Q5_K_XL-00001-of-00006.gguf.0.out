@@ -1,0 +1,85 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Pyramid Solitaire</title><style>
+body{font-family:sans-serif;background:#1a4a2e;color:#fff;text-align:center;margin:0;padding:10px}
+#top{display:flex;justify-content:center;gap:20px;align-items:center;margin-bottom:10px}
+.card{width:60px;height:84px;border-radius:6px;background:#fff;color:#000;display:inline-flex;flex-direction:column;justify-content:center;align-items:center;font-size:22px;font-weight:bold;box-shadow:2px 2px 4px rgba(0,0,0,.4);cursor:pointer;position:relative;user-select:none;transition:transform .15s}
+.card.red{color:#c00}
+.card.sel{outline:3px solid gold;transform:translateY(-8px)}
+.card.dim{opacity:.35;cursor:default}
+.card .corner{position:absolute;top:3px;left:5px;font-size:14px}
+.card .corner2{position:absolute;bottom:3px;right:5px;font-size:14px;transform:rotate(180deg)}
+#stock,#waste{width:60px;height:84px;border:2px dashed #fff3;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:30px;cursor:pointer;vertical-align:top}
+#pyramid{margin:15px auto;width:fit-content}
+.row{display:flex;justify-content:center;gap:6px;margin-bottom:6px}
+#msg{min-height:24px;font-size:18px;color:#ffd}
+button{background:#ffd700;border:none;padding:8px 16px;border-radius:5px;font-weight:bold;cursor:pointer;font-size:14px}
+#stats{font-size:14px;color:#cfc}
+</style></head><body>
+<div id="top">
+<div><div id="stock">↻</div><div id="waste"></div></div>
+<div><div id="msg">Click two cards that sum to 13</div><div id="stats"></div></div>
+<button onclick="newGame()">New Game</button>
+</div>
+<div id="pyramid"></div>
+<script>
+const R=['A','2','3','4','5','6','7','8','9','10','J','Q','K'],V={A:1,J:11,Q:12,K:13};
+let pyr=[],stock=[],waste=[],sel=null,score=0;
+const val=c=>V[c.r]||+c.r;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function newGame(){
+score=0;sel=null;waste=[];
+const deck=[];
+for(const s of '♠♥♦♣')for(const r of R)deck.push({r,s,red:s==='♥'||s==='♦'});
+shuffle(deck);
+pyr=[];
+for(let row=0;row<7;row++){pyr.push([]);for(let i=0;i<=row;i++)pyr[row].push({c:deck.pop(),row,i})}
+stock=deck;
+draw();
+}
+function covered(c){return pyr.some((r,ri)=>ri>c.row&&r.some(x=>x.c&&(x.i===c.i||x.i===c.i+1)))}
+function draw(){
+const p=document.getElementById('pyramid');p.innerHTML='';
+pyr.forEach((row,ri)=>{const d=document.createElement('div');d.className='row';
+row.forEach((slot,i)=>{const e=document.createElement('div');
+if(slot.c){e.className='card'+(slot.c.red?' red':'')+(covered(slot)?' dim':'');
+e.innerHTML=`<span class="corner">${slot.c.r}${slot.c.s}</span>${slot.c.r}<span class="corner2">${slot.c.r}${slot.c.s}</span>`;
+e.onclick=()=>pick(slot,e)}else e.style.cssText='width:60px;height:84px';
+d.appendChild(e)});
+p.appendChild(d)});
+const w=document.getElementById('waste');
+w.className=waste.length?'card'+(waste[waste.length-1].red?' red':''):'';
+w.innerHTML=waste.length?waste[waste.length-1].r+waste[waste.length-1].s:'';
+w.onclick=()=>pick({waste:1},w);
+document.getElementById('stats').textContent=`Score: ${score} | Stock: ${stock.length}`;
+}
+function pick(slot,el){
+if(slot.waste){if(!waste.length)return;
+if(sel&&sel.waste){sel=null;draw();return}
+if(sel&&!sel.waste){if(val(sel.c)+val(waste[waste.length-1])===13)remove(sel,waste[waste.length-1]);else{sel=null;draw()}return}
+sel=slot;draw();return}
+if(!slot.c||covered(slot))return;
+if(val(slot.c)===13){remove(slot);return}
+if(sel){
+if(sel.waste){if(val(slot.c)+val(waste[waste.length-1])===13)remove(slot,waste[waste.length-1]);else{sel=null;draw()}return}
+if(sel.c===slot.c){sel=null;draw();return}
+if(val(sel.c)+val(slot.c)===13)remove(sel,slot);
+else{sel=slot;draw()}
+return}
+sel=slot;draw();
+}
+function remove(...slots){
+slots.forEach(s=>{if(s.waste)waste.pop();else{const p=pyr[s.row];score+=10;p[s.i]={c:null}}});
+if(!slots.some(s=>s.waste))score+=5;
+sel=null;
+document.getElementById('msg').textContent='Nice! +'+(slots.length*5+5);
+draw();
+if(pyr.flat().every(x=>!x.c))document.getElementById('msg').textContent='🏆 You cleared the pyramid! Score: '+score;
+}
+document.getElementById('stock').onclick=()=>{
+if(!stock.length){stock=waste.reverse();waste=[];score-=20}
+else waste.push(stock.pop());
+sel=null;draw();
+};
+newGame();
+</script></body></html> [end of text]
+
+

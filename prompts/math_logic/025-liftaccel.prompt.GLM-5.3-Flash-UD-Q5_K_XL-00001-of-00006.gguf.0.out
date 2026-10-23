@@ -1,0 +1,128 @@
+# Elevator Physics Problems
+
+## Setup
+
+**Building parameters:**
+- 40 floors, each 5 m tall
+- Ground floor (1/F) to top floor (40/F) = 39 floors × 5 m = **195 m total height**
+- Acceleration/deceleration: a = 1 m/s²
+- Maximum speed: v_max = 5 m/s
+
+**Key calculation — distance needed to reach max speed:**
+- Time to reach max speed: t = v/a = 5/1 = **5 s**
+- Distance during acceleration: d = ½at² = ½(1)(5²) = **12.5 m**
+- Same for deceleration: **12.5 m**
+- Total accel + decel distance: **25 m**
+
+---
+
+## Question 1: Ground floor to top floor (195 m)
+
+Since 195 m > 25 m, the elevator **reaches maximum speed**.
+
+**Phase 1 — Acceleration:** 5 s, covering 12.5 m
+**Phase 2 — Deceleration:** 5 s, covering 12.5 m
+**Phase 3 — Constant speed:** distance = 195 − 25 = 170 m
+- Time = 170/5 = **34 s**
+
+**Total time = 5 + 34 + 5 = 44 seconds**
+
+---
+
+## Question 2: Stops at 10/F and 30/F
+
+**Distances:**
+- 1/F → 10/F: 9 floors × 5 m = 45 m
+- 10/F → 30/F: 20 floors × 5 m = 100 m
+- 30/F → 40/F: 10 floors × 5 m = 50 m
+
+**Stop time at 10/F:** Assume 0 s (doors open/close instantly, no dwell time given).
+
+**Leg 1: 1/F → 10/F (45 m)**
+- Accel + decel needs 25 m; 45 m > 25 m, so max speed is reached.
+- Accel: 5 s (12.5 m), Decel: 5 s (12.5 m)
+- Cruise: (45 − 25)/5 = 4 s
+- **Leg 1 time = 14 s**
+
+**Leg 2: 10/F → 30/F (100 m)**
+- 100 m > 25 m, so max speed reached.
+- Cruise: (100 − 25)/5 = 15 s
+- **Leg 2 time = 25 s**
+
+**Leg 3: 30/F → 40/F (50 m)**
+- 50 m > 25 m, so max speed reached.
+- Cruise: (50 − 25)/5 = 5 s
+- **Leg 3 time = 15 s**
+
+**Total time = 14 + 25 + 15 = 54 seconds**
+
+---
+
+## Question 3: Minimum time with one intermediate stop
+
+The elevator must travel 1/F → X/F → 40/F, where 2/F ≤ X ≤ 39/F, stopping at X.
+
+**Key insight:** Total travel distance is always 195 m. The time for each leg depends on whether that leg is long enough to reach max speed (needs ≥ 25 m, i.e., ≥ 5 floors of travel).
+
+**Case A: Both legs ≥ 25 m (X between 6/F and 35/F)**
+- Each leg: accel (5 s) + decel (5 s) = 10 s
+- Total = 10 + 10 = **20 s** (cruise times cancel out — total distance is fixed!)
+
+**Case B: One leg < 25 m (X ≤ 5/F or X ≥ 36/F)**
+- Short leg never reaches max speed. For distance d < 25 m:
+  - Time = 2√(d/a) = 2√d (accelerate half, decelerate half)
+- Example: X = 5/F (d = 20 m): short leg time = 2√20 ≈ 8.94 s
+- Long leg (175 m): 10 s + (175−25)/5 = 40 s → total ≈ 48.94 s ❌ Much worse!
+
+**Case C: No intermediate stop possible?** Not allowed — a stop is required.
+
+**Verification of Case A:** With both legs ≥ 25 m, total time = 20 s regardless of where X is. This is because:
+- Total distance = 195 m
+- Total cruise distance = 195 − 25 − 25 = 145 m at 5 m/s = 29 s... 
+
+Wait, let me recheck. Total time = accel + cruise₁ + decel + accel + cruise₂ + decel
+= 5 + d₁₋cruise/5 + 5 + 5 + d₂₋cruise/5 + 5
+= 20 + (d₁₋cruise + d₂₋cruise)/5
+= 20 + (195 − 50)/5 = 20 + 29 = **49 s**
+
+Hmm, I made an error above. Let me redo this properly.
+
+**Corrected Case A:** Both legs reach max speed.
+- Time = 5 + 5 + 5 + 5 (accel/decel phases) + cruise time
+- Cruise distance = 195 − 50 = 145 m → cruise time = 29 s
+- **Total = 49 s**
+
+**Corrected Case B:** One leg < 25 m (say leg 1 = d, leg 2 = 195 − d).
+- Short leg: 2√d seconds
+- Long leg: 10 + (195 − d − 25)/5 = 10 + (170 − d)/5 = 36 − d/5
+- Total: T(d) = 2√d + 36 − d/5
+
+Minimize: T′(d) = 1/√d − 1/5 = 0 → √d = 5 → d = 25 m
+
+But d = 25 m is the boundary (Case A). For d < 25, T′(d) > 0, meaning T increases as d increases toward 25... wait, T′(d) = 1/√d − 1/5. At d = 4: 1/2 − 1/5 = 0.3 > 0. At d = 16: 1/4 − 0.2 = 0.05 > 0. So T is increasing on (0, 25), meaning **smaller d gives smaller T**!
+
+Check d → 0: T → 0 + 36 = 36 s. But d can't be 0 (must stop at a floor between). Smallest stop: X = 2/F, d = 5 m:
+- Short leg: 2√5 ≈ 4.47 s
+- Long leg: 36 − 1 = 35 s
+- **Total ≈ 39.47 s**
+
+Check X = 3/F (d = 10 m): 2√10 + 36 − 2 = 6.32 + 34 = 40.32 s ❌ worse
+Check X = 2/F is best in Case B.
+
+**Compare:** Case A gives 49 s; Case B (X = 2/F) gives ≈ 39.47 s.
+
+**Answer: The minimum time is 2√5 + 35 ≈ 39.47 seconds**, achieved by stopping at **2/F**.
+
+**Intuition:** Stopping always costs time. The "cost" of a stop is minimized when the stop is very close to the start (the short leg is quick), and the long leg is barely affected (loses only d/5 = 1 s of cruise time plus the short leg's ~4.47 s, versus a full stop's 10 s penalty in Case A).
+
+---
+
+## Summary
+
+| Question | Answer |
+|----------|--------|
+| 1 | **44 s** |
+| 2 | **54 s** |
+| 3 | **≈ 39.47 s** (stop at 2/F) | [end of text]
+
+

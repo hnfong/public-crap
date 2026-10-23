@@ -1,0 +1,38 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Poker</title><style>
+body{font-family:sans-serif;background:#0a5c36;color:#fff;text-align:center}
+#hand{display:flex;justify-content:center;gap:10px;margin:20px}
+.card{width:80px;height:120px;background:#fff;color:#000;border-radius:8px;display:flex;flex-direction:column;justify-content:center;font-size:28px;box-shadow:2px 2px 5px rgba(0,0,0,.5);cursor:pointer}
+.card.red{color:#d00}
+.card.held{outline:4px solid gold}
+button{font-size:18px;padding:10px 30px;margin:10px;cursor:pointer}
+#msg{font-size:22px;min-height:30px;margin:10px}
+#info{font-size:18px}
+</style></head><body>
+<h1>5-Card Draw Poker</h1>
+<div id="info"></div>
+<div id="hand"></div>
+<div id="msg"></div>
+<button id="deal">Deal</button>
+<script>
+const SUITS=['♠','♥','♦','♣'],RANKS=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+let deck=[],hand=[],held=[0,0,0,0,0],chips=100,bet=10,phase=0;
+const el=id=>document.getElementById(id);
+function newDeck(){deck=[];for(let s=0;s<4;s++)for(let r=0;r<13;r++)deck.push({s,r});for(let i=51;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}}
+function render(){el('hand').innerHTML=hand.map((c,i)=>`<div class="card ${c.s%2?'red':''} ${held[i]?'held':''}" onclick="toggle(${i})">${RANKS[c.r]}<br>${SUITS[c.s]}</div>`).join('');el('info').textContent=`Chips: ${chips} | Bet: ${bet}`}
+function toggle(i){if(phase!=1)return;held[i]=1-held[i];render()}
+function deal(){if(phase==0){if(chips<bet){el('msg').textContent='Not enough chips!';return}chips-=bet;newDeck();hand=deck.splice(0,5);held=[0,0,0,0,0];phase=1;el('msg').textContent='Click cards to hold, then Draw';el('deal').textContent='Draw'}else if(phase==1){hand=hand.map((c,i)=>held[i]?c:deck.pop());phase=2;const r=evaluate(hand);chips+=r[1]*bet;el('msg').textContent=r[0]+(r[1]?` — Win ${r[1]*bet} chips!`:' — Lose');el('deal').textContent='Deal Again';phase=0}render()}
+function evaluate(h){const rs=h.map(c=>c.r).sort((a,b)=>a-b),ss=h.map(c=>c.s),cnt={};rs.forEach(r=>cnt[r]=(cnt[r]||0)+1);const vals=Object.values(cnt).sort((a,b)=>b-a),flush=ss.every(s=>s===ss[0]),straight=rs.every((r,i)=>i==0||r==rs[i-1]+1)||(rs.join()=='0,1,2,3,12'),uniq=[...new Set(rs)];
+if(flush&&straight&&uniq.includes(12))return['Royal Flush',250];
+if(flush&&straight)return['Straight Flush',50];
+if(vals[0]==4)return['Four of a Kind',25];
+if(vals[0]==3&&vals[1]==2)return['Full House',9];
+if(flush)return['Flush',6];
+if(straight)return['Straight',4];
+if(vals[0]==3)return['Three of a Kind',3];
+if(vals[0]==2&&vals[1]==2)return['Two Pair',2];
+if(vals[0]==2&&(cnt[12]||cnt[11]||cnt[10]))return['Jacks or Better',1];
+return['No Win',0]}
+render();
+</script></body></html> [end of text]
+
+

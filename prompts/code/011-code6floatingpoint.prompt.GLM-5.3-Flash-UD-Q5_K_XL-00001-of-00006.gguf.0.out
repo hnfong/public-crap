@@ -1,0 +1,70 @@
+# Q1.
+
+**The program never terminates — there is no output.**
+
+**Reasoning:**
+
+The loop condition is `x < math.inf`. The question is whether repeatedly adding `1.0` to a float can ever produce `inf`.
+
+Starting from `x = 0.0`, we add `1.0` each iteration. As `x` grows, the gap between consecutive representable doubles (the ULP) grows too. Once `x` is large enough, adding `1.0` no longer changes `x` at all — it gets rounded away.
+
+The key threshold: for a double with exponent `e` (i.e., `x` in `[2^e, 2^(e+1))`), the ULP is `2^(e-52)`. Adding `1.0` to `x` will round back to `x` itself once `1.0 < half an ULP`, i.e., when `2^(e-53) > 1`, which happens for `e ≥ 54`.
+
+Concretely, the largest double below `2^54` is `2^54 - 1024`. Adding `1.0` to it gives exactly `2^54` (representable, since spacing at `2^54` is `2^3 = 8`... actually let's check: at `2^54`, ULP = `2^(54-52) = 4`). So `2^54 - 1024 + 1` rounds to `2^54 - 1024 + 4`? No — round-to-nearest-even: `2^54 - 1024 + 1` is closer to `2^54 - 1024` (distance 1) than to `2^54 - 1020` (distance 3), so it stays put.
+
+So `x` gets **stuck** at `2^54 - 1024 = 18014398509481984` (i.e., `2^53 * 2`). From that point on, `x += 1.0` leaves `x` unchanged, and since `2^54 - 1024 < inf`, the loop condition is always true.
+
+**Result: infinite loop, no output.** (You can verify: `x = 2.0**54; x == x + 1.0` is `True` in Python.)
+
+---
+
+# Q2.
+
+**The program terminates and prints `inf`.**
+
+**Reasoning:**
+
+Here `x` is multiplied by `1.001` each iteration, so `x` grows **geometrically** (exponentially). Unlike Q1, the increment to `x` is proportional to `x` itself, so it always stays large relative to the ULP of `x`. Multiplication by a factor > 1 always increases the exponent eventually, and there is no "sticking point": for any finite `x`, `x * 1.001 > x` by a relative amount (~0.1%) that vastly exceeds the relative rounding error (~2^-53 ≈ 1.1e-16).
+
+So `x` keeps growing until it exceeds the largest finite double (`max double ≈ 1.7976931348623157e308`), at which point the product overflows to `+inf` (IEEE 754 overflow rounds to infinity with round-to-nearest).
+
+Once `x = inf`, the condition `x < math.inf` is `False`, the loop exits, and the program prints:
+
+```
+inf
+```
+
+**Is it different from Q1?** Yes. Q1 loops forever (addition of a fixed `1.0` becomes a no-op at large magnitudes); Q2 terminates, printing `inf` (multiplication by a constant ratio never stalls).
+
+---
+
+# Q3.
+
+**Yes, there are inputs that lead to "Done".** The loop exits when `x` becomes `inf` (or NaN, since `NaN < inf` is false). Examples:
+
+**Example 1: `inc = inf`** (user enters `inf` or `Infinity` — Python's `float()` accepts these strings)
+
+- First iteration: `x = 0.0 + inf = inf`
+- Second check: `inf < inf` is `False` → loop exits → prints `Done`.
+
+**Example 2: `inc = nan`** (user enters `nan` or `NaN`)
+
+- First iteration: `x = 0.0 + nan = nan`
+- Second check: `nan < inf` is `False` (all comparisons with NaN are false) → loop exits → prints `Done`.
+
+**Example 3: a large finite value, e.g. `inc = 1e308`**
+
+- Iteration 1: `x = 1e308`
+- Iteration 2: `x = 1e308 + 1e308 = 2e308` → overflows to `inf`
+- Check: `inf < inf` is `False` → prints `Done`.
+
+**Example 4: `inc = -1.0`** (any negative number works)
+
+- `x` goes negative and decreases; it eventually reaches `-inf` (summing sufficiently many `-1.0`s overflows downward: once `x ≤ about -1.7976931348623155e308`, further additions round to `-inf`).
+- Check: `-inf < inf` is `True`... wait — careful: `-inf < inf` **is** True, so this does **not** exit!
+
+Let me recheck Example 4: the loop condition is `x < math.inf`. With `x = -inf`, `-inf < inf` is `True`, so the loop continues, and `-inf + (-1.0) = -inf` forever. **Negative inputs do NOT terminate the loop.** So discard Example 4.
+
+**Valid answers: `inf`, `nan`, or any sufficiently large positive value like `1e308` (or `1e309`, which `float("1e309")` parses directly to `inf`).** [end of text]
+
+
