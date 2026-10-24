@@ -224,6 +224,12 @@ Computer technology related.
 - https://github.com/chearon/dropflow - Dropflow is a CSS layout engine // It has a high quality text layout implementation // You can use it to generate PDFs or images on the backend with Node and node-canvas or render rich, wrapped text to a canvas in the browser
 - https://github.com/kaonashi-tyc/zi2zi-JiT - zi2zi-JiT is a conditional variant of JiT (Just image Transformer) designed for Chinese font style transfer. Given a source character and a style reference, it synthesizes the character in the target font style.
 - https://github.com/kitao/pyxel - Pyxel (/ˈpɪksəl/) is a retro game engine for Python.
+- https://github.com/storytold/artcraft - ArtCraft is the IDE for interactive AI image and video creation. Compose in 2D, stage scenes in 3D, and choose the models that fit your work. Turn prompting into crafting with visual tools for precise, repeatable results.
+- https://github.com/asher/gmlx - The fastest way to run GGUF models on Apple Silicon.
+- https://github.com/jundot/omlx - LLM inference, optimized for your Mac
+- https://github.com/recursive-oss/rec - rec is our custom inference engine for running Recursive's language models locally on your machine. It provides lightning-fast inference for single-session usage.
+  - https://huggingface.co/RecursiveSI/flint - Flint is Recursive’s mixture-of-experts language model for coding agents, with 39.8 billion total parameters and approximately 2.5 billion active per token. It is designed to investigate codebases, fix bugs, implement features, and write tests.
+
 
 #### Json
 

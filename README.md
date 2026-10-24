@@ -331,6 +331,7 @@ Github Pages link [https://hnfong.github.io/public-crap/](https://hnfong.github.
 
 ### 0000-2013
 
+- [遊戲](writings/0000-2013/遊戲.md)
 - [跑圈圈](writings/0000-2013/跑圈圈.md)
 - [人間道](writings/0000-2013/人間道.md)
 - [Vocational Training](writings/0000-2013/Vocational_Training.md)
