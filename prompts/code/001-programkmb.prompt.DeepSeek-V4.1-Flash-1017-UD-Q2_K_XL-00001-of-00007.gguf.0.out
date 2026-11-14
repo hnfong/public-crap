@@ -1,0 +1,63 @@
+```java
+import java.io.*;
+import java.math.*;
+import java.util.*;
+import java.util.regex.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line).append('\n');
+        }
+        String input = sb.toString();
+
+        Pattern p = Pattern.compile("(\\d[\\d,]*(?:\\.\\d+)?)([kKmMgG]?)");
+        Matcher m = p.matcher(input);
+
+        BigDecimal total = BigDecimal.ZERO;
+
+        while (m.find()) {
+            String numStr = m.group(1).replace(",", "");
+            String suffix = m.group(2);
+
+            BigDecimal value;
+            try {
+                value = new BigDecimal(numStr);
+            } catch (NumberFormatException e) {
+                continue;
+            }
+
+            BigDecimal multiplier = BigDecimal.ONE;
+            if (!suffix.isEmpty()) {
+                char c = Character.toLowerCase(suffix.charAt(0));
+                switch (c) {
+                    case 'k': multiplier = new BigDecimal("1024"); break;
+                    case 'm': multiplier = new BigDecimal("1048576"); break;
+                    case 'g': multiplier = new BigDecimal("1073741824"); break;
+                    default: break;
+                }
+            }
+
+            total = total.add(value.multiply(multiplier));
+        }
+
+        BigDecimal kilo = new BigDecimal("1024");
+        BigDecimal mega = new BigDecimal("1048576");
+        BigDecimal giga = new BigDecimal("1073741824");
+
+        System.out.println(format(total));
+        System.out.println(format(total.divide(kilo, 10, RoundingMode.HALF_UP)) + " k");
+        System.out.println(format(total.divide(mega, 10, RoundingMode.HALF_UP)) + " M");
+        System.out.println(format(total.divide(giga, 10, RoundingMode.HALF_UP)) + " G");
+    }
+
+    private static String format(BigDecimal v) {
+        return v.setScale(1, RoundingMode.HALF_UP).toPlainString();
+    }
+}
+``` [end of text]
+
+

@@ -967,7 +967,7 @@ NAME_MATCH_OVERRIDE = [
     ("DeepSeek-V2.5", DeepSeekV25Mixin),
     ("DeepSeek-V3-", DeepSeekV3Mixin),
     ("DeepSeek-V3-", DeepSeekV3Mixin),
-    ("DeepSeek-V4-", DeepSeekV4NoThinkingMixin),
+    ("DeepSeek-V4", DeepSeekV4NoThinkingMixin),
     ("DeepSeek-V3.1", DeepSeekV3Mixin),
     ("DeepSeek-R1", DeepSeekR1DistillMixin),  # Distills, basically
     ("Mimo", LongContextChatMLTemplateMixin),

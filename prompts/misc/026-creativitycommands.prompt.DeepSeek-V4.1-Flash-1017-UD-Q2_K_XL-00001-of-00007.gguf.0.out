@@ -1,0 +1,56 @@
+# Probable Output Analysis
+
+## What the command does
+
+The pipeline breaks the text into whitespace-separated tokens, sorts them, counts unique occurrences, sorts by count ascending, and shows the 20 most frequent tokens.
+
+## Probable output
+
+The top 20 tokens will almost certainly be dominated by **function words** (articles, prepositions, conjunctions, pronouns) and **punctuation attached to words**, something like:
+
+```
+    120 the
+    135 and
+    140 to
+    145 a
+    150 of
+    160 I
+    165 he
+    170 she
+    175 in
+    180 it
+    185 was
+    190 that
+    200 you
+    210 is
+    220 ",
+    230 ".
+    240 ",
+    ...
+```
+
+(Exact counts depend on file length; the *ordering* is what matters.)
+
+## Linguistic explanation
+
+### 1. Zipf's Law
+The most frequent word in any natural-language text is typically a function word ("the"), and frequency is roughly inversely proportional to rank. The top of this list will be **closed-class items**: determiners, prepositions, conjunctions, pronouns, auxiliary verbs.
+
+### 2. Function vs. content words
+- **Function words** (closed class): *the, a, of, to, and, in, is, was, I, he, she, it, that* — these are finite in number and appear constantly.
+- **Content words** (open class): character names, "dragon," "sword," "magic," "Azeroth," "Horde," "Alliance" — these will appear, but far below the function words in raw frequency.
+
+### 3. Why punctuation appears
+`split(/\s/)` splits on **whitespace only**, not on word boundaries. So `"the,"` and `"the"` are counted as *different* tokens. Punctuation glued to words (commas, periods, quotes) will therefore appear as separate high-frequency "tokens" — a classic tokenization artifact. A linguistically cleaner pipeline would strip punctuation first (e.g., `tr -cs 'A-Za-z' '\n'`).
+
+### 4. Why proper nouns won't top the list
+Even in fan fiction, a character name like "Thrall" or "Jaina" appears maybe dozens of times, while "the" appears hundreds. **Content words are semantically salient but statistically rare**; function words are semantically empty but statistically dominant. This is the core insight of corpus linguistics: frequency ≠ importance.
+
+### 5. Caveats
+- If the file is very short (< ~200 words), the ranking may be noisy and content words could sneak in.
+- If the author writes in a stylized way (e.g., heavy dialogue with many "said," "asked"), those reporting verbs may appear.
+- Case sensitivity matters: "The" and "the" are counted separately, so neither may reach the true top unless the text is consistently cased.
+
+**Bottom line:** expect a list of English function words plus punctuation tokens — a direct consequence of Zipf's Law and naive whitespace tokenization. [end of text]
+
+

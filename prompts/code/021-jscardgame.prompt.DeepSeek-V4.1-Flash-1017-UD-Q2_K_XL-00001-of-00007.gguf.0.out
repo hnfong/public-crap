@@ -1,0 +1,181 @@
+<!DOCTYPE html><html><head><style>
+body{margin:0;background:#1a1a2e;font-family:monospace;color:#eee;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+h1{margin:8px;font-size:18px;color:#e94560}
+#board{display:flex;gap:12px;padding:12px;flex-wrap:wrap;justify-content:center}
+.col{display:flex;flex-direction:column;gap:4px;min-width:70px;min-height:100px;background:#16213e;border-radius:6px;padding:4px}
+.card{width:70px;height:90px;border-radius:6px;background:#f5f5f5;color:#222;display:flex;flex-direction:column;justify-content:space-between;padding:4px;box-sizing:border-box;font-size:14px;font-weight:bold;cursor:pointer;user-select:none;border:2px solid transparent}
+.card.red{color:#c0392b}
+.card.sel{border-color:#e94560;box-shadow:0 0 8px #e94560}
+.card.back{background:linear-gradient(135deg,#0f3460,#533483);color:transparent;cursor:default}
+.card .top{font-size:16px}
+.card .bot{text-align:right;font-size:16px}
+.card .mid{text-align:center;font-size:22px}
+#info{margin:8px;font-size:13px;color:#aaa;text-align:center;max-width:600px}
+#msg{color:#e94560;font-weight:bold;height:18px}
+button{background:#e94560;color:#fff;border:none;padding:6px 14px;border-radius:4px;cursor:pointer;font-family:monospace;margin:4px}
+</style></head><body>
+<h1>Gravity Solitaire</h1>
+<div id="info">Click a card to select. Click another column to move. Cards fall down. Build 4 foundations A→K by suit. Free cells hold one card each.</div>
+<div id="msg"></div>
+<div id="board"></div>
+<div><button onclick="newGame()">New Game</button><button onclick="undo()">Undo</button></div>
+<script>
+const SUITS=['♠','♥','♦','♣'],REDS=[1,2];
+let state,sel=null,history=[];
+function newGame(){
+  let deck=[];
+  for(let s=0;s<4;s++)for(let r=1;r<=13;r++)deck.push({s,r});
+  for(let i=deck.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+  state={cols:[[],[],[],[],[],[],[],[]],free:[null,null,null,null],found:[[],[],[],[]],won:false};
+  deck.forEach((c,i)=>state.cols[i%8].push(c));
+  sel=null;history=[];render();
+}
+function clone(s){return JSON.parse(JSON.stringify(s));}
+function pushHist(){history.push(clone(state));if(history.length>50)history.shift();}
+function undo(){if(history.length){state=history.pop();sel=null;render();}}
+function cardVal(c){return c?c.r:0;}
+function canPlaceOn(card,onCol){
+  if(!onCol.length)return true;
+  let top=onCol[onCol.length-1];
+  return REDS.includes(card.s)!==REDS.includes(top.s)&&card.r===top.r-1;
+}
+function canPlaceFound(card,fi){
+  let f=state.found[fi];
+  if(!f.length)return card.r===1;
+  let top=f[f.length-1];
+  return top.s===card.s&&card.r===top.r+1;
+}
+function render(){
+  let b=document.getElementById('board');b.innerHTML='';
+  // foundations
+  for(let i=0;i<4;i++){
+    let d=document.createElement('div');d.className='col';
+    let f=state.found[i];
+    if(f.length){let c=f[f.length-1];d.appendChild(makeCard(c,false,'found'+i));}
+    else{let e=document.createElement('div');e.className='card back';e.textContent=SUITS[i];e.style.color='#888';d.appendChild(e);}
+    b.appendChild(d);
+  }
+  // free cells
+  for(let i=0;i<4;i++){
+    let d=document.createElement('div');d.className='col';
+    let c=state.free[i];
+    if(c)d.appendChild(makeCard(c,false,'free'+i));
+    else{let e=document.createElement('div');e.className='card back';e.textContent='·';d.appendChild(e);}
+    b.appendChild(d);
+  }
+  // columns
+  state.cols.forEach((col,ci)=>{
+    let d=document.createElement('div');d.className='col';
+    col.forEach((c,ri)=>{
+      let el=makeCard(c,sel&&sel.type==='col'&&sel.ci===ci&&sel.ri===ri,'col'+ci+'_'+ri);
+      el.style.marginTop=ri===0?'0':'-60px';
+      el.style.zIndex=ri;
+      el.style.position='relative';
+      d.appendChild(el);
+    });
+    d.onclick=(e)=>{if(e.target===d)clickCol(ci);};
+    b.appendChild(d);
+  });
+  document.getElementById('msg').textContent=state.won?'🎉 You Win! 🎉':'';
+}
+function makeCard(c,isSel,id){
+  let d=document.createElement('div');
+  d.className='card'+(REDS.includes(c.s)?' red':'')+(isSel?' sel':'');
+  d.innerHTML=`<div class="top">${c.r===1?'A':c.r===11?'J':c.r===12?'Q':c.r===13?'K':c.r}${SUITS[c.s]}</div><div class="mid">${SUITS[c.s]}</div><div class="bot">${c.r===1?'A':c.r===11?'J':c.r===12?'Q':c.r===13?'K':c.r}${SUITS[c.s]}</div>`;
+  d.onclick=(e)=>{e.stopPropagation();clickCard(id,c);};
+  return d;
+}
+function clickCard(id,c){
+  if(id.startsWith('found'))return;
+  if(id.startsWith('free')){
+    let i=parseInt(id.slice(4));
+    if(sel){tryMoveToFree(i);}
+    else if(state.free[i]){sel={type:'free',i};render();}
+    return;
+  }
+  let [ci,ri]=id.slice(3).split('_').map(Number);
+  if(sel){
+    if(sel.type==='col'&&sel.ci===ci&&sel.ri===ri){sel=null;render();return;}
+    tryMoveToCol(ci);
+  }else{
+    sel={type:'col',ci,ri};render();
+  }
+}
+function clickCol(ci){
+  if(sel)tryMoveToCol(ci);
+}
+function getSelectedCards(){
+  if(!sel)return null;
+  if(sel.type==='free')return [state.free[sel.i]];
+  let col=state.cols[sel.ci];
+  return col.slice(sel.ri);
+}
+function tryMoveToCol(ci){
+  let cards=getSelectedCards();if(!cards||!cards.length)return;
+  let first=cards[0];
+  if(!canPlaceOn(first,state.cols[ci])){sel=null;render();return;}
+  pushHist();
+  // remove from source
+  if(sel.type==='free')state.free[sel.i]=null;
+  else state.cols[sel.ci]=state.cols[sel.ci].slice(0,sel.ri);
+  state.cols[ci].push(...cards);
+  sel=null;checkWin();render();
+}
+function tryMoveToFree(i){
+  if(state.free[i]){sel=null;render();return;}
+  let cards=getSelectedCards();if(!cards||cards.length!==1)return;
+  pushHist();
+  if(sel.type==='free')state.free[sel.i]=null;
+  else state.cols[sel.ci]=state.cols[sel.ci].slice(0,sel.ri);
+  state.free[i]=cards[0];
+  sel=null;render();
+}
+function checkWin(){
+  if(state.found.every(f=>f.length===13))state.won=true;
+}
+// auto-move to foundation on double click
+document.addEventListener('dblclick',(e)=>{
+  let el=e.target.closest('.card');if(!el)return;
+  let id=el.onclick; // not reliable
+});
+// simpler: single click on top card of column tries foundation if possible
+function tryFoundation(){
+  if(!sel)return false;
+  let cards=getSelectedCards();if(!cards||cards.length!==1)return false;
+  let c=cards[0];
+  for(let i=0;i<4;i++){
+    if(canPlaceFound(c,i)){
+      pushHist();
+      if(sel.type==='free')state.free[sel.i]=null;
+      else state.cols[sel.ci]=state.cols[sel.ci].slice(0,sel.ri);
+      state.found[i].push(c);
+      sel=null;checkWin();render();return true;
+    }
+  }
+  return false;
+}
+// override clickCard to try foundation first
+const origClickCard=clickCard;
+clickCard=function(id,c){
+  if(id.startsWith('found'))return;
+  if(sel&&!id.startsWith('free')){
+    // try foundation move
+    let cards=getSelectedCards();
+    if(cards&&cards.length===1){
+      for(let i=0;i<4;i++){
+        if(canPlaceFound(cards[0],i)){
+          pushHist();
+          if(sel.type==='free')state.free[sel.i]=null;
+          else state.cols[sel.ci]=state.cols[sel.ci].slice(0,sel.ri);
+          state.found[i].push(cards[0]);
+          sel=null;checkWin();render();return;
+        }
+      }
+    }
+  }
+  origClickCard(id,c);
+};
+newGame();
+</script></body></html> [end of text]
+
+

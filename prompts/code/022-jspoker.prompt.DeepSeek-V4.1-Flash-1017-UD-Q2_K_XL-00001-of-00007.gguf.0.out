@@ -1,0 +1,26 @@
+<!DOCTYPE html><html><head><style>body{font-family:sans-serif;background:#222;color:#eee;text-align:center}button{margin:4px;padding:8px 16px;font-size:16px;cursor:pointer}.card{display:inline-block;width:60px;height:90px;margin:4px;border-radius:6px;background:#fff;color:#000;font-size:24px;line-height:90px;vertical-align:top}.red{color:#c00}.hidden{background:#555;color:#555}</style></head><body>
+<h2>Video Poker - Jacks or Better</h2>
+<div id="credits">Credits: 100</div>
+<div id="bet">Bet: 5</div>
+<div id="hand"></div>
+<div id="msg"></div>
+<div>
+<button id="deal">Deal</button>
+<button id="draw">Draw</button>
+<button id="betUp">Bet +</button>
+<button id="betDown">Bet -</button>
+</div>
+<script>
+const SUITS=['♠','♥','♦','♣'],RANKS=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+let credits=100,bet=5,deck=[],hand=[],held=[],phase='idle';
+const $=id=>document.getElementById(id);
+function makeDeck(){deck=[];for(const s of SUITS)for(const r of RANKS)deck.push({r,s});for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}}
+function rankVal(r){return RANKS.indexOf(r)+2;}
+function render(){let h='';for(let i=0;i<5;i++){if(hand[i]){const c=hand[i];const red=(c.s==='♥'||c.s==='♦')?'red':'';const cls=held[i]?'card '+red:'card '+red+' hidden';h+=`<span class="${cls}" data-i="${i}">${held[i]?c.r+c.s:'?'}</span>`;}else h+='<span class="card hidden">?</span>';}$('hand').innerHTML=h;$('credits').textContent='Credits: '+credits;$('bet').textContent='Bet: '+bet;document.querySelectorAll('.card').forEach(el=>{el.onclick=()=>{if(phase==='draw'){const i=+el.dataset.i;held[i]=!held[i];render();}}});}
+function evaluate(cards){const ranks=cards.map(c=>rankVal(c.r)).sort((a,b)=>a-b);const suits=cards.map(c=>c.s);const flush=suits.every(s=>s===suits[0]);const counts={};ranks.forEach(r=>counts[r]=(counts[r]||0)+1);const vals=Object.values(counts).sort((a,b)=>b-a);const uniq=Object.keys(counts).map(Number).sort((a,b)=>b-a);const straight=ranks.every((r,i)=>i===0||r===ranks[i-1]+1)||(ranks[0]===2&&ranks[4]===14);if(flush&&straight&&ranks[0]===10)return{name:'Royal Flush',pay:250};if(flush&&straight)return{name:'Straight Flush',pay:50};if(vals[0]===4)return{name:'Four of a Kind',pay:25};if(vals[0]===3&&vals[1]===2)return{name:'Full House',pay:9};if(flush)return{name:'Flush',pay:6};if(straight)return{name:'Straight',pay:4};if(vals[0]===3)return{name:'Three of a Kind',pay:3};if(vals[0]===2&&vals[1]===2)return{name:'Two Pair',pay:2};if(vals[0]===2&&(uniq[0]>=11||uniq[1]>=11))return{name:'Jacks or Better',pay:1};return{name:'Nothing',pay:0};}
+function deal(){if(phase!=='idle')return;if(credits<bet){$('msg').textContent='Not enough credits!';return;}credits-=bet;makeDeck();hand=deck.splice(0,5);held=[false,false,false,false,false];phase='draw';$('msg').textContent='Select cards to hold, then Draw.';render();}
+function draw(){if(phase!=='draw')return;for(let i=0;i<5;i++)if(!held[i])hand[i]=deck.pop();const res=evaluate(hand);const win=res.pay*bet;credits+=win;$('msg').textContent=res.name+(win?' - Win '+win+'!':' - No win.');phase='idle';held=[false,false,false,false,false];render();}
+$('deal').onclick=deal;$('draw').onclick=draw;$('betUp').onclick=()=>{if(phase==='idle'&&bet<credits)bet+=5;render();};$('betDown').onclick=()=>{if(phase==='idle'&&bet>5)bet-=5;render();};render();
+</script></body></html> [end of text]
+
+

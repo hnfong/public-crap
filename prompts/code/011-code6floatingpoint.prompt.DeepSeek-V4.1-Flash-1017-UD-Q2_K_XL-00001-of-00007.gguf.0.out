@@ -1,0 +1,40 @@
+# Answers
+
+## Q1
+
+**Output: `inf`** (the loop terminates, and `x` is `inf`).
+
+Reasoning: `x` starts at `0.0` and increments by `1.0`. IEEE 754 double precision can represent integers exactly up to 2^53. Once `x` reaches 2^53 ≈ 9.007×10^15, adding `1.0` no longer changes `x` (the ULP at that magnitude is 2.0). So `x` gets "stuck" at 2^53 and the loop would run forever… **except** that's not what happens here.
+
+Wait — let's be careful. At `x = 2^53`, `x + 1.0` rounds to nearest even, which is `2^53` itself (since 2^53 + 1 is exactly halfway between 2^53 and 2^53+2, and ties-to-even picks 2^53). So `x` stays at 2^53 forever → **infinite loop, no output**.
+
+Hmm, but actually the question asks "eventual output." Let me reconsider: is there any point where `x += 1.0` produces `inf`? No — `x` never exceeds ~9×10^15, far below `inf`. So the loop **never terminates**. The program produces **no output** (it hangs).
+
+**Answer: No output — the program loops forever.** `x` gets stuck at 2^53 = 9007199254740992.0 because `x + 1.0 == x` there.
+
+## Q2
+
+**Output: `inf`** — this loop *does* terminate.
+
+Reasoning: `x = x * 1.001` grows geometrically. Starting at 1.0, after ~n iterations `x ≈ 1.001^n`. To reach `inf` (≈1.8×10^308) requires n ≈ 308 / log10(1.001) ≈ 308 / 0.000434 ≈ **~710,000 iterations** — very fast. Once `x` overflows to `inf`, the condition `x < math.inf` becomes false and the loop exits, printing `inf`.
+
+**Yes, it is different from Q1**: Q1 hangs forever (no output), Q2 terminates and prints `inf`.
+
+## Q3
+
+**Yes, there are inputs that lead to "Done".**
+
+The loop `while x < math.inf: x += inc` terminates if `x` ever reaches `inf` (or NaN, which also fails `< inf`). This happens when `inc` is large enough that repeated addition overflows to `inf` before `x` gets "stuck" at a fixed point.
+
+Key insight: if `inc` is small, `x` will eventually reach a magnitude where `x + inc == x` (stuck), causing an infinite loop. To terminate, `inc` must be large enough that `x` reaches `inf` before getting stuck — or `inc` itself must be `inf`/NaN.
+
+**Examples of terminating inputs:**
+
+1. **`inf`** — `x = 0.0 + inf = inf`, loop exits immediately → "Done".
+2. **`nan`** — `x = 0.0 + nan = nan`, and `nan < inf` is `False`, loop exits → "Done".
+3. **`1e308`** (or any value near the top of the range) — `0.0 + 1e308 = 1e308 < inf`, next iteration `1e308 + 1e308 = inf`, loop exits → "Done".
+4. **`1.7976931348623157e308`** (max double) — `0.0 + max = max < inf`; `max + max = inf`; exits → "Done".
+
+So inputs like `inf`, `nan`, `1e308`, or `1.7e308` all produce "Done". (Note: `float("inf")` and `float("nan")` are valid inputs to `float()`.) [end of text]
+
+
