@@ -26,6 +26,10 @@ model, inside a Linux environment that is identical from run to run.
 2. **Isolation per test**: each test case runs in a fresh, disposable environment.
    No state (files, packages, env vars, processes) may leak between test cases.
    Model weights never leave the host.
+
+User note: true. Note that each "run" would have these params: (MODEL,
+TEST_CASE). We're running multiple models over different test cases.
+
 3. **Host reachability**: the guest must be able to reach the llama.cpp server on
    the host at specific port(s), over HTTP, without exposing the host to the guest
    or the network in any broader way.
@@ -47,6 +51,10 @@ model, inside a Linux environment that is identical from run to run.
    strictly necessary. Guest image as small as practical.
 2. **Simplicity** — few moving parts, few concepts, everything reproducible from
    this repo with a handful of well-understood commands.
+
+User note: you must not install anything on the host unless the user explicitly
+allows this. Ask the user first if you need to install anything outside of this
+repo. The user will install apple containers (already).
 
 ### 1.5 Out of scope (for now)
 - CI/CD integration, image registry publishing, multi-host or parallel farms.
@@ -118,68 +126,113 @@ debian:trixie-slim image "agent-sandbox:<tag>"
 
 Each chunk is independently doable and verifiable. Checkboxes = steps.
 
-### Chunk 1 — Verify host prerequisites (5 min, no changes)
-- [ ] Confirm `sw_vers` ≥ 26 and `uname -m` = arm64 (known: 26.7.1 / arm64 ✅).
-- [ ] Confirm llama.cpp is available on the host and identify its server binary
-      (`llama-server`) and the port it listens on (default 8080).
-- [ ] Decide the fixed host endpoint contract: `127.0.0.1:8080`, OpenAI-compatible
-      path `/v1`. Record it here once confirmed: `PORT = ____`.
-- **Done when**: we know the exact host URL the guest will call.
+### Chunk 1 — Verify host prerequisites (5 min, no changes) — DONE
+- [x] Confirm `sw_vers` ≥ 26 and `uname -m` = arm64 (26.7.1 / arm64 ✅).
+- [x] llama.cpp binaries at `~/projects/llama.gguf/` (`llama-server` etc.; not on PATH).
+- [x] Fixed host endpoint contract (owner-confirmed): `PORT = 9931`,
+      OpenAI-compatible `/v1`, bound to `127.0.0.1`. Model name is a per-run
+      parameter: run params = `(PCP_MODEL, TEST_CASE)`.
+- **Done when**: we know the exact host URL the guest will call. ✅
 
-### Chunk 2 — Install `apple/container` (10 min)
-- [ ] Download the signed installer `.pkg` for the latest release from
-      https://github.com/apple/container/releases (pin: v1.7.1).
-- [ ] Install via the package (installs to `/usr/local`), then:
-      - [ ] `container system start`
-      - [ ] `container --version`
-      - [ ] `container run --rm alpine echo hello`
-- **Done when**: `hello` prints. Host now has exactly one new component:
-  the `container` service.
+### Chunk 2 — Verify `apple/container` — DONE (already installed by owner)
+- [x] `container --version` → 1.7.1 (pinned).
+- [x] `container system start` works; `container run --rm alpine echo hello` → `hello`.
+- Note: on first start apple/container required its own default kata kernel
+  (4.3.1); installed non-interactively via `container system start
+  --enable-kernel-install`. Component of apple/container itself, not a new
+  host tool; `sandbox/setup-host.sh` handles it idempotently.
+- **Done when**: `hello` prints. ✅
 
-### Chunk 3 — Host bridge for llama.cpp (5 min, per-boot)
-- [ ] `sudo container system dns create host.container.internal --localhost 203.0.113.113`
-- [ ] Start llama-server bound to 127.0.0.1.
-- [ ] `container run --rm alpine/curl curl -s http://host.container.internal:8080/v1/models`
-      (or equivalent health probe) — expect a response from the host server.
-- [ ] Note the caveats in `sandbox/README` (or here): the rule is removed on macOS
-      reboot (re-run command); creating the localhost domain disables iCloud
-      Private Relay.
-- **Done when**: a throwaway container can hit the host's model endpoint by name.
+### Chunk 3 — Guest → host model connectivity — DONE (SSH reverse tunnel, no sudo)
+Owner decision: **no sudo, no `container system dns` host-bridge, no Private
+Relay tradeoff.** Owner-suggested approach, implemented and verified:
 
-### Chunk 4 — Guest image: `sandbox/Dockerfile` (30 min)
-- [ ] Write `sandbox/Dockerfile`:
-  - [ ] Base: `FROM debian:trixie-slim`
-  - [ ] `ARG` pins: `NODE_VERSION` (exact, e.g. 22.x.y), `RUST_TOOLCHAIN` (e.g. 1.88.0),
-        `PI_VERSION` (exact), `JAVA` fixed to openjdk-21.
-  - [ ] apt layer: core unix tooling (git, curl, wget, openssh-client, jq, ripgrep,
+1. The guest image runs `sshd`; `run-test.sh` generates an **ephemeral SSH
+   keypair per run** (temp dir), mounts the public key into the guest, and
+   opens `ssh -R 127.0.0.1:<port>:127.0.0.1:<port> agent@<guest-ip> -N`.
+2. The guest reaches the model at `http://127.0.0.1:9931/v1` — the same
+   address on every host, and llama.cpp stays bound to host `127.0.0.1`.
+3. Guest IP is discovered from `container ls --format json`.
+
+Verified: throwaway debian container + fake model server on host loopback →
+guest `curl 127.0.0.1:9931` succeeded; also verified through the harness on
+both `default` and `internal` networks.
+- **Done when**: a guest can hit the host's model endpoint over loopback. ✅
+
+<details><summary>original plan (superseded)</summary>
+
+% - [ ] `sudo container system dns create host.container.internal --localhost 203.0.113.113`
+% - [ ] Start llama-server bound to 127.0.0.1.
+% - [ ] `container run --rm alpine/curl curl -s http://host.container.internal:8080/v1/models`
+%       (or equivalent health probe) — expect a response from the host server.
+% - [ ] Note the caveats in `sandbox/README` (or here): the rule is removed on macOS
+%       reboot (re-run command); creating the localhost domain disables iCloud
+%       Private Relay.
+% - **Done when**: a throwaway container can hit the host's model endpoint by name.
+User comment: avoid sudo. Can we achieve something similar by ssh-ing from host to guest?
+
+</details>
+
+### Chunk 4 — Guest image: `sandbox/Dockerfile` (30 min) — DONE
+- [x] Write `sandbox/Dockerfile`:
+  - [x] Base: `FROM debian:trixie-slim` (pinned by digest)
+  - [x] `ARG` pins: `NODE_VERSION`, `RUST_TOOLCHAIN`, `RUSTUP_VERSION`,
+        `PI_VERSION`; `JAVA` fixed to openjdk-21.
+  - [x] apt layer: core unix tooling (git, curl, wget, openssh-client, jq, ripgrep,
         unzip, zip, xz-utils, bzip2, file, less, ca-certificates),
         C/C++ (build-essential, clang, lld, cmake, ninja-build),
         python3 + python3-venv + python3-pip, openjdk-21-jdk-headless.
-  - [ ] Node: official nodejs.org tarball (linux-arm64) + SHASUMS256 verification,
+  - [x] Node: official nodejs.org tarball (linux-arm64) + SHASUMS256 verification,
         extracted to `/usr/local` (no third-party repo).
-  - [ ] Rust: official rustup, `--profile minimal --default-toolchain $RUST_TOOLCHAIN`,
-        symlinked into `/usr/local/bin`.
-  - [ ] Pi: `npm install -g @earendil-works/pi-coding-agent@$PI_VERSION`.
-  - [ ] Housekeeping: `DEBIAN_FRONTEND=noninteractive`, `rm -rf /var/lib/apt/lists/*`,
-        non-root working dir note (see Open Questions), no apt upgrade drift.
-- [ ] Add `sandbox/build.sh`:
+  - [x] Rust: official rustup, `--profile minimal --default-toolchain $RUST_TOOLCHAIN`
+        (proxies in `/home/agent/.cargo/bin`).
+  - [x] Pi: `npm install -g @earendil-works/pi-coding-agent@$PI_VERSION`.
+  - [x] Housekeeping: `DEBIAN_FRONTEND=noninteractive`, `rm -rf /var/lib/apt/lists/*`,
+        non-root `agent` user + `/work`, no apt upgrade drift, sshd for the tunnel.
+- [x] Add `sandbox/build.sh`:
   `container build -t agent-sandbox:$TAG sandbox/` + print the resulting image
   digest for recording in test metadata.
-- **Done when**: Dockerfile + build.sh exist and are reviewed; versions pinned.
+- **Done when**: Dockerfile + build.sh exist and are reviewed; versions pinned. ✅
 
-### Chunk 5 — Build and smoke-test the image (15–30 min, mostly waiting)
-- [ ] `sandbox/build.sh 1.0` (first build pulls base + toolchains; later builds
+Implemented pins (owner: debian pin is the deliberate one for now; others are
+ARGs recorded here so bumping is a reviewable diff):
+`debian:trixie-slim` @ `sha256:8aa5a7bf…`, Node `22.23.5` (official tarball,
+SHASUMS-verified), rustup `1.28.2` → Rust `1.100.0` (minimal profile), pi
+`1.6.1` (npm), clang `19.1.7` / g++ `14.2.0` / cmake `3.31.6` / ninja (apt),
+Python `3.13.5` (apt), openjdk `21.0.13` (apt).
+
+Other decisions:
+- **Non-root agent** (owner Q3): `useradd agent` (uid 1000); image entrypoint
+  `pcp-entrypoint.sh` starts sshd, then drops to `agent` and execs the command.
+- **pi config** (owner Q2): sanitized template from host `~/.pi` baked as
+  `/etc/skel/.pi/agent/settings.json` (defaultProvider `llama.cpp`).
+  `auth.json` / `trust.json` are **excluded** (secrets). Per run, `run-test.sh`
+  generates `settings.json` + `models-store.json` (model entry for `PCP_MODEL`,
+  baseUrl `http://127.0.0.1:$PCP_MODEL_PORT/v1`) and mounts them at
+  `/home/agent/.pi`. Host port in the host's own models-store (7777) treated as
+  stale; harness default is owner-confirmed 9931.
+- Rust `CARGO_HOME=/home/agent/.cargo` (agent-writable); toolchain read-only in
+  `/usr/local/rustup`.
+
+### Chunk 5 — Build and smoke-test the image (15–30 min, mostly waiting) — DONE
+- [x] `sandbox/build.sh 1.0` (first build pulls base + toolchains; later builds
       use layer cache).
-- [ ] Smoke test, one container per check (all `--rm`):
-  - [ ] `node --version && npm --version` → pinned values
-  - [ ] `rustc --version && cargo --version` → pinned values
-  - [ ] `clang --version && g++ --version && cmake --version`
-  - [ ] `python3 --version && python3 -m venv /tmp/v && /tmp/v/bin/python -V`
-  - [ ] `java -version` → OpenJDK 21
-  - [ ] `pi --version` → pinned value
-- **Done when**: all versions match the `ARG` pins exactly.
+- [x] Smoke test, one container per check (all `--rm`):
+  - [x] `node --version && npm --version` → pinned values
+  - [x] `rustc --version && cargo --version` → pinned values
+  - [x] `clang --version && g++ --version && cmake --version`
+  - [x] `python3 --version && python3 -m venv /tmp/v && /tmp/v/bin/python -V`
+  - [x] `java -version` → OpenJDK 21
+  - [x] `pi --version` → pinned value
+- **Done when**: all versions match the `ARG` pins exactly. ✅
 
-### Chunk 6 — Test harness scripts (30 min)
+`agent-sandbox:1.0` digest
+`sha256:c9a6730e21566cbd53d4823d295899e25d77a16a8c7a044908b1cfc62a63320e`
+(recorded in `sandbox/.digests/1.0`, gitignored). All smoke checks passed
+(node/npm, rustc/cargo, clang/g++/cmake/ninja, python3+venv, openjdk 21, pi
+1.6.1) and the entrypoint drops to `agent`.
+
+### Chunk 6 — Test harness scripts (30 min) — DONE
 - [ ] `sandbox/setup-host.sh` (idempotent, per-boot):
   - [ ] `container system start` (no-op if running)
   - [ ] `sudo container system dns create host.container.internal --localhost 203.0.113.113`
@@ -200,50 +253,73 @@ Each chunk is independently doable and verifiable. Checkboxes = steps.
   - [ ] Exit with the test's exit code.
 - [ ] `sandbox/cleanup.sh`: `container prune` (images/containers) — keep the
   pinned `agent-sandbox:$TAG` image.
-- **Done when**: scripts pass shellcheck; a dry run prints the exact commands.
+- **Done when**: scripts pass shellcheck; a dry run prints the exact commands. ✅
 
-### Chunk 7 — First end-to-end test case (30 min)
-- [ ] `tests/case-001-hello-world/`:
-  - [ ] `run.sh` (executed inside the guest):
-    - [ ] assert toolchain versions (cheap regression guard)
-    - [ ] configure pi to use the host model: OpenAI-compatible base URL
-          `http://host.container.internal:8080/v1` (verify pi's exact provider
-          config mechanism — file vs env — during implementation and pin it here)
-    - [ ] run one trivial pi coding task (e.g. "create a file with this content"
-          or a 5-line function with a test)
-    - [ ] write pass/fail + transcript to `/results/`
-  - [ ] `fixture/` (empty for now; future cases put their repo here)
-- [ ] Run: `sandbox/setup-host.sh && sandbox/run-test.sh tests/case-001-hello-world`
-  with a small model already served by llama-server on the host.
-- **Done when**: a result (pass or fail — the point is a *recorded, comparable*
-  outcome) lands in `tests/case-001-hello-world/results/` with metadata.
+Notes vs. the original plan:
+- `setup-host.sh` does **not** create the DNS rule (owner decision); it only
+  starts the container system idempotently.
+- All overrides are `PCP_*` (owner decision): `PCP_TAG, PCP_MODEL,
+  PCP_MODEL_PORT (9931), PCP_CPUS (2), PCP_MEMORY (4G), PCP_NET
+  (default|internal|…), PCP_TIMEOUT_SECS (1800), PCP_CONTEXT_WINDOW`.
+- `run-test.sh` runs the container in the foreground (background shell) to
+  capture the true exit code, uses a watchdog for the timeout, and writes
+  `results/metadata.json` (case, image tag+digest, host OS/arch, model, port,
+  network, resources, wall time, exit code).
+- `tests/case-000-harness-smoke/` is a harness-validation case (toolchain
+  versions + tunnel probe), not an agent/model test — the first real agent
+  case remains Chunk 7 (deferred per owner).
+- shellcheck clean (run in a throwaway container — nothing installed on host).
+- Live-verified: default network, `internal` network, fake model server via
+  tunnel, metadata capture, exit-code propagation.
 
-### Chunk 8 — Isolation and policy hardening (15 min)
-- [ ] Verify offline mode: run case-001 with `NET=internal`; confirm the only
-      reachable endpoint is the host bridge (and that internet is unreachable).
-      (If the host-bridge domain does not resolve on `--internal` networks — an
-      open question from the docs — fall back: offline tests use the default
-      network and the model endpoint remains the only *useful* destination.)
-- [ ] Verify no state leak: run case-001 twice; diff `results/` metadata; confirm
-      the second run's container started from the pristine image (e.g. by having
-      run.sh record `find / -newer /marker` style checks or a sentinel file check).
-- [ ] Decide root vs non-root agent user in the guest (see Open Questions).
+Owner note (pi config template): done — sanitized `settings.json` in
+`sandbox/pi-config/`; no tokens/API keys are copied (none needed for
+localhost llama.cpp).
 
-### Chunk 9 — Housekeeping and reproducibility conventions (10 min)
-- [ ] Document in `sandbox/README.md`: per-boot setup, how to add a test case,
-      how to bump toolchain/pi versions (deliberate `ARG` edits only), cleanup.
-- [ ] Convention: every test's `metadata.json` records the image **digest**
-      (not just tag) so any historical result is exactly reproducible.
-- [ ] Known-caveat list (see §5) lives in the README, not in people's heads.
+% ### Chunk 7 — First end-to-end test case (30 min)
+% - [ ] `tests/case-001-hello-world/`:
+%   - [ ] `run.sh` (executed inside the guest):
+%     - [ ] assert toolchain versions (cheap regression guard)
+%     - [ ] configure pi to use the host model: OpenAI-compatible base URL
+%           `http://host.container.internal:8080/v1` (verify pi's exact provider
+%           config mechanism — file vs env — during implementation and pin it here)
+%     - [ ] run one trivial pi coding task (e.g. "create a file with this content"
+%           or a 5-line function with a test)
+%     - [ ] write pass/fail + transcript to `/results/`
+%   - [ ] `fixture/` (empty for now; future cases put their repo here)
+% - [ ] Run: `sandbox/setup-host.sh && sandbox/run-test.sh tests/case-001-hello-world`
+%   with a small model already served by llama-server on the host.
+% - **Done when**: a result (pass or fail — the point is a *recorded, comparable*
+%   outcome) lands in `tests/case-001-hello-world/results/` with metadata.
+% 
+% ### Chunk 8 — Isolation and policy hardening (15 min)
+% - [ ] Verify offline mode: run case-001 with `NET=internal`; confirm the only
+%       reachable endpoint is the host bridge (and that internet is unreachable).
+%       (If the host-bridge domain does not resolve on `--internal` networks — an
+%       open question from the docs — fall back: offline tests use the default
+%       network and the model endpoint remains the only *useful* destination.)
+% - [ ] Verify no state leak: run case-001 twice; diff `results/` metadata; confirm
+%       the second run's container started from the pristine image (e.g. by having
+%       run.sh record `find / -newer /marker` style checks or a sentinel file check).
+% - [ ] Decide root vs non-root agent user in the guest (see Open Questions).
+% 
+% ### Chunk 9 — Housekeeping and reproducibility conventions (10 min)
+% - [ ] Document in `sandbox/README.md`: per-boot setup, how to add a test case,
+%       how to bump toolchain/pi versions (deliberate `ARG` edits only), cleanup.
+% - [ ] Convention: every test's `metadata.json` records the image **digest**
+%       (not just tag) so any historical result is exactly reproducible.
+% - [ ] Known-caveat list (see §5) lives in the README, not in people's heads.
+% 
+% ### Chunk 10 — Follow-ups (not now, listed to shape decisions now)
+% - [ ] Interactive debug machine: `container machine create agent-sandbox:$TAG
+%       --name dev` for hand-testing the agent environment (trusted image only).
+% - [ ] Push the image to a private registry (ghcr) if/when CI needs it.
+% - [ ] Matrix runs: same case × {model, quant, temperature, pi version} with a
+%       small runner script over `run-test.sh`.
+% - [ ] Multiple host ports / second service (e.g. a local search endpoint) — the
+%       `--localhost` bridge covers this without new machinery.
 
-### Chunk 10 — Follow-ups (not now, listed to shape decisions now)
-- [ ] Interactive debug machine: `container machine create agent-sandbox:$TAG
-      --name dev` for hand-testing the agent environment (trusted image only).
-- [ ] Push the image to a private registry (ghcr) if/when CI needs it.
-- [ ] Matrix runs: same case × {model, quant, temperature, pi version} with a
-      small runner script over `run-test.sh`.
-- [ ] Multiple host ports / second service (e.g. a local search endpoint) — the
-      `--localhost` bridge covers this without new machinery.
+User comment: chunks 7-10 are fine but we should probably reserve this for later.
 
 ---
 
@@ -273,13 +349,13 @@ agentic/
 | # | Caveat | Mitigation |
 |---|---|---|
 | 1 | `container` is a 1.x product version — evolving fast; CLI stable only within a major. | Pin installer version (v1.7.1); upgrade deliberately. |
-| 2 | Host-bridge DNS rule (`--localhost`) is removed on macOS reboot. | `setup-host.sh` re-creates it idempotently; document it. |
-| 3 | Creating the localhost domain disables iCloud Private Relay. | Accept (document); it only lasts while the rule exists. |
+| 2/3/5 | ~~Host-bridge DNS~~ **Dropped** (owner decision): no sudo, no `--localhost` domain, no Private Relay tradeoff. Replaced by per-run SSH reverse tunnel (see Chunk 3). Residual exposure: the tunnel forwards exactly one loopback port per run into the guest. |
 | 4 | Memory freed inside a container VM is not returned to macOS (partial ballooning). | Ephemeral containers per test (`--rm`) bound the leak; `container system stop/start` between long sessions if needed. |
-| 5 | Host bridge reaches the whole host (all 127.0.0.1 services), not just one port. | Keep llama.cpp bound to 127.0.0.1; don't run other local services during tests (or accept them as reachable). |
-| 6 | macOS lacks GNU `timeout`. | Small watchdog helper in `run-test.sh`. |
-| 7 | `--internal` network + host-bridge DNS interaction unverified. | Chunk 8 verifies; documented fallback exists. |
-| 8 | Image build pulls from external registries (debian, nodejs.org, rustup, npm) — network + supply chain at build time. | Build rarely; verify Node tarball SHA-256; pin everything else by version. |
+| 6 | macOS lacks GNU `timeout`. | Watchdog helper in `run-test.sh` (`sleep … kill` background shell). Implemented. |
+| 7 | `--internal` network + tunnel interaction | Pre-verified in Chunk 6: the SSH tunnel works on `internal` networks (host→guest vmnet is unaffected). Internet unreachability still to be asserted in Chunk 8. |
+| 8 | Image build pulls from external registries (debian, nodejs.org, rustup, npm) — network + supply chain at build time. | Build rarely; verify Node tarball SHA-256 + rustup-init SHA-256; pin everything else by version. |
+| 9 | apple/container requires its default kata kernel on first start (downloads from kata-containers releases). | Part of apple/container itself; installed once via `container system start --enable-kernel-install`; `setup-host.sh` re-checks idempotently. |
+| 10 | Guest may call the model before the tunnel is up (small race between container start and sshd/tunnel setup). | Harness opens the tunnel as early as possible; test cases that need the model should briefly poll the endpoint (documented in `sandbox/README.md`). |
 
 ## 6. Open questions
 

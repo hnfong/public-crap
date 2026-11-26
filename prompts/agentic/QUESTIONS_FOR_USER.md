@@ -21,6 +21,14 @@ What exactly is running the model on the host?
 > Proposed default: `llama-server` on `127.0.0.1:8080`, OpenAI-compatible `/v1`,
 > model name passed to the harness as an env var per run.
 
+User answer:
+
+- either on $PATH, or ~/projects/llama.gguf/llama-{server|cli|completions} etc. (this thing should run on multiple hosts, there are some diff setups)
+- port is 9931 (llama.cpp server default [as of writing at least])
+- I suppose so.
+- models will be frequently swapped. it should be a parameter for a "run" (eg. run parameters would be at least (MODEL, TEST_CASE))
+
+
 ## Q2. How should pi be pointed at the host model? (blocks Chunk 7)
 
 pi supports custom model providers (config file vs. environment variables).
@@ -34,6 +42,9 @@ test case's `run.sh`, or global harness env vars?
 > implementation and record it in `PLAN.md`; model name + endpoint as harness
 > env vars, per-case overrides allowed in `run.sh`.
 
+User answer: You can take a "copy" of the current Pi harness' config in hosts' ~/.pi (don't
+modify the host's config though)
+
 ## Q3. Agent user inside the guest (shapes Chunks 4 & 8)
 
 Should the agent run as **root** or as a **dedicated non-root user** in the
@@ -46,6 +57,9 @@ container?
 > Proposed default: **root** to start; revisit in Chunk 8 if behavior looks
 > root-sensitive.
 
+User answer: Dedicated non-root. There may be complications if we run root as some apps/envs
+will behave differently.
+
 ## Q4. Default per-test resource limits (blocks Chunk 6)
 
 Proposed defaults: **4 CPUs / 8 GB RAM** per test container.
@@ -56,6 +70,10 @@ squeeze things.)
 
 > Proposed default: `CPUS=4`, `MEMORY=8G`, overridable per run via env vars.
 
+User answer: I'd say CPU=2, MEMORY=4G.
+There should be much more room but this is basically how much I'd rather give to the linux env.
+Also, let's call this project PCP, so any override vars should have this prefix.
+
 ## Q5. Internet access policy (shapes Chunk 6 default)
 
 Should tests run **with internet by default** (agent may `pip install` /
@@ -64,6 +82,8 @@ endpoint reachable), with internet as the opt-in?
 
 > Proposed default: internet by default (matches realistic agent usage);
 > `NET=internal` for the offline variant.
+
+User answer: Internet by default. Should be tune-able per test.
 
 ## Q6. Version pins — confirm the starting pins (blocks Chunk 4)
 
@@ -82,13 +102,26 @@ Proposed initial pins for the guest image:
 Any of these should be different (e.g. Node 24, a specific pi version you're
 standardizing on)?
 
+User answer: Pin of debian version is probably enough for now.
+
 ## Q7. Scope check — anything I got wrong?
 
 Quick sanity check on my reading of the setup (PLAN.md §1):
 
 - The **agent (pi) runs inside the guest**; the model never does.
+
+User answer: Correct
+
 - Tests are **CLI-based coding tasks** (no browser/GUI).
+
+User answer: Generally correct.
+
 - "Specific ports" = just the llama.cpp server for now.
+
+User answer: Correct
+
 - You want results collected per case in the repo (`results/`), gitignored.
+
+User answer: Not entirely. I think each test would have to have some way to interpret the results. The final results would be saved also, but of course we'd have to figure out what to capture from the VM.
 
 Flag anything that doesn't match your intent.
