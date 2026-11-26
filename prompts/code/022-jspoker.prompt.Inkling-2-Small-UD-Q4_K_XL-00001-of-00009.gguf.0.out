@@ -1,0 +1,56 @@
+<!DOCTYPE html><html>
+<head>
+<meta charset="utf-8">
+<title>Poker</title>
+<style>
+body{font-family:sans-serif;background:#0a5c2e;color:#fff;text-align:center;margin:0;padding:10px}
+#table{max-width:800px;margin:auto}
+.card{display:inline-block;width:50px;height:70px;background:#fff;color:#000;border-radius:6px;margin:3px;line-height:70px;font-size:20px;font-weight:bold;vertical-align:middle}
+.red{color:#c00}
+.hidden{background:#333;color:#333}
+button{padding:8px 16px;margin:4px;font-size:16px;cursor:pointer;border:none;border-radius:4px}
+#log{background:rgba(0,0,0,.3);padding:8px;min-height:60px;margin:10px auto;max-width:600px;text-align:left;font-size:14px}
+</style>
+</head>
+<body>
+<div id="table">
+<h2>Texas Hold'em</h2>
+<div>Chips: <span id="chips">1000</span> | Pot: <span id="pot">0</span> | Bet: <span id="bet">0</span></div>
+<h3>Dealer</h3>
+<div id="dealer"></div>
+<h3>Community</h3>
+<div id="community"></div>
+<h3>You</h3>
+<div id="player"></div>
+<div id="controls"></div>
+<div id="log"></div>
+</div>
+<script>
+const SUITS=['♠','♥','♦','♣'],RANKS=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+let deck=[],playerHand=[],dealerHand=[],community=[],chips=1000,pot=0,bet=0,dealerBet=0,stage='idle',currentBet=0;
+const $=id=>document.getElementById(id);
+function log(m){$('log').innerHTML+=m+'<br>'}
+function newDeck(){deck=[];for(let s of SUITS)for(let r=0;r<13;r++)deck.push({s,r:r+2});for(let i=deck.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}}
+function cardHTML(c,hidden){if(hidden)return '<span class="card hidden">?</span>';let red=(c.s==='♥'||c.s==='♦')?' red':'';return '<span class="card'+red+'">'+RANKS[c.r-2]+c.s+'</span>'}
+function render(){$('chips').textContent=chips;$('pot').textContent=pot;$('bet').textContent=bet;$('player').innerHTML=playerHand.map(c=>cardHTML(c)).join('');$('dealer').innerHTML=dealerHand.map((c,i)=>cardHTML(c,stage!=='showdown'&&i===1)).join('');$('community').innerHTML=community.map(c=>cardHTML(c)).join('')}
+function evalHand(cards){let best=null;const combos=getCombos(cards,5);for(const c of combos){const v=score5(c);if(!best||cmpScore(v,best)>0)best=v}return best}
+function getCombos(arr,k){const res=[];function rec(start,combo){if(combo.length===k){res.push(combo.slice());return}for(let i=start;i<arr.length;i++){combo.push(arr[i]);rec(i+1,combo);combo.pop()}}rec(0,[]);return res}
+function score5(cards){const rs=cards.map(c=>c.r).sort((a,b)=>b-a);const ss=cards.map(c=>c.s);const flush=ss.every(s=>s===ss[0]);let uniq=[...new Set(rs)];let straight=false,high=0;if(uniq.length===5){if(uniq[0]-uniq[4]===4){straight=true;high=uniq[0]}else if(JSON.stringify(uniq)==='[14,5,4,3,2]'){straight=true;high=5}}const counts={};rs.forEach(r=>counts[r]=(counts[r]||0)+1);const groups=Object.entries(counts).map(([r,c])=>({r:+r,c})).sort((a,b)=>b.c-a.c||b.r-a.r);let rank,tiebreak;if(straight&&flush){rank=8;tiebreak=[high]}else if(groups[0].c===4){rank=7;tiebreak=[groups[0].r,groups[1].r]}else if(groups[0].c===3&&groups[1].c===2){rank=6;tiebreak=[groups[0].r,groups[1].r]}else if(flush){rank=5;tiebreak=rs}else if(straight){rank=4;tiebreak=[high]}else if(groups[0].c===3){rank=3;tiebreak=[groups[0].r,...groups.slice(1).map(g=>g.r).sort((a,b)=>b-a)]}else if(groups[0].c===2&&groups[1].c===2){const ps=groups.filter(g=>g.c===2).map(g=>g.r).sort((a,b)=>b-a);const k=groups.find(g=>g.c===1).r;rank=2;tiebreak=[...ps,k]}else if(groups[0].c===2){rank=1;tiebreak=[groups[0].r,...groups.slice(1).map(g=>g.r).sort((a,b)=>b-a)]}else{rank=0;tiebreak=rs}return{rank,tiebreak}}
+function cmpScore(a,b){if(a.rank!==b.rank)return a.rank-b.rank;for(let i=0;i<a.tiebreak.length;i++){if(a.tiebreak[i]!==b.tiebreak[i])return a.tiebreak[i]-b.tiebreak[i]}return 0}
+const HAND_NAMES=['High Card','Pair','Two Pair','Three of a Kind','Straight','Flush','Full House','Four of a Kind','Straight Flush'];
+function startHand(){if(chips<20){log('Game over! You are out of chips.');$('controls').innerHTML='<button onclick="resetGame()">Restart</button>';return}newDeck();playerHand=[deck.pop(),deck.pop()];dealerHand=[deck.pop(),deck.pop()];community=[];pot=30;chips-=10;dealerBet=10;bet=10;currentBet=10;stage='preflop';$('log').innerHTML='';log('New hand. Blinds 10/20... wait, ante 10 each.');log('You ante 10.');render();showControls()}
+function resetGame(){chips=1000;startHand()}
+function showControls(){let h='';const toCall=currentBet-bet;if(toCall>0)h+='<button onclick="call()">Call '+toCall+'</button>';else h+='<button onclick="check()">Check</button>';h+='<button onclick="raise()">Raise 20</button><button onclick="fold()">Fold</button>';$('controls').innerHTML=h}
+function call(){const toCall=currentBet-bet;const amt=Math.min(toCall,chips);chips-=amt;bet+=amt;pot+=amt;log('You call '+amt);dealerAct()}
+function check(){log('You check');dealerAct()}
+function raise(){const toCall=currentBet-bet;const amt=Math.min(toCall+20,chips);chips-=amt;bet+=amt;pot+=amt;currentBet=bet;log('You raise to '+bet);dealerAct()}
+function fold(){log('You fold. Dealer wins '+pot);pot=0;stage='idle';$('controls').innerHTML='<button onclick="startHand()">Next Hand</button>';render()}
+function dealerAct(){const toCall=bet-dealerBet;const dScore=evalHand([...dealerHand,...community]);const dRank=dScore?dScore.rank:0;const rand=Math.random();let action;if(toCall===0){action=rand<0.8?'check':'raise'}else if(toCall<=20){action=rand<0.7?'call':(rand<0.85?'raise':'fold')}else{action=rand<0.4?'call':(rand<0.5?'raise':'fold')}if(action==='fold'){log('Dealer folds. You win '+pot);chips+=pot;pot=0;stage='idle';$('controls').innerHTML='<button onclick="startHand()">Next Hand</button>';render();return}if(action==='check'){log('Dealer checks');advance();return}if(action==='call'){const amt=Math.min(toCall,1000);dealerBet+=amt;pot+=amt;log('Dealer calls '+amt);advance();return}if(action==='raise'){const amt=Math.min(toCall+20,1000);dealerBet+=amt;pot+=amt;currentBet=dealerBet;log('Dealer raises to '+dealerBet);render();showControls();return}}
+function advance(){bet=0;dealerBet=0;currentBet=0;if(stage==='preflop'){community.push(deck.pop(),deck.pop(),deck.pop());stage='flop';log('Flop: '+community.map(c=>RANKS[c.r-2]+c.s).join(' '))}else if(stage==='flop'){community.push(deck.pop());stage='turn';log('Turn: '+RANKS[community[3].r-2]+community[3].s)}else if(stage==='turn'){community.push(deck.pop());stage='river';log('River: '+RANKS[community[4].r-2]+community[4].s)}else if(stage==='river'){showdown();return}render();showControls()}
+function showdown(){stage='showdown';const pScore=evalHand([...playerHand,...community]);const dScore=evalHand([...dealerHand,...community]);const cmp=cmpScore(pScore,dScore);log('Your hand: '+HAND_NAMES[pScore.rank]);log('Dealer hand: '+HAND_NAMES[dScore.rank]);if(cmp>0){log('You win '+pot+'!');chips+=pot}else if(cmp<0){log('Dealer wins '+pot)}else{log('Split pot');chips+=pot/2}pot=0;$('controls').innerHTML='<button onclick="startHand()">Next Hand</button>';render()}
+startHand();
+</script>
+</body>
+</html> [end of text]
+
+

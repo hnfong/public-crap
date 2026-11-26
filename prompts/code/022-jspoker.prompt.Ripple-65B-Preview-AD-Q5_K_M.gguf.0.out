@@ -1,0 +1,99 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Poker</title><style>
+body{font-family:sans-serif;background:#1a6b3c;color:#fff;margin:0;padding:20px}
+#t{font-size:20px;margin:10px 0}
+#b{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+button{padding:10px 20px;font-size:16px;cursor:pointer}
+#l{font-size:18px;line-height:1.6}
+.card{display:inline-block;width:60px;height:85px;border:2px solid #fff;border-radius:6px;margin:2px;background:#fff;color:#000;text-align:center;font-size:20px;font-weight:bold;vertical-align:top}
+.suit{font-size:14px}
+</style></head><body>
+<div id="t"></div>
+<div id="b"></div>
+<div id="l"></div>
+<script>
+const RANKS='23456789TJQKA',SUITS='CDHS';
+const vals={2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,T:10,J:11,Q:12,K:13,A:14};
+let deck=[],player=[],dealer=[],community=[],pot=0,bet=0,stage=0,over=false;
+const log=document.getElementById('l');
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function newDeck(){return shuffle(RANKS.split('').flatMap(r=>SUITS.split('').map(s=>r+s)));deck=newDeck();}
+function cardEl(c){const d=document.createElement('div');d.className='card';d.innerHTML='<div style="font-size:22px">'+c[0]+'</div><div class="suit">'+c[1]+'</div>';return d;}
+function show(c){const d=document.createElement('div');d.className='card';d.innerHTML='<div style="font-size:22px">'+c[0]+'</div><div class="suit">'+c[1]+'</div>';return d;}
+function handValue(h){
+  const v=h.map(c=>vals[c[0]]).sort((a,b)=>b-a);
+  let best=[v[0],v[1],v[2],v[3],v[4]];
+  const flush=new Set(h.map(c=>c[1])).size===1;
+  const straight=v[0]-v[4]===4&&new Set(v).size===5;
+  const sf=straight&&flush;
+  const trips=v[0]===v[1]&&v[1]===v[2];
+  const pair=v[0]===v[1];
+  const twoPair=v[0]===v[1]&&v[2]===v[3];
+  const full=v[0]===v[1]&&v[1]===v[2]&&v[3]===v[4];
+  const quads=v[0]===v[1]&&v[1]===v[2]&&v[2]===v[3];
+  const royal=sf&&v[0]===14;
+  let score=0;
+  if(royal)score=9;
+  else if(sf)score=8;
+  else if(quads)score=7;
+  else if(full)score=6;
+  else if(flush)score=5;
+  else if(straight)score=4;
+  else if(trips)score=3;
+  else if(twoPair)score=2;
+  else if(pair)score=1;
+  return [score,v];
+}
+function compare(a,b){const A=handValue(a),B=handValue(b);if(A[0]!==B[0])return A[0]-B[0];for(let i=0;i<5;i++)if(A[1][i]!==B[1][i])return A[1][i]-B[1][i];return 0;}
+function render(){
+  const t=document.getElementById('t');
+  t.innerHTML='';
+  const p=document.createElement('div');p.textContent='Player: '+player.map(c=>c[0]+c[1]).join(' ')+` (${pot})`;
+  t.appendChild(p);
+  const d=document.createElement('div');d.textContent='Dealer: '+dealer.map(c=>c[0]+c[1]).join(' ');
+  t.appendChild(d);
+  const c=document.createElement('div');c.textContent='Community: '+community.map(x=>x[0]+x[1]).join(' ');
+  t.appendChild(c);
+  const board=document.getElementById('b');
+  board.innerHTML='';
+  player.forEach(c=>board.appendChild(show(c)));
+  dealer.forEach(c=>board.appendChild(show(c)));
+  community.forEach(c=>board.appendChild(show(c)));
+}
+function logMsg(m){log.innerHTML+='<div>'+m+'</div>';}
+function deal(){
+  newDeck();
+  player=[deck.pop(),deck.pop()];
+  dealer=[deck.pop(),deck.pop()];
+  community=[];
+  pot=0;bet=0;stage=0;over=false;
+  render();
+  logMsg('--- New hand ---');
+  logMsg('Your cards: '+player.map(c=>c[0]+c[1]).join(' '));
+  logMsg('Dealer shows: '+dealer[0][0]+dealer[0][1]);
+  betting();
+}
+function betting(){
+  if(over)return;
+  const btns=document.getElementById('b');
+  btns.innerHTML='';
+  const add=(label,fn)=>{const b=document.createElement('button');b.textContent=label;b.onclick=fn;btns.appendChild(b);};
+  add('Check/Fold',()=>{fold();});
+  add('Call',()=>{call();});
+  add('Raise',()=>{raise();});
+}
+function fold(){logMsg('You fold. Dealer wins.');over=true;render();}
+function call(){logMsg('You call.');resolve();}
+function raise(){logMsg('You raise.');resolve();}
+function resolve(){
+  over=true;
+  const p=player.concat(community),d=dealer.concat(community);
+  const c=compare(p,d);
+  if(c>0)logMsg('You win!');
+  else if(c<0)logMsg('Dealer wins.');
+  else logMsg('Push.');
+  render();
+}
+deal();
+</script></body></html> [end of text]
+
+

@@ -1,0 +1,114 @@
+<!DOCTYPE html><html>
+<head>
+<meta charset="utf-8">
+<title>Starlight Solitaire</title>
+<style>
+body{background:#0b1026;color:#fff;font-family:Georgia,serif;text-align:center;margin:0;padding:10px;user-select:none}
+h1{margin:5px;font-size:22px;color:#ffd700;letter-spacing:2px}
+#info{margin:5px;font-size:14px;color:#9fd}
+#board{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.pile{width:70px;min-height:100px;border:2px dashed #334;border-radius:8px;position:relative;background:rgba(255,255,255,.03)}
+.pile.foundation{border-color:#ffd700}
+.card{width:66px;height:92px;border-radius:6px;background:#fdfdfd;color:#111;position:absolute;left:0;display:flex;flex-direction:column;justify-content:space-between;padding:4px;box-sizing:border-box;font-size:16px;font-weight:bold;cursor:pointer;box-shadow:0 2px 4px #000;border:1px solid #999}
+.card.red{color:#c00}
+.card.sel{outline:3px solid #ffd700;transform:translateY(-6px)}
+.card .bot{transform:rotate(180deg);align-self:flex-end}
+.card.back{background:repeating-linear-gradient(45deg,#224,#224 6px,#446 6px,#446 12px);border:1px solid #668}
+button{background:#ffd700;border:0;padding:6px 14px;border-radius:6px;font-weight:bold;cursor:pointer;margin:4px}
+#msg{color:#ffd700;font-size:18px;min-height:24px;margin:6px}
+</style>
+</head>
+<body>
+<h1>✦ STARLIGHT SOLITAIRE ✦</h1>
+<div id="info">Moves: <span id="mv">0</span> | Score: <span id="sc">0</span> | <button onclick="newGame()">New Game</button></div>
+<div id="msg"></div>
+<div id="board"></div>
+<script>
+const SUITS=['♠','♥','♦','♣'],RANKS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+let deck=[],tableau=[[],[],[],[],[],[],[]],foundations=[[],[],[],[]],stock=[],waste=[],sel=null,moves=0,score=0;
+const $=s=>document.querySelector(s);
+function newGame(){
+ deck=[];for(let s=0;s<4;s++)for(let r=0;r<13;r++)deck.push({s,r,up:false,id:s*13+r});
+ for(let i=deck.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+ tableau=[[],[],[],[],[],[],[]];foundations=[[],[],[],[]];stock=[];waste=[];sel=null;moves=0;score=0;$('#msg').textContent='';
+ let k=0;for(let c=0;c<7;c++)for(let r=0;r<=c;r++){let card=deck[k++];card.up=(r===c);tableau[c].push(card);}
+ while(k<deck.length)stock.push(deck[k++]);
+ render();
+}
+function color(c){return (c.s===1||c.s===2)?'red':'black';}
+function render(){
+ $('#mv').textContent=moves;$('#sc').textContent=score;
+ const b=$('#board');b.innerHTML='';
+ const mk=(cls,label)=>{let d=document.createElement('div');d.className='pile '+cls;d.dataset.label=label||'';b.appendChild(d);return d;};
+ const stockEl=mk('stock');stockEl.onclick=drawStock;
+ if(stock.length){let c=document.createElement('div');c.className='card back';stockEl.appendChild(c);}else{stockEl.innerHTML='<div style="padding-top:35px;color:#556">↻</div>';}
+ const wasteEl=mk('waste');wasteEl.onclick=()=>clickWaste();
+ if(waste.length){let c=waste[waste.length-1];wasteEl.appendChild(cardEl(c,true));}
+ for(let i=0;i<4;i++){let f=mk('foundation');f.onclick=()=>clickFoundation(i);if(foundations[i].length){let c=foundations[i][foundations[i].length-1];f.appendChild(cardEl(c,true));}else{f.innerHTML='<div style="padding-top:35px;color:#553;font-size:24px">'+SUITS[i]+'</div>';}}
+ for(let i=0;i<7;i++){let t=mk('tableau');t.onclick=()=>clickTableau(i);tableau[i].forEach((c,j)=>{let el=cardEl(c,c.up);el.style.top=(j*22)+'px';el.onclick=e=>{e.stopPropagation();clickTableau(i,j);};t.appendChild(el);});t.style.minHeight=(100+tableau[i].length*22)+'px';}
+}
+function cardEl(c,faceUp){
+ let d=document.createElement('div');
+ if(!faceUp){d.className='card back';return d;}
+ d.className='card '+color(c);
+ if(sel&&sel.cards.includes(c))d.classList.add('sel');
+ d.innerHTML='<div>'+RANKS[c.r]+SUITS[c.s]+'</div><div class="bot">'+RANKS[c.r]+SUITS[c.s]+'</div>';
+ return d;
+}
+function drawStock(){
+ if(stock.length){let c=stock.pop();c.up=true;waste.push(c);}
+ else{while(waste.length){let c=waste.pop();c.up=false;stock.push(c);}}
+ sel=null;moves++;render();
+}
+function clickWaste(){
+ if(!waste.length)return;
+ let c=waste[waste.length-1];
+ if(sel&&sel.from==='waste'){sel=null;render();return;}
+ sel={from:'waste',cards:[c]};render();
+}
+function clickFoundation(i){
+ if(sel){tryMoveToFoundation(i);return;}
+}
+function clickTableau(i,idx){
+ if(sel){
+  if(sel.from==='tableau'&&sel.pile===i&&idx===undefined){sel=null;render();return;}
+  tryMoveToTableau(i);return;
+ }
+ if(idx===undefined)return;
+ let pile=tableau[i];
+ if(!pile[idx].up){if(idx===pile.length-1){pile[idx].up=true;score+=5;moves++;render();}return;}
+ sel={from:'tableau',pile:i,idx:idx,cards:pile.slice(idx)};render();
+}
+function canStack(card,onto){return onto&&color(card)!==color(onto)&&card.r===onto.r-1;}
+function canFoundation(card,f){if(!f.length)return card.r===0;let t=f[f.length-1];return t.s===card.s&&card.r===t.r+1;}
+function removeSel(){
+ if(sel.from==='waste')waste.pop();
+ else if(sel.from==='tableau')tableau[sel.pile].splice(sel.idx);
+ else if(sel.from==='foundation')foundations[sel.pile].pop();
+}
+function tryMoveToTableau(i){
+ let pile=tableau[i],onto=pile[pile.length-1],card=sel.cards[0];
+ if(canStack(card,onto)||(!onto&&card.r===12)){
+  removeSel();pile.push(...sel.cards);moves++;score+=2;
+  flipTableauTops();sel=null;checkWin();render();
+ }else{sel=null;render();}
+}
+function tryMoveToFoundation(i){
+ let f=foundations[i],card=sel.cards[0];
+ if(sel.cards.length===1&&canFoundation(card,f)){
+  removeSel();f.push(card);moves++;score+=10;
+  flipTableauTops();sel=null;checkWin();render();
+ }else{sel=null;render();}
+}
+function flipTableauTops(){tableau.forEach(p=>{if(p.length&&!p[p.length-1].up){p[p.length-1].up=true;score+=5;}});}
+function checkWin(){if(foundations.every(f=>f.length===13)){$('#msg').textContent='✦ YOU WIN! The stars align! ✦';score+=100;}}
+document.addEventListener('dblclick',e=>{
+ if(!sel)return;
+ for(let i=0;i<4;i++){if(sel.cards.length===1&&canFoundation(sel.cards[0],foundations[i])){tryMoveToFoundation(i);return;}}
+});
+newGame();
+</script>
+</body>
+</html> [end of text]
+
+
