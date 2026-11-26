@@ -1,0 +1,23 @@
+This file is the core of a Cantonese dictionary system. At a high level, it does the following:
+
+**Parses dictionary entries.** It takes a raw text string representing a dictionary definition — which may contain tags like `(pos:名詞)` for part of speech, `(label:潮語)` for labels, `(sim:...)` for synonyms, `(ant:...)` for antonyms, `(ref:...)` for reference links, and `(img:...)` for images — and turns it into a structured object. It understands aliases (e.g. `詞性` means `pos`), validates tag values, and enforces that required tags (like part of speech) are present. If parsing fails, it can either raise an error or fall back to treating the whole thing as a "stub" (unstructured) entry.
+
+**Handles multilingual content.** Each definition can contain multiple explanations and example sentences in different languages (Cantonese, English, Chinese, etc.), each prefixed with a language code like `yue:`, `eng:`, or `zho:`. The file parses these, groups them, and can serialize them back out or convert them to JSON. It also tries to guess the language when no code is given.
+
+**Parses example sentences with pronunciation.** Example sentences can include Jyutping romanization in parentheses at the end. The file detects whether the parenthetical looks like valid Jyutping, extracts it, and stores it separately. It can then render the sentence as HTML "ruby" text (with pronunciation annotations above each character), matching characters to their romanization.
+
+**Formats output for display.** It provides HTML rendering of explanations and examples, including:
+- Escaping HTML for safety.
+- Converting `#word` references into hyperlinks to other dictionary entries (only if the word exists in the database).
+- Truncating long explanations at a character limit, ending at a sentence boundary.
+- Rendering ruby annotations for pronunciation.
+
+**Supports written forms and pronunciations.** It can parse strings like `唔係:m4 hai6 ci4` into a written form plus a list of Jyutping pronunciations, auto-generating pronunciation when none is given, and validating that the Jyutping is well-formed. It can also encode such data back into a string.
+
+**Provides quality-checking.** It has a best-effort `check_problems` method that verifies example pronunciations against a character pronunciation list, sends longer English examples to LanguageTool for grammar checking, and flags entries labeled `gpt` for removal.
+
+**Maps parts of speech and labels.** It maintains dictionaries mapping full part-of-speech names (名詞, 動詞, etc.) and their aliases (n, v, noun, verb, etc.) to canonical forms, and similarly for labels like 粗俗 (vulgar), 潮語 (slang), 香港 (Hong Kong), etc. It can produce the shortest Latin abbreviation for a part of speech.
+
+In short: this is the parsing, validation, serialization, and HTML-rendering layer for a Cantonese dictionary — it turns raw tagged text into structured multilingual entries and back again, and prepares them for display on a website. [end of text]
+
+
