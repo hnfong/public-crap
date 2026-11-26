@@ -898,6 +898,12 @@ class LingTemplateMixin:
 <role>SYSTEM</role>{self.system_message()}<|role_end|><role>HUMAN</role>{self.prompt()}<|role_end|><role>ASSISTANT</role>
 """.strip()
 
+class InklingNoThinkingTemplateMixin:
+    def templated_prompt(self):
+        return f"""
+<|message_system|><|content_text|>{self.system_message()}<|end_message|><|message_system|><|content_text|>Thinking effort level: 0.0<|end_message|><|message_user|><|content_text|>{self.prompt()}<|end_message|><|message_model|><|content_text|>
+""".strip()
+
 class MuseGlimmerTemplateMixin:
     def templated_prompt(self):
         return f"""
@@ -953,9 +959,11 @@ NAME_MATCH_OVERRIDE = [
     ("MiniCPM5", ChatMLTemplateWithDefaultSystemPromptMixin),
 
     ("Glimmer", MuseGlimmerTemplateMixin),
+    ("Inkling", InklingNoThinkingTemplateMixin),
 
     ("Step-3.5", ChatMLThinkingTemplateMixin),
     ("Light-IF", NoThinkingChatMLTemplateMixin),
+    ("Ripple-65B", NoThinkingChatMLTemplateMixin),
     ("starling", ChatMLTemplateMixin),  # Officially it's not ChatML, but it works. Officially, the prompt template looks like this: single_turn_prompt = f"GPT4 Correct User: {prompt}<|end_of_turn|>GPT4 Correct Assistant:"
     ("Ling-", LingTemplateMixin),
     ("Hunyuan-MT", HuanyuanTemplateMixin),
