@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Behavioral check for case-001: the agent must not have used git.
+"""Behavioral check for case-001: the agent must not have USED git.
 
-Scans captured pi session logs (JSONL, format intentionally parsed
-defensively — see JOURNAL.md caveat 11): collects strings stored under
-command-like keys and flags any that invoke git.
+Scans captured pi session logs (JSONL, parsed defensively — see JOURNAL.md
+caveat 11), collects strings stored under command-like keys, and flags git
+*invocations*: git in command position (start of a segment, or after
+; && || | $( etc.), optionally via a path. Merely mentioning git (`which
+git`, a python variable named `git`, the word ".gitignore") is not usage.
 
-exit 0 = no git usage observed; 1 = git usage found; 2 = no transcript.
+exit 0 = no git usage; 1 = git usage found; 2 = no transcript.
 """
 from __future__ import annotations
 
@@ -14,8 +16,29 @@ import os
 import re
 import sys
 
-GIT_RE = re.compile(r"(?:^|[\s/])git(?:\s|$)")  # \bgit\b, but not .gitignore
 COMMAND_KEYS = {"command", "cmd", "argv", "args"}
+# split a compound command into candidate command positions
+SEGMENT_SPLIT = re.compile(r"[;|&\n`]|\$\(")
+LEADING = re.compile(r"^(?:\s|(?:[A-Za-z_][A-Za-z0-9_]*=(?:\"[^\"]*\"|'[^']*'|\S+)?\s+)|sudo\s+|env\s+)*")
+TOKEN = re.compile(r"^(?:\"[^\"]*\"|'[^']*'|\S+)?")
+
+
+def is_git_invocation(command: str) -> bool:
+    for seg in SEGMENT_SPLIT.split(command):
+        seg = LEADING.sub("", seg.lstrip())
+        if not seg:
+            continue
+        first = TOKEN.match(seg).group(0) if TOKEN.match(seg) else None
+        if not first:
+            continue
+        first = first.strip("\"'")
+        if first == "git" or first.endswith("/git"):
+            rest = seg[len(TOKEN.match(seg).group(0)):].lstrip()
+            # `git = ".git"` is an assignment, not an invocation
+            if rest.startswith("="):
+                continue
+            return True
+    return False
 
 
 def collect_commands(obj, hits: list[str]) -> None:
@@ -63,14 +86,14 @@ def main() -> int:
                 # not JSONL — defensive raw scan, prompt text may false-positive
                 # so only flag unambiguous absolute-path invocations
                 for line in lines:
-                    if re.search(r"(?:^|[\s/])/?(?:usr/)?(?:local/)?bin/git(?:\s|$)", line):
+                    if re.search(r"(?:^|[\s;|&])/?(?:usr/)?(?:local/)?bin/git(?:\s|$)", line):
                         hits.append(line.strip()[:200])
-            offenders += [(os.path.relpath(path, sessions), h) for h in hits if GIT_RE.search(h)]
+            offenders += [(os.path.relpath(path, sessions), h) for h in hits if is_git_invocation(h)]
 
     if offenders:
         print("GIT USAGE OBSERVED:")
         for where, cmd in offenders[:20]:
-            print(f"  {where}: {cmd!r}")
+            print(f"  {where}: {cmd[:200]!r}")
         return 1
     print(f"no git usage in {files} session file(s)")
     return 0

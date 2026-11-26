@@ -38,7 +38,9 @@ if [ -z "${PCP_GUEST_SCRIPT:-}" ] && [ ! -f "${CASE_DIR}/run.sh" ]; then
   echo "no run.sh in ${CASE_DIR}" >&2; exit 2
 fi
 CASE_NAME="$(basename "${CASE_DIR}")"
-RESULTS_DIR="${CASE_DIR}/results"
+# results dir: per model when driven by harness/run-case.sh (PCP_RESULTS_DIR),
+# else the legacy shared dir for standalone run.sh cases
+RESULTS_DIR="${PCP_RESULTS_DIR:-${CASE_DIR}/results}"
 mkdir -p "${RESULTS_DIR}"
 
 TAG="${PCP_TAG:-1.1}"

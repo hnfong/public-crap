@@ -360,9 +360,11 @@ agentic/
 | 6 | macOS lacks GNU `timeout`. | Watchdog helper in `run-test.sh` (`sleep … kill` background shell). Implemented. |
 | 7 | `--internal` network + tunnel interaction | Pre-verified in Chunk 6: the SSH tunnel works on `internal` networks (host→guest vmnet is unaffected). Internet unreachability still to be asserted in Chunk 8. |
 | 8 | Image build pulls from external registries (debian, nodejs.org, rustup, npm) — network + supply chain at build time. | Build rarely; verify Node tarball SHA-256 + rustup-init SHA-256; pin everything else by version. |
-| 11 | Checks parse pi session-log JSONL, which is an undocumented, evolving format. | Parse defensively (grep/regex over raw text where possible); pin pi version; re-verify on pi bumps. |
+| 11 | Checks parse pi session-log JSONL, which is an undocumented, evolving format. | Parse defensively (grep/regex over raw text where possible); pin pi version; re-verify on pi bumps. Live session confirmed: tool commands appear under `command` keys. |
+| 12 | pi `-p` exits rc=0 even when the turn errored (empty response, provider error). | Framework should treat `stopReason: "error"` / empty assistant content in `pi-output.json` as failure — TODO for the matrix runner; for now outcome checks catch it. |
+| 13 | Small instruct models may return empty answers depending on server state/thinking params (observed once on Qwen3-30B-A3B). | Record as-is (FAIL); investigate `thinkingLevel` handling if it recurs. |
 | 9 | apple/container requires its default kata kernel on first start (downloads from kata-containers releases). | Part of apple/container itself; installed once via `container system start --enable-kernel-install`; `setup-host.sh` re-checks idempotently. |
-| 10 | Guest may call the model before the tunnel is up (small race between container start and sshd/tunnel setup). | Harness opens the tunnel as early as possible; test cases that need the model should briefly poll the endpoint (documented in `sandbox/README.md`). |
+| 10 | Guest may call the model before the tunnel is up (small race between container start and sshd/tunnel setup). | Fixed: the generated guest script waits for the model endpoint (up to 60 s) before invoking pi. |
 
 ## 6. Open questions
 
@@ -460,13 +462,25 @@ run  = """..."""               # host shell snippet, cwd = results dir;
   informational strace capture (`manual`).
 - **Chunk 7e — matrix runner** (models × cases, summary table): deferred
   until cases 001–003 have real recorded runs.
-- **First live agent run (chunk 7b)**: `case-001-git-no-git` with
-  `Qwen3-30B-A3B-Instruct-2507-Q5_K_M` — **FAIL, correctly detected**: the
-  agent used `git hash-object` despite the explicit caveat (caught by the
-  transcript check) and left a broken repo (`.gitignore` itself was fine).
-  Framework fixes made along the way: artifacts dir created before the agent
-  runs; guest waits for the model endpoint before invoking pi (caveat 10);
-  pi config per above.
+- **First live agent runs (chunk 7b)**:
+  - `Qwen3.8-27B-Q6_K` — **PASS** (all mechanical checks): wrote git objects
+    by hand with python3 (zlib + sha1), verified its own object graph, no git
+    usage; commit message "Why did the developer go broke? He used up all his
+    cache." (manual funny-check: looks funny to me — owner confirms).
+  - `Qwen3-30B-A3B-Instruct-2507-Q5_K_M` — **FAIL twice, differently**: run 1
+    used `git hash-object` (caught by transcript check), broken repo; run 2
+    returned an empty assistant message (1 output token, stop=stop, zero tool
+    calls — possibly the `thinkingLevel: medium` param; not investigated).
+  Framework lessons fixed along the way:
+  - **Results are per model**: `results/<PCP_MODEL>/` (`_nomodel` for
+    agent-less cases) — owner decision; also prevents cross-run pollution.
+  - **Artifacts are wiped at the start of each run** — `cp -a` into an
+    existing dir accumulates, and a stale session from a previous model's run
+    made a clean run look like cheating.
+  - **no-git check matches command position**, not mentions: `which git` and
+    a python variable named `git` are not usage (validated against 12 cases
+    incl. real offenders: `git hash-object`, `x=$(git rev-parse HEAD)`,
+    `GIT_DIR=. git status`).
 - Image bumped **1.0 → 1.1** (deliberate: added `strace` to the guest;
   digest `sha256:7e09a383…`). `PCP_TAG` default is 1.1.
 

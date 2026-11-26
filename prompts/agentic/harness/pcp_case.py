@@ -13,6 +13,9 @@ Flow:
 --checks-only: skip steps 2-3, run checks against existing artifacts.
 --dry-run:     print the parsed case + generated guest script, do not run.
 
+Results are kept per model: results/<PCP_MODEL>/ (results/_nomodel for
+agent-less cases). --checks-only needs PCP_MODEL set for agent cases.
+
 Check contract: shell snippet run with cwd = case results dir.
 Env: PCP_ARTIFACTS (…/results/artifacts), PCP_CASE_DIR, PCP_CASE,
      PCP_INGUEST (helper to run a command inside a throwaway guest container).
@@ -22,6 +25,8 @@ from __future__ import annotations
 
 import json
 import os
+import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -114,7 +119,19 @@ def make_guest_script(case: dict) -> str:
     return GUEST_TEMPLATE.format(setup=setup, agent_block=agent_block)
 
 
+def model_dir_name() -> str:
+    """Results are kept per model (owner decision): results/<MODEL>/.
+    Agent-less cases land in results/_nomodel."""
+    model = os.environ.get("PCP_MODEL", "").strip()
+    if not model:
+        return "_nomodel"
+    return re.sub(r"[^A-Za-z0-9._-]", "_", model)
+
+
 def run_vm(case: dict, case_dir: str, results: str) -> int:
+    # fresh artifacts per run: stale sessions/files must never leak across
+    # runs (bit us once: an old session made a clean run look like cheating)
+    shutil.rmtree(os.path.join(results, "artifacts"), ignore_errors=True)
     rundir = tempfile.mkdtemp(prefix="pcp-run-")
     with open(os.path.join(rundir, "guest-run.sh"), "w") as f:
         f.write(make_guest_script(case))
@@ -122,7 +139,8 @@ def run_vm(case: dict, case_dir: str, results: str) -> int:
     if case.get("prompt"):
         with open(os.path.join(rundir, "prompt.txt"), "w") as f:
             f.write(case["prompt"])
-    env = dict(os.environ, PCP_GUEST_SCRIPT=os.path.join(rundir, "guest-run.sh"))
+    env = dict(os.environ, PCP_GUEST_SCRIPT=os.path.join(rundir, "guest-run.sh"),
+               PCP_RESULTS_DIR=results)
     print(f"pcp_case: running VM for {case['name']} …")
     proc = subprocess.run(["bash", RUN_TEST, case_dir], env=env)
     return proc.returncode
@@ -195,7 +213,7 @@ def main() -> None:
         fail("usage: run-case.sh [--checks-only] [--dry-run] <tests/case-NNN-name>")
     case_dir = os.path.abspath(args[0])
     case = load_case(case_dir)
-    results = os.path.join(case_dir, "results")
+    results = os.path.join(case_dir, "results", model_dir_name())
     artifacts = os.path.join(results, "artifacts")
     os.makedirs(results, exist_ok=True)
 
