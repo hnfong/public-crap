@@ -37,7 +37,7 @@ GUEST_TEMPLATE = """#!/bin/bash
 set -uo pipefail
 
 WS=/tmp/workspace
-mkdir -p "$WS"
+mkdir -p "$WS" /results/artifacts
 if [ -d /work/fixture ]; then cp -a /work/fixture/. "$WS"/; fi
 cd "$WS"
 {setup}
@@ -61,10 +61,23 @@ exit $RC
 """
 
 AGENT_BLOCK = """if [ -f /pcp-run/prompt.txt ]; then
-  pi --mode json -p "$(cat /pcp-run/prompt.txt)" \\
-     > /results/artifacts/pi-output.json 2> /results/artifacts/pi-stderr.log
-  RC=$?
-  echo "pcp: pi exited rc=$RC"
+  # wait for the reverse tunnel / model endpoint (run-test.sh sets it up
+  # asynchronously after boot — see JOURNAL.md caveat 10)
+  for _ in $(seq 1 120); do
+    code=$(curl -s -o /dev/null -w '%{http_code}' -m 2 \\
+      "http://127.0.0.1:${PCP_MODEL_PORT:-9931}/v1/models" || true)
+    [ "$code" = "200" ] && break
+    sleep 0.5
+  done
+  if [ "$code" != "200" ]; then
+    echo "pcp: model endpoint never became reachable (last code=$code)" >&2
+    RC=1
+  else
+    pi --mode json -p "$(cat /pcp-run/prompt.txt)" \\
+       > /results/artifacts/pi-output.json 2> /results/artifacts/pi-stderr.log
+    RC=$?
+    echo "pcp: pi exited rc=$RC"
+  fi
 else
   echo "pcp: no prompt (case misconfigured?)" >&2
   RC=1

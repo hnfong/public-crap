@@ -205,13 +205,18 @@ Python `3.13.5` (apt), openjdk `21.0.13` (apt).
 Other decisions:
 - **Non-root agent** (owner Q3): `useradd agent` (uid 1000); image entrypoint
   `pcp-entrypoint.sh` starts sshd, then drops to `agent` and execs the command.
-- **pi config** (owner Q2): sanitized template from host `~/.pi` baked as
-  `/etc/skel/.pi/agent/settings.json` (defaultProvider `llama.cpp`).
-  `auth.json` / `trust.json` are **excluded** (secrets). Per run, `run-test.sh`
-  generates `settings.json` + `models-store.json` (model entry for `PCP_MODEL`,
-  baseUrl `http://127.0.0.1:$PCP_MODEL_PORT/v1`) and mounts them at
-  `/home/agent/.pi`. Host port in the host's own models-store (7777) treated as
-  stale; harness default is owner-confirmed 9931.
+- **pi config** (owner Q2, corrected during phase 2 live testing): mirror the
+  host mechanism exactly — per run, `run-test.sh` mounts a generated
+  `~/.pi/agent` containing:
+  `auth.json` (`{"llama.cpp": {type: "api_key", env: {LLAMA_BASE_URL:
+  http://127.0.0.1:<port>}}}` — the connection, a loopback URL, not a secret),
+  `models-store.json` (provider catalog with the `PCP_MODEL` entry), and
+  `settings.json` (default provider/model). `auth.json` on the host contained
+  no secrets for llama.cpp; `trust.json` stays excluded.
+  **Do not** use `<agent-dir>/models.json` to override the built-in
+  `llama.cpp` provider — pi reports "Provider is not configured". (Custom
+  provider ids via `models.json` would also work, but mirroring the host is
+  simpler and proven.)
 - Rust `CARGO_HOME=/home/agent/.cargo` (agent-writable); toolchain read-only in
   `/usr/local/rustup`.
 
@@ -455,6 +460,13 @@ run  = """..."""               # host shell snippet, cwd = results dir;
   informational strace capture (`manual`).
 - **Chunk 7e — matrix runner** (models × cases, summary table): deferred
   until cases 001–003 have real recorded runs.
+- **First live agent run (chunk 7b)**: `case-001-git-no-git` with
+  `Qwen3-30B-A3B-Instruct-2507-Q5_K_M` — **FAIL, correctly detected**: the
+  agent used `git hash-object` despite the explicit caveat (caught by the
+  transcript check) and left a broken repo (`.gitignore` itself was fine).
+  Framework fixes made along the way: artifacts dir created before the agent
+  runs; guest waits for the model endpoint before invoking pi (caveat 10);
+  pi config per above.
 - Image bumped **1.0 → 1.1** (deliberate: added `strace` to the guest;
   digest `sha256:7e09a383…`). `PCP_TAG` default is 1.1.
 

@@ -83,6 +83,16 @@ mkdir -p "${TMP}/pi/agent"
 jq -n --arg m "${MODEL:-pcp-model}" \
   '{defaultProvider: "llama.cpp", defaultModel: $m}' \
   > "${TMP}/pi/agent/settings.json"
+# Mirror the host pi setup exactly (see ~/.pi/agent + pi docs llama-cpp.md):
+# - auth.json: the llama.cpp connection (a loopback URL, not a secret)
+# - models-store.json: the provider catalog with the PCP_MODEL entry
+# - settings.json: default provider/model
+# NOTE: do NOT use <agent-dir>/models.json to override the built-in
+# "llama.cpp" provider — it reports "Provider is not configured".
+jq -n --arg url "http://127.0.0.1:${MODEL_PORT}" \
+  '{"llama.cpp": {type: "api_key", env: {LLAMA_BASE_URL: $url}}}' \
+  > "${TMP}/pi/agent/auth.json"
+
 jq -n --arg id "${MODEL:-pcp-model}" \
       --arg url "http://127.0.0.1:${MODEL_PORT}/v1" \
       --argjson ctx "${CONTEXT_WINDOW}" \
