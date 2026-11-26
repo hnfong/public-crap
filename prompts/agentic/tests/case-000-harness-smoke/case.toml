@@ -1,0 +1,32 @@
+schema = "pcp-case/v0"
+name = "harness-smoke"
+
+# No model needed: validates the framework plumbing itself (workspace setup,
+# artifact capture, host-side checks). Ported from the phase-1 run.sh case.
+no_agent = true
+
+setup = """
+{
+  echo "user: $(id)"
+  echo "cwd:  $(pwd)"
+  echo "node: $(node --version)"
+  echo "npm:  $(npm --version)"
+  echo "rust: $(rustc --version)"
+  echo "cargo: $(cargo --version)"
+  echo "clang: $(clang --version | head -1)"
+  echo "python: $(python3 --version)"
+  echo "java:  $(java -version 2>&1 | head -1)"
+  echo "pi:    $(pi --version)"
+  echo "git:   $(git --version)"
+  echo "strace: $(strace -V 2>&1 | head -1)"
+} > toolchain.txt 2>&1
+"""
+
+[[checks]]
+name = "toolchain-versions"
+run = """
+test -f "$PCP_ARTIFACTS/workspace/toolchain.txt" \
+  && grep -q '^node: v'    "$PCP_ARTIFACTS/workspace/toolchain.txt" \
+  && grep -q '^pi: '       "$PCP_ARTIFACTS/workspace/toolchain.txt" \
+  && grep -q '^strace: '   "$PCP_ARTIFACTS/workspace/toolchain.txt"
+"""

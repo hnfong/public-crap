@@ -20,6 +20,21 @@ sandbox/build.sh 1.0      # prints + records the image digest
 
 ## Run a test case
 
+Preferred (declarative cases, `case.toml` — see JOURNAL.md §7):
+
+```bash
+PCP_MODEL=<model> harness/run-case.sh tests/case-001-git-no-git
+harness/run-case.sh --checks-only tests/case-001-git-no-git  # re-score artifacts
+harness/run-case.sh --dry-run  tests/case-001-git-no-git
+```
+
+One run = one ephemeral VM. The case's checks run on the host against
+collected artifacts (`results/artifacts/workspace`, `results/artifacts/sessions`);
+checks that must execute Linux binaries go through `harness/in-guest.sh`
+(throwaway container). Output: `results/checks.json`, `results/verdict.txt`.
+
+Legacy phase-1 style (`run.sh` in the case dir) still works:
+
 ```bash
 PCP_MODEL=Qwen3.8-27B sandbox/run-test.sh tests/case-000-harness-smoke
 PCP_NET=internal sandbox/run-test.sh tests/case-000-harness-smoke   # offline
@@ -27,7 +42,7 @@ sandbox/run-test.sh --dry-run tests/case-000-harness-smoke
 ```
 
 One run = one ephemeral VM (`container run --rm`). Run parameters:
-`(PCP_MODEL, TEST_CASE)`. Overrides: `PCP_TAG, PCP_MODEL, PCP_MODEL_PORT,
+`(PCP_MODEL, TEST_CASE)`. Overrides: `PCP_TAG (1.1), PCP_MODEL, PCP_MODEL_PORT,
 PCP_CPUS (2), PCP_MEMORY (4G), PCP_NET, PCP_TIMEOUT_SECS (1800),
 PCP_CONTEXT_WINDOW`. Results land in `tests/<case>/results/`
 (`metadata.json` records the image digest).

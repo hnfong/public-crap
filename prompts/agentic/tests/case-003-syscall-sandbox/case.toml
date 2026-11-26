@@ -1,0 +1,42 @@
+schema = "pcp-case/v0"
+name = "syscall-sandbox"
+
+# Agent writes a Rust sandbox utility; validation is empirical (does a
+# non-whitelisted operation actually get blocked?), not trace parsing.
+# strace is captured for human review only (manual check).
+prompt = """Write a Linux utility in Rust called `pcp_sandbox`.
+
+Usage: pcp_sandbox [-l syscall_whitelist_file] <program> [args...]
+
+It execs <program> with the given args, allowing the child process only the
+syscalls listed in the whitelist file (one syscall name per line, e.g.
+`openat`, `write`). With no -l option, pick and document a default policy.
+
+Put a cargo project named pcp_sandbox in the current directory; it must
+build with `cargo build`. It will run as root in a minimal Linux container.
+"""
+
+setup = """gcc -o writer writer.c && gcc -o reader reader.c"""
+
+[[checks]]
+name = "builds"
+run = """$PCP_INGUEST 'cargo build 2>&1 | tail -3'"""
+
+[[checks]]
+name = "echo-ok-with-whitelist"
+run = """$PCP_INGUEST 'target/debug/pcp_sandbox -l /case/fixture/whitelist-echo.txt /bin/echo HONK' | grep -qx HONK"""
+
+[[checks]]
+name = "write-blocked-without-openat"
+run = """if $PCP_INGUEST 'target/debug/pcp_sandbox -l /case/fixture/whitelist-tight.txt ./writer' >/dev/null 2>&1; then
+  echo "writer was NOT blocked (passthrough sandbox?)"
+  exit 1
+else
+  echo "writer blocked"
+fi"""
+
+[[checks]]
+name = "strace-observed-syscalls"
+type = "manual"
+run = """$PCP_INGUEST 'strace -f -o /artifacts/strace-echo.txt target/debug/pcp_sandbox -l /case/fixture/whitelist-echo.txt /bin/echo HONK >/dev/null 2>&1
+python3 /case/checks/strace_summary.py /artifacts/strace-echo.txt /case/fixture/whitelist-echo.txt'"""

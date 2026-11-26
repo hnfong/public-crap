@@ -393,8 +393,21 @@ run `ls`"), which requires peeking at the agent session transcript.
 4. **Escape hatch preserved:** plain `run.sh` cases (Phase 1 style) still work;
    `case.toml` cases are the new default when present.
 5. **Scoring output:** `results/checks.json` (per-check pass/fail + output)
-   + `results/verdict.txt`. A check type `manual` marks judgment calls
+   + `results/verdict.txt` (PASS = all mechanical checks pass; manual checks
+   are recorded but never score). A check type `manual` marks judgment calls
    (e.g. "is the commit message funny") for human/LLM-judge review later.
+6b. **Validation of sandboxes/isolation is empirical, not trace-parsing**
+   (owner decision during prototyping): checks observe *behavior* — e.g. a
+   program doing a non-whitelisted operation must actually fail. strace is
+   still captured as an informational artifact (`manual` check) for review.
+6c. **Checks that must execute Linux artifacts** (build/run/strace) use
+   `harness/in-guest.sh`: a throwaway `container run` of the guest image with
+   the artifacts mounted. Checks stay host-orchestrated; nothing is installed
+   on the host.
+6d. `harness/run-case.sh --checks-only` re-runs checks against existing
+   artifacts without a VM run — used to iterate on checks and to re-score old
+   runs. Note: guest-side `setup` has not run in that mode; artifacts must
+   already contain what checks need.
 6. **Schema evolved from real cases** (not designed up front): the first four
    cases define v0; the schema grows only when a real case demands it.
 
@@ -422,19 +435,28 @@ run  = """..."""               # host shell snippet, cwd = results dir;
   write `checks.json` + `verdict.txt`); `run-test.sh` gains `PCP_GUEST_SCRIPT`
   hook. Port `case-000-harness-smoke` to TOML.
   Done when: smoke case passes via `run-case.sh` with no model running.
-- **Chunk 7b — case-001-git-no-git**: create a git repo (one commit, funny
-  message, only `.gitignore` ignoring `*.pyc`) WITHOUT the `git` command.
-  Checks: repo valid, exactly 1 commit, single file, content, transcript
-  shows no `git` invocation; commit-message quality = `manual`.
-  Done when: a recorded run with all mechanical checks passing.
-- **Chunk 7c — case-002-fix-the-bug**: fixture with a buggy function + failing
-  stdlib unittest; fix without modifying the tests. Checks: tests pass on the
-  artifact workspace, test file unmodified vs fixture.
-- **Chunk 7d — case-003-constrained-fib**: `fib.py` printing first 20 Fibonacci
-  numbers, one per line; no imports; no recursion. Checks: output correct,
-  AST has no imports / no self-recursive functions.
+- **Chunk 7a — framework skeleton — DONE**: `harness/run-case.sh` +
+  `pcp_case.py` (parse TOML, generate guest script, run VM via `run-test.sh`
+  `PCP_GUEST_SCRIPT` hook, collect artifacts, run checks, write `checks.json`
+  + `verdict.txt`), `harness/in-guest.sh`, `--checks-only` / `--dry-run`
+  modes. `case-000-harness-smoke` ported to TOML, passes end-to-end.
+- **Chunk 7b — case-001-git-no-git — checks validated**: repo checks +
+  transcript no-`git` scan (defensive JSONL parsing). Live agent run pending
+  a model server.
+- **Chunk 7c — case-002-fix-median — checks validated**: buggy `median()`
+  (even-length lists) + failing stdlib unittest; tests-pass (with
+  `pipefail` — the naive `| tail` masked exit codes, caught in testing) and
+  tests-unmodified. Validated with fixed AND buggy artifacts.
+- **Chunk 7d — case-003-syscall-sandbox (owner-defined) — checks validated**:
+  agent writes Rust `pcp_sandbox [-l whitelist] <program> [args]`.
+  Empirical checks (owner direction: no trace parsing for scoring):
+  builds (in-guest cargo), echo-ok with whitelist, write-blocked without
+  `openat` (catches passthrough sandboxes — validated against a stub), plus
+  informational strace capture (`manual`).
 - **Chunk 7e — matrix runner** (models × cases, summary table): deferred
   until cases 001–003 have real recorded runs.
+- Image bumped **1.0 → 1.1** (deliberate: added `strace` to the guest;
+  digest `sha256:7e09a383…`). `PCP_TAG` default is 1.1.
 
 Agent cases need a live model server on host `127.0.0.1:9931` (owner starts
 it; harness only consumes the endpoint).

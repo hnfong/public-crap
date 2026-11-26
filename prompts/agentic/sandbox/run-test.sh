@@ -14,6 +14,9 @@
 #   PCP_NET            network: default=internet, internal=offline (default)
 #   PCP_TIMEOUT_SECS   test timeout                 (1800)
 #   PCP_CONTEXT_WINDOW model context window         (262144)
+#   PCP_GUEST_SCRIPT   host path to a guest script to run instead of
+#                      /work/run.sh (mounted ro at /pcp-run; used by
+#                      harness/run-case.sh for case.toml-driven cases)
 #
 # Connectivity (no sudo, no DNS host-bridge — owner decision): the harness
 # generates an ephemeral SSH keypair, mounts the public key into the guest,
@@ -29,12 +32,16 @@ fi
 [ $# -eq 1 ] || { echo "usage: run-test.sh [--dry-run] <tests/case-NNN-name>" >&2; exit 2; }
 
 CASE_DIR="$(cd "$1" 2>/dev/null && pwd)" || { echo "case dir not found: $1" >&2; exit 2; }
-[ -f "${CASE_DIR}/run.sh" ] || { echo "no run.sh in ${CASE_DIR}" >&2; exit 2; }
+# run.sh is required only for legacy (phase-1) cases; case.toml cases inject
+# their guest script via PCP_GUEST_SCRIPT instead
+if [ -z "${PCP_GUEST_SCRIPT:-}" ] && [ ! -f "${CASE_DIR}/run.sh" ]; then
+  echo "no run.sh in ${CASE_DIR}" >&2; exit 2
+fi
 CASE_NAME="$(basename "${CASE_DIR}")"
 RESULTS_DIR="${CASE_DIR}/results"
 mkdir -p "${RESULTS_DIR}"
 
-TAG="${PCP_TAG:-1.0}"
+TAG="${PCP_TAG:-1.1}"
 IMAGE="agent-sandbox:${TAG}"
 MODEL="${PCP_MODEL:-}"
 MODEL_PORT="${PCP_MODEL_PORT:-9931}"
@@ -102,8 +109,20 @@ if [ "$NET" != "default" ]; then
   NETARGS=(--network "$NET")
 fi
 
+GUEST_SCRIPT="${PCP_GUEST_SCRIPT:-}"
+if [ -n "$GUEST_SCRIPT" ]; then
+  GUEST_DIR="$(cd "$(dirname "$GUEST_SCRIPT")" && pwd)"
+  GUEST_NAME="$(basename "$GUEST_SCRIPT")"
+  GUEST_MOUNT=(-v "${GUEST_DIR}:/pcp-run:ro")
+  GUEST_CMD=(bash "/pcp-run/${GUEST_NAME}")
+else
+  GUEST_MOUNT=()
+  GUEST_CMD=(bash /work/run.sh)
+fi
+
 RUN_CMD=(container run --rm --name "$CNAME" -c "$CPUS" -m "$MEMORY"
   "${NETARGS[@]+"${NETARGS[@]}"}"
+  "${GUEST_MOUNT[@]+"${GUEST_MOUNT[@]}"}"
   -v "${CASE_DIR}:/work:ro"
   -v "${RESULTS_DIR}:/results"
   -v "${TMP}/pi:/home/agent/.pi"
@@ -113,7 +132,7 @@ RUN_CMD=(container run --rm --name "$CNAME" -c "$CPUS" -m "$MEMORY"
   -e "PCP_MODEL_PORT=${MODEL_PORT}"
   -w /work
   "$IMAGE"
-  bash /work/run.sh)
+  "${GUEST_CMD[@]}")
 
 if [ "$DRY_RUN" = 1 ]; then
   echo "-- dry run --"

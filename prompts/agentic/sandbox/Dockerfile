@@ -24,7 +24,7 @@ RUN apt-get update \
       build-essential clang lld cmake ninja-build \
       python3 python3-venv python3-pip \
       openjdk-21-jdk-headless \
-      openssh-server openssh-client \
+      openssh-server openssh-client strace \
  && rm -rf /var/lib/apt/lists/*
 
 # --- Node.js: official nodejs.org tarball, SHA-256 verified ---
