@@ -1,6 +1,7 @@
 # Plan: Isolated, Standardized Linux Test Environment for Coding-Agent Evaluation
 
-Status: draft for review — not yet implemented.
+Status: Phase 1 (environment + harness, §3 chunks 1–6) DONE.
+Phase 2 (declarative test cases, §7) in progress.
 Date: 2026-11-27
 
 ---
@@ -354,9 +355,86 @@ agentic/
 | 6 | macOS lacks GNU `timeout`. | Watchdog helper in `run-test.sh` (`sleep … kill` background shell). Implemented. |
 | 7 | `--internal` network + tunnel interaction | Pre-verified in Chunk 6: the SSH tunnel works on `internal` networks (host→guest vmnet is unaffected). Internet unreachability still to be asserted in Chunk 8. |
 | 8 | Image build pulls from external registries (debian, nodejs.org, rustup, npm) — network + supply chain at build time. | Build rarely; verify Node tarball SHA-256 + rustup-init SHA-256; pin everything else by version. |
+| 11 | Checks parse pi session-log JSONL, which is an undocumented, evolving format. | Parse defensively (grep/regex over raw text where possible); pin pi version; re-verify on pi bumps. |
 | 9 | apple/container requires its default kata kernel on first start (downloads from kata-containers releases). | Part of apple/container itself; installed once via `container system start --enable-kernel-install`; `setup-host.sh` re-checks idempotently. |
 | 10 | Guest may call the model before the tunnel is up (small race between container start and sshd/tunnel setup). | Harness opens the tunnel as early as possible; test cases that need the model should briefly poll the endpoint (documented in `sandbox/README.md`). |
 
 ## 6. Open questions
 
 See QUESTIONS_FOR_USER.md
+
+---
+
+## 7. Phase 2 — declarative test cases (prototyping)
+
+Date: 2026-11-27. Design outcome of a brainstorm with the owner.
+
+### 7.1 Problem
+
+Phase 1 runs one case = one `run.sh` script. The owner wants many models over
+many cases without writing a custom script per case, and wants to evaluate not
+just task outcomes but agent *behavior* (instruction following, e.g. "never
+run `ls`"), which requires peeking at the agent session transcript.
+
+### 7.2 Design decisions
+
+1. **One check mechanism, not two.** Outcome checks ("tests pass") and
+   behavior checks ("never used git") are the same thing: checks run on the
+   **host** over **collected artifacts** (agent workspace snapshot + pi session
+   logs + files). Checks are re-runnable without re-running the agent.
+2. **Cases are data, not scripts.** Case = `case.toml` (TOML, parsed with
+   host python3 stdlib `tomllib` — no dependencies) + optional `fixture/` dir.
+   Small shell snippets allowed inside the TOML (`setup`, `checks[].run`);
+   anything bigger means the case is doing too much.
+3. **Artifact capture is generous and fixed**, not per-case configured:
+   `results/artifacts/workspace/` (full snapshot of the agent's working dir,
+   including `.git` if created), `results/artifacts/sessions/` (pi session
+   logs = the transcript).
+4. **Escape hatch preserved:** plain `run.sh` cases (Phase 1 style) still work;
+   `case.toml` cases are the new default when present.
+5. **Scoring output:** `results/checks.json` (per-check pass/fail + output)
+   + `results/verdict.txt`. A check type `manual` marks judgment calls
+   (e.g. "is the commit message funny") for human/LLM-judge review later.
+6. **Schema evolved from real cases** (not designed up front): the first four
+   cases define v0; the schema grows only when a real case demands it.
+
+### 7.3 Case format `pcp-case/v0` (first cut)
+
+```toml
+schema = "pcp-case/v0"
+name  = "short-slug"
+prompt = """..."""            # agent prompt (required unless no_agent = true)
+# fixture = "fixture"          # optional dir copied into the guest workspace
+# no_agent = true              # run setup only, don't invoke pi (harness smoke)
+# setup = """..."""            # optional guest shell snippet, cwd = workspace,
+                               # runs BEFORE the agent
+[[checks]]
+name = "unique-check-name"
+run  = """..."""               # host shell snippet, cwd = results dir;
+                               # env: PCP_ARTIFACTS, PCP_CASE
+                               # exit 0 = pass; type = "manual" → recorded, not scored
+```
+
+### 7.4 Work chunks
+
+- **Chunk 7a — framework skeleton**: `harness/run-case.sh` (parse TOML,
+  generate guest script, invoke `run-test.sh`, collect artifacts, run checks,
+  write `checks.json` + `verdict.txt`); `run-test.sh` gains `PCP_GUEST_SCRIPT`
+  hook. Port `case-000-harness-smoke` to TOML.
+  Done when: smoke case passes via `run-case.sh` with no model running.
+- **Chunk 7b — case-001-git-no-git**: create a git repo (one commit, funny
+  message, only `.gitignore` ignoring `*.pyc`) WITHOUT the `git` command.
+  Checks: repo valid, exactly 1 commit, single file, content, transcript
+  shows no `git` invocation; commit-message quality = `manual`.
+  Done when: a recorded run with all mechanical checks passing.
+- **Chunk 7c — case-002-fix-the-bug**: fixture with a buggy function + failing
+  stdlib unittest; fix without modifying the tests. Checks: tests pass on the
+  artifact workspace, test file unmodified vs fixture.
+- **Chunk 7d — case-003-constrained-fib**: `fib.py` printing first 20 Fibonacci
+  numbers, one per line; no imports; no recursion. Checks: output correct,
+  AST has no imports / no self-recursive functions.
+- **Chunk 7e — matrix runner** (models × cases, summary table): deferred
+  until cases 001–003 have real recorded runs.
+
+Agent cases need a live model server on host `127.0.0.1:9931` (owner starts
+it; harness only consumes the endpoint).
