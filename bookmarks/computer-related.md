@@ -241,6 +241,7 @@ Computer technology related.
 - https://github.com/jhspetersson/fselect
 - https://news.ycombinator.com/item?id=40864541
 - https://news.ycombinator.com/item?id=41482661
+- https://github.com/benbernard/RecordStream - Looks like a vibe coded port of some old perl stuff to TypeScript, but it looks like something that I'd want
 
 ## Fancy AI products
 
@@ -569,6 +570,7 @@ Computer technology related.
 - https://divagr.com/blog/qwenputer
   - https://github.com/dbreunig/nesformer
   - https://news.ycombinator.com/item?id=50307402
+- https://simonwillison.net/2026/Nov/3/qwen-can-interpret-model-weights/
 
 
 ## Experimental Languages
@@ -791,6 +793,7 @@ Computer technology related.
 - https://migeel.sk/blog/2024/01/02/building-a-self-contained-game-in-csharp-under-2-kilobytes/
 - https://papereditor.app/dev - 9 years of Apple text editor solo dev
 - https://loglog.games/blog/leaving-rust-gamedev/
+- https://namespace.so/blog/mac-at-any-scale
 
 ## C/C++
 
