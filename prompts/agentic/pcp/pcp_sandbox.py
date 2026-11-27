@@ -366,7 +366,7 @@ def main() -> int:
             case_name=os.path.basename(os.path.abspath(args.case)),
             results_dir=os.path.abspath(args.results_dir)
             if args.results_dir else os.path.join(
-                os.path.abspath(args.case), "results"),
+                ROOT, "results", os.path.basename(os.path.abspath(args.case))),
             tmp=tempfile.mkdtemp(prefix="pcp-run-"),
             cname=f"pcp-test-{os.path.basename(os.path.abspath(args.case))}"
                   f"-{os.getpid()}",

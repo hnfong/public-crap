@@ -21,8 +21,8 @@ Flow:
 
 --checks-only: skip steps 2-3, run checks against existing artifacts.
 
-Results are kept per model: results/<PCP_MODEL>/ (results/_nomodel for
-agent-less cases). --checks-only needs PCP_MODEL set for agent cases.
+Results are kept per model under the repo-wide results root:
+<repo>/results/<case-dir-name>/<MODEL>/ (_nomodel for agent-less cases). --checks-only needs PCP_MODEL set for agent cases.
 
 Check contract: shell snippet run with cwd = case results dir.
 Env: PCP_ARTIFACTS (…/results/artifacts), PCP_CASE_DIR, PCP_CASE,
@@ -681,7 +681,11 @@ def main() -> None:
     checks_only = args.checks_only
     case_dir = os.path.abspath(args.case)
     case = load_case(case_dir)
-    results = os.path.join(case_dir, "results", model_dir_name())
+    # repo-wide results root: <repo>/results/<case-dir-name>/<MODEL>/
+    repo_root = os.path.dirname(PCP_DIR)
+    results_root = os.environ.get("PCP_RESULTS_ROOT") or os.path.join(repo_root, "results")
+    results = os.path.join(results_root, os.path.basename(case_dir),
+                           model_dir_name())
     artifacts = os.path.join(results, "artifacts")
 
     run_rc = None

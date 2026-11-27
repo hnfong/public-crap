@@ -37,10 +37,10 @@ pcp/pcp_case.py --checks-only --model Qwen3.8-27B-Q6_K tests/case-001-git-no-git
 
 `pcp_case.py` delegates the VM run to `pcp_sandbox.py run`. One run = one
 ephemeral VM. The case's checks run on the host against collected artifacts
-(`results/<MODEL>/artifacts/…`); checks that must execute Linux binaries set
+(`results/<case>/<MODEL>/artifacts/…`); checks that must execute Linux binaries set
 `in_guest=True` on the check (throwaway container; artifacts at `/artifacts`,
-case dir at `/case`). Output: `results/<MODEL>/metadata.json`, `checks.json`,
-`verdict.txt`.
+case dir at `/case`). Output: `results/<case>/<MODEL>/metadata.json`, `checks.json`,
+`verdict.txt`, `output.txt`.
 
 Legacy phase-1 style (`run.sh` in the case dir) still works:
 
@@ -69,7 +69,7 @@ applies to cases that don't define one.
 ## Adding a test case
 
 `tests/case-NNN-short-slug/case.py` (see JOURNAL.md §7.3 for the DSL). The
-case dir is mounted read-only at `/work`, `results/<MODEL>/` is writable at
+case dir is mounted read-only at `/work`, `results/<case>/<MODEL>/` (repo root) is writable at
 `/results`. Guest code reaches the model at
 `http://127.0.0.1:${PCP_MODEL_PORT}/v1` (OpenAI-compatible); the generated
 guest script waits for the endpoint before invoking pi.
