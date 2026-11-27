@@ -7,7 +7,7 @@ python3). See JOURNAL.md for design and decisions.
 
 Subcommands:
   setup                per-boot host preparation (idempotent, no sudo)
-  build [--tag T]      build agent-sandbox:<T>, print + record its digest
+  build [--tag T]      build pcp-agent-sandbox:<T>, print + record its digest
   run <case> [opts]    one test case = one ephemeral VM (tunnel, watchdog,
                        metadata.json)
   cleanup [--images]   prune stopped containers (--images: also remove
@@ -65,7 +65,7 @@ def sh(cmd: list, **kw) -> subprocess.CompletedProcess:
 
 
 def image_digest(image_ref: str) -> str:
-    """Digest of a locally stored image (ref like 'agent-sandbox:1.1')."""
+    """Digest of a locally stored image (ref like 'pcp-agent-sandbox:1.1')."""
     proc = sh(["container", "image", "ls", "--format", "json"],
               capture_output=True)
     for entry in json.loads(proc.stdout):
@@ -103,7 +103,7 @@ def cmd_setup(args) -> int:
 # ---------------------------------------------------------------- build
 def cmd_build(args) -> int:
     tag = env_or(args.tag, "PCP_TAG", "1.1")
-    image = f"agent-sandbox:{tag}"
+    image = f"pcp-agent-sandbox:{tag}"
 
     # stage a clean build context: Dockerfile + pi-config + generated entrypoint
     staging = tempfile.mkdtemp(prefix="pcp-build-")
@@ -387,7 +387,7 @@ def main() -> int:
 
     p = sub.add_parser("cleanup", help="prune stopped containers / images")
     p.add_argument("--images", action="store_true",
-                   help="also remove images except agent-sandbox:<tag>")
+                   help="also remove images except pcp-agent-sandbox:<tag>")
     p.add_argument("--tag", help="image tag to keep (default PCP_TAG or 1.1)")
 
     args = ap.parse_args()
@@ -405,7 +405,7 @@ def main() -> int:
             tmp=tempfile.mkdtemp(prefix="pcp-run-"),
             cname=f"pcp-test-{os.path.basename(os.path.abspath(args.case))}"
                   f"-{os.getpid()}",
-            image=f"agent-sandbox:{env_or(args.tag, 'PCP_TAG', '1.1')}",
+            image=f"pcp-agent-sandbox:{env_or(args.tag, 'PCP_TAG', '1.1')}",
             tag=env_or(args.tag, "PCP_TAG", "1.1"),
             model=env_or(args.model, "PCP_MODEL", ""),
             model_port=env_or(args.model_port, "PCP_MODEL_PORT", "9931"),

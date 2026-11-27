@@ -104,7 +104,7 @@ class RunCheck(PcpCheck):
                    "-v", f"{env['PCP_ARTIFACTS']}:/artifacts",
                    "-v", f"{env['PCP_TESTS_DIR']}:/tests:ro",
                    "-w", "/artifacts/workspace",
-                   f"agent-sandbox:{tag}", "bash", "-c", self.cmd]
+                   f"pcp-agent-sandbox:{tag}", "bash", "-c", self.cmd]
         else:
             cmd = ["bash", "-c", self.cmd]
         try:
