@@ -29,7 +29,6 @@ import threading
 import time
 
 PCP_DIR = os.path.dirname(os.path.abspath(__file__))
-DIGESTS_DIR = os.path.join(PCP_DIR, ".digests")
 
 # The guest entrypoint, staged into the build context by `build`.
 # Runs as root: starts sshd (for the harness reverse tunnel), then drops to
@@ -127,9 +126,6 @@ def cmd_build(args) -> int:
     digest = image_digest(image)
     if not digest:
         fail(f"built {image} but could not read its digest")
-    os.makedirs(DIGESTS_DIR, exist_ok=True)
-    with open(os.path.join(DIGESTS_DIR, tag), "w") as f:
-        f.write(digest + "\n")
     print(f"built {image}\n{digest}")
     return 0
 
