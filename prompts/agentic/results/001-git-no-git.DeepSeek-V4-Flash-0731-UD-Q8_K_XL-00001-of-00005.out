@@ -1,0 +1,280 @@
+== PCP RUN TRANSCRIPT ==========================================================
+case:    git-no-git (pcp-case/v0)
+about:   Create a git repo (one commit, funny message, only .gitignore ignoring *.pyc) WITHOUT the git command.
+model:   DeepSeek-V4-Flash-0731-UD-Q8_K_XL-00001-of-00005
+image:   pcp-agent-sandbox:1.1 (sha256:f3e363b121493a01890cb7cb48921cdfbb1e8b3c1e643d7f438231108a915c64)
+host:    26.4.1 (25E253) / arm64
+run:     2026-11-27T17:43:25Z → 2026-11-27T17:45:04Z (wall 99s, VM exit 0)
+score:   100.00%
+================================================================================
+
+== CHECKS ======================================================================
+
+  [pass] exactly-one-commit  (28 ms)
+      [host] [ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" rev-list --count HEAD 2>/dev/null)" = "1" ]
+  [pass] only-gitignore-in-commit  (15 ms)
+      [host] [ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" show --name-only --format= HEAD)" = ".gitignore" ]
+  [pass] gitignore-covers-pyc  (5 ms)
+      [host] grep -q "\*\.pyc" "$PCP_ARTIFACTS/workspace/.gitignore"
+  [human review] commit-message-funny  (11 ms)
+      [host] GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" log -1 --format=%s
+      | Why did the programmer quit his job? Because he didn’t get arrays.
+  [pass] no-git-in-transcript  (23 ms)
+      [host] python3 "$PCP_HELPERS/no_git.py"
+      | no git usage in 1 session file(s)
+
+== ARTIFACTS ===================================================================
+
+      566187  pi-output.json
+           0  pi-stderr.log
+           2  rc
+       21997  sessions/--workspace--/2026-11-27T17-43-26-577Z_01a21e1a-dc71-736f-a4ee-e0326dd40d10.jsonl
+           6  workspace/.gitignore
+
+== PI SESSION ==================================================================
+
+-- session: sessions/--workspace--/2026-11-27T17-43-26-577Z_01a21e1a-dc71-736f-a4ee-e0326dd40d10.jsonl -
+
+[session 01a21e1a-dc71-736f-a4ee-e0326dd40d10 cwd=/workspace]
+[model] DeepSeek-V4-Flash-0731-UD-Q8_K_XL-00001-of-00005 (provider llama.cpp)
+[thinking level] medium
+[system prompt omitted, 2 chars]
+[user]
+Create a git repository in the current directory with exactly one initial commit.
+
+Requirements:
+- The commit must contain exactly one file: .gitignore
+- The .gitignore must make git ignore *.pyc files
+- The commit message should be a funny joke
+
+CAVEAT: you must NOT use the git command to do this task. No `git`, no
+`/usr/bin/git`, no alias or wrapper around it. Any other approach is fine.
+[thinking]
+The task requires creating a git repository without using the git command. I need to create a repo with exactly one commit containing a .gitignore that ignores *.pyc files, and a funny commit message.
+
+I cannot use git. So I need to create the .git directory structure manually. Let me think about how git stores objects.
+
+I need to create:
+- .git/HEAD
+- .git/config
+- .git/objects/ (with tree, blob, commit objects)
+- .git/refs/heads/master
+
+Let me create the objects manually using sha1.
+
+First, create .gitignore with content:
+```
+*.pyc
+```
+
+Then create a blob object. The blob content is "*.pyc\n". 
+
+git blob = "blob <size>\0<content>"
+
+Let me compute. I'll use bash tools (but not git). I can use python or sha1sum.
+
+Let me do this with a script. I'll write a script that builds the repo objects using zlib and sha1.
+
+Let me create the directory structure and compute.
+
+Let me do it step by step with bash + python.
+
+Plan:
+1. Create working dir .gitignore file
+2. Compute blob sha1, write to objects
+3. Compute tree sha1
+4. Compute commit sha1 with funny message
+5. Write HEAD, config, refs
+
+Let me write a python script.
+
+The commit message should be a funny joke.
+
+Let me do it.
+[assistant]
+I'll create the git repository manually by constructing the git objects (blob, tree, commit) without using the git command.
+[tool call: bash]
+$ cd /workspace && ls -la && cat > /tmp/mkrepo.py << 'EOF'
+import os, zlib, hashlib, time
+
+repo = '/workspace'
+git = os.path.join(repo, '.git')
+
+# Working file
+with open(os.path.join(repo, '.gitignore'), 'wb') as f:
+    f.write(b'*.pyc\n')
+
+def git_obj(kind, data):
+    header = (kind + ' ' + str(len(data))).encode()
+    return header + b'\x00' + data
+
+def sha1(kind, data):
+    return hashlib.sha1(git_obj(kind, data)).hexdigest()
+
+def write_obj(kind, data):
+    oid = sha1(kind, data)
+    path = os.path.join(git, 'objects', oid[:2], oid[2:])
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'wb') as f:
+        f.write(zlib.compress(git_obj(kind, data)))
+    return oid
+
+os.makedirs(os.path.join(git, 'objects'), exist_ok=True)
+os.makedirs(os.path.join(git, 'refs', 'heads'), exist_ok=True)
+
+# Blob
+blob_sha = write_obj('blob', b'*.pyc\n')
+print('blob:', blob_sha)
+
+# Tree
+tree_entry = '100644 .gitignore\x00' + bytes.fromhex(blob_sha)
+tree_data = tree_entry
+tree_sha = write_obj('tree', tree_data)
+print('tree:', tree_sha)
+
+# Commit
+author = 'Anonymous <anon@example.com>'
+now = int(time.time())
+tz = '+0000'
+commit_data = (
+    'tree ' + tree_sha + '\n'
+    'author ' + author + ' ' + str(now) + ' ' + tz + '\n'
+    'committer ' + author + ' ' + str(now) + ' ' + tz + '\n'
+    '\n'
+    'Why did the programmer quit his job? Because he didn\u2019t get arrays.\n'
+).encode()
+commit_sha = write_obj('commit', commit_data)
+print('commit:', commit_sha)
+
+# HEAD
+with open(os.path.join(git, 'HEAD'), 'w') as f:
+    f.write('ref: refs/heads/master\n')
+
+# config
+with open(os.path.join(git, 'config'), 'w') as f:
+    f.write('[core]\n\trepositoryformatversion = 0\n\tfilemode = true\n\tbare = false\n\tlogallrefupdates = true\n')
+
+# refs
+with open(os.path.join(git, 'refs', 'heads', 'master'), 'w') as f:
+    f.write(commit_sha + '\n')
+
+print('done')
+EOF
+python3 /tmp/mkrepo.py
+[toolResult]
+total 8
+drwxr-xr-x  2 agent agent 4096 Nov 27 14:12 .
+drwxr-xr-x 22 root  root  4096 Nov 27 17:43 ..
+blob: 0d20b6487c61e7d1bde93acf4a14b7a89083a16d
+Traceback (most recent call last):
+  File "/tmp/mkrepo.py", line 33, in <module>
+    tree_entry = '100644 .gitignore\x00' + bytes.fromhex(blob_sha)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
+TypeError: can only concatenate str (not "bytes") to str
+
+
+Command exited with code 1
+[assistant]
+The script has a type error. Let me fix the tree entry construction.
+[tool call: bash]
+$ cd /workspace && sed -i "s/tree_entry = '100644 .gitignore\\\\x00' + bytes.fromhex(blob_sha)/tree_entry = b'100644 .gitignore\\\\x00' + bytes.fromhex(blob_sha)/" /tmp/mkrepo.py && python3 /tmp/mkrepo.py
+[toolResult]
+blob: 0d20b6487c61e7d1bde93acf4a14b7a89083a16d
+tree: e05703bf7de4d1d60f49c30872101a88ca5ed06c
+commit: 6e013d5642f31df5f6d70e33815889609a4f437a
+done
+
+[thinking]
+Now let me verify the repo structure. I can't use git, but I can check files. Let me verify the objects exist and content.
+[assistant]
+Now let me verify the repository structure was created correctly.
+[tool call: bash]
+$ cd /workspace && cat .gitignore && echo "---HEAD---" && cat .git/HEAD && echo "---ref---" && cat .git/refs/heads/master && echo "---tree---" && find .git -type f | sort
+[toolResult]
+*.pyc
+---HEAD---
+ref: refs/heads/master
+---ref---
+6e013d5642f31df5f6d70e33815889609a4f437a
+---tree---
+.git/HEAD
+.git/config
+.git/objects/0d/20b6487c61e7d1bde93acf4a14b7a89083a16d
+.git/objects/6e/013d5642f31df5f6d70e33815889609a4f437a
+.git/objects/e0/5703bf7de4d1d60f49c30872101a88ca5ed06c
+.git/refs/heads/master
+
+[thinking]
+Let me verify the objects are valid by decompressing them and checking the commit content. Also verify the tree contains the right blob. Let me check that the repo is valid. I can't use git to verify, but let me manually decompress.
+[assistant]
+Let me verify the object integrity by decompressing them.
+[tool call: bash]
+$ cd /workspace/.git/objects && python3 -c "
+import zlib
+for d in ['0d','6e','e0']:
+    import os
+    for f in os.listdir(d):
+        with open(f'{d}/{f}','rb') as fh:
+            data = zlib.decompress(fh.read())
+        print('===', d+f, '===')
+        print(data)
+"
+[toolResult]
+=== 0d20b6487c61e7d1bde93acf4a14b7a89083a16d ===
+b'blob 6\x00*.pyc\n'
+=== 6e013d5642f31df5f6d70e33815889609a4f437a ===
+b'commit 225\x00tree e05703bf7de4d1d60f49c30872101a88ca5ed06c\nauthor Anonymous <anon@example.com> 1795801457 +0000\ncommitter Anonymous <anon@example.com> 1795801457 +0000\n\nWhy did the programmer quit his job? Because he didn\xe2\x80\x99t get arrays.\n'
+=== e05703bf7de4d1d60f49c30872101a88ca5ed06c ===
+b'tree 38\x00100644 .gitignore\x00\r \xb6H|a\xe7\xd1\xbd\xe9:\xcfJ\x14\xb7\xa8\x90\x83\xa1m'
+
+[thinking]
+Everything looks correct. The repo has:
+- One commit (6e013d...) with funny message
+- Tree pointing to blob
+- Blob containing `*.pyc\n`
+- .gitignore working file
+
+All objects are valid. The commit references tree, which references the blob for .gitignore. There's exactly one commit with exactly one file.
+
+Let me confirm this would be recognized as valid by git. The structure is standard. Done.
+
+Let me clean up the temp script.
+[assistant]
+All objects are valid and consistent. Let me clean up the temp script.
+[tool call: bash]
+$ rm -f /tmp/mkrepo.py && cd /workspace && find . -not -path './.git*' -type f
+[toolResult]
+(no output)
+[thinking]
+Hmm, find with -not -path './.git*' returned nothing. That's odd because .gitignore should be there. Wait, the -not -path pattern. Let me check. Actually `.gitignore` starts with `.git` so the pattern `./.git*` matches it and excludes it. So the output is empty because both .gitignore and .git directory are excluded. That's fine, .gitignore exists (we catted it earlier). Let me verify with a proper command.
+[tool call: bash]
+$ cd /workspace && ls -la && echo "---" && cat .gitignore
+[toolResult]
+total 16
+drwxr-xr-x  3 agent agent 4096 Nov 27 17:44 .
+drwxr-xr-x 22 root  root  4096 Nov 27 17:43 ..
+drwxr-xr-x  4 agent agent 4096 Nov 27 17:44 .git
+-rw-r--r--  1 agent agent    6 Nov 27 17:44 .gitignore
+---
+*.pyc
+
+[assistant]
+Done. I created a valid git repository in `/workspace` by hand-crafting the git objects (no `git` command used).
+
+**What was created:**
+
+- **`.gitignore`** (working file + the blob object) containing `*.pyc`, which ignores all `.pyc` files.
+- A valid object database built manually with zlib + SHA-1:
+  - Blob `0d20b64…` → `*.pyc\n`
+  - Tree `e05703b…` → references `.gitignore` → that blob
+  - Commit `6e013d5…` → references that tree
+- **`.git/HEAD`** → `ref: refs/heads/master`
+- **`.git/refs/heads/master`** → the commit SHA
+- **`.git/config`** with standard core settings
+
+**The commit** is the single initial commit, contains exactly one file (`.gitignore`), and the message is the joke:
+
+> "Why did the programmer quit his job? Because he didn't get arrays."
+
+The repo is fully self-consistent — decompressing the objects confirms the commit points to the tree, which points to the blob holding `*.pyc`.
+
