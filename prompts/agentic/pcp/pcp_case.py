@@ -45,6 +45,90 @@ PCP_DIR = os.path.dirname(os.path.abspath(__file__))
 SANDBOX_TOOL = os.path.join(PCP_DIR, "pcp_sandbox.py")
 
 CASE_SCHEMA_V0 = "pcp-case/v0"
+DEFAULT_CHECK_TIMEOUT = 600
+
+
+# --- check classes (instances are created by the `pcp.checks` DSL) ---
+class PcpCheck:
+    """Base class for case checks. Subclasses implement execute()."""
+
+    def __init__(self, name: str, manual: bool = False):
+        if not name:
+            fail("check: 'name' is required")
+        self.name = name
+        self.type = "manual" if manual else "check"
+
+    def execute(self, results: str, env: dict,
+                timeout: int) -> tuple[int, str, str]:
+        """Run the check; return (exit_code, stdout, stderr). exit 0 = pass."""
+        raise NotImplementedError
+
+    def provenance(self) -> str:
+        """Human-readable description recorded in checks.json."""
+        raise NotImplementedError
+
+
+class RunCheck(PcpCheck):
+    """Shell command, run on the host (or in a throwaway guest container
+    when in_guest=True — for checks that must execute Linux binaries)."""
+
+    def __init__(self, name: str, cmd: str, manual: bool = False,
+                 in_guest: bool = False, timeout: int = DEFAULT_CHECK_TIMEOUT):
+        super().__init__(name, manual)
+        if not cmd:
+            fail(f"check {name!r}: 'cmd' is required")
+        self.cmd = cmd
+        self.in_guest = in_guest
+        self.timeout = timeout
+
+    def execute(self, results: str, env: dict, timeout: int):
+        if self.in_guest:
+            tag = env.get("PCP_TAG") or "1.1"
+            cmd = ["container", "run", "--rm",
+                   "-v", f"{env['PCP_ARTIFACTS']}:/artifacts",
+                   "-v", f"{env['PCP_CASE_DIR']}:/case:ro",
+                   "-w", "/artifacts/workspace",
+                   f"agent-sandbox:{tag}", "bash", "-c", self.cmd]
+        else:
+            cmd = ["bash", "-c", self.cmd]
+        proc = subprocess.run(cmd, cwd=results, env=env, capture_output=True,
+                              text=True, timeout=timeout)
+        return proc.returncode, proc.stdout, proc.stderr
+
+    def provenance(self) -> str:
+        where = "in-guest" if self.in_guest else "host"
+        return f"[{where}] {self.cmd}"
+
+
+class TranscriptCheck(PcpCheck):
+    """Built-in check over the captured session log: does the transcript
+    include/exclude a pattern (over assistant text and/or tool commands)?"""
+
+    def __init__(self, name: str, mode: str, pattern, scope: str = "any",
+                 icase: bool = True):
+        super().__init__(name)
+        if mode not in (_TranscriptMode.includes, _TranscriptMode.excludes):
+            fail(f"check {name!r}: mode must be includes or excludes")
+        if scope not in (_TranscriptScope.tool, _TranscriptScope.assistant,
+                         _TranscriptScope.any):
+            fail(f"check {name!r}: scope must be tool, assistant or any")
+        self.mode = mode
+        self.regex = isinstance(pattern, re.Pattern)
+        self.pattern = pattern.pattern if self.regex else pattern
+        self.scope = scope
+        self.case_sensitive = not icase
+
+    def execute(self, results: str, env: dict, timeout: int):
+        sessions = os.path.join(env["PCP_ARTIFACTS"], "sessions")
+        rc, msg = transcript_match(
+            self.mode, self.pattern, regex=self.regex, scope=self.scope,
+            case_sensitive=self.case_sensitive, sessions=sessions)
+        return rc, msg, ""
+
+    def provenance(self) -> str:
+        kind = "regex" if self.regex else "literal"
+        return (f"[transcript] {self.mode} /{self.pattern}/ ({kind}, "
+                f"scope={self.scope}, icase={not self.case_sensitive})")
 
 
 # --- the `pcp` DSL injected into case.py files (see JOURNAL.md §7.3) ---
@@ -65,25 +149,13 @@ class _checks:
 
     @staticmethod
     def run(name: str, cmd: str, manual: bool = False,
-            in_guest: bool = False) -> dict:
-        """Shell check; exit 0 = pass. manual=True: recorded, never scores.
-        in_guest=True: run cmd inside a throwaway guest container (artifacts
-        at /artifacts, case dir at /case, cwd /artifacts/workspace) — for
-        checks that must execute Linux binaries."""
-        return {"name": name, "run": cmd,
-                "type": "manual" if manual else "check",
-                **({"in_guest": True} if in_guest else {})}
+            in_guest: bool = False) -> RunCheck:
+        return RunCheck(name, cmd, manual=manual, in_guest=in_guest)
 
     @staticmethod
     def transcript(name: str, mode: str, pattern, scope: str = "any",
-                   icase: bool = True) -> dict:
-        """Built-in transcript check. pattern: literal str, or re.compile(...) for regex."""
-        regex = isinstance(pattern, re.Pattern)
-        return {
-            "name": name, "transcript": mode,
-            "pattern": pattern.pattern if regex else pattern,
-            "regex": regex, "scope": scope, "case_sensitive": not icase,
-        }
+                   icase: bool = True) -> TranscriptCheck:
+        return TranscriptCheck(name, mode, pattern, scope=scope, icase=icase)
 
 
 pcp = SimpleNamespace(checks=_checks)
@@ -171,7 +243,7 @@ def load_case(case_dir: str) -> dict:
     if not name:
         fail(f"{path}: NAME is empty")
     for i, chk in enumerate(checks):
-        if not isinstance(chk, dict) or not chk.get("name"):
+        if not isinstance(chk, PcpCheck):
             fail(f"{path}: CHECKS[{i}] must come from a pcp.checks.* constructor")
     return {
         "schema": schema,
@@ -297,62 +369,26 @@ def run_checks(case: dict, case_dir: str, results: str, artifacts: str) -> list[
         PCP_CASE=case["name"],
     )
     out = []
-    for i, chk in enumerate(case.get("checks", [])):
-        name, run = chk.get("name"), chk.get("run")
-        ctype = chk.get("type", "check")
-        if not name:
-            fail(f"checks[{i}]: needs 'name'")
+    for chk in case.get("checks", []):
         t0 = time.monotonic()
-        if "transcript" in chk:
-            # built-in transcript semantics: includes/excludes a pattern over
-            # assistant text and/or tool-call commands (see JOURNAL.md §7.3)
-            op = chk["transcript"]
-            if op not in ("includes", "excludes"):
-                fail(f"checks[{i}]: transcript must be 'includes' or 'excludes'")
-            if "pattern" not in chk:
-                fail(f"checks[{i}]: transcript checks need 'pattern'")
-            rc, msg = transcript_match(
-                op, chk["pattern"], regex=chk.get("regex", False),
-                scope=chk.get("scope", "any"),
-                case_sensitive=chk.get("case_sensitive", False),
-                sessions=os.path.join(artifacts, "sessions"))
-            run = f"transcript({op}, pattern={chk['pattern']!r})"  # provenance
-            proc = subprocess.CompletedProcess([], rc, stdout=msg, stderr="")
-        elif chk.get("in_guest"):
-            # Linux-only artifacts: run inside a throwaway guest container
-            if run is None:
-                fail(f"checks[{i}]: in_guest checks need 'run'")
-            tag = os.environ.get("PCP_TAG") or "1.1"
-            cmd = ["container", "run", "--rm",
-                   "-v", f"{artifacts}:/artifacts",
-                   "-v", f"{case_dir}:/case:ro",
-                   "-w", "/artifacts/workspace",
-                   f"agent-sandbox:{tag}", "bash", "-c", run]
-            run = " ".join(cmd)  # provenance for checks.json
-            proc = subprocess.run(cmd, cwd=results, env=env_common,
-                                  capture_output=True, text=True,
-                                  timeout=chk.get("timeout", 600))
-        elif run is None:
-            fail(f"checks[{i}]: needs 'run' or 'transcript'")
-        else:
-            proc = subprocess.run(
-                ["bash", "-c", run], cwd=results, env=env_common,
-                capture_output=True, text=True, timeout=chk.get("timeout", 600),
-            )
+        try:
+            rc, stdout, stderr = chk.execute(results, env_common,
+                                             DEFAULT_CHECK_TIMEOUT)
+        except subprocess.TimeoutExpired:
+            rc, stdout, stderr = 124, "", f"check timed out"
         dt = int((time.monotonic() - t0) * 1000)
-        if ctype == "manual":
+        if chk.type == "manual":
             status = "manual"
-        elif proc.returncode == 0:
-            status = "pass"
         else:
-            status = "fail"
+            status = "pass" if rc == 0 else "fail"
         entry = {
-            "name": name, "type": ctype, "status": status,
-            "exitCode": proc.returncode, "durationMs": dt,
-            "stdout": proc.stdout[-4000:], "stderr": proc.stderr[-2000:],
+            "name": chk.name, "type": chk.type, "status": status,
+            "check": chk.provenance(),
+            "exitCode": rc, "durationMs": dt,
+            "stdout": stdout[-4000:], "stderr": stderr[-2000:],
         }
         out.append(entry)
-        print(f"pcp_case: check {name:<28} {status:<7} rc={proc.returncode} ({dt} ms)")
+        print(f"pcp_case: check {chk.name:<28} {status:<7} rc={rc} ({dt} ms)")
     return out
 
 
