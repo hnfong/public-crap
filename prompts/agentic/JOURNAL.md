@@ -339,19 +339,18 @@ User comment: chunks 7-10 are fine but we should probably reserve this for later
 
 ```
 agentic/
-├── PLAN.md                     ← this file
-├── sandbox/
-│   ├── README.md               ← how to use (Chunk 9)
-│   ├── Dockerfile              ← standardized guest (Chunk 4)
-│   ├── build.sh                ← build + print digest (Chunk 4)
-│   ├── setup-host.sh           ← idempotent per-boot host prep (Chunk 6)
-│   ├── run-test.sh             ← one test case = one ephemeral VM (Chunk 6)
-│   └── cleanup.sh              ← prune (Chunk 6)
+├── JOURNAL.md                  ← this file (was PLAN.md)
+├── pcp/                        ← all tooling (was sandbox/ + harness/)
+│   ├── README.md               ← how to use
+│   ├── pcp_sandbox.py          ← VM tool: setup | build | run | cleanup
+│   ├── pcp_case.py             ← case runner: case.py DSL, checks, verdicts
+│   ├── Dockerfile              ← standardized guest
+│   └── pi-config/              ← sanitized pi settings template
 └── tests/
-    └── case-001-hello-world/
-        ├── run.sh              ← executed inside the guest (Chunk 7)
-        ├── fixture/            ← optional repo for the agent to work in
-        └── results/            ← written by run.sh + harness (gitignored)
+    └── case-NNN-slug/
+        ├── case.py             ← the case (Python DSL)
+        ├── checks/, fixture/   ← optional per-case helpers and inputs
+        └── results/<MODEL>/    ← per-run artifacts + verdicts (gitignored)
 ```
 
 ---
@@ -413,14 +412,14 @@ run `ls`"), which requires peeking at the agent session transcript.
    (owner decision during prototyping): checks observe *behavior* — e.g. a
    program doing a non-whitelisted operation must actually fail. strace is
    still captured as an informational artifact (`manual` check) for review.
-6c. **Checks that must execute Linux artifacts** (build/run/strace) use
-   `harness/in-guest.sh`: a throwaway `container run` of the guest image with
-   the artifacts mounted. Checks stay host-orchestrated; nothing is installed
-   on the host.
-6d. `harness/run-case.sh --checks-only` re-runs checks against existing
-   artifacts without a VM run — used to iterate on checks and to re-score old
-   runs. Note: guest-side `setup` has not run in that mode; artifacts must
-   already contain what checks need.
+6c. **Checks that must execute Linux artifacts** (build/run/strace) set
+   `in_guest=True` on the check: a throwaway `container run` of the guest
+   image with the artifacts mounted. Checks stay host-orchestrated; nothing
+   is installed on the host.
+6d. `pcp/pcp_case.py --checks-only` re-runs checks against existing artifacts
+   without a VM run — used to iterate on checks and to re-score old runs.
+   Note: guest-side `setup` has not run in that mode; artifacts must already
+   contain what checks need.
 6. **Schema evolved from real cases** (not designed up front): the first four
    cases define v0; the schema grows only when a real case demands it.
 
@@ -460,8 +459,8 @@ CHECKS = [
 ]
 ```
 
-`case.py` is executed by `harness/pcp_case.py` with `PCP_CASE_V0`, `pcp`, and
-`re` injected. `run-test.sh`'s `run.sh` legacy path still exists for
+`case.py` is executed by `pcp/pcp_case.py` with `PCP_CASE_V0`, `pcp`, and
+`re` injected. `pcp_sandbox.py run`'s `run.sh` legacy path still exists for
 standalone use, but all PCP cases are `case.py` now.
 
 ### 7.4 Work chunks

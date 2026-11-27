@@ -28,9 +28,8 @@ import tempfile
 import threading
 import time
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SANDBOX_DIR = os.path.join(ROOT, "sandbox")
-DIGESTS_DIR = os.path.join(SANDBOX_DIR, ".digests")
+PCP_DIR = os.path.dirname(os.path.abspath(__file__))
+DIGESTS_DIR = os.path.join(PCP_DIR, ".digests")
 
 # The guest entrypoint, staged into the build context by `build`.
 # Runs as root: starts sshd (for the harness reverse tunnel), then drops to
@@ -110,8 +109,8 @@ def cmd_build(args) -> int:
     # stage a clean build context: Dockerfile + pi-config + generated entrypoint
     staging = tempfile.mkdtemp(prefix="pcp-build-")
     try:
-        shutil.copy(os.path.join(SANDBOX_DIR, "Dockerfile"), staging)
-        shutil.copytree(os.path.join(SANDBOX_DIR, "pi-config"),
+        shutil.copy(os.path.join(PCP_DIR, "Dockerfile"), staging)
+        shutil.copytree(os.path.join(PCP_DIR, "pi-config"),
                         os.path.join(staging, "pi-config"))
         entry = os.path.join(staging, "pcp-entrypoint.sh")
         with open(entry, "w") as f:
@@ -356,7 +355,7 @@ def main() -> int:
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--guest-script",
                    help="host script to run instead of /work/run.sh "
-                        "(mounted ro at /pcp-run; used by harness/pcp_case.py)")
+                        "(mounted ro at /pcp-run; used by pcp/pcp_case.py)")
     p.add_argument("--results-dir", help="override results dir")
     p.add_argument("--model", help="model name (default PCP_MODEL or unset)")
     p.add_argument("--tag", help="image tag (default PCP_TAG or 1.1)")

@@ -31,17 +31,17 @@ build with `cargo build`. It will run as root in a minimal Linux container.
 CHECKS = [
   # FIXME: we need a in_guest option in checks.run, or run_in_guest()
 
-  # Linux ELF can't run on the macOS host: build/run checks go through
-  # in-guest.sh (throwaway container, artifacts mounted at /artifacts,
-  # case dir read-only at /case)
-  pcp.checks.run(name="builds",
-                 cmd="$PCP_INGUEST 'cargo build 2>&1 | tail -3'"),
-  pcp.checks.run(name="echo-ok-with-whitelist",
-                 cmd="$PCP_INGUEST 'target/debug/pcp_sandbox -l /case/fixture/whitelist-echo.txt /bin/echo HONK' | grep -qx HONK"),
+  # Linux ELF can't run on the macOS host: build/run checks use in_guest=True
+  # (throwaway container; artifacts at /artifacts, case dir read-only at /case)
+  pcp.checks.run(name="builds", in_guest=True,
+                 # NOTE pipefail: a naive `| tail` masks cargo's exit code
+                 cmd="set -o pipefail && cargo build 2>&1 | tail -3"),
+  pcp.checks.run(name="echo-ok-with-whitelist", in_guest=True,
+                 cmd="target/debug/pcp_sandbox -l /case/fixture/whitelist-echo.txt /bin/echo HONK | grep -qx HONK"),
   # whitelist-tight.txt has NO openat: a passthrough sandbox lets writer
   # succeed -> this check fails. Catches do-nothing sandboxes.
-  pcp.checks.run(name="write-blocked-without-openat", cmd="""
-if $PCP_INGUEST 'target/debug/pcp_sandbox -l /case/fixture/whitelist-tight.txt ./writer' >/dev/null 2>&1; then
+  pcp.checks.run(name="write-blocked-without-openat", in_guest=True, cmd="""
+if target/debug/pcp_sandbox -l /case/fixture/whitelist-tight.txt ./writer >/dev/null 2>&1; then
   echo "writer was NOT blocked (passthrough sandbox?)"
   exit 1
 else
@@ -49,8 +49,8 @@ else
 fi
 """),
   # informational only: dump the trace + per-PID syscall summary
-  pcp.checks.run(name="strace-observed-syscalls", manual=True, cmd="""
-$PCP_INGUEST 'strace -f -o /artifacts/strace-echo.txt target/debug/pcp_sandbox -l /case/fixture/whitelist-echo.txt /bin/echo HONK >/dev/null 2>&1
-python3 /case/checks/strace_summary.py /artifacts/strace-echo.txt /case/fixture/whitelist-echo.txt'
+  pcp.checks.run(name="strace-observed-syscalls", manual=True, in_guest=True, cmd="""
+strace -f -o /artifacts/strace-echo.txt target/debug/pcp_sandbox -l /case/fixture/whitelist-echo.txt /bin/echo HONK >/dev/null 2>&1
+python3 /case/checks/strace_summary.py /artifacts/strace-echo.txt /case/fixture/whitelist-echo.txt
 """),
 ]
