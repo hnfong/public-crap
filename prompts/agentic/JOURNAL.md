@@ -543,6 +543,13 @@ standalone use, but all PCP cases are `case.py` now.
   model correctly diagnosed it); (2) case-001 git checks could ascend into
   the host repo when the workspace had no .git (leaked the host's commit
   message into the human-review check) — fixed with GIT_CEILING_DIRECTORIES.
+- **Housekeeping round**: owner renamed the image to `pcp-agent-sandbox:<tag>`
+  (same digest; cleanup keep-filter updated); SIGTERM/SIGINT now trigger the
+  full cleanup path in both tools (container stop+rm, tmp dirs, ssh teardown)
+  instead of SIGTERM hard-killing the process — verified by SIGTERM-ing a live
+  001 run (container removed, exit 130, graceful scoring of the empty
+  artifacts). Note: that interrupted test run overwrote the previous 30B 001
+  result (20%) — current-truth semantics.
 - **Chunk 7e — matrix runner** (models × cases, summary table): deferred
   until cases 001–003 have real recorded runs.
 - **Tool consolidation (owner request)**: the sandbox shell scripts became

@@ -35,6 +35,7 @@ import json
 import os
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -191,6 +192,16 @@ def fail(msg: str, code: int = 2) -> None:
     sys.exit(code)
 
 
+def install_signal_handlers() -> None:
+    """SIGTERM/SIGINT raise KeyboardInterrupt so temp dirs are cleaned and
+    the pcp_sandbox child (which has its own handlers) can finish its
+    container cleanup."""
+    def _raise(signum, _frame):
+        raise KeyboardInterrupt(f"signal {signum}")
+    signal.signal(signal.SIGTERM, _raise)
+    signal.signal(signal.SIGINT, _raise)
+
+
 def load_case(case_file: str) -> dict:
     """Execute a tests/NNN-name.py case with the `pcp` DSL injected and
     normalize its constants."""
@@ -241,28 +252,31 @@ def model_dir_name() -> str:
 
 def run_vm(case: dict, support_dir: str, results: str) -> int:
     rundir = tempfile.mkdtemp(prefix="pcp-run-")
-    # static guest wrapper (pcp/guest-run.sh); per-case inputs staged beside it
-    shutil.copy(os.path.join(PCP_DIR, "guest-run.sh"),
-                os.path.join(rundir, "guest-run.sh"))
-    os.chmod(os.path.join(rundir, "guest-run.sh"), 0o755)
-    with open(os.path.join(rundir, "prompt.txt"), "w") as f:
-        f.write(case["prompt"])
-    with open(os.path.join(rundir, "setup.sh"), "w") as f:
-        f.write(case.get("setup", ""))
-    # inner watchdog (guest, guest-run.sh): the agent gets the case-defined
-    # timeout; outer watchdog (host, pcp_sandbox.py) is that + 30s, so the
-    # artifact-capture step always runs even when the agent times out
-    with open(os.path.join(rundir, "timeout"), "w") as f:
-        f.write(str(case["timeout"]))
-    cmd = [sys.executable, SANDBOX_TOOL, "run", support_dir,
-           "--guest-script", os.path.join(rundir, "guest-run.sh"),
-           "--results-dir", results,
-           "--model", MODEL,
-           "--timeout-secs", str(case["timeout"] + 30)]
-    print(f"pcp_case: running VM for {case['name']} …")
-    # PCP_* knobs (tag/memory/net/…) flow through the environment
-    proc = subprocess.run(cmd, env=dict(os.environ))
-    return proc.returncode
+    try:
+        # static guest wrapper (pcp/guest-run.sh); per-case inputs staged beside it
+        shutil.copy(os.path.join(PCP_DIR, "guest-run.sh"),
+                    os.path.join(rundir, "guest-run.sh"))
+        os.chmod(os.path.join(rundir, "guest-run.sh"), 0o755)
+        with open(os.path.join(rundir, "prompt.txt"), "w") as f:
+            f.write(case["prompt"])
+        with open(os.path.join(rundir, "setup.sh"), "w") as f:
+            f.write(case.get("setup", ""))
+        # inner watchdog (guest, guest-run.sh): the agent gets the case-defined
+        # timeout; outer watchdog (host, pcp_sandbox.py) is that + 30s, so the
+        # artifact-capture step always runs even when the agent times out
+        with open(os.path.join(rundir, "timeout"), "w") as f:
+            f.write(str(case["timeout"]))
+        cmd = [sys.executable, SANDBOX_TOOL, "run", support_dir,
+               "--guest-script", os.path.join(rundir, "guest-run.sh"),
+               "--results-dir", results,
+               "--model", MODEL,
+               "--timeout-secs", str(case["timeout"] + 30)]
+        print(f"pcp_case: running VM for {case['name']} …")
+        # PCP_* knobs (tag/memory/net/…) flow through the environment
+        proc = subprocess.run(cmd, env=dict(os.environ))
+        return proc.returncode
+    finally:
+        shutil.rmtree(rundir, ignore_errors=True)
 
 
 def transcript_match(op: str, pattern: str, *, regex: bool = False,
@@ -563,6 +577,7 @@ def render_output(case: dict, results: str, artifacts: str,
 
 
 def main() -> None:
+    install_signal_handlers()
     import argparse
     ap = argparse.ArgumentParser(add_help=True, description="PCP case runner")
     ap.add_argument("--checks-only", action="store_true",
@@ -615,4 +630,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("pcp_case: interrupted", file=sys.stderr)
+        sys.exit(130)

@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import signal
 import os
 import re
 import shutil
@@ -335,7 +336,7 @@ def do_run(o: RunOpts) -> int:
 # ---------------------------------------------------------------- cleanup
 def cmd_cleanup(args) -> int:
     tag = env_or(args.tag, "PCP_TAG", "1.1")
-    keep = f"agent-sandbox:{tag}"
+    keep = f"pcp-agent-sandbox:{tag}"
     print("pruning stopped containers...")
     sh(["container", "prune"])
     if args.images:
@@ -357,7 +358,17 @@ def cmd_cleanup(args) -> int:
 
 
 # ---------------------------------------------------------------- main
+def install_signal_handlers() -> None:
+    """SIGTERM/SIGINT raise KeyboardInterrupt so try/finally cleanup
+    (container stop+rm, tmp removal, ssh teardown) runs on Ctrl-C and kill."""
+    def _raise(signum, _frame):
+        raise KeyboardInterrupt(f"signal {signum}")
+    signal.signal(signal.SIGTERM, _raise)
+    signal.signal(signal.SIGINT, _raise)  # explicit; same effect as default
+
+
 def main() -> int:
+    install_signal_handlers()
     ap = argparse.ArgumentParser(
         prog="pcp_sandbox.py",
         description="PCP sandbox tool (build/run/cleanup the guest VM)")
@@ -427,4 +438,8 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        print("pcp_sandbox: interrupted", file=sys.stderr)
+        sys.exit(130)
