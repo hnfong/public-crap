@@ -446,7 +446,10 @@ run  = """..."""               # host shell snippet, cwd = results dir;
   `pcp_case.py` (parse TOML, generate guest script, run VM via `run-test.sh`
   `PCP_GUEST_SCRIPT` hook, collect artifacts, run checks, write `checks.json`
   + `verdict.txt`), `harness/in-guest.sh`, `--checks-only` / `--dry-run`
-  modes. `case-000-harness-smoke` ported to TOML, passes end-to-end.
+  modes. `case-000-harness-smoke` ported to TOML, passes end-to-end. Later
+  extended (owner request) to include a trivial LLM round-trip ("King of
+  England with six wives") — full smoke: plumbing + tunnel + model + checks;
+  Qwen3.8-27B answered "Henry VIII", PASS.
 - **Chunk 7b — case-001-git-no-git — checks validated**: repo checks +
   transcript no-`git` scan (defensive JSONL parsing). Live agent run pending
   a model server.

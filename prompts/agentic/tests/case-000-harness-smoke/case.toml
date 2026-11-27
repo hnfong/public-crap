@@ -1,10 +1,8 @@
 schema = "pcp-case/v0"
 name = "harness-smoke"
 
-# No model needed: validates the framework plumbing itself (workspace setup,
-# artifact capture, host-side checks). Ported from the phase-1 run.sh case.
-no_agent = true
-
+# End-to-end smoke: harness plumbing (workspace, artifact capture, checks)
+# plus a trivial LLM round-trip through the tunnel. Requires a model server.
 setup = """
 {
   echo "user: $(id)"
@@ -22,6 +20,9 @@ setup = """
 } > toolchain.txt 2>&1
 """
 
+prompt = """Who was the famous King of England who had six wives, two of whom he
+had executed? Answer with just the name, nothing else."""
+
 [[checks]]
 name = "toolchain-versions"
 run = """
@@ -30,3 +31,8 @@ test -f "$PCP_ARTIFACTS/workspace/toolchain.txt" \
   && grep -q '^pi: '       "$PCP_ARTIFACTS/workspace/toolchain.txt" \
   && grep -q '^strace: '   "$PCP_ARTIFACTS/workspace/toolchain.txt"
 """
+
+[[checks]]
+name = "llm-answers-henry-viii"
+run = """grep -qiE 'henry' "$PCP_ARTIFACTS/pi-output.json" \
+  && grep -qiE 'viii|8th|eighth|8 ' "$PCP_ARTIFACTS/pi-output.json" """
