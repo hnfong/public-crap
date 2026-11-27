@@ -275,9 +275,6 @@ def model_dir_name() -> str:
 
 
 def run_vm(case: dict, case_dir: str, results: str) -> int:
-    # fresh artifacts per run: stale sessions/files must never leak across
-    # runs (bit us once: an old session made a clean run look like cheating)
-    shutil.rmtree(os.path.join(results, "artifacts"), ignore_errors=True)
     rundir = tempfile.mkdtemp(prefix="pcp-run-")
     with open(os.path.join(rundir, "guest-run.sh"), "w") as f:
         f.write(make_guest_script(case))
@@ -686,12 +683,17 @@ def main() -> None:
     case = load_case(case_dir)
     results = os.path.join(case_dir, "results", model_dir_name())
     artifacts = os.path.join(results, "artifacts")
-    os.makedirs(results, exist_ok=True)
 
     run_rc = None
     if not checks_only:
+        # clean slate per run: remove everything from previous runs of this
+        # (model, case) combo — no stale metadata/transcripts may survive
+        shutil.rmtree(results, ignore_errors=True)
+        os.makedirs(results, exist_ok=True)
         run_rc = run_vm(case, case_dir, results)
         print(f"pcp_case: VM run exit={run_rc}")
+    else:
+        os.makedirs(results, exist_ok=True)
 
     checks = run_checks(case, case_dir, results, artifacts)
     rc = write_results(case, results, checks)
