@@ -550,6 +550,16 @@ standalone use, but all PCP cases are `case.py` now.
   001 run (container removed, exit 130, graceful scoring of the empty
   artifacts). Note: that interrupted test run overwrote the previous 30B 001
   result (20%) — current-truth semantics.
+- **`test_model.sh` (owner-written, review applied)**: sweep wrapper that
+  takes a GGUF path, (re)starts llama-server in router mode against the
+  model's directory, and runs every `tests/*.py` case with it. Review
+  changes: continue-on-fail per case (one bad case no longer aborts the
+  sweep, failures tallied and reported), server log to
+  `results/llama-server.log` (the diagnostic for llama.cpp OOM/"Compute
+  error"), warmup request before the loop (router loads the GGUF on first
+  request — otherwise model load eats into the first case's TIMEOUT),
+  `trap EXIT` server cleanup, cd-to-repo, usage check, `set -eu`,
+  `pcp_sandbox.py setup` call. Skip-if-`.out`-exists resume behavior kept.
 - **Chunk 7e — matrix runner** (models × cases, summary table): deferred
   until cases 001–003 have real recorded runs.
 - **Tool consolidation (owner request)**: the sandbox shell scripts became
