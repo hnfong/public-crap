@@ -470,11 +470,13 @@ run  = """..."""               # host shell snippet, cwd = results dir;
     by hand with python3 (zlib + sha1), verified its own object graph, no git
     usage; commit message "Why did the developer go broke? He used up all his
     cache." (manual funny-check: looks funny to me — owner confirms).
-  - `Qwen3-30B-A3B-Instruct-2507-Q5_K_M` — **FAIL twice, differently**: run 1
-    used `git hash-object` (caught by transcript check), broken repo; run 2
-    returned an empty assistant message — later diagnosed as host llama.cpp
-    OOM ("Compute error"), see caveat 13 (case-000 with the same model passed
-    right after a server restart).
+  - `Qwen3-30B-A3B-Instruct-2507-Q5_K_M` — **FAIL 3×**: run 1 used
+    `git hash-object` (caught by transcript check), broken repo; run 2 was a
+    host llama.cpp OOM ("Compute error", caveat 13 — not the model's fault);
+    run 3 (after server restart, clean comparison) reached for the git CLI
+    again (`git hash-object --literally --no-verify` ×3) and again left a
+    broken branch. Consistent: ignores the no-git caveat and can't complete
+    the object graph by hand.
   Framework lessons fixed along the way:
   - **Results are per model**: `results/<PCP_MODEL>/` (`_nomodel` for
     agent-less cases) — owner decision; also prevents cross-run pollution.
