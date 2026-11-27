@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """PCP case runner — interprets `pcp-case/v0` cases (see JOURNAL.md §7).
 
-usage: pcp_case.py --model MODEL [--checks-only] <tests/case-NNN-name>
+usage: pcp_case.py --model MODEL [--checks-only] <tests/NNN-name.py>
 
 The model is a first-class run parameter: pass --model (or set the MODEL
 config var at the top of this file). There is no env-var fallback.
@@ -12,7 +12,7 @@ pcp.checks.run(..., in_guest=True) runs its command inside a throwaway guest
 container (for Linux-only artifacts).
 
 Flow:
-  1. load <case-dir>/case.py
+  1. load tests/NNN-name.py
   2. stage the static guest wrapper (pcp/guest-run.sh) with per-case inputs
      (setup.sh, prompt.txt, inner-watchdog timeout)
   3. delegate the VM run to `pcp_sandbox.py run --guest-script …`
@@ -22,10 +22,11 @@ Flow:
 --checks-only: skip steps 2-3, run checks against existing artifacts.
 
 Results are kept per model under the repo-wide results root:
-<repo>/results/<case-dir-name>/<MODEL>/
+<repo>/results/<NNN-name>/<MODEL>/
 
 Check contract: shell snippet run with cwd = case results dir.
-Env: PCP_ARTIFACTS (…/artifacts), PCP_CASE_DIR, PCP_CASE.
+Env: PCP_ARTIFACTS (…/artifacts), PCP_CASE_DIR (tests/NNN-name/),
+     PCP_HELPERS (tests/helpers), PCP_TESTS_DIR (tests/), PCP_CASE.
 Exit 0 = pass. `human_review=True` checks are recorded but never fail the case.
 """
 from __future__ import annotations
@@ -101,7 +102,7 @@ class RunCheck(PcpCheck):
             tag = env.get("PCP_TAG") or "1.1"
             cmd = ["container", "run", "--rm",
                    "-v", f"{env['PCP_ARTIFACTS']}:/artifacts",
-                   "-v", f"{env['PCP_CASE_DIR']}:/case:ro",
+                   "-v", f"{env['PCP_TESTS_DIR']}:/tests:ro",
                    "-w", "/artifacts/workspace",
                    f"agent-sandbox:{tag}", "bash", "-c", self.cmd]
         else:
@@ -190,11 +191,12 @@ def fail(msg: str, code: int = 2) -> None:
     sys.exit(code)
 
 
-def load_case(case_dir: str) -> dict:
-    """Execute case.py with the `pcp` DSL injected and normalize its constants."""
-    path = os.path.join(case_dir, "case.py")
+def load_case(case_file: str) -> dict:
+    """Execute a tests/NNN-name.py case with the `pcp` DSL injected and
+    normalize its constants."""
+    path = case_file
     if not os.path.isfile(path):
-        fail(f"no case.py in {case_dir}")
+        fail(f"case file not found: {path}")
     namespace = {"PCP_CASE_V0": CASE_SCHEMA_V0, "pcp": pcp, "re": re,
                  "__name__": "pcp-case"}
     with open(path, encoding="utf-8") as f:
@@ -237,7 +239,7 @@ def model_dir_name() -> str:
     return re.sub(r"[^A-Za-z0-9._-]", "_", MODEL)
 
 
-def run_vm(case: dict, case_dir: str, results: str) -> int:
+def run_vm(case: dict, support_dir: str, results: str) -> int:
     rundir = tempfile.mkdtemp(prefix="pcp-run-")
     # static guest wrapper (pcp/guest-run.sh); per-case inputs staged beside it
     shutil.copy(os.path.join(PCP_DIR, "guest-run.sh"),
@@ -252,7 +254,7 @@ def run_vm(case: dict, case_dir: str, results: str) -> int:
     # artifact-capture step always runs even when the agent times out
     with open(os.path.join(rundir, "timeout"), "w") as f:
         f.write(str(case["timeout"]))
-    cmd = [sys.executable, SANDBOX_TOOL, "run", case_dir,
+    cmd = [sys.executable, SANDBOX_TOOL, "run", support_dir,
            "--guest-script", os.path.join(rundir, "guest-run.sh"),
            "--results-dir", results,
            "--model", MODEL,
@@ -329,12 +331,16 @@ def transcript_match(op: str, pattern: str, *, regex: bool = False,
     return 0, f"excludes: pattern absent from {files} session file(s)"
 
 
-def run_checks(case: dict, case_dir: str, results: str, artifacts: str) -> list[dict]:
+def run_checks(case: dict, support_dir: str, results: str, artifacts: str) -> list[dict]:
     os.makedirs(artifacts, exist_ok=True)
+    tests_dir = os.path.dirname(support_dir)
+    helpers_dir = os.path.join(tests_dir, "helpers")
     env_common = dict(
         os.environ,
         PCP_ARTIFACTS=artifacts,
-        PCP_CASE_DIR=case_dir,
+        PCP_CASE_DIR=support_dir,
+        PCP_HELPERS=helpers_dir,
+        PCP_TESTS_DIR=tests_dir,
         PCP_CASE=case["name"],
     )
     out = []
@@ -572,13 +578,18 @@ def main() -> None:
     if not MODEL:
         fail("no model: pass --model (or set MODEL in pcp/pcp_case.py)")
     checks_only = args.checks_only
-    case_dir = os.path.abspath(args.case)
-    case = load_case(case_dir)
+    case_file = os.path.abspath(args.case)
+    if not case_file.endswith(".py"):
+        fail(f"case must be a tests/NNN-name.py file: {args.case}")
+    case_stem = os.path.basename(case_file)[:-3]
+    tests_dir = os.path.dirname(case_file)
+    support_dir = os.path.join(tests_dir, case_stem)  # optional fixtures dir
+    helpers_dir = os.path.join(tests_dir, "helpers")
+    case = load_case(case_file)
     # repo-wide results root: <repo>/results/<case-dir-name>/<MODEL>/
     repo_root = os.path.dirname(PCP_DIR)
     results_root = os.environ.get("PCP_RESULTS_ROOT") or os.path.join(repo_root, "results")
-    results = os.path.join(results_root, os.path.basename(case_dir),
-                           model_dir_name())
+    results = os.path.join(results_root, case_stem, model_dir_name())
     artifacts = os.path.join(results, "artifacts")
 
     run_rc = None
@@ -587,12 +598,12 @@ def main() -> None:
         # (model, case) combo — no stale metadata/transcripts may survive
         shutil.rmtree(results, ignore_errors=True)
         os.makedirs(results, exist_ok=True)
-        run_rc = run_vm(case, case_dir, results)
+        run_rc = run_vm(case, support_dir, results)
         print(f"pcp_case: VM run exit={run_rc}")
     else:
         os.makedirs(results, exist_ok=True)
 
-    checks = run_checks(case, case_dir, results, artifacts)
+    checks = run_checks(case, support_dir, results, artifacts)
     rc = write_results(case, results, checks)
     render_output(case, results, artifacts, checks, run_rc)
     if run_rc is not None and run_rc != 0:

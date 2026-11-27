@@ -35,33 +35,33 @@ CHECKS = [
   # word-boundary grep so a response of "16" does not count as "6")
   pcp.checks.run(name="add", in_guest=True,
                  cmd="./mathd >/dev/null 2>&1 & sleep 0.5; "
-                     "python3 /case/checks/probe.py '2+4' | grep -qE '(^|[^0-9-])6([^0-9]|$)'"),
+                     "python3 /tests/helpers/003-probe.py '2+4' | grep -qE '(^|[^0-9-])6([^0-9]|$)'"),
   pcp.checks.run(name="subtract", in_guest=True,
                  cmd="./mathd >/dev/null 2>&1 & sleep 0.5; "
-                     "python3 /case/checks/probe.py '10-3' | grep -qE '(^|[^0-9-])7([^0-9]|$)'"),
+                     "python3 /tests/helpers/003-probe.py '10-3' | grep -qE '(^|[^0-9-])7([^0-9]|$)'"),
   pcp.checks.run(name="subtract-negative-result", in_guest=True,
                  cmd="./mathd >/dev/null 2>&1 & sleep 0.5; "
-                     "python3 /case/checks/probe.py '2-5' | grep -qE '(^|[^0-9])-3([^0-9]|$)'"),
+                     "python3 /tests/helpers/003-probe.py '2-5' | grep -qE '(^|[^0-9])-3([^0-9]|$)'"),
   pcp.checks.run(name="multiply", in_guest=True,
                  cmd="./mathd >/dev/null 2>&1 & sleep 0.5; "
-                     "python3 /case/checks/probe.py '6*7' | grep -qE '(^|[^0-9-])42([^0-9]|$)'"),
+                     "python3 /tests/helpers/003-probe.py '6*7' | grep -qE '(^|[^0-9-])42([^0-9]|$)'"),
   pcp.checks.run(name="parentheses", in_guest=True,
                  cmd="./mathd >/dev/null 2>&1 & sleep 0.5; "
-                     "python3 /case/checks/probe.py '(2+4)*3' | grep -qE '(^|[^0-9-])18([^0-9]|$)'"),
+                     "python3 /tests/helpers/003-probe.py '(2+4)*3' | grep -qE '(^|[^0-9-])18([^0-9]|$)'"),
   pcp.checks.run(name="nested-parentheses", in_guest=True,
                  cmd="./mathd >/dev/null 2>&1 & sleep 0.5; "
-                     "python3 /case/checks/probe.py '((1+2)*(3+4))' | grep -qE '(^|[^0-9-])21([^0-9]|$)'"),
+                     "python3 /tests/helpers/003-probe.py '((1+2)*(3+4))' | grep -qE '(^|[^0-9-])21([^0-9]|$)'"),
   pcp.checks.run(name="invalid-expression", in_guest=True,
                  cmd="./mathd >/dev/null 2>&1 & sleep 0.5; "
-                     "python3 /case/checks/probe.py '2+' | grep -q NaN"),
+                     "python3 /tests/helpers/003-probe.py '2+' | grep -q NaN"),
   pcp.checks.run(name="garbage-input", in_guest=True,
                  cmd="./mathd >/dev/null 2>&1 & sleep 0.5; "
-                     "python3 /case/checks/probe.py 'abc' | grep -q NaN"),
+                     "python3 /tests/helpers/003-probe.py 'abc' | grep -q NaN"),
   pcp.checks.run(name="division-unsupported", in_guest=True,
                  cmd="./mathd >/dev/null 2>&1 & sleep 0.5; "
-                     "python3 /case/checks/probe.py '8/2' | grep -q NaN"),
+                     "python3 /tests/helpers/003-probe.py '8/2' | grep -q NaN"),
   pcp.checks.run(name="multiple-connections", in_guest=True,
                  cmd="./mathd >/dev/null 2>&1 & sleep 0.5; "
-                     "python3 /case/checks/probe.py '1+1' | grep -qE '(^|[^0-9-])2([^0-9]|$)' && "
-                     "python3 /case/checks/probe.py '2+2' | grep -qE '(^|[^0-9-])4([^0-9]|$)'"),
+                     "python3 /tests/helpers/003-probe.py '1+1' | grep -qE '(^|[^0-9-])2([^0-9]|$)' && "
+                     "python3 /tests/helpers/003-probe.py '2+2' | grep -qE '(^|[^0-9-])4([^0-9]|$)'"),
 ]

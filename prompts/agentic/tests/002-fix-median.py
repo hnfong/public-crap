@@ -25,5 +25,5 @@ CHECKS = [
   pcp.checks.run(name="tests-pass",
                  cmd='cd "$PCP_ARTIFACTS/workspace" && set -o pipefail && python3 -m unittest -v test_median 2>&1 | tail -3'),
   pcp.checks.run(name="tests-unmodified",
-                 cmd='diff -u "$PCP_CASE_DIR/fixture/test_median.py" "$PCP_ARTIFACTS/workspace/test_median.py"'),
+                 cmd='diff -u "$PCP_CASE_DIR/test_median.py" "$PCP_ARTIFACTS/workspace/test_median.py"'),
 ]

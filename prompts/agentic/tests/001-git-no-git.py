@@ -38,5 +38,5 @@ CHECKS = [
   # falsely flag `which git` or a python variable named `git`
   # TODO: migrate this to the checks.transcript() checker
   pcp.checks.run(name="no-git-in-transcript",
-                 cmd='python3 "$PCP_CASE_DIR/checks/no_git.py"'),
+                 cmd='python3 "$PCP_HELPERS/no_git.py"'),
 ]

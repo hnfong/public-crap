@@ -218,9 +218,11 @@ def do_run(o: RunOpts) -> int:
         # runs later via `container exec` and writes to container-local
         # /artifacts (root-owned 750 — invisible to the agent user). There is
         # deliberately NO results mount into the guest.
+        work_mount = (["-v", f"{o.case_dir}:/work:ro"]
+                      if os.path.isdir(o.case_dir) else [])
         run_cmd = (["container", "run", "-d", "--name", o.cname,
                     "-c", o.cpus, "-m", o.memory] + netargs + guest_mount +
-                   ["-v", f"{o.case_dir}:/work:ro",
+                   work_mount +[
                     "-v", f"{tmp}/pi:/home/agent/.pi",
                     "-v", f"{tmp}/ssh:/home/agent/.ssh",
                     "-e", f"PCP_CASE={o.case_name}",
@@ -367,7 +369,7 @@ def main() -> int:
     p.add_argument("--tag", help="image tag (default PCP_TAG or 1.1)")
 
     p = sub.add_parser("run", help="run one test case in an ephemeral VM")
-    p.add_argument("case", help="tests/case-NNN-name (legacy run.sh cases)")
+    p.add_argument("case", help="case support dir (mounted ro at /work; may not exist)")
     p.add_argument("--guest-script",
                    help="host script to run instead of /work/run.sh "
                         "(mounted ro at /pcp-run; used by pcp/pcp_case.py)")
@@ -417,9 +419,6 @@ def main() -> int:
             guest_script=args.guest_script,
             run_pid=None,
         )
-        if not os.path.isfile(os.path.join(opts.case_dir, "run.sh")) \
-                and not opts.guest_script:
-            fail(f"no run.sh in {opts.case_dir} (and no --guest-script)")
         os.makedirs(opts.results_dir, exist_ok=True)
         return do_run(opts)
     if args.cmd == "cleanup":

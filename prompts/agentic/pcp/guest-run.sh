@@ -18,10 +18,11 @@ mkdir -p /artifacts
 chown root:root /artifacts
 chmod 750 /artifacts
 
-# workspace: the agent's working dir, seeded from the case fixture
+# workspace: the agent's working dir, seeded from the case support dir
+# (mounted ro at /work; may be empty/absent)
 WS=/workspace
 mkdir -p "$WS"
-if [ -d /work/fixture ]; then cp -a /work/fixture/. "$WS"/; fi
+cp -a /work/. "$WS"/ 2>/dev/null || true
 chown -R agent:agent "$WS"
 cd "$WS"
 

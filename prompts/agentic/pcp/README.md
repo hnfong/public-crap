@@ -28,7 +28,9 @@ context (keep it byte-stable: same Dockerfile ⇒ same digest).
 
 ## Run a test case
 
-Cases are `tests/case-*/case.py` (Python DSL — see JOURNAL.md §7.3):
+Cases are `tests/NNN-name.py` (Python DSL — see JOURNAL.md §7.3); shared
+helper scripts live in `tests/helpers/` (in-guest checks see them at
+`/tests/helpers/`), and per-case fixtures live in `tests/NNN-name/`:
 
 ```bash
 pcp/pcp_case.py --model Qwen3.8-27B-Q6_K tests/case-001-git-no-git
@@ -37,7 +39,7 @@ pcp/pcp_case.py --checks-only --model Qwen3.8-27B-Q6_K tests/case-001-git-no-git
 
 `pcp_case.py` delegates the VM run to `pcp_sandbox.py run`. One run = one
 ephemeral VM. The case's checks run on the host against collected artifacts
-(`results/<case>/<MODEL>/artifacts/…`); checks that must execute Linux binaries set
+(`results/<NNN-name>/<MODEL>/artifacts/…`); checks that must execute Linux binaries set
 `in_guest=True` on the check (throwaway container; artifacts at `/artifacts`,
 case dir at `/case`). Output: `results/<case>/<MODEL>/metadata.json`, `checks.json`,
 `verdict.txt`, `output.txt`.
@@ -69,8 +71,8 @@ applies to cases that don't define one.
 ## Adding a test case
 
 `tests/case-NNN-short-slug/case.py` (see JOURNAL.md §7.3 for the DSL). The
-case dir is mounted read-only at `/work`, `results/<case>/<MODEL>/` (repo root) is writable at
-`/results`. Guest code reaches the model at
+case dir is mounted read-only at `/work`, `results/<NNN-name>/<MODEL>/` (repo root) was writable at
+`/results` — removed; artifacts are copied out of the container post-run. Guest code reaches the model at
 `http://127.0.0.1:${PCP_MODEL_PORT}/v1` (OpenAI-compatible); the generated
 guest script waits for the endpoint before invoking pi.
 

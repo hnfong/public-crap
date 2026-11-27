@@ -348,10 +348,12 @@ agentic/
 │   └── pi-config/              ← sanitized pi settings template
 ├── results/                    ← per-run outputs (gitignored)
 │   └── case-NNN-slug/<MODEL>/  ← metadata, artifacts, checks, output.txt
+├── results/                    ← per-run outputs (gitignored)
+│   └── NNN-name/<MODEL>/       ← metadata, artifacts, checks, score, output.txt
 └── tests/
-    └── case-NNN-slug/
-        ├── case.py             ← the case (Python DSL)
-        └── checks/, fixture/   ← optional per-case helpers and inputs
+    ├── NNN-name.py             ← the case (Python DSL)
+    ├── NNN-name/               ← optional per-case fixtures
+    └── helpers/                ← shared helper scripts (mounted at /tests)
 ```
 
 ---
