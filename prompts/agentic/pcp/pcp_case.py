@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """PCP case runner — interprets `pcp-case/v0` cases (see JOURNAL.md §7).
 
-usage: pcp_case.py [--checks-only] [--dry-run] [--model MODEL]
+usage: pcp_case.py [--checks-only] [--model MODEL]
                    <tests/case-NNN-name>
 
 The model is a first-class run parameter: --model wins over the PCP_MODEL
@@ -20,7 +20,6 @@ Flow:
   5. write results/checks.json + results/verdict.txt
 
 --checks-only: skip steps 2-3, run checks against existing artifacts.
---dry-run:     print the parsed case + generated guest script, do not run.
 
 Results are kept per model: results/<PCP_MODEL>/ (results/_nomodel for
 agent-less cases). --checks-only needs PCP_MODEL set for agent cases.
@@ -383,8 +382,6 @@ def main() -> None:
     ap = argparse.ArgumentParser(add_help=True, description="PCP case runner")
     ap.add_argument("--checks-only", action="store_true",
                     help="run checks against existing artifacts, no VM run")
-    ap.add_argument("--dry-run", action="store_true",
-                    help="print parsed case + guest script, do not run")
     ap.add_argument("--model", default=None,
                     help="model name (overrides PCP_MODEL env; results are "
                          "stored per model)")
@@ -393,27 +390,12 @@ def main() -> None:
 
     if args.model is not None:
         os.environ["PCP_MODEL"] = args.model
-    checks_only, dry_run = args.checks_only, args.dry_run
+    checks_only = args.checks_only
     case_dir = os.path.abspath(args.case)
     case = load_case(case_dir)
     results = os.path.join(case_dir, "results", model_dir_name())
     artifacts = os.path.join(results, "artifacts")
     os.makedirs(results, exist_ok=True)
-
-    if dry_run:
-        print(f"--- case: {case['name']} ({case['schema']}) ---")
-        if case.get("description"):
-            print(f"description: {case['description']}")
-        print(f"model={os.environ.get('PCP_MODEL') or '<unset>'}  "
-              f"results={os.path.relpath(results, case_dir)}")
-        print(f"no_agent={case.get('no_agent', False)}  "
-              f"fixture={'fixture' if os.path.isdir(os.path.join(case_dir, 'fixture')) else None}")
-        print("--- guest script ---")
-        print(make_guest_script(case))
-        print("--- checks ---")
-        for c in case.get("checks", []):
-            print(f"[{c.get('type', 'check')}] {c['name']}")
-        return
 
     run_rc = None
     if not checks_only:

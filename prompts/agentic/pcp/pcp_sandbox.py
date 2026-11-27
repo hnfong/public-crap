@@ -225,19 +225,6 @@ def do_run(o: RunOpts) -> int:
                     "-e", f"PCP_MODEL_PORT={o.model_port}",
                     "-w", "/work", o.image] + guest_cmd)
 
-        if o.dry_run:
-            digest = image_digest(o.image) or "not built"
-            print("-- dry run --")
-            print(f"case:        {o.case_name}")
-            print(f"image:       {o.image} ({digest})")
-            print(f"model:       {o.model or '<unset>'} @ host 127.0.0.1:{o.model_port}")
-            print(f"resources:   {o.cpus} cpus / {o.memory}")
-            print(f"network:     {o.net}")
-            print(f"timeout:     {o.timeout_secs}s")
-            print(f"results:     {o.results_dir}")
-            print(f"command:     {run_cmd}")
-            return 0
-
         digest = image_digest(o.image)
         start_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         start = time.monotonic()
@@ -352,7 +339,6 @@ def main() -> int:
 
     p = sub.add_parser("run", help="run one test case in an ephemeral VM")
     p.add_argument("case", help="tests/case-NNN-name (legacy run.sh cases)")
-    p.add_argument("--dry-run", action="store_true")
     p.add_argument("--guest-script",
                    help="host script to run instead of /work/run.sh "
                         "(mounted ro at /pcp-run; used by pcp/pcp_case.py)")
@@ -399,11 +385,11 @@ def main() -> int:
                                     "PCP_TIMEOUT_SECS", "1800")),
             context_window=env_or(args.context_window,
                                   "PCP_CONTEXT_WINDOW", "262144"),
-            guest_script=args.guest_script, dry_run=args.dry_run,
+            guest_script=args.guest_script,
             run_pid=None,
         )
         if not os.path.isfile(os.path.join(opts.case_dir, "run.sh")) \
-                and not opts.guest_script and not opts.dry_run:
+                and not opts.guest_script:
             fail(f"no run.sh in {opts.case_dir} (and no --guest-script)")
         os.makedirs(opts.results_dir, exist_ok=True)
         return do_run(opts)

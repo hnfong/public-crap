@@ -33,7 +33,6 @@ Cases are `tests/case-*/case.py` (Python DSL — see JOURNAL.md §7.3):
 ```bash
 pcp/pcp_case.py --model Qwen3.8-27B-Q6_K tests/case-001-git-no-git
 pcp/pcp_case.py --checks-only --model Qwen3.8-27B-Q6_K tests/case-001-git-no-git  # re-score
-pcp/pcp_case.py --dry-run tests/case-001-git-no-git
 ```
 
 `pcp_case.py` delegates the VM run to `pcp_sandbox.py run`. One run = one
