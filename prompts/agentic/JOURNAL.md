@@ -517,6 +517,18 @@ standalone use, but all PCP cases are `case.py` now.
     (case-defined TIMEOUT); the host-side outer watchdog is that + 30s, so
     artifact capture always runs — the `_render_stream_file` fallback
     renderer was removed along with the problem it worked around
+- **Artifact channel redesign (owner decision — "manually remove instead of
+  --rm")**: the container is started IDLE (`run -d … sleep infinity`, no
+  `--rm`), the guest script runs via `container exec` **as root**, and
+  everything is written to container-local `/artifacts` (root-owned 750 —
+  the agent user cannot read or write it; there is NO results mount into
+  the guest anymore, which removes the /results cheat vector entirely).
+  After the agent run: force shutdown (`container stop`) → restart
+  (`container start`; init is just `sleep infinity`) → copy `/artifacts`
+  out via tar-over-exec → stop + remove. pi's output is no longer streamed
+  to a mount; the guest script records its own rc in `/artifacts/rc`.
+  Verified: live 000 run (score 100.00) + agent-denied access to
+  /artifacts + no results mounts in the guest.
 - **Chunk 7e — matrix runner** (models × cases, summary table): deferred
   until cases 001–003 have real recorded runs.
 - **Tool consolidation (owner request)**: the sandbox shell scripts became

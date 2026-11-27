@@ -139,12 +139,15 @@ class RunOpts:
 
 def do_run(o: RunOpts) -> int:
     tmp, ssh_proc, watchdog = o.tmp, None, None
+    forced = {"flag": False}
 
     def cleanup():
         if ssh_proc and ssh_proc.poll() is None:
             ssh_proc.terminate()
         if watchdog:
             watchdog.cancel()
+        # quiesce + remove the container (fs is copied out by now)
+        sh(["container", "stop", o.cname], capture_output=True)
         sh(["container", "rm", "-f", o.cname], capture_output=True)
         shutil.rmtree(tmp, ignore_errors=True)
 
@@ -200,7 +203,7 @@ def do_run(o: RunOpts) -> int:
                    check=True)
             netargs = ["--network", o.net]
 
-        # --- guest command: injected script (case.py harness) or legacy run.sh
+        # --- guest command for the exec phase
         if o.guest_script:
             gdir = os.path.dirname(os.path.abspath(o.guest_script))
             gname = os.path.basename(o.guest_script)
@@ -210,31 +213,36 @@ def do_run(o: RunOpts) -> int:
             guest_mount = []
             guest_cmd = ["bash", "/work/run.sh"]
 
-        run_cmd = (["container", "run", "--rm", "--name", o.cname,
+        # --- start an IDLE container (no --rm): the fs persists after stops,
+        # and the init (sleep infinity) is safe to "restart". The guest script
+        # runs later via `container exec` and writes to container-local
+        # /artifacts (root-owned 750 — invisible to the agent user). There is
+        # deliberately NO results mount into the guest.
+        run_cmd = (["container", "run", "-d", "--name", o.cname,
                     "-c", o.cpus, "-m", o.memory] + netargs + guest_mount +
                    ["-v", f"{o.case_dir}:/work:ro",
-                    "-v", f"{o.results_dir}:/results",
                     "-v", f"{tmp}/pi:/home/agent/.pi",
                     "-v", f"{tmp}/ssh:/home/agent/.ssh",
                     "-e", f"PCP_CASE={o.case_name}",
                     "-e", f"PCP_MODEL={o.model}",
                     "-e", f"PCP_MODEL_PORT={o.model_port}",
-                    "-w", "/work", o.image] + guest_cmd)
-
-        digest = image_digest(o.image)
+                    o.image, "sleep", "infinity"])
+        proc = sh(run_cmd, capture_output=True)
+        if proc.returncode != 0:
+            fail(f"failed to start container: {proc.stderr.strip()}")
         start_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         start = time.monotonic()
+        digest = image_digest(o.image)
 
-        # --- run the container attached (background process) for its exit code
-        proc = subprocess.Popen(run_cmd)
-        o.run_pid = proc.pid
-
-        # --- timeout watchdog
-        watchdog = threading.Timer(o.timeout_secs, proc.terminate)
+        # --- outer watchdog: force shutdown if the exec phase overruns
+        def force_stop():
+            forced["flag"] = True
+            sh(["container", "stop", o.cname], capture_output=True)
+        watchdog = threading.Timer(o.timeout_secs, force_stop)
         watchdog.daemon = True
         watchdog.start()
 
-        # --- wait for the guest IP, then reverse-tunnel host loopback into it
+        # --- tunnel: wait for the guest IP, reverse-tunnel host loopback in
         ip = ""
         for _ in range(120):
             listing = sh(["container", "ls", "--format", "json"],
@@ -252,10 +260,9 @@ def do_run(o: RunOpts) -> int:
                         break
             except json.JSONDecodeError:
                 pass
-            if ip or proc.poll() is not None:
+            if ip:
                 break
             time.sleep(0.5)
-
         if ip:
             print(f"guest {o.cname} at {ip}; "
                   f"tunneling 127.0.0.1:{o.model_port} (host loopback) into guest")
@@ -270,9 +277,35 @@ def do_run(o: RunOpts) -> int:
             print("warning: guest IP not found; no tunnel "
                   "(model endpoint unreachable in guest)", file=sys.stderr)
 
-        rc = proc.wait()
-        if rc < 0 or rc > 128:
-            print(f"test timed out or was killed (exit {rc})", file=sys.stderr)
+        # --- agent run: exec the guest script (as root, in the container)
+        print(f"pcp_sandbox: exec {guest_cmd[-1]} …")
+        exec_proc = subprocess.Popen(["container", "exec", o.cname] + guest_cmd)
+        exec_rc = exec_proc.wait()
+
+        # --- force shutdown, then restart: quiesces everything (lingering
+        # servers, hung agents) and gives a running container to copy from
+        sh(["container", "stop", o.cname], capture_output=True)
+        sh(["container", "start", o.cname], capture_output=True)
+
+        # --- copy /artifacts out (tar over exec)
+        artifacts_host = os.path.join(o.results_dir, "artifacts")
+        os.makedirs(artifacts_host, exist_ok=True)
+        p1 = subprocess.Popen(["container", "exec", o.cname,
+                               "tar", "-C", "/artifacts", "-cf", "-", "."],
+                              stdout=subprocess.PIPE)
+        p2 = subprocess.Popen(["tar", "-xf", "-", "-C", artifacts_host],
+                              stdin=p1.stdout)
+        p2.wait()
+        p1.wait()
+
+        # --- exit code: the guest script records its own rc in /artifacts/rc
+        rc_file = os.path.join(artifacts_host, "rc")
+        if os.path.isfile(rc_file):
+            rc = int(open(rc_file).read().strip() or 1)
+        elif forced["flag"]:
+            rc = 124  # outer watchdog fired before the guest could record rc
+        else:
+            rc = exec_rc if exec_rc != 0 else 1
 
         # --- record metadata
         wall = int(time.monotonic() - start)
