@@ -420,6 +420,11 @@ run `ls`"), which requires peeking at the agent session transcript.
 
 ### 7.3 Case format `pcp-case/v0` (first cut)
 
+Run parameter: the model is passed as `--model` (owner request — first-class
+run parameter, wins over the `PCP_MODEL` env var, which stays for scripting);
+results are stored per model (`results/<MODEL>/`, `_nomodel` for agent-less
+cases).
+
 ```toml
 schema = "pcp-case/v0"
 name  = "short-slug"

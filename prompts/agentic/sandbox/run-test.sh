@@ -3,7 +3,7 @@
 # per run. Run parameters (owner decision): (MODEL, TEST_CASE); all tunables
 # are PCP_* env vars.
 #
-# usage: run-test.sh [--dry-run] <tests/case-NNN-name>
+# usage: run-test.sh [--dry-run] [--model MODEL] <tests/case-NNN-name>
 #
 # Env overrides (defaults):
 #   PCP_TAG            image tag                    (1.0)
@@ -25,16 +25,22 @@
 set -euo pipefail
 
 DRY_RUN=0
-if [ "${1:-}" = "--dry-run" ]; then
-  DRY_RUN=1
+MODEL_ARG=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --dry-run) DRY_RUN=1 ;;
+    --model)   MODEL_ARG="${2:?--model needs a value}"; shift ;;
+    -*) echo "unknown option: $1" >&2; exit 2 ;;
+    *)  CASE_ARG="${1:-}" ;;
+  esac
   shift
-fi
-[ $# -eq 1 ] || { echo "usage: run-test.sh [--dry-run] <tests/case-NNN-name>" >&2; exit 2; }
+done
+[ $# -eq 0 ] && [ -n "${CASE_ARG:-}" ] || { echo "usage: run-test.sh [--dry-run] [--model MODEL] <tests/case-NNN-name>" >&2; exit 2; }
 
-CASE_DIR="$(cd "$1" 2>/dev/null && pwd)" || { echo "case dir not found: $1" >&2; exit 2; }
+CASE_DIR="$(cd "$CASE_ARG" 2>/dev/null && pwd)" || { echo "case dir not found: $CASE_ARG" >&2; exit 2; }
 # run.sh is required only for legacy (phase-1) cases; case.toml cases inject
 # their guest script via PCP_GUEST_SCRIPT instead
-if [ -z "${PCP_GUEST_SCRIPT:-}" ] && [ ! -f "${CASE_DIR}/run.sh" ]; then
+if [ "$DRY_RUN" = 0 ] && [ -z "${PCP_GUEST_SCRIPT:-}" ] && [ ! -f "${CASE_DIR}/run.sh" ]; then
   echo "no run.sh in ${CASE_DIR}" >&2; exit 2
 fi
 CASE_NAME="$(basename "${CASE_DIR}")"
@@ -45,7 +51,7 @@ mkdir -p "${RESULTS_DIR}"
 
 TAG="${PCP_TAG:-1.1}"
 IMAGE="agent-sandbox:${TAG}"
-MODEL="${PCP_MODEL:-}"
+MODEL="${MODEL_ARG:-${PCP_MODEL:-}}"
 MODEL_PORT="${PCP_MODEL_PORT:-9931}"
 CPUS="${PCP_CPUS:-2}"
 MEMORY="${PCP_MEMORY:-4G}"
