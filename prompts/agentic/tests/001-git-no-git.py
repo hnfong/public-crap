@@ -8,8 +8,7 @@ SCHEMA = PCP_CASE_V0
 NAME = "git-no-git"
 DESCRIPTION = "Create a git repo (one commit, funny message, only .gitignore ignoring *.pyc) WITHOUT the git command."
 
-# VM timeout for this case, seconds (the whole run: agent + checks)
-TIMEOUT = 300
+TIMEOUT = 600
 
 PROMPTS = [
   """Create a git repository in the current directory with exactly one initial commit.

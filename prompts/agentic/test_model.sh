@@ -32,7 +32,7 @@ SERVER_LOG=results/llama-server.log
 set -x
 killall -9 llama-server || true
 nohup "$LLAMA_SERVER" -np 1 --models-dir "$MODELS_DIR" -c 0 --cache-ram 10000 \
-    > "$SERVER_LOG" 2>&1 &
+    >> "$SERVER_LOG" 2>&1 &
 
 # always clean up the server on exit (including Ctrl-C / mid-sweep failure)
 trap 'killall -9 llama-server || true' EXIT
@@ -62,6 +62,7 @@ for test_case in tests/*.py; do
         continue
     fi
     # continue on failure: one bad case must not abort the sweep
+    echo "************ Running test: model=$MODEL_NAME test_case=$test_case ************"
     if python3 pcp/pcp_case.py --model "$MODEL_NAME" "$test_case"; then
         :
     else
