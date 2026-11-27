@@ -529,6 +529,17 @@ standalone use, but all PCP cases are `case.py` now.
   to a mount; the guest script records its own rc in `/artifacts/rc`.
   Verified: live 000 run (score 100.00) + agent-denied access to
   /artifacts + no results mounts in the guest.
+- **First live runs of 002/003 + fresh 30B-A3B sweep (post-redesign)**:
+  000 ✅ 100 (after one OOM "Compute error" — caveat 13 again), 001 ❌ 20
+  (inner watchdog fired at 300s; model created .gitignore but fell back to
+  real git commands — caught by the transcript check), 002 ✅ 100 (fixed the
+  median bug, tests untouched), 003 ❌ 0 (mathd.c doesn't compile: 11 clang
+  errors). Two harness bugs found and fixed during the sweep: (1) the
+  redesigned guest-run.sh never cd'd to the workspace before invoking pi, so
+  the agent ran in the read-only /work mount (EROFS on every write — the
+  model correctly diagnosed it); (2) case-001 git checks could ascend into
+  the host repo when the workspace had no .git (leaked the host's commit
+  message into the human-review check) — fixed with GIT_CEILING_DIRECTORIES.
 - **Chunk 7e — matrix runner** (models × cases, summary table): deferred
   until cases 001–003 have real recorded runs.
 - **Tool consolidation (owner request)**: the sandbox shell scripts became

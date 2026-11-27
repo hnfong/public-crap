@@ -26,14 +26,14 @@ CAVEAT: you must NOT use the git command to do this task. No `git`, no
 
 CHECKS = [
   pcp.checks.run(name="exactly-one-commit",
-                 cmd='[ "$(git -C "$PCP_ARTIFACTS/workspace" rev-list --count HEAD 2>/dev/null)" = "1" ]'),
+                 cmd='[ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" rev-list --count HEAD 2>/dev/null)" = "1" ]'),
   pcp.checks.run(name="only-gitignore-in-commit",
-                 cmd='[ "$(git -C "$PCP_ARTIFACTS/workspace" show --name-only --format= HEAD)" = ".gitignore" ]'),
+                 cmd='[ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" show --name-only --format= HEAD)" = ".gitignore" ]'),
   pcp.checks.run(name="gitignore-covers-pyc",
                  cmd='grep -q "\\*\\.pyc" "$PCP_ARTIFACTS/workspace/.gitignore"'),
   # judgment call: recorded as "human review", never scores the case
   pcp.checks.run(name="commit-message-funny", human_review=True,
-                 cmd='git -C "$PCP_ARTIFACTS/workspace" log -1 --format=%s'),
+                 cmd='GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" log -1 --format=%s'),
   # command-position-aware git detection: a plain transcript regex would
   # falsely flag `which git` or a python variable named `git`
   # TODO: migrate this to the checks.transcript() checker

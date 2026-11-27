@@ -23,10 +23,11 @@ WS=/workspace
 mkdir -p "$WS"
 if [ -d /work/fixture ]; then cp -a /work/fixture/. "$WS"/; fi
 chown -R agent:agent "$WS"
+cd "$WS"
 
 # per-case setup (as agent, cwd = workspace)
 if [ -f /pcp-run/setup.sh ]; then
-  if ! (cd "$WS" && runuser -u agent -- bash /pcp-run/setup.sh); then
+  if ! runuser -u agent -- bash /pcp-run/setup.sh; then
     echo "pcp: setup failed"
     echo 1 > /artifacts/rc
     exit 1
