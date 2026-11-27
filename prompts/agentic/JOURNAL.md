@@ -485,12 +485,18 @@ standalone use, but all PCP cases are `case.py` now.
   (even-length lists) + failing stdlib unittest; tests-pass (with
   `pipefail` — the naive `| tail` masked exit codes, caught in testing) and
   tests-unmodified. Validated with fixed AND buggy artifacts.
-- **Chunk 7d — case-003-syscall-sandbox (owner-defined) — checks validated**:
-  agent writes Rust `pcp_sandbox [-l whitelist] <program> [args]`.
-  Empirical checks (owner direction: no trace parsing for scoring):
-  builds (in-guest cargo), echo-ok with whitelist, write-blocked without
-  `openat` (catches passthrough sandboxes — validated against a stub), plus
-  informational strace capture (`manual`).
+- **Chunk 7d — case-003** — originally `syscall-sandbox` (Rust + strace),
+  removed by owner: too hard for the models and to verify. Replacement:
+  **`tcp-math-server`** (owner-defined): TCP server on port 6767 in C
+  (`clang -o mathd mathd.c`), one arithmetic expression per connection,
+  `+ - *`, nested parentheses, `NaN` on invalid input. Checks are empirical
+  and fine-grained: compile + 10 behavior probes (add/sub/mul, negative
+  result, parens, nested parens, invalid, garbage, division-unsupported,
+  multiple connections), each in its own throwaway container with a TCP
+  probe helper. Validated against a reference implementation — which failed
+  2/11 checks (negative results conflated with invalid input; error sentinel
+  folded into arithmetic), exactly the failure modes the case exists to
+  surface.
 - **Chunk 7e — matrix runner** (models × cases, summary table): deferred
   until cases 001–003 have real recorded runs.
 - **Tool consolidation (owner request)**: the sandbox shell scripts became
