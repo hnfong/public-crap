@@ -66,6 +66,8 @@ for test_case in tests/*.py; do
     EXPECTED_OUTFILE="results/`basename $test_case .py`.$MODEL_NAME.out"
     if [ -f "$EXPECTED_OUTFILE" ]; then
         echo "$EXPECTED_OUTFILE exists, skipping"
+        # Uncomment to regenerate the results from the raw test artifacts
+        # python3 pcp/pcp_case.py --checks-only --model "$MODEL_NAME" "$test_case"
         continue
     fi
     if [ "$STARTED_SERVER" = "0" ]; then

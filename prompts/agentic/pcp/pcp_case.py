@@ -537,7 +537,12 @@ def render_output(case: dict, results: str, artifacts: str,
     if not checks:
         out.append("  (no checks defined)")
     for c in checks:
-        out.append(f"  [{c['status']}] {c['name']}  ({c['durationMs']} ms)")
+        out.append(f"  Test Case: [{c['status']}] {c['name']}")
+
+    out.append("")
+
+    for c in checks:
+        out.append(f"  Test Details: [{c['status']}] {c['name']}  ({c['durationMs']} ms)")
         out.append(f"      {c.get('check', '')}")
         if c.get("detail", "").strip():
             for ln in c["detail"].rstrip().splitlines()[:20]:
