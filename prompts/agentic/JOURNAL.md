@@ -362,7 +362,7 @@ agentic/
 | 8 | Image build pulls from external registries (debian, nodejs.org, rustup, npm) — network + supply chain at build time. | Build rarely; verify Node tarball SHA-256 + rustup-init SHA-256; pin everything else by version. |
 | 11 | Checks parse pi session-log JSONL, which is an undocumented, evolving format. | Parse defensively (grep/regex over raw text where possible); pin pi version; re-verify on pi bumps. Live session confirmed: tool commands appear under `command` keys. |
 | 12 | pi `-p` exits rc=0 even when the turn errored (empty response, provider error). | Framework should treat `stopReason: "error"` / empty assistant content in `pi-output.json` as failure — TODO for the matrix runner; for now outcome checks catch it. |
-| 13 | Small instruct models may return empty answers depending on server state/thinking params (observed once on Qwen3-30B-A3B). | Record as-is (FAIL); investigate `thinkingLevel` handling if it recurs. |
+| 13 | llama.cpp host OOM surfaces as an immediate empty reply ("Compute error", ~40 ms, `stopReason: error`) — looks like a model failure but isn't (observed on Qwen3-30B-A3B while RAM-tight during dev; disappeared after server restart). | Record as-is (FAIL is fair — the run didn't produce an answer); when diagnosing, check the server log before blaming the model. |
 | 9 | apple/container requires its default kata kernel on first start (downloads from kata-containers releases). | Part of apple/container itself; installed once via `container system start --enable-kernel-install`; `setup-host.sh` re-checks idempotently. |
 | 10 | Guest may call the model before the tunnel is up (small race between container start and sshd/tunnel setup). | Fixed: the generated guest script waits for the model endpoint (up to 60 s) before invoking pi. |
 
@@ -472,8 +472,9 @@ run  = """..."""               # host shell snippet, cwd = results dir;
     cache." (manual funny-check: looks funny to me — owner confirms).
   - `Qwen3-30B-A3B-Instruct-2507-Q5_K_M` — **FAIL twice, differently**: run 1
     used `git hash-object` (caught by transcript check), broken repo; run 2
-    returned an empty assistant message (1 output token, stop=stop, zero tool
-    calls — possibly the `thinkingLevel: medium` param; not investigated).
+    returned an empty assistant message — later diagnosed as host llama.cpp
+    OOM ("Compute error"), see caveat 13 (case-000 with the same model passed
+    right after a server restart).
   Framework lessons fixed along the way:
   - **Results are per model**: `results/<PCP_MODEL>/` (`_nomodel` for
     agent-less cases) — owner decision; also prevents cross-run pollution.
