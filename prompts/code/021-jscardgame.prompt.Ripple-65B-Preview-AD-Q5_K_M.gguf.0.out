@@ -1,0 +1,144 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Twist Solitaire</title><style>
+body{background:#1a1a2e;color:#eee;font-family:system-ui,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0}
+#game{width:min(90vw,700px)}
+canvas{background:#0f0f1a;border-radius:8px;box-shadow:0 0 20px #000}
+#msg{margin-top:8px;font-size:14px}
+</style></head><body><div id="game"><canvas id="c" width="640" height="480"></canvas><div id="msg"></div></div><script>
+const c=document.getElementById('c'),x=c.getContext('2d');
+const W=640,H=480;
+const CARD_W=80,CARD_H=112,GAP=6;
+const COLS=7,ROWS=5;
+let deck=[],waste=[],found=[],board=[],msg='',sel=null,selCol=-1,selRow=-1,drag=null,win=false;
+const SUITS=['♠','♥','♦','♣'],RANKS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+function cardVal(c){return c.r*13+c.s}
+function makeDeck(){const d=[];for(let s=0;s<4;s++)for(let r=0;r<13;r++)d.push({r,s});return d}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function newGame(){
+  deck=shuffle(makeDeck());
+  board=Array.from({length:COLS},()=>[]);
+  for(let i=0;i<deck.length;i++){
+    const col=i%COLS;
+    board[col].push(deck[i]);
+  }
+  // flip top cards
+  for(let col=0;col<COLS;col++)board[col][board[col].length-1].face=true;
+  waste=[];found=[];msg='';sel=null;win=false;
+}
+function colX(col){return 20+col*(CARD_W+GAP)}
+function colY(row){return 20+row*(CARD_H+GAP)}
+function drawCard(x,y,card,scale=1){
+  const w=CARD_W*scale,h=CARD_H*scale;
+  x.getContext?0:0;
+  const ctx=x;
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.scale(scale,scale);
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,CARD_W,CARD_H);
+  ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.strokeRect(1,1,CARD_W-2,CARD_H-2);
+  ctx.fillStyle='#333';ctx.font='bold 28px system-ui';ctx.textAlign='left';ctx.textBaseline='top';
+  ctx.fillText(RANKS[card.r]+SUITS[card.s],6,6);
+  ctx.textAlign='right';ctx.fillText(RANKS[card.r]+SUITS[card.s],CARD_W-6,6);
+  ctx.textAlign='center';ctx.textBaseline='bottom';
+  ctx.fillText(RANKS[card.r]+SUITS[card.s],CARD_W/2,CARD_H-6);
+  ctx.fillStyle='#fff';ctx.strokeStyle='#333';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(CARD_W,0);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(0,CARD_H);ctx.lineTo(CARD_W,CARD_H);ctx.stroke();
+  ctx.restore();
+}
+function draw(){
+  x.fillStyle='#0f0f1a';x.fillRect(0,0,W,H);
+  // waste
+  drawCard(20,20,waste[0]||{r:0,s:0},1);
+  // board
+  for(let col=0;col<COLS;col++){
+    for(let i=0;i<board[col].length;i++){
+      const card=board[col][i];
+      const y=colY(i);
+      if(i===board[col].length-1&&card.face)drawCard(colX(col),y,card);
+      else if(i===board[col].length-1&&!card.face){x.fillStyle='#444';x.fillRect(colX(col),y,CARD_W,CARD_H);x.strokeStyle='#666';x.strokeRect(colX(col),y,CARD_W,CARD_H)}
+      else drawCard(colX(col),y,card);
+    }
+  }
+  // selection highlight
+  if(selCol>=0&&selRow>=0){
+    x.strokeStyle='#f0f';x.lineWidth=3;
+    x.strokeRect(colX(selCol)-2,colY(selRow)-2,CARD_W+4,CARD_H+4);
+  }
+  // win
+  if(win){x.fillStyle='rgba(0,0,0,0.7)';x.fillRect(0,0,W,H);x.fillStyle='#fff';x.font='bold 40px system-ui';x.textAlign='center';x.fillText('YOU WIN!',W/2,H/2-10);x.font='20px system-ui';x.fillText('Click to play again',W/2,H/2+30)}
+}
+function click(e){
+  if(win){newGame();return}
+  const rect=c.getBoundingClientRect();
+  const mx=e.clientX-rect.left,my=e.clientY-rect.top;
+  // waste click
+  if(mx>20&&mx<20+CARD_W&&my>20&&my<20+CARD_H){
+    if(waste.length){
+      const top=waste[waste.length-1];
+      // move to foundation? simplified: just flip
+      if(!top.face){top.face=true;msg='Flipped!';}
+    }
+    return;
+  }
+  // find card under mouse
+  let foundCol=-1,foundRow=-1;
+  for(let col=0;col<COLS;col++){
+    for(let i=0;i<board[col].length;i++){
+      const cx=colX(col),cy=colY(i);
+      if(mx>cx&&mx<cx+CARD_W&&my>cy&&my<cy+CARD_H){foundCol=col;foundRow=i;break}
+    }
+    if(foundCol>=0)break;
+  }
+  if(foundCol<0)return;
+  const card=board[foundCol][foundRow];
+  if(!card.face)return;
+  // if clicking on a stack, select top card
+  if(foundRow!==board[foundCol].length-1)return;
+  if(selCol===foundCol&&selRow===foundRow){sel=null;return}
+  // try move
+  if(sel){
+    const from=board[selCol].pop();
+    // move to same column if descending alternating
+    if(selCol===foundCol){
+      const target=board[foundCol][board[foundCol].length-1];
+      if(target&&from.r===target.r-1&&(from.s%2)!==(target.s%2)){
+        board[foundCol].push(from);
+        sel=null;
+        checkWin();
+        return;
+      }
+    }else{
+      // move to empty column if King
+      if(board[foundCol].length===0&&from.r===12){
+        board[foundCol].push(from);
+        sel=null;
+        checkWin();
+        return;
+      }
+      // move onto card if descending alternating
+      const target=board[foundCol][board[foundCol].length-1];
+      if(target&&from.r===target.r-1&&(from.s%2)!==(target.s%2)){
+        board[foundCol].push(from);
+        sel=null;
+        checkWin();
+        return;
+      }
+    }
+    // invalid, keep selection
+    sel=null;
+    return;
+  }
+  sel={col:foundCol,row:foundRow};
+}
+function checkWin(){
+  // win if all cards face up and in order? simplified: all face up
+  let allFace=true;
+  for(let col=0;col<COLS;col++)for(const c of board[col])if(!c.face){allFace=false;break}
+  if(allFace&&waste.length===0){win=true;msg='You win!'}
+}
+c.addEventListener('click',click);
+newGame();
+setInterval(()=>{draw();document.getElementById('msg').textContent=msg},16);
+</script></body></html> [end of text]
+
+
