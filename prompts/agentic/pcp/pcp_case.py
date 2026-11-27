@@ -556,9 +556,10 @@ def render_output(case: dict, results: str, artifacts: str,
         out.append("  (no pi session transcript captured)")
     out.append("")
 
-    with open(os.path.join(results, "output.txt"), "w") as f:
+    out_path = results + ".out"
+    with open(out_path, "w") as f:
         f.write("\n".join(out) + "\n")
-    print(f"pcp_case: transcript written → {os.path.join(results, 'output.txt')}")
+    print(f"pcp_case: transcript written → {out_path}")
 
 
 def main() -> None:
@@ -589,7 +590,8 @@ def main() -> None:
     # repo-wide results root: <repo>/results/<case-dir-name>/<MODEL>/
     repo_root = os.path.dirname(PCP_DIR)
     results_root = os.environ.get("PCP_RESULTS_ROOT") or os.path.join(repo_root, "results")
-    results = os.path.join(results_root, case_stem, model_dir_name())
+    # flattened: results/<case>.<model>/  +  results/<case>.<model>.out
+    results = os.path.join(results_root, f"{case_stem}.{model_dir_name()}")
     artifacts = os.path.join(results, "artifacts")
 
     run_rc = None

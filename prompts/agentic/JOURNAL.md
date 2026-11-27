@@ -349,7 +349,8 @@ agentic/
 ├── results/                    ← per-run outputs (gitignored)
 │   └── case-NNN-slug/<MODEL>/  ← metadata, artifacts, checks, output.txt
 ├── results/                    ← per-run outputs (gitignored)
-│   └── NNN-name/<MODEL>/       ← metadata, artifacts, checks, score, output.txt
+│   ├── NNN-name.<MODEL>/       ← metadata, artifacts, checks, score
+│   └── NNN-name.<MODEL>.out    ← human-readable run transcript
 └── tests/
     ├── NNN-name.py             ← the case (Python DSL)
     ├── NNN-name/               ← optional per-case fixtures
