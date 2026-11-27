@@ -13,7 +13,7 @@ DESCRIPTION, SETUP[], PROMPTS[], CHECKS[] built via pcp.checks.*).
 Flow:
   1. load <case-dir>/case.py
   2. generate a guest script (workspace setup, pi invocation, artifact capture)
-  3. delegate the VM run to sandbox/run-test.sh (via PCP_GUEST_SCRIPT hook)
+  3. delegate the VM run to `pcp_sandbox.py run --guest-script …`
   4. run the case's checks on the HOST against collected artifacts
   5. write results/checks.json + results/verdict.txt
 
@@ -41,7 +41,7 @@ import time
 from types import SimpleNamespace
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RUN_TEST = os.path.join(ROOT, "sandbox", "run-test.sh")
+SANDBOX_TOOL = os.path.join(ROOT, "sandbox", "pcp_sandbox.py")
 IN_GUEST = os.path.join(ROOT, "harness", "in-guest.sh")
 TRANSCRIPT_MATCH = os.path.join(ROOT, "harness", "transcript_match.py")
 
@@ -206,10 +206,14 @@ def run_vm(case: dict, case_dir: str, results: str) -> int:
     if case.get("prompt"):
         with open(os.path.join(rundir, "prompt.txt"), "w") as f:
             f.write(case["prompt"])
-    env = dict(os.environ, PCP_GUEST_SCRIPT=os.path.join(rundir, "guest-run.sh"),
-               PCP_RESULTS_DIR=results)
+    cmd = [sys.executable, SANDBOX_TOOL, "run", case_dir,
+           "--guest-script", os.path.join(rundir, "guest-run.sh"),
+           "--results-dir", results]
+    if os.environ.get("PCP_MODEL"):
+        cmd += ["--model", os.environ["PCP_MODEL"]]
     print(f"pcp_case: running VM for {case['name']} …")
-    proc = subprocess.run(["bash", RUN_TEST, case_dir], env=env)
+    # PCP_* knobs (tag/memory/net/timeout/…) flow through the environment
+    proc = subprocess.run(cmd, env=dict(os.environ))
     return proc.returncode
 
 

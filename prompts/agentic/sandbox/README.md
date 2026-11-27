@@ -1,74 +1,78 @@
 # sandbox/
 
-PCP guest image and test harness. See `../PLAN.md` for design and decisions.
+PCP guest image and VM tooling. See `../JOURNAL.md` for design and decisions.
+
+Everything is driven by **`pcp_sandbox.py`** (stdlib-only, runs on the system
+python3) — one tool, four subcommands:
 
 ## Per boot
 
 ```bash
-sandbox/setup-host.sh     # idempotent; starts apple/container if not running
+sandbox/pcp_sandbox.py setup     # idempotent; starts apple/container if needed
 ```
 
 No sudo, no DNS host-bridge (owner decision). The guest reaches host
 **loopback** services (llama.cpp on `127.0.0.1:9931`) through a per-run SSH
-reverse tunnel created by `run-test.sh`.
+reverse tunnel created by `run`.
 
 ## Build the guest image
 
 ```bash
-sandbox/build.sh 1.0      # prints + records the image digest
+sandbox/pcp_sandbox.py build --tag 1.1   # prints + records the image digest
 ```
+
+The guest entrypoint is embedded in the tool and staged into the build
+context (keep it byte-stable: same Dockerfile ⇒ same digest).
 
 ## Run a test case
 
-Preferred (declarative cases, `case.toml` — see JOURNAL.md §7):
+Cases are `tests/case-*/case.py` (Python DSL — see JOURNAL.md §7.3), run via
+the harness:
 
 ```bash
 harness/run-case.sh --model Qwen3.8-27B-Q6_K tests/case-001-git-no-git
-harness/run-case.sh --checks-only --model Qwen3.8-27B-Q6_K tests/case-001-git-no-git  # re-score
+harness/run-case.sh --checks-only --model Qwen3.8-27B-Q6_K tests/case-001-git-no-git
 harness/run-case.sh --dry-run tests/case-001-git-no-git
 ```
 
-`--model` overrides the `PCP_MODEL` env var; results are stored per model
-(`results/<MODEL>/`).
-
-One run = one ephemeral VM. The case's checks run on the host against
-collected artifacts (`results/artifacts/workspace`, `results/artifacts/sessions`);
-checks that must execute Linux binaries go through `harness/in-guest.sh`
-(throwaway container). Output: `results/checks.json`, `results/verdict.txt`.
+`harness/run-case.sh` delegates the VM run to `pcp_sandbox.py run`. One run =
+one ephemeral VM. The case's checks run on the host against collected
+artifacts (`results/<MODEL>/artifacts/…`); checks that must execute Linux
+binaries go through `harness/in-guest.sh` (throwaway container). Output:
+`results/<MODEL>/metadata.json`, `checks.json`, `verdict.txt`.
 
 Legacy phase-1 style (`run.sh` in the case dir) still works:
 
 ```bash
-PCP_MODEL=Qwen3.8-27B sandbox/run-test.sh tests/case-000-harness-smoke
-PCP_NET=internal sandbox/run-test.sh tests/case-000-harness-smoke   # offline
-sandbox/run-test.sh --dry-run tests/case-000-harness-smoke
+sandbox/pcp_sandbox.py run --model <model> tests/case-000-harness-smoke
+sandbox/pcp_sandbox.py run --net internal tests/case-000-harness-smoke  # offline
 ```
-
-One run = one ephemeral VM (`container run --rm`). Run parameters:
-`(PCP_MODEL, TEST_CASE)`. Overrides: `--model` flag (or `PCP_MODEL`), `PCP_TAG (1.1),
-PCP_MODEL_PORT, PCP_CPUS (2), PCP_MEMORY (4G), PCP_NET,
-PCP_TIMEOUT_SECS (1800), PCP_CONTEXT_WINDOW`. Results land in
-`tests/<case>/results/<MODEL>/` (`metadata.json` records the image digest).
 
 ## Clean up
 
 ```bash
-sandbox/cleanup.sh          # stopped containers
-sandbox/cleanup.sh --images # also remove images except agent-sandbox:$PCP_TAG
+sandbox/pcp_sandbox.py cleanup          # stopped containers
+sandbox/pcp_sandbox.py cleanup --images # also remove images except the pinned tag
 ```
+
+## Run parameter precedence
+
+`--flag` > `PCP_*` env var > default. Knobs: `PCP_TAG (1.1), PCP_MODEL,
+PCP_MODEL_PORT (9931), PCP_CPUS (2), PCP_MEMORY (4G), PCP_NET,
+PCP_TIMEOUT_SECS (1800), PCP_CONTEXT_WINDOW (262144)`.
 
 ## Adding a test case
 
-`tests/case-NNN-short-slug/` with `run.sh` (executed **inside the guest** as
-the non-root `agent` user; the case dir is mounted read-only at `/work`,
-`results/` is writable at `/results`). `run.sh` reaches the model at
-`http://127.0.0.1:${PCP_MODEL_PORT}/v1` (OpenAI-compatible). Poll the
-endpoint briefly if the tunnel may not be up yet.
+`tests/case-NNN-short-slug/case.py` (see JOURNAL.md §7.3 for the DSL). The
+case dir is mounted read-only at `/work`, `results/<MODEL>/` is writable at
+`/results`. `run.py`-style guest code reaches the model at
+`http://127.0.0.1:${PCP_MODEL_PORT}/v1` (OpenAI-compatible); the generated
+guest script waits for the endpoint before invoking pi.
 
 ## Caveats
 
 - `apple/container` v1.7.1; its default kernel is installed non-interactively
-  by `setup-host.sh` if missing.
+  by `setup` if missing.
 - The guest IP is on the host-only vmnet network (192.168.64.0/24); the SSH
   tunnel is the only sanctioned path to host services.
 - Memory freed inside a guest VM is not returned to macOS; ephemeral runs

@@ -239,6 +239,12 @@ Other decisions:
 1.6.1) and the entrypoint drops to `agent`.
 
 ### Chunk 6 — Test harness scripts (30 min) — DONE
+
+(2026-11-27: the five shell scripts were later consolidated into
+`sandbox/pcp_sandbox.py` — subcommands `setup|build|run|cleanup`, stdlib-only,
+system python3; the guest entrypoint is embedded in the tool and staged into
+the build context, byte-identical to the former file so image digests stay
+stable. See §7.)
 - [ ] `sandbox/setup-host.sh` (idempotent, per-boot):
   - [ ] `container system start` (no-op if running)
   - [ ] `sudo container system dns create host.container.internal --localhost 203.0.113.113`
@@ -488,6 +494,11 @@ standalone use, but all PCP cases are `case.py` now.
   informational strace capture (`manual`).
 - **Chunk 7e — matrix runner** (models × cases, summary table): deferred
   until cases 001–003 have real recorded runs.
+- **Tool consolidation (owner request)**: the sandbox shell scripts became
+  `sandbox/pcp_sandbox.py` (setup | build | run | cleanup). `pcp_case.py`
+  now delegates VM runs via `pcp_sandbox.py run --guest-script …`; flag >
+  env > default precedence for all knobs; image 1.1 digest unchanged
+  (`sha256:7e09a383…`) by keeping the embedded entrypoint byte-identical.
 - **First live agent runs (chunk 7b)**:
   - `Qwen3.8-27B-Q6_K` — **PASS** (all mechanical checks): wrote git objects
     by hand with python3 (zlib + sha1), verified its own object graph, no git
