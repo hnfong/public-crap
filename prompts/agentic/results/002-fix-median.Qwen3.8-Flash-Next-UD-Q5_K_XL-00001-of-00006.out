@@ -1,0 +1,147 @@
+== PCP RUN TRANSCRIPT ==========================================================
+case:    fix-median (pcp-case/v0)
+about:   Fix the bug in median.py so the failing stdlib unittest passes; tests must stay unmodified.
+model:   Qwen3.8-Flash-Next-UD-Q5_K_XL-00001-of-00006
+image:   pcp-agent-sandbox:1.1 (sha256:f3e363b121493a01890cb7cb48921cdfbb1e8b3c1e643d7f438231108a915c64)
+host:    26.4.1 (25E253) / arm64
+run:     2026-11-27T14:39:09Z → 2026-11-27T14:39:29Z (wall 19s, VM exit 0)
+score:   100.00%
+================================================================================
+
+== CHECKS ======================================================================
+
+  [pass] tests-pass  (60 ms)
+      [host] cd "$PCP_ARTIFACTS/workspace" && set -o pipefail && python3 -m unittest -v test_median 2>&1 | tail -3
+      | Ran 5 tests in 0.000s
+      | 
+      | OK
+  [pass] tests-unmodified  (5 ms)
+      [host] diff -u "$PCP_CASE_DIR/test_median.py" "$PCP_ARTIFACTS/workspace/test_median.py"
+
+== ARTIFACTS ===================================================================
+
+      176474  pi-output.json
+           0  pi-stderr.log
+           2  rc
+       15692  sessions/--workspace--/2026-11-27T14-39-10-548Z_01a21d72-28d4-7068-9df6-ccdab00389fb.jsonl
+         192  workspace/median.py
+         516  workspace/test_median.py
+
+== PI SESSION ==================================================================
+
+-- session: sessions/--workspace--/2026-11-27T14-39-10-548Z_01a21d72-28d4-7068-9df6-ccdab00389fb.jsonl -
+
+[session 01a21d72-28d4-7068-9df6-ccdab00389fb cwd=/workspace]
+[model] Qwen3.8-Flash-Next-UD-Q5_K_XL-00001-of-00006 (provider llama.cpp)
+[thinking level] medium
+[system prompt omitted, 2 chars]
+[user]
+The test suite in this directory is failing.
+
+Run it (`python3 -m unittest -v test_median`), find the bug in median.py,
+and fix it so all tests pass. Do NOT modify test_median.py. Keep the fix
+minimal.
+[thinking]
+I'll start by looking at what files are in the current directory.
+[tool call: bash]
+$ ls -la && cat median.py
+[toolResult]
+total 16
+drwxr-xr-x  2 agent agent 4096 Nov 27 13:59 .
+drwxr-xr-x 22 root  root  4096 Nov 27 14:39 ..
+-rw-r--r--  1 agent agent  131 Nov 27 13:59 median.py
+-rw-r--r--  1 agent agent  516 Nov 27 13:59 test_median.py
+def median(xs):
+    """Return the median of a non-empty list of numbers."""
+    s = sorted(xs)
+    n = len(s)
+    return s[n // 2]
+
+[thinking]
+The bug: doesn't average the two middle values for even-length lists.
+
+Let me run tests first.
+[tool call: bash]
+$ cd /workspace && python3 -m unittest -v test_median 2>&1 | tail -30
+[toolResult]
+test_even_count (test_median.TestMedian.test_even_count) ... FAIL
+test_floats (test_median.TestMedian.test_floats) ... FAIL
+test_odd_count (test_median.TestMedian.test_odd_count) ... ok
+test_single (test_median.TestMedian.test_single) ... ok
+test_unsorted (test_median.TestMedian.test_unsorted) ... ok
+
+======================================================================
+FAIL: test_even_count (test_median.TestMedian.test_even_count)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/test_median.py", line 11, in test_even_count
+    self.assertEqual(median([1, 2, 3, 4]), 2.5)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 3 != 2.5
+
+======================================================================
+FAIL: test_floats (test_median.TestMedian.test_floats)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/test_median.py", line 20, in test_floats
+    self.assertEqual(median([1.0, 2.0]), 1.5)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2.0 != 1.5
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.001s
+
+FAILED (failures=2)
+
+[thinking]
+The bug is even-length handling. Fix minimally.
+[tool call: edit]
+{"path": "/workspace/median.py", "edits": [{"oldText": "    s = sorted(xs)\n    n = len(s)\n    return s[n // 2]", "newText": "    s = sorted(xs)\n    n = len(s)\n    i = n // 2\n    if n % 2:\n        return s[i]\n    return (s[i - 1] + s[i]) / 2"}]}
+[toolResult]
+Successfully replaced 1 block(s) in /workspace/median.py.
+[thinking]
+The docstring should be updated too? "Return the median of a non-empty list of numbers." — still accurate. Fine.
+
+Run tests.
+[tool call: bash]
+$ cd /workspace && python3 -m unittest -v test_median 2>&1 | tail -15 && cat median.py
+[toolResult]
+test_even_count (test_median.TestMedian.test_even_count) ... ok
+test_floats (test_median.TestMedian.test_floats) ... ok
+test_odd_count (test_median.TestMedian.test_odd_count) ... ok
+test_single (test_median.TestMedian.test_single) ... ok
+test_unsorted (test_median.TestMedian.test_unsorted) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.000s
+
+OK
+def median(xs):
+    """Return the median of a non-empty list of numbers."""
+    s = sorted(xs)
+    n = len(s)
+    i = n // 2
+    if n % 2:
+        return s[i]
+    return (s[i - 1] + s[i]) / 2
+
+[thinking]
+The test suite is now passing. I should provide a concise summary.
+[assistant]
+**Bug:** `median()` always returned the single element at index `n // 2`, which is only correct for odd-length lists. For even-length lists the median must be the mean of the two middle values (`[1,2,3,4]` → 2.5, not 3).
+
+**Fix** (`median.py`):
+
+```python
+def median(xs):
+    """Return the median of a non-empty list of numbers."""
+    s = sorted(xs)
+    n = len(s)
+    i = n // 2
+    if n % 2:
+        return s[i]
+    return (s[i - 1] + s[i]) / 2
+```
+
+**Result:** all 5 tests pass (`Ran 5 tests ... OK`) — `test_even_count` and `test_floats` now fixed; `test_median.py` untouched.
+

@@ -1,0 +1,285 @@
+== PCP RUN TRANSCRIPT ==========================================================
+case:    git-no-git (pcp-case/v0)
+about:   Create a git repo (one commit, funny message, only .gitignore ignoring *.pyc) WITHOUT the git command.
+model:   GLM-5.3-Flash-UD-Q5_K_XL-00001-of-00006
+image:   pcp-agent-sandbox:1.1 (sha256:f3e363b121493a01890cb7cb48921cdfbb1e8b3c1e643d7f438231108a915c64)
+host:    26.4.1 (25E253) / arm64
+run:     2026-11-27T14:15:25Z → 2026-11-27T14:20:53Z (wall 328s, VM exit 0)
+score:   80.00%
+================================================================================
+
+== CHECKS ======================================================================
+
+  [pass] exactly-one-commit  (26 ms)
+      [host] [ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" rev-list --count HEAD 2>/dev/null)" = "1" ]
+  [pass] only-gitignore-in-commit  (17 ms)
+      [host] [ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" show --name-only --format= HEAD)" = ".gitignore" ]
+  [pass] gitignore-covers-pyc  (6 ms)
+      [host] grep -q "\*\.pyc" "$PCP_ARTIFACTS/workspace/.gitignore"
+  [human review] commit-message-funny  (13 ms)
+      [host] GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" log -1 --format=%s
+      | My repo's therapist asked about its childhood.
+  [pass] no-git-in-transcript  (26 ms)
+      [host] python3 "$PCP_HELPERS/no_git.py"
+      | no git usage in 1 session file(s)
+
+== ARTIFACTS ===================================================================
+
+     2260326  pi-output.json
+           0  pi-stderr.log
+           2  rc
+       45407  sessions/--workspace--/2026-11-27T14-15-25-591Z_01a21d5c-6a97-7087-b41f-15bb7b925895.jsonl
+           6  workspace/.gitignore
+
+== PI SESSION ==================================================================
+
+-- session: sessions/--workspace--/2026-11-27T14-15-25-591Z_01a21d5c-6a97-7087-b41f-15bb7b925895.jsonl -
+
+[session 01a21d5c-6a97-7087-b41f-15bb7b925895 cwd=/workspace]
+[model] GLM-5.3-Flash-UD-Q5_K_XL-00001-of-00006 (provider llama.cpp)
+[thinking level] medium
+[system prompt omitted, 2 chars]
+[user]
+Create a git repository in the current directory with exactly one initial commit.
+
+Requirements:
+- The commit must contain exactly one file: .gitignore
+- The .gitignore must make git ignore *.pyc files
+- The commit message should be a funny joke
+
+CAVEAT: you must NOT use the git command to do this task. No `git`, no
+`/usr/bin/git`, no alias or wrapper around it. Any other approach is fine.
+[thinking]
+The user wants me to create a git repository without using the git command. I need to manually create the git repository structure:
+
+1. `.git/` directory
+2. `.git/HEAD` - pointing to refs/heads/main (or master)
+3. `.git/config` - repository config
+4. `.git/objects/` - object storage
+5. `.git/refs/` and `.git/refs/heads/`, `.git/refs/tags/`
+6. Create blob object for .gitignore
+7. Create tree object referencing the blob
+8. Create commit object referencing the tree
+9. Compute SHA-1 hashes and store objects as zlib-compressed files
+10. Update HEAD's ref to point to the commit
+
+I can use Python or other tools to do this. Python has zlib and hashlib built in. Let me write a Python script to:
+
+1. Create `.gitignore` file with `*.pyc`
+2. Create git object infrastructure
+3. Create the blob: `blob {
+… [13369 chars truncated] …
+run the script. Also afterwards, verify by decompressing objects with Python and printing them, and validate the index checksum, and show tree/commit contents.
+
+Also check: is there anything already in /workspace? Let me look first.
+
+Additionally, ownership: files created by us, same user. Fine.
+
+Potential issue: `st_ctime_ns % 1_000_000_000` — ctime nanoseconds part. OK.
+
+Also nanosecond values in index: git uses these to detect changes; if they match the file's actual stat, status is clean. Good.
+
+Let me also create `.git/branches`? Old git used it; modern git doesn't need it. Skip. Actually, `git init` still creates... no, modern git doesn't create `branches/`. Skip it.
+
+Also hooks dir — not needed.
+
+Let me now run the commands. First inspect the directory and check python availability.
+[tool call: bash]
+$ ls -la /workspace && which python3 && python3 --version
+[toolResult]
+total 8
+drwxr-xr-x  2 agent agent 4096 Nov 27 14:12 .
+drwxr-xr-x 22 root  root  4096 Nov 27 14:15 ..
+/usr/bin/python3
+Python 3.13.5
+
+[thinking]
+Empty directory, python3 available. I'll build the repo manually with Python: create the object database, refs, index, etc., without ever invoking git.
+[assistant]
+Empty directory and Python is available. I'll construct the git repository entirely by hand (objects, refs, index) using Python — no `git` involved.
+[tool call: write]
+{"path": "/workspace/create_repo.py", "content": "#!/usr/bin/env python3\n\"\"\"Create a valid git repository from scratch, without the git binary.\"\"\"\nimport os, zlib, hashlib, struct, time\n\nREPO = os.getcwd()\nGIT = os.path.join(REPO, \".git\")\n\n# --- 1. working tree file -------------------------------------------------\ngitignore_path = os.path.join(REPO, \".gitignore\")\nwith open(gitignore_path, \"w\") as f:\n    f.write(\"*.pyc\\n\")\n\n# --- 2. repository skeleton ----------------
+… [3417 chars truncated] …
+{"path": "/workspace/create_repo.py", "content": "#!/usr/bin/env python3\n\"\"\"Create a valid git repository from scratch, without the git binary.\"\"\"\nimport os, zlib, hashlib, struct, time\n\nREPO = os.getcwd()\nGIT = os.path.join(REPO, \".git\")\n\n# --- 1. working tree file -------------------------------------------------\ngitignore_path = os.path.join(REPO, \".gitignore\")\nwith open(gitignore_path, \"w\") as f:\n    f.write(\"*.pyc\\n\")\n\n# --- 2. repository skeleton ----------------------------------------------\nfor d in [\"objects/info\", \"objects/pack\", \"refs/heads\", \"refs/tags\", \"info\"]:\n    os.makedirs(os.path.join(GIT, d), exist_ok=True)\n\nwith open(os.path.join(GIT, \"HEAD\"), \"w\") as f:\n    f.write(\"ref: refs/heads/main\\n\")\n\nwith open(os.path.join(GIT, \"config\"), \"w\") as f:\n    f.write(\"[core]\\n\"\n            \"\\trepositoryformatversion = 0\\n\"\n            \"\\tfilemode = true\\n\"\n            \"\\tbare = false\\n\"\n            \"\\tlogallrefupdates = true\\n\")\n\nwith open(os.path.join(GIT, \"description\"), \"w\") as f:\n    f.write(\"Unnamed repository; edit this file 'description' to name the repository.\\n\")\n\nwith open(os.path.join(GIT, \"info/exclude\"), \"w\") as f:\n    f.write(\"# Lines that start with '#' are comments.\\n\")\n\n# --- 3. loose object writer ----------------------------------------------\ndef write_object(obj_type: str, body: bytes) -> str:\n    data = obj_type.encode() + b\" \" + str(len(body)).encode() + b\"\\x00\" + body\n    sha = hashlib.sha1(data).hexdigest()\n    dirp = os.path.join(GIT, \"objects\", sha[:2])\n    os.makedirs(dirp, exist_ok=True)\n    with open(os.path.join(dirp, sha[2:]), \"wb\") as f:\n        f.write(zlib.compress(data))\n    return sha\n\n# --- 4. blob: .gitignore --------------------------------------------------\nwith open(gitignore_path, \"rb\") as f:\n    blob_sha = write_object(\"blob\", f.read())\n\n# --- 5. tree: exactly one entry ------------------------------------------\ntree_body = b\"100644 .gitignore\\x00\" + bytes.fromhex(blob_sha)\ntree_sha = write_object(\"tree\", tree_body)\n\n# --- 6. commit ------------------------------------------------------------\nname, email = \"Pi the Coding Agent\", \"pi@example.com\"\nts, tz = int(time.time()), \"+0000\"\nmessage = (\"My repo's therapist asked about its childhood.\\n\"\n           \"\\n\"\n           \"It said: \\\"I'm an initial commit - no parents, no history, no trauma.\\\"\\n\")\n\ncommit_body = (f\"tree {tree_sha}\\n\"\n               f\"author {name} <{email}> {ts} {tz}\\n\"\n               f\"committer {name} <{email}> {ts} {tz}\\n\"\n               f\"\\n{message}\").encode()\ncommit_sha = write_object(\"commit\", commit_body)\n\n# --- 7. ref for HEAD ------------------------------------------------------\nwith open(os.path.join(GIT, \"refs/heads/main\"), \"w\") as f:\n    f.write(commit_sha + \"\\n\")\n\n# --- 8. index (version 2) so the worktree matches HEAD --------------------\nst = os.stat(gitignore_path)\nlo = lambda x: x & 0xFFFFFFFF\npath = b\".gitignore\"\nentry = struct.pack(\">IIIIIIIIII\",\n                    lo(int(st.st_ctime)), lo(st.st_ctime_ns % 1_000_000_000),\n                    lo(int(st.st_mtime)), lo(st.st_mtime_ns % 1_000_000_000),\n                    lo(st.st_dev), lo(st.st_ino),\n                    0o100644,\n                    lo(st.st_uid), lo(st.st_gid),\n                    lo(st.st_size))\nentry += bytes.fromhex(blob_sha) + struct.pack(\">H\", len(path)) + path\npad = 8 - (len(entry) % 8) or 8          # pad to multiple of 8, at least 1 NUL\nentry += b\"\\x00\" * pad\nindex_body = b\"DIRC\" + struct.pack(\">II\", 2, 1) + entry\nwith open(os.path.join(GIT, \"index\"), \"wb\") as f:\n    f.write(index_body + hashlib.sha1(index_body).digest())\n\nprint(\"blob   \", blob_sha)\nprint(\"tree   \", tree_sha)\nprint(\"commit \", commit_sha)\n"}
+[toolResult]
+Successfully wrote to /workspace/create_repo.py
+[tool call: bash]
+$ cd /workspace && python3 create_repo.py
+[toolResult]
+blob    0d20b6487c61e7d1bde93acf4a14b7a89083a16d
+tree    e05703bf7de4d1d60f49c30872101a88ca5ed06c
+commit  65c8dd9765d2611f813153f933ee702fc12cc77c
+
+[thinking]
+Now verify the repo structure and object contents without git. Let me decompress objects, check refs, HEAD, index checksum, and directory layout.
+[assistant]
+Now let me verify everything without git — decompress the objects, recompute hashes, and check the layout:
+[tool call: bash]
+$ cd /workspace && find .git -type f | sort && echo "---- verify objects ----" && python3 - <<'EOF'
+import os, zlib, hashlib
+
+GIT = ".git"
+def read_obj(sha):
+    p = os.path.join(GIT, "objects", sha[:2], sha[2:])
+    raw = zlib.decompress(open(p, "rb").read())
+    header, _, body = raw.partition(b"\x00")
+    assert hashlib.sha1(raw).hexdigest() == sha, "hash mismatch!"
+    return header.decode(), body
+
+for sha in ["0d20b6487c61e7d1bde93acf4a14b7a89083a16d",
+            "e05703bf7de4d1d60f49c30872101a88ca5ed06c",
+            "65c8dd9765d2611f813153f933ee702fc12cc77c"]:
+    h, b = read_obj(sha)
+    print(f"== {h} {sha} ==")
+    print(b.decode(errors="replace") if h != "tree" else b.hex())
+
+# verify HEAD -> ref -> commit
+head = open(f"{GIT}/HEAD").read().strip()
+ref = head.split(" ")[1]
+commit = open(f"{GIT}/{ref}").read().strip()
+h, b = read_obj(commit)
+assert h == "commit" and b.decode().startswith(f"tree e05703bf"), "commit chain broken"
+print("HEAD ->", head, "->", ref, "->", commit, "OK")
+
+# verify index checksum
+idx = open(f"{GIT}/index", "rb").read()
+assert hashlib.sha1(idx[:-20]).digest() == idx[-20:], "index checksum bad"
+print("index checksum OK, entries:", int.from_bytes(idx[8:12], "big"))
+EOF
+[toolResult]
+.git/HEAD
+.git/config
+.git/description
+.git/index
+.git/info/exclude
+.git/objects/0d/20b6487c61e7d1bde93acf4a14b7a89083a16d
+.git/objects/65/c8dd9765d2611f813153f933ee702fc12cc77c
+.git/objects/e0/5703bf7de4d1d60f49c30872101a88ca5ed06c
+.git/refs/heads/main
+---- verify objects ----
+== blob 6 0d20b6487c61e7d1bde93acf4a14b7a89083a16d ==
+*.pyc
+
+== tree 38 e05703bf7de4d1d60f49c30872101a88ca5ed06c ==
+100644 .gitignore  �H|a�ѽ�:�J�����m
+== commit 290 65c8dd9765d2611f813153f933ee702fc12cc77c ==
+tree e05703bf7de4d1d60f49c30872101a88ca5ed06c
+author Pi the Coding Agent <pi@example.com> 1795789132 +0000
+committer Pi the Coding Agent <pi@example.com> 1795789132 +0000
+
+My repo's therapist asked about its childhood.
+
+It said: "I'm an initial commit - no parents, no history, no trauma."
+
+Traceback (most recent call last):
+  File "<stdin>", line 23, in <module>
+AssertionError: commit chain broken
+
+
+Command exited with code 1
+[thinking]
+The commit chain assertion failed. Let me check: `b.decode().startswith(f"tree e05703bf")`. The tree sha starts with "e05703bf7de4d1d60f49c30872101a88ca5ed06c". The commit body printed shows "tree e05703bf7de4d1d60f49c30872101a88ca5ed06c". Hmm wait, the assertion is `b.decode().startswith("tree e05703bf")` — that looks like it should match...
+
+Wait, actually the issue: the tree sha printed in the commit is "e05703bf7de4d1d60f49c30872101a88ca5ed06c" and my f-string is "tree e05703bf" — that should match. Unless... hmm, let me look more carefully.
+
+Oh wait — I see. The assertion message "commit chain broken" — but the startswith should work. Let me check: is `h == "commit"`? Yes, header printed "commit 290". Hmm.
+
+Wait, actually, let me re-read the assertion:
+
+```python
+assert h == "commit" 
+… [3225 chars truncated] …
+" != "tree" → True, so it printed b.decode(errors="replace") — that's why the tree printed as garbled text instead of hex. And for blob, printed "6 0d20..." as "blob 6" — fine.
+
+So the repository is actually fine; my verification assertion was buggy. h for commit is "commit 290", so `h == "commit"` failed.
+
+Let me fix the verification: h.split()[0] == "commit".
+
+Also, the timestamp 1795789132 — let me check the system date. That's fine either way; git doesn't care, but let me confirm the container date. Nov 27 14:12 per ls. 1795789132 = ~2026-11-27? Let me compute: 1764289132 would be 2025-11-27ish. Hmm, 1795789132 - 1764289132 = 31,500,000 ≈ 365 days. So 1795789132 ≈ 2026-11-27. So the container clock is 2026. Whatever — matches system time, fine.
+
+Let me rerun the corrected verification.
+[assistant]
+The repository objects are all valid — the failure is a bug in my *verification script*: `partition(b"\x00")` returns the header as `"commit 290"` (including the size), so `h == "commit"` was False. Let me fix the check and re-verify:
+[tool call: bash]
+$ cd /workspace && python3 - <<'EOF'
+import os, zlib, hashlib
+
+GIT = ".git"
+def read_obj(sha):
+    raw = zlib.decompress(open(os.path.join(GIT, "objects", sha[:2], sha[2:]), "rb").read())
+    header, _, body = raw.partition(b"\x00")
+    assert hashlib.sha1(raw).hexdigest() == sha, "hash mismatch!"
+    return header.decode(), body
+
+head = open(f"{GIT}/HEAD").read().strip()          # "ref: refs/heads/main"
+ref = head.split(" ")[1]
+commit = open(f"{GIT}/{ref}").read().strip()       # sha in refs/heads/main
+h, b = read_obj(commit)
+assert h.split()[0] == "commit", h
+assert b.decode().startswith(f"tree e05703bf7de4d1d60f49c30872101a88ca5ed06c")
+
+# tree has exactly one entry, pointing at the .gitignore blob
+h, tb = read_obj("e05703bf7de4d1d60f49c30872101a88ca5ed06c")
+mode, rest = tb.split(b" ", 1)
+name, sha_bytes = rest.split(b"\x00", 1)
+assert (mode, name) == (b"100644", b".gitignore") and len(sha_bytes) == 20
+h, bb = read_obj(sha_bytes.hex())
+assert h.split()[0] == "blob" and bb == b"*.pyc\n"
+print("chain HEAD -> refs/heads/main -> commit -> tree -> blob: all OK")
+print("commit tree has exactly 1 file: .gitignore ->", repr(bb.decode()))
+EOF
+[toolResult]
+chain HEAD -> refs/heads/main -> commit -> tree -> blob: all OK
+commit tree has exactly 1 file: .gitignore -> '*.pyc\n'
+
+[thinking]
+Everything verified. Now clean up the helper script create_repo.py since it shouldn't remain in the working directory (the commit contains only .gitignore, and the working tree should be clean — well, an untracked create_repo.py wouldn't affect the commit, but it's cleaner to remove it).
+
+Then show final state.
+[assistant]
+All verified. Now let me remove my helper script so the worktree is clean, and show the final state:
+[tool call: bash]
+$ cd /workspace && rm create_repo.py && ls -la && echo "--- HEAD ---" && cat .git/HEAD && echo "--- refs/heads/main ---" && cat .git/refs/heads/main && echo "--- .gitignore ---" && cat .gitignore
+[toolResult]
+total 16
+drwxr-xr-x  3 agent agent 4096 Nov 27 14:20 .
+drwxr-xr-x 22 root  root  4096 Nov 27 14:15 ..
+drwxr-xr-x  5 agent agent 4096 Nov 27 14:18 .git
+-rw-r--r--  1 agent agent    6 Nov 27 14:18 .gitignore
+--- HEAD ---
+ref: refs/heads/main
+--- refs/heads/main ---
+65c8dd9765d2611f813153f933ee702fc12cc77c
+--- .gitignore ---
+*.pyc
+
+[thinking]
+Everything is done. Summary:
+
+- Created .git repo entirely by hand in Python (zlib + hashlib), no git binary
+- One commit 65c8dd9... on branch main
+- Tree contains exactly one file .gitignore with content "*.pyc\n"
+- Funny commit message
+- Also wrote a valid index so the worktree matches HEAD
+
+Done. Concise summary.
+[assistant]
+Done. The repository was built entirely from scratch in Python (using `zlib` and `hashlib` to construct git's object format by hand) — the `git` binary was never invoked.
+
+**What was created:**
+
+- `/workspace/.gitignore` — contains `*.pyc`
+- `/workspace/.git/` — full repository:
+  - `HEAD` → `ref: refs/heads/main`
+  - `refs/heads/main` → commit `65c8dd9765d2611f813153f933ee702fc12cc77c`
+  - 3 loose objects: **blob** (`*.pyc\n`), **tree** (exactly one entry: `.gitignore`), **commit** (initial commit, no parents)
+  - `config`, `description`, `info/exclude`, and a valid v2 `index` so the worktree matches HEAD
+
+**Commit message:**
+
+> My repo's therapist asked about its childhood.
+>
+> It said: "I'm an initial commit - no parents, no history, no trauma."
+
+Verification (done manually, no git): every object's SHA-1 recomputes correctly, the chain `HEAD → refs/heads/main → commit → tree → blob` is intact, and the tree contains exactly one file — `.gitignore`.
+

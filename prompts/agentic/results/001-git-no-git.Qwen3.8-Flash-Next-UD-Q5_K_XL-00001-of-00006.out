@@ -1,0 +1,1010 @@
+== PCP RUN TRANSCRIPT ==========================================================
+case:    git-no-git (pcp-case/v0)
+about:   Create a git repo (one commit, funny message, only .gitignore ignoring *.pyc) WITHOUT the git command.
+model:   Qwen3.8-Flash-Next-UD-Q5_K_XL-00001-of-00006
+image:   pcp-agent-sandbox:1.1 (sha256:f3e363b121493a01890cb7cb48921cdfbb1e8b3c1e643d7f438231108a915c64)
+host:    26.4.1 (25E253) / arm64
+run:     2026-11-27T14:29:01Z → 2026-11-27T14:39:06Z (wall 605s, VM exit 124)
+score:   0.00%
+================================================================================
+
+== CHECKS ======================================================================
+
+  [fail] exactly-one-commit  (24 ms)
+      [host] [ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" rev-list --count HEAD 2>/dev/null)" = "1" ]
+  [fail] only-gitignore-in-commit  (16 ms)
+      [host] [ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" show --name-only --format= HEAD)" = ".gitignore" ]
+      | fatal: not a git repository (or any of the parent directories): .git
+  [fail] gitignore-covers-pyc  (5 ms)
+      [host] grep -q "\*\.pyc" "$PCP_ARTIFACTS/workspace/.gitignore"
+      | grep: /Users/sidney_fong/maxx_local/public-crap/prompts/agentic/results/001-git-no-git.Qwen3.8-Flash-Next-UD-Q5_K_XL-00001-of-00006/artifacts/workspace/.gitignore: No such file or directory
+  [human review] commit-message-funny  (11 ms)
+      [host] GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" log -1 --format=%s
+      | fatal: not a git repository (or any of the parent directories): .git
+  [fail] no-git-in-transcript  (26 ms)
+      [host] python3 "$PCP_HELPERS/no_git.py"
+      | GIT USAGE OBSERVED:
+      |   --workspace--/2026-11-27T14-29-02-590Z_01a21d68-e1fe-75e3-ae56-f0734ec6d1fd.jsonl: "ls /usr/share/man/man5 2>/dev/null | grep -i -E 'index|git' | head; ls /usr/share/man/man7 2>/dev/null | grep -i git | head; ls /usr/share/doc | grep -i git | head; info -d 2>/dev/null | head -5; ls /"
+
+== ARTIFACTS ===================================================================
+
+     5922907  pi-output.json
+          49  pi-stderr.log
+           4  rc
+      131140  sessions/--workspace--/2026-11-27T14-29-02-590Z_01a21d68-e1fe-75e3-ae56-f0734ec6d1fd.jsonl
+        5869  workspace/make_repo.py
+
+== PI SESSION ==================================================================
+
+-- session: sessions/--workspace--/2026-11-27T14-29-02-590Z_01a21d68-e1fe-75e3-ae56-f0734ec6d1fd.jsonl -
+
+[session 01a21d68-e1fe-75e3-ae56-f0734ec6d1fd cwd=/workspace]
+[model] Qwen3.8-Flash-Next-UD-Q5_K_XL-00001-of-00006 (provider llama.cpp)
+[thinking level] medium
+[system prompt omitted, 2 chars]
+[user]
+Create a git repository in the current directory with exactly one initial commit.
+
+Requirements:
+- The commit must contain exactly one file: .gitignore
+- The .gitignore must make git ignore *.pyc files
+- The commit message should be a funny joke
+
+CAVEAT: you must NOT use the git command to do this task. No `git`, no
+`/usr/bin/git`, no alias or wrapper around it. Any other approach is fine.
+[thinking]
+We need to create a git repository in the current directory with exactly one initial commit, without using the git command. So we need to construct the .git directory manually: write objects (blobs, trees, commits) with zlib compression and correct SHA-1 names, plus refs/heads/master (or main), HEAD, config, and index.
+
+Let's check the environment: is python available? Let's check.
+
+Plan:
+1. Create .gitignore in /workspace containing "*.pyc" (maybe with a comment).
+2. Write a Python script that creates .git structure:
+   - .git/HEAD -> ref: refs/heads/main (hmm, "master" or "main"? Either fine. Maybe use main since modern default. Let's check git default... doesn't matter. I'll use "main".)
+   - .git/config with core repositoryformatversion = 0, filemode, bare = false, logallrefupdates = t
+… [2372 chars truncated] …
+ldn't handle exceptions." Hmm commit message should be a joke. Also .gitignore must ignore *.pyc.
+
+Let me also ensure the file in the commit is exactly one file: .gitignore.
+
+Also should the working directory contain other files? Task says commit must contain exactly one file. The working tree could have other stuff... Let's check what's in /workspace currently.
+
+Let's start.
+
+Also need to double check: no .git already existing. And ensure git's "core.fsync"/"extensions" not needed.
+
+Also for the reflog format:
+`0000000000000000000000000000000000000000 <sha> Name <email> <ts> <tz>\tcommit (initial): message\n`
+
+Also COMMIT_EDITMSG optional.
+
+One consideration: git's `git fsck` should pass. Let's write verification in Python: recompute object hashes, inflate objects, check types.
+
+Let's go.
+[assistant]
+I'll inspect the environment first, then build the repository byte-by-byte without touching `git`.
+[tool call: bash]
+$ pwd; ls -la; python3 -V; echo "---"; ls -a /workspace | head -50
+[tool call: bash]
+$ command -v git; echo "git-path-check-done"; python3 -c "import zlib,hashlib;print('stdlib ok')"
+[toolResult]
+/workspace
+total 8
+drwxr-xr-x  2 agent agent 4096 Nov 27 14:12 .
+drwxr-xr-x 22 root  root  4096 Nov 27 14:29 ..
+Python 3.13.5
+---
+.
+..
+
+[toolResult]
+/usr/bin/git
+git-path-check-done
+stdlib ok
+
+[thinking]
+Empty directory, git exists but we must not use it. Let's write a Python script that builds the repo.
+
+Plan the joke commit message. Something like:
+
+"I told my wife we were getting a divorce... she can keep the house, I'll take the .pyc files" — eh.
+
+Better classic: "Why do programmers prefer dark mode? Because light attracts bugs." That's a joke. Good and short.
+
+.gitignore content: "*.pyc" maybe with comment lines. Requirement: "must make git ignore *.pyc files". Keep it simple:
+
+```
+# Byte-compiled / cache files that nobody loves
+*.pyc
+```
+
+Comments are fine for gitignore. But keep it robust — maybe also `*.py[cod]`? No, requirement says *.pyc; extra patterns fine but simplest is best: include `*.pyc`.
+
+Let's write the script.
+[assistant]
+Empty directory, and `/usr/bin/git` exists — I'll leave it untouched and build the object store by hand with Python (zlib + SHA-1).
+[tool call: write]
+{"path": "/workspace/make_repo.py", "content": "#!/usr/bin/env python3\n\"\"\"\nBuild a valid git repository from scratch -- no `git` binary involved.\n\nWe hand-write the on-disk format:\n  .git/HEAD, .git/config, .git/description\n  .git/objects/xx/yyyy...        (zlib-compressed loose objects)\n  .git/refs/heads/main           (raw commit sha)\n  .git/logs/...                  (reflogs)\n  .git/index                     (v2 index, so `git status` is clean)\n\"\"\"\nimport hashlib\nimport os\n
+… [5802 chars truncated] …
+{"path": "/workspace/make_repo.py", "content": "#!/usr/bin/env python3\n\"\"\"\nBuild a valid git repository from scratch -- no `git` binary involved.\n\nWe hand-write the on-disk format:\n  .git/HEAD, .git/config, .git/description\n  .git/objects/xx/yyyy...        (zlib-compressed loose objects)\n  .git/refs/heads/main           (raw commit sha)\n  .git/logs/...                  (reflogs)\n  .git/index                     (v2 index, so `git status` is clean)\n\"\"\"\nimport hashlib\nimport os\nimport struct\nimport time\nimport zlib\n\nROOT = os.path.dirname(os.path.abspath(__file__))\nGIT = os.path.join(ROOT, \".git\")\n\nNAME = \"Python Git Wrangler\"\nEMAIL = \"wrangler@example.com\"\nTZ = \"+0000\"\n\nIGNORE_CONTENT = (\n    \"# Byte-compiled Python artifacts: seen, unloved, never invited back.\\n\"\n    \"*.pyc\\n\"\n)\n\nMESSAGE = (\n    \"Why do programmers prefer dark mode?\\n\"\n    \"\\n\"\n    \"Because light attracts bugs. The .pyc ones especially, so they are now\\n\"\n    \"ignored. (I also told my computer I needed a break, and now it will not\\n\"\n    \"stop sending me KitKats.)\\n\"\n)\n\n\ndef now_stamp():\n    ts = int(time.time())\n    return ts, TZ\n\n\ndef write_object(obj_type: bytes, payload: bytes) -> str:\n    \"\"\"Write a loose object, return its SHA-1.\"\"\"\n    raw = obj_type + b\" \" + str(len(payload)).encode() + b\"\\0\" + payload\n    sha = hashlib.sha1(raw).hexdigest()\n    dirname = os.path.join(GIT, \"objects\", sha[:2])\n    os.makedirs(dirname, exist_ok=True)\n    path = os.path.join(dirname, sha[2:])\n    if not os.path.exists(path):\n        with open(path, \"wb\") as fh:\n            fh.write(zlib.compress(raw, 1))\n            fh.flush()\n            os.fsync(fh.fileno())\n    return sha\n\n\ndef write_bytes(path: str, data: bytes):\n    os.makedirs(os.path.dirname(path), exist_ok=True)\n    with open(path, \"wb\") as fh:\n        fh.write(data)\n        fh.flush()\n        os.fsync(fh.fileno())\n\n\ndef ident(ts: int, tz: str) -> bytes:\n    return b\"%s <%s> %d %s\" % (NAME.encode(), EMAIL.encode(), ts, tz.encode())\n\n\ndef build_index(entries):\n    \"\"\"entries: list of (path, mode, sha, ctime, mtime, size)\"\"\"\n    body = b\"\"\n    for path, mode, sha, ctime, mtime, size in entries:\n        pb = path.encode()\n        name_len = len(pb)\n        assert name_len < 0xFFF\n        flags = name_len  # stage 0\n        fixed = struct.pack(\n            \">IIIIIIII I20sH\",\n            ctime, 0,          # ctime sec, nsec\n            mtime, 0,          # mtime sec, nsec\n            mode, 0,           # mode, uid  (uid/gid left 0)\n            0,                 # gid\n            size,\n            0,                 # placeholder, replaced below\n            bytes.fromhex(sha),\n            flags,\n        )\n        # The struct above has one extra uint32; drop it and rebuild cleanly.\n        fixed = struct.pack(\n            \">IIIIIII 20sH\",\n            ctime, 0,\n            mtime, 0,\n            mode,\n            0,                 # uid\n            0,                 # gid\n            size,\n            bytes.fromhex(sha),\n            flags,\n        )\n        # entry length = 12-byte header-equivalent + path + NUL, padded to 8\n        entry_len = len(fixed) + len(pb) + 1\n        pad = 8 - (entry_len % 8)\n        body += fixed + pb + b\"\\0\" * (1 + pad)\n\n    header = b\"DIRC\" + struct.pack(\">III\", 2, len(entries), 0)\n    tree_ext = b\"TREE\" + struct.pack(\">I\", 0)\n    data = header + body + tree_ext\n    return data + hashlib.sha1(data).digest()\n\n\ndef main():\n    # ---- skeleton -------------------------------------------------------\n    for d in (\"objects/info\", \"objects/pack\", \"refs/heads\", \"refs/tags\",\n              \"refs/remotes/origin\", \"logs/refs/heads\", \"branches\"):\n        os.makedirs(os.path.join(GIT, d), exist_ok=True)\n\n    write_bytes(os.path.join(GIT, \"description\"),\n                b\"Unnamed repository; edit this file 'description' to name the repository.\\n\")\n    write_bytes(os.path.join(GIT, \"COMMIT_EDITMSG\"), MESSAGE.encode())\n    write_bytes(os.path.join(GIT, \"config\"), (\n        \"[core]\\n\"\n        \"\\trepositoryformatversion = 0\\n\"\n        \"\\tfilemode = true\\n\"\n        \"\\tbare = false\\n\"\n        \"\\tlogallrefupdates = true\\n\"\n        \"[user]\\n\"\n        \"\\tname = %s\\n\"\n        \"\\temail = %s\\n\" % (NAME, EMAIL)\n    ).encode())\n\n    # ---- working tree file ---------------------------------------------\n    ignore_path = os.path.join(ROOT, \".gitignore\")\n    write_bytes(ignore_path, IGNORE_CONTENT.encode())\n    st = os.stat(ignore_path)\n\n    # ---- objects --------------------------------------------------------\n    blob = write_object(b\"blob\", IGNORE_CONTENT.encode())\n    tree_entry = b\"100644 .gitignore\\0\" + bytes.fromhex(blob)\n    tree = write_object(b\"tree\", tree_entry)\n\n    ts, tz = now_stamp()\n    commit_payload = (\n        b\"tree \" + tree.encode() + b\"\\n\"\n        b\"author \" + ident(ts, tz) + b\"\\n\"\n        b\"committer \" + ident(ts, tz) + b\"\\n\"\n        b\"\\n\"\n        + MESSAGE.encode()\n    )\n    commit = write_object(b\"commit\", commit_payload)\n\n    # ---- refs + HEAD + reflog ------------------------------------------\n    branch = \"main\"\n    write_bytes(os.path.join(GIT, \"refs\", \"heads\", branch), (commit + \"\\n\").encode())\n    write_bytes(os.path.join(GIT, \"HEAD\"), (\"ref: refs/heads/%s\\n\" % branch).encode())\n\n    zero = \"0\" * 40\n    reflog_line = (\"%s %s %s\\tcommit (initial): %s\\n\" % (\n        zero, commit, ident(ts, tz).decode(), MESSAGE.strip().replace(\"\\n\", \" \")\n    )).encode()\n    write_bytes(os.path.join(GIT, \"logs\", \"HEAD\"), reflog_line)\n    write_bytes(os.path.join(GIT, \"logs\", \"refs\", \"heads\", branch), reflog_line)\n\n    # ---- index ----------------------------------------------------------\n    index = build_index([\n        (\".gitignore\", 0o100644, blob, int(st.st_ctime), int(st.st_mtime), st.st_size),\n    ])\n    write_bytes(os.path.join(GIT, \"index\"), index)\n\n    print(\"blob    :\", blob)\n    print(\"tree    :\", tree)\n    print(\"commit  :\", commit)\n\n\nif __name__ == \"__main__\":\n    main()\n"}
+[toolResult]
+Successfully wrote to /workspace/make_repo.py
+[thinking]
+Wait: the script itself is in /workspace, which is the repo working tree. That's fine — commit contains only .gitignore, but the working tree has make_repo.py untracked. Requirement only says commit contains exactly one file. But it may be cleaner to put the script outside the repo, e.g., /tmp. Hmm, but then the working tree would only have .gitignore, which is cleanest — `git status` would be perfectly clean. Let me move the script to /tmp.
+
+Also I have a leftover buggy first struct.pack that gets overwritten — clean it up.
+
+Also index padding: standard git pads so that entry size is multiple of 8 counting from entry start; entry starts after 12-byte header. header 12 bytes is multiple of 4 but not 8... Actually git's calculation: `sz = sizeof(*hdr) + strlen(path) + 1; ondisk_sz = (sz + 7
+… [24704 chars truncated] …
+ → error. So no.
+
+OK, alternative: maybe I can find ground truth. Options:
+1. Check if git's Documentation is on disk (man/info) — the gitformat-index(5) page states the padding rule. Let me look: it says something like "The cache entry time ... Entries are padded with zeros to the next multiple of 8 bytes (including the cache header and path)". If it says "including the cache entry header", that's rule A. I believe the man page says: "NUL or DE/trap for path ... padding with NULs to the next multiple of 8." Let me just read the installed doc if present.
+2. Check for any vendored implementation source on disk (dulwich, libgit2, go-git) — e.g., pip packages.
+
+Let me explore the filesystem for these. Also check network availability for pip install dulwich (offline likely).
+
+Let's run checks.
+[tool call: bash]
+$ python3 -c "import dulwich, sys; print('dulwich', dulwich.__version__)" 2>&1 | head -3; python3 -c "import pygit2; print('pygit2', pygit2.__version__)" 2>&1 | head -3; pip list 2>/dev/null | head -40
+[tool call: bash]
+$ ls /usr/share/man/man5 2>/dev/null | grep -i -E 'index|git' | head; ls /usr/share/man/man7 2>/dev/null | grep -i git | head; ls /usr/share/doc | grep -i git | head; info -d 2>/dev/null | head -5; ls /usr/local/share/doc 2>/dev/null | head
+[toolResult]
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import dulwich, sys; print('dulwich', dulwich.__version__)
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import pygit2; print('pygit2', pygit2.__version__)
+Package   Version
+--------- -------
+packaging 25.0
+pip       25.1.1
+wheel     0.46.1
+
+[toolResult]
+git
+git-man
+node
+
+[thinking]
+There's /usr/share/doc/git and man pages. Let's look for gitformat-index documentation in the man pages (man5/gitformat-index.5 or in git-man package docs). Reading docs is fine (not running git).
+
+Also, maybe there's git's perl module or `git-gui`/`gitk` or `/usr/share/git-core`... Also possibly `/usr/lib/git-core/` contains scripts. And there may be Python scripts in /usr/share/git-core/contrib.
+
+Let's search man pages.
+[tool call: bash]
+$ ls /usr/share/man/man5/ | head -50; echo ---; ls /usr/share/man/man7/ | head -60
+[tool call: bash]
+$ ls /usr/share/doc/git 2>/dev/null | head -20; echo ---; ls /usr/share/git-core 2>/dev/null | head; echo ---; ls /usr/lib/git-core 2>/dev/null | grep -v '^git-' | head -20
+[toolResult]
+---
+
+[toolResult]
+RelNotes
+contrib
+copyright
+---
+contrib
+templates
+---
+git
+mergetools
+scalar
+
+[thinking]
+No man pages for gitformat. Let's check /usr/share/doc/git/RelNotes (release notes may mention index alignment). And /usr/share/git-core/contrib may have stuff. Also, maybe there's the git HTML docs installed somewhere.
+
+Actually, let me reconsider: maybe the risk assessment for the index can be resolved differently — I can *derive* the rule from a real git-written index file that exists on this system! Are there any .git repos on this filesystem with an index written by real git? E.g., /usr/local/lib/node_modules/... maybe not. Let's search for `.git/index` files on disk (excluding our target). If found, I can inspect the exact padding real git used. That's reading files, not running git. 
+
+But careful: reading an existing repo's index is fine. But I must NOT run `git`. Also I should not create my repo inside another git repo. /workspace is not a repo (empty dir).
+
+Let's search: find / -name index -path '*/.git/*' 2>/dev/null | head. Also look for git's own docs in html form.
+[tool call: bash]
+$ timeout 120 find / -xdev -path '*/.git/index' -type f 2>/dev/null | head -10; echo "=== search done"
+[tool call: bash]
+$ ls /usr/share/doc/git/RelNotes | tail -3; grep -rl "index" /usr/share/doc/git/contrib 2>/dev/null | head -20
+[toolResult]
+=== search done
+
+[toolResult]
+(no output)
+[thinking]
+No existing git index to crib from, no docs. Let me check if there's network access to fetch git's source or install dulwich — but downloading git source is fine (not running git). Let's test network quickly.
+
+Actually, better idea: check if the pi node_modules bundles anything git-related... unlikely to help with index padding.
+
+Alternatively: think harder and get the format right from first principles + memory.
+
+Let me try hard to recall git's read-cache.c `load_cache_entries` (git v2.39-ish):
+
+```c
+static void load_cache_entries(struct index_state *istate,
+			       const unsigned char *map,
+			       off_t offset, unsigned int nr, int extension_offset,
+			       size_t map_size)
+{
+	unsigned int i;
+	struct cache_entry **entries;
+	...
+	for (i = 0; i < nr; i++) {
+		struct cache_entry *ce;
+… [20364 chars truncated] …
+len + 1 (NUL included) → 32 + len + 1 = 43 for len=10. Then the on-disk size = align(43 + 20 + 2 = 65, 8) = 72? Hmm, hash 20 + flags 2 aren't in the struct (that's why the reader does `offset += cache_entry_disk_size(0)` = 32 then reads hash/flags from... no).
+
+Ugh, conflicting memories. Time for empirical determination without git... Hmm! Idea: is there a *pure* implementation of git I could install offline? Check pip download → network? Let's test network access. If network works, `pip install dulwich` and use dulwich to create the repo (dulwich is a well-tested pure-Python git impl) — then all byte-level details (objects, refs, index) come from a library designed for git interop, and I can inspect its source to confirm the index size formula. That's the robust path.
+
+Let's test network.
+[tool call: bash]
+$ timeout 25 python3 -c "
+import urllib.request
+print(urllib.request.urlopen('https://pypi.org/simple/dulwich/', timeout=15).status)
+" 2>&1 | tail -3
+[tool call: bash]
+$ ls /usr/share/doc/git/contrib; ls /usr/share/git-core/contrib 2>/dev/null; find / -xdev -name "*.py" -path "*git*" 2>/dev/null | grep -viE 'node_modules|/proc' | head -10
+[toolResult]
+200
+
+[toolResult]
+buildsystems
+coccinelle
+contacts
+credential
+diff-highlight
+examples
+fast-import
+git-jump
+git-shell-commands
+hooks
+long-running-filter
+persistent-https
+remote-helpers
+stats
+subtree
+thunderbird-patch-inline
+update-unicode
+vscode
+workdir
+hooks
+/usr/lib/python3/dist-packages/pip/_internal/vcs/git.py
+
+[thinking]
+Network works. Plan: install dulwich into an isolated venv/target dir (not polluting the repo), and use it to build the repo. Dulwich writes objects, refs, HEAD, and index in git-compatible format.
+
+But caution: does dulwich write the repo in a way that real git fully accepts? Yes, dulwich is widely used for interop (and it can even push/fetch). It writes refs as loose refs, objects as loose zlib objects, index v2.
+
+Note: dulwich's default index writing — let me check its source after install to confirm padding rule, and cross-check with git's docs (I'll read the installed source).
+
+Even better: use dulwich to build the repo, then write my own independent verifier that parses the .git directory strictly (loose objects inflated, tree entries, commit graph, ref validity) — no git binary.
+
+Al
+… [482 chars truncated] …
+nload git source from kernel.org via urllib (no git binary involved!) and read read-cache.c to get the exact padding formula. That's decisive and cheap: git is ~11MB tarball. Let's do that: read read-cache.c's ce_write/do_write_index/load_cache_entries to write the index exactly as git does, and then cross-check against dulwich.
+
+That's a good use of effort given the caveat forbids verification with git itself. Let's do it:
+
+1. Download dulwich via pip into /tmp/venv (for building repo).
+2. Download git source tarball to /tmp/git-src for reference (reading C code).
+3. Build the repo with dulwich (objects, refs, HEAD, config, index).
+4. Verify strictly with my own Python parser; also compare my index bytes against the formula from git's read-cache.c.
+
+Let's start both downloads in parallel.
+[assistant]
+Network is available. I'll pull `dulwich` (a pure-Python git implementation) to build the repo, plus git's C source as a *reference document* for the exact on-disk byte layout — no `git` binary involved.
+[tool call: bash]
+$ cd /tmp && timeout 300 python3 -m venv venv >/dev/null 2>&1 && timeout 300 /tmp/venv/bin/pip install -q dulwich 2>&1 | tail -3; /tmp/venv/bin/python -c "import dulwich; print('dulwich', dulwich.__version__)"
+[tool call: bash]
+$ cd /tmp && timeout 300 python3 - <<'EOF'
+import urllib.request, tarfile, io
+url="https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.45.2.tar.gz"
+try:
+    data=urllib.request.urlopen(url, timeout=120).read()
+except Exception as e:
+    print("mirror1 failed", e)
+    data=urllib.request.urlopen("https://www.kernel.org/pub/software/scm/git/git-2.45.2.tar.gz", timeout=120).read()
+print("downloaded", len(data))
+tf=tarfile.open(fileobj=io.BytesIO(data))
+names=[n for n in tf.getnames() if n.split('/')[-1] in ('read-cache.c','cache.h','read-cache-internal.h','cache-tree.c','index-format.h')]
+tf.extractall('/tmp/gitref', members=names)
+print(names)
+EOF
+ls -la /tmp/gitref/*/ 2>/dev/null | head -20
+[toolResult]
+dulwich (1, 2, 22)
+
+[toolResult]
+<stdin>:11: DeprecationWarning: Python 3.14 will, by default, filter extracted tar archives and reject files or modify their metadata. Use the filter argument to control this behavior.
+downloaded 11116455
+['git-2.45.2/cache-tree.c', 'git-2.45.2/read-cache.c']
+total 148
+drwxr-xr-x 2 agent agent   4096 Nov 27 14:37 .
+drwxr-xr-x 3 agent agent   4096 Nov 27 14:37 ..
+-rw-rw-r-- 1 agent agent  25173 May 31  2024 cache-tree.c
+-rw-rw-r-- 1 agent agent 111500 May 31  2024 read-cache.c
+
+[thinking]
+Now read the authoritative padding code from git's read-cache.c.
+[tool call: bash]
+$ cd /tmp/gitref/git-2.45.2 && grep -n "cache_entry_disk_size\|cache_entry_size\|extended_size\|ondisk_size" read-cache.c | head -40
+[tool call: bash]
+$ cd /tmp/gitref/git-2.45.2 && grep -n "8-byte aligned\|% 8\|~7" read-cache.c | head -30
+[toolResult]
+94:	ce = mem_pool_alloc(mem_pool, cache_entry_size(len));
+102:	ce = mem_pool_calloc(mem_pool, 1, cache_entry_size(len));
+811:	return xcalloc(1, cache_entry_size(len));
+1699:#define ondisk_cache_entry_size(len) align_flex_name(ondisk_cache_entry,len)
+1703:#define ondisk_ce_size(ce) (ondisk_cache_entry_size(ondisk_data_size((ce)->ce_flags, ce_namelen(ce))))
+1970:static size_t estimate_cache_size(size_t ondisk_size, unsigned int entries)
+1978:	return ondisk_size + entries * per_entry;
+3504:		memset(ce, 0xCD, cache_entry_size(ce->ce_namelen));
+
+[toolResult]
+1697:#define align_padding_size(size, len) ((size + (len) + 8) & ~7) - (size + len)
+1698:#define align_flex_name(STRUCT,len) ((offsetof(struct STRUCT,data) + (len) + 8) & ~7)
+
+[thinking]
+Now: `align_flex_name(ondisk_cache_entry, len) = (offsetof(struct ondisk_cache_entry, data) + len + 8) & ~7`.
+
+Let's find `struct ondisk_cache_entry` definition and `ondisk_data_size`, and the writer loop and reader loop.
+[tool call: bash]
+$ cd /tmp/gitref/git-2.45.2 && sed -n '/^struct ondisk_cache_entry {/,/^};/p' read-cache.c; echo '--- ondisk_cache_entry_extended:'; sed -n '/^struct ondisk_cache_entry_extended {/,/^};/p' read-cache.c; echo '--- helpers:'; sed -n '1690,1730p' read-cache.c
+[tool call: bash]
+$ cd /tmp/gitref/git-2.45.2 && grep -n "ondisk_data_size\|extended\[" read-cache.c | head -20
+[toolResult]
+struct ondisk_cache_entry {
+	struct cache_time ctime;
+	struct cache_time mtime;
+	uint32_t dev;
+	uint32_t ino;
+	uint32_t mode;
+	uint32_t uid;
+	uint32_t gid;
+	uint32_t size;
+	/*
+	 * unsigned char hash[hashsz];
+	 * uint16_t flags;
+	 * if (flags & CE_EXTENDED)
+	 *	uint16_t flags2;
+	 */
+	unsigned char data[GIT_MAX_RAWSZ + 2 * sizeof(uint16_t)];
+	char name[FLEX_ARRAY];
+};
+--- ondisk_cache_entry_extended:
+--- helpers:
+	 *	uint16_t flags2;
+	 */
+	unsigned char data[GIT_MAX_RAWSZ + 2 * sizeof(uint16_t)];
+	char name[FLEX_ARRAY];
+};
+
+/* These are only used for v3 or lower */
+#define align_padding_size(size, len) ((size + (len) + 8) & ~7) - (size + len)
+#define align_flex_name(STRUCT,len) ((offsetof(struct STRUCT,data) + (len) + 8) & ~7)
+#define ondisk_cache_entry_size(len) align_flex_name(ondisk_cache_entry,len)
+#define ondisk_data_size(flags, len) (the_hash_algo->rawsz + \
+				     ((flags & CE_EXTENDED) ? 2 : 1) * sizeof(uint16_t) + len)
+#define ondisk_data_size_max(len) (ondisk_data_size(CE_EXTENDED, len))
+#define ondisk_ce_size(ce) (ondisk_cache_entry_size(ondisk_data_size((ce)->ce_flags, ce_namelen(ce))))
+
+/* Allow fsck to force verification of the index checksum. */
+int verify_index_checksum;
+
+/* Allow fsck to force verification of the cache entry order. */
+int verify_ce_order;
+
+static int verify_hdr(const struct cache_header *hdr, unsigned long size)
+{
+	git_hash_ctx c;
+	unsigned char hash[GIT_MAX_RAWSZ];
+	int hdr_version;
+	unsigned char *start, *end;
+	struct object_id oid;
+
+	if (hdr->hdr_signature != htonl(CACHE_SIGNATURE))
+		return error(_("bad signature 0x%08x"), hdr->hdr_signature);
+	hdr_version = ntohl(hdr->hdr_version);
+	if (hdr_version < INDEX_FORMAT_LB || INDEX_FORMAT_UB < hdr_version)
+		return error(_("bad index version %d"), hdr_version);
+
+	if (!verify_index_checksum)
+		return 0;
+
+	end = (unsigned char *)hdr + size;
+	start = end - the_hash_algo->rawsz;
+	oidread(&oid, start);
+
+[toolResult]
+1700:#define ondisk_data_size(flags, len) (the_hash_algo->rawsz + \
+1702:#define ondisk_data_size_max(len) (ondisk_data_size(CE_EXTENDED, len))
+1703:#define ondisk_ce_size(ce) (ondisk_cache_entry_size(ondisk_data_size((ce)->ce_flags, ce_namelen(ce))))
+2667:	size = offsetof(struct ondisk_cache_entry,data) + ondisk_data_size(ce->ce_flags, 0);
+
+[thinking]
+So offsetof(struct ondisk_cache_entry, data) = 2 cache_time (16) + dev + ino + mode + uid + gid + size (6*4=24) = 40. So the fixed part is 40 bytes! Plus data = hash(20) + flags(2) + name(len) → 40 + 22 + len = 62 + len, then aligned: (40 + 22 + len + 8) & ~7.
+
+Note the NUL terminator is part of `len`? Let's check: `ondisk_data_size(flags, len) = rawsz + (1 or 2)*2 + len`. And ce_namelen is the path length without NUL. In the writer, they write name + NUL... Let's check the writer code to see how len is used — is it ce_namelen(ce)+1?
+
+Let's look at do_write_index around line 2667 and the reader load_cache_entries.
+[tool call: bash]
+$ cd /tmp/gitref/git-2.45.2 && sed -n '2640,2700p' read-cache.c
+[tool call: bash]
+$ cd /tmp/gitref/git-2.45.2 && grep -n "load_cache_entries\|extension_offset" read-cache.c | head -30
+[toolResult]
+	ondisk->uid  = htonl(ce->ce_stat_data.sd_uid);
+	ondisk->gid  = htonl(ce->ce_stat_data.sd_gid);
+	ondisk->size = htonl(ce->ce_stat_data.sd_size);
+	hashcpy(ondisk->data, ce->oid.hash);
+
+	flags = ce->ce_flags & ~CE_NAMEMASK;
+	flags |= (ce_namelen(ce) >= CE_NAMEMASK ? CE_NAMEMASK : ce_namelen(ce));
+	flagsp[0] = htons(flags);
+	if (ce->ce_flags & CE_EXTENDED) {
+		flagsp[1] = htons((ce->ce_flags & CE_EXTENDED_FLAGS) >> 16);
+	}
+}
+
+static int ce_write_entry(struct hashfile *f, struct cache_entry *ce,
+			  struct strbuf *previous_name, struct ondisk_cache_entry *ondisk)
+{
+	int size;
+	unsigned int saved_namelen;
+	int stripped_name = 0;
+	static unsigned char padding[8] = { 0x00 };
+
+	if (ce->ce_flags & CE_STRIP_NAME) {
+		saved_namelen = ce_namelen(ce);
+		ce->ce_namelen = 0;
+		stripped_name = 1;
+	}
+
+	size = offsetof(struct ondisk_cache_entry,data) + ondisk_data_size(ce->ce_flags, 0);
+
+	if (!previous_name) {
+		int len = ce_namelen(ce);
+		copy_cache_entry_to_ondisk(ondisk, ce);
+		hashwrite(f, ondisk, size);
+		hashwrite(f, ce->name, len);
+		hashwrite(f, padding, align_padding_size(size, len));
+	} else {
+		int common, to_remove, prefix_size;
+		unsigned char to_remove_vi[16];
+		for (common = 0;
+		     (ce->name[common] &&
+		      common < previous_name->len &&
+		      ce->name[common] == previous_name->buf[common]);
+		     common++)
+			; /* still matching */
+		to_remove = previous_name->len - common;
+		prefix_size = encode_varint(to_remove, to_remove_vi);
+
+		copy_cache_entry_to_ondisk(ondisk, ce);
+		hashwrite(f, ondisk, size);
+		hashwrite(f, to_remove_vi, prefix_size);
+		hashwrite(f, ce->name + common, ce_namelen(ce) - common);
+		hashwrite(f, padding, 1);
+
+		strbuf_splice(previous_name, common, to_remove,
+			      ce->name + common, ce_namelen(ce) - common);
+	}
+	if (stripped_name) {
+		ce->ce_namelen = saved_namelen;
+		ce->ce_flags &= ~CE_STRIP_NAME;
+	}
+
+
+[toolResult]
+2089:struct load_cache_entries_thread_data
+2103: * A thread proc to run the load_cache_entries() computation
+2106:static void *load_cache_entries_thread(void *_data)
+2108:	struct load_cache_entries_thread_data *p = _data;
+2120:static unsigned long load_cache_entries_threaded(struct index_state *istate, const char *mmap, size_t mmap_size,
+2124:	struct load_cache_entries_thread_data *data;
+2142:		struct load_cache_entries_thread_data *p = &data[i];
+2168:		err = pthread_create(&p->pthread, NULL, load_cache_entries_thread, p);
+2170:			die(_("unable to create load_cache_entries thread: %s"), strerror(err));
+2179:		struct load_cache_entries_thread_data *p = &data[i];
+2183:			die(_("unable to join load_cache_entries thread: %s"), strerror(err));
+2215:	size_t extension_offset = 0;
+2279:		extension_offset = read_eoie_extension(mmap, mmap_size);
+2280:		if (extension_offset) {
+2283:			p.src_offset = extension_offset;
+2296:	if (extension_offset && nr_threads > 1)
+2297:		ieot = read_ieot_extension(mmap, mmap_size, extension_offset);
+2300:		src_offset += load_cache_entries_threaded(istate, mmap, mmap_size, nr_threads, ieot);
+2310:	if (extension_offset) {
+
+[thinking]
+Key: writer (v2 path, no prefix compression since previous_name only for v3+):
+
+size = offsetof(ondisk_cache_entry, data) + ondisk_data_size(flags, 0) = 40 + (20 + 2 + 0) = 62 (non-extended).
+Writes 62 bytes fixed (hash + flags inside data), then name (len bytes, NO explicit NUL!), then padding of align_padding_size(size, len) = ((size + len + 8) & ~7) - (size + len).
+
+Wait — where's the NUL terminator? For index v2, the name is written without a NUL?? Hmm, actually git writes the name and then padding bytes (which are zeros — the padding includes at least 1 byte, so the string is implicitly NUL-terminated by the first padding byte). align_padding_size(size, len) = ((62 + len + 8) & ~7) - (62+len). Since (x+8)&~7 ≥ x+1 always? For x=64: (64+8)&~7 = 72 → pad 8. For x = 63: (71)&~7=64 → pad 
+… [131 chars truncated] …
+len=10: 62+10 = 72; (72+8)&~7 = 80 → padding 8 bytes; total entry = 80 bytes. Interesting: so entry sizes are multiples of 8 (80 here) — so entry boundaries: 12, 92, ... Yes: rule A (entry length multiple of 8) with the caveat that padding is at least 1 and up to 8 → equivalently total = ((62+len+8)&~7).
+
+Note this differs from my earlier "pad to multiple of 8 after path+NUL" formula: 60+10+1=71 → 72. The real one: 62+10=72 → 80. Because the fixed part is 62 (includes dev/ino!), and padding rounds to multiple of 8 with min 1 max 8.
+
+Important: the on-disk entry includes dev and ino fields (4 bytes each), zero-filled. So my earlier struct was wrong (54 bytes fixed) — good thing I checked!
+
+Now the reader: find load_cache_entries in this version (non-threaded path) to confirm offset advance.
+[tool call: bash]
+$ cd /tmp/gitref/git-2.45.2 && grep -n "static void load_cache_entries" read-cache.c; sed -n '/^static void load_cache_entries(/,/^}/p' read-cache.c
+[tool call: bash]
+$ cd /tmp/gitref/git-2.45.2 && sed -n '2200,2330p' read-cache.c
+[toolResult]
+(no output)
+[toolResult]
+	if (!istate->repo->settings.command_requires_full_index &&
+	    is_sparse_index_allowed(istate, 0))
+		istate->sparse_index = 1;
+}
+
+/* remember to discard_cache() before reading a different cache! */
+int do_read_index(struct index_state *istate, const char *path, int must_exist)
+{
+	int fd;
+	struct stat st;
+	unsigned long src_offset;
+	const struct cache_header *hdr;
+	const char *mmap;
+	size_t mmap_size;
+	struct load_index_extensions p;
+	size_t extension_offset = 0;
+	int nr_threads, cpus;
+	struct index_entry_offset_table *ieot = NULL;
+
+	if (istate->initialized)
+		return istate->cache_nr;
+
+	istate->timestamp.sec = 0;
+	istate->timestamp.nsec = 0;
+	fd = open(path, O_RDONLY);
+	if (fd < 0) {
+		if (!must_exist && errno == ENOENT) {
+			set_new_index_sparsity(istate);
+			istate->initialized = 1;
+			return 0;
+		}
+		die_errno(_("%s: index file open failed"), path);
+	}
+
+	if (fstat(fd, &st))
+		die_errno(_("%s: cannot stat the open index"), path);
+
+	mmap_size = xsize_t(st.st_size);
+	if (mmap_size < sizeof(struct cache_header) + the_hash_algo->rawsz)
+		die(_("%s: index file smaller than expected"), path);
+
+	mmap = xmmap_gently(NULL, mmap_size, PROT_READ, MAP_PRIVATE, fd, 0);
+	if (mmap == MAP_FAILED)
+		die_errno(_("%s: unable to map index file%s"), path,
+			mmap_os_err());
+	close(fd);
+
+	hdr = (const struct cache_header *)mmap;
+	if (verify_hdr(hdr, mmap_size) < 0)
+		goto unmap;
+
+	oidread(&istate->oid, (const unsigned char *)hdr + mmap_size - the_hash_algo->rawsz);
+	istate->version = ntohl(hdr->hdr_version);
+	istate->cache_nr = ntohl(hdr->hdr_entries);
+	istate->cache_alloc = alloc_nr(istate->cache_nr);
+	CALLOC_ARRAY(istate->cache, istate->cache_alloc);
+	istate->initialized = 1;
+
+	p.istate = istate;
+	p.mmap = mmap;
+	p.mmap_size = mmap_size;
+
+	src_offset = sizeof(*hdr);
+
+	if (git_config_get_index_threads(&nr_threads))
+		nr_threads = 1;
+
+	/* TODO: does creating more threads than cores help? */
+	if (!nr_threads) {
+		nr_threads = istate->cache_nr / THREAD_COST;
+		cpus = online_cpus();
+		if (nr_threads > cpus)
+			nr_threads = cpus;
+	}
+
+	if (!HAVE_THREADS)
+		nr_threads = 1;
+
+	if (nr_threads > 1) {
+		extension_offset = read_eoie_extension(mmap, mmap_size);
+		if (extension_offset) {
+			int err;
+
+			p.src_offset = extension_offset;
+			err = pthread_create(&p.pthread, NULL, load_index_extensions, &p);
+			if (err)
+				die(_("unable to create load_index_extensions thread: %s"), strerror(err));
+
+			nr_threads--;
+		}
+	}
+
+	/*
+	 * Locate and read the index entry offset table so that we can use it
+	 * to multi-thread the reading of the cache entries.
+	 */
+	if (extension_offset && nr_threads > 1)
+		ieot = read_ieot_extension(mmap, mmap_size, extension_offset);
+
+	if (ieot) {
+		src_offset += load_cache_entries_threaded(istate, mmap, mmap_size, nr_threads, ieot);
+		free(ieot);
+	} else {
+		src_offset += load_all_cache_entries(istate, mmap, mmap_size, src_offset);
+	}
+
+	istate->timestamp.sec = st.st_mtime;
+	istate->timestamp.nsec = ST_MTIME_NSEC(st);
+
+	/* if we created a thread, join it otherwise load the extensions on the primary thread */
+	if (extension_offset) {
+		int ret = pthread_join(p.pthread, NULL);
+		if (ret)
+			die(_("unable to join load_index_extensions thread: %s"), strerror(ret));
+	} else {
+		p.src_offset = src_offset;
+		load_index_extensions(&p);
+	}
+	munmap((void *)mmap, mmap_size);
+
+	/*
+	 * TODO trace2: replace "the_repository" with the actual repo instance
+	 * that is associated with the given "istate".
+	 */
+	trace2_data_intmax("index", the_repository, "read/version",
+			   istate->version);
+	trace2_data_intmax("index", the_repository, "read/cache_nr",
+			   istate->cache_nr);
+
+	/*
+	 * If the command explicitly requires a full index, force it
+
+[thinking]
+Now load_all_cache_entries / load_cache_entries_one (the actual per-entry advance).
+[tool call: bash]
+$ cd /tmp/gitref/git-2.45.2 && sed -n '/^static int load_cache_entries_one(/,/^}/p' read-cache.c; echo '=== load_all:'; sed -n '/^static size_t load_all_cache_entries(/,/^}/p' read-cache.c
+[toolResult]
+=== load_all:
+
+[thinking]
+The reader functions are in a header? Let's grep for "load_all_cache_entries" definition location.
+[tool call: bash]
+$ cd /tmp/gitref/git-2.45.2 && grep -n "load_all_cache_entries\|load_cache_entries_cb\|cache_entry_offset\|onDiskOffset" read-cache.c | head -20
+[toolResult]
+2061:static unsigned long load_all_cache_entries(struct index_state *istate,
+2303:		src_offset += load_all_cache_entries(istate, mmap, mmap_size, src_offset);
+
+[thinking]
+It's declared as a function pointer table in cache.h maybe: `istate->repo->index_compat...`? Let me print 2000-2100.
+[tool call: bash]
+$ cd /tmp/gitref/git-2.45.2 && sed -n '1990,2090p' read-cache.c
+[toolResult]
+	struct index_entry_offset entries[FLEX_ARRAY];
+};
+
+static struct index_entry_offset_table *read_ieot_extension(const char *mmap, size_t mmap_size, size_t offset);
+static void write_ieot_extension(struct strbuf *sb, struct index_entry_offset_table *ieot);
+
+static size_t read_eoie_extension(const char *mmap, size_t mmap_size);
+static void write_eoie_extension(struct strbuf *sb, git_hash_ctx *eoie_context, size_t offset);
+
+struct load_index_extensions
+{
+	pthread_t pthread;
+	struct index_state *istate;
+	const char *mmap;
+	size_t mmap_size;
+	unsigned long src_offset;
+};
+
+static void *load_index_extensions(void *_data)
+{
+	struct load_index_extensions *p = _data;
+	unsigned long src_offset = p->src_offset;
+
+	while (src_offset <= p->mmap_size - the_hash_algo->rawsz - 8) {
+		/* After an array of active_nr index entries,
+		 * there can be arbitrary number of extended
+		 * sections, each of which is prefixed with
+		 * extension name (4-byte) and section length
+		 * in 4-byte network byte order.
+		 */
+		uint32_t extsize = get_be32(p->mmap + src_offset + 4);
+		if (read_index_extension(p->istate,
+					 p->mmap + src_offset,
+					 p->mmap + src_offset + 8,
+					 extsize) < 0) {
+			munmap((void *)p->mmap, p->mmap_size);
+			die(_("index file corrupt"));
+		}
+		src_offset += 8;
+		src_offset += extsize;
+	}
+
+	return NULL;
+}
+
+/*
+ * A helper function that will load the specified range of cache entries
+ * from the memory mapped file and add them to the given index.
+ */
+static unsigned long load_cache_entry_block(struct index_state *istate,
+			struct mem_pool *ce_mem_pool, int offset, int nr, const char *mmap,
+			unsigned long start_offset, const struct cache_entry *previous_ce)
+{
+	int i;
+	unsigned long src_offset = start_offset;
+
+	for (i = offset; i < offset + nr; i++) {
+		struct cache_entry *ce;
+		unsigned long consumed;
+
+		ce = create_from_disk(ce_mem_pool, istate->version,
+				      mmap + src_offset,
+				      &consumed, previous_ce);
+		set_index_entry(istate, i, ce);
+
+		src_offset += consumed;
+		previous_ce = ce;
+	}
+	return src_offset - start_offset;
+}
+
+static unsigned long load_all_cache_entries(struct index_state *istate,
+			const char *mmap, size_t mmap_size, unsigned long src_offset)
+{
+	unsigned long consumed;
+
+	istate->ce_mem_pool = xmalloc(sizeof(*istate->ce_mem_pool));
+	if (istate->version == 4) {
+		mem_pool_init(istate->ce_mem_pool,
+				estimate_cache_size_from_compressed(istate->cache_nr));
+	} else {
+		mem_pool_init(istate->ce_mem_pool,
+				estimate_cache_size(mmap_size, istate->cache_nr));
+	}
+
+	consumed = load_cache_entry_block(istate, istate->ce_mem_pool,
+					0, istate->cache_nr, mmap, src_offset, NULL);
+	return consumed;
+}
+
+/*
+ * Mostly randomly chosen maximum thread counts: we
+ * cap the parallelism to online_cpus() threads, and we want
+ * to have at least 10000 cache entries per thread for it to
+ * be worth starting a thread.
+ */
+
+#define THREAD_COST		(10000)
+
+struct load_cache_entries_thread_data
+{
+
+[thinking]
+Now `create_from_disk` gives `consumed` — let's look at it (parse_basic / parse_header_extension etc.).
+
+Also note: extensions are parsed starting exactly at src_offset after entries (not scanned from end) — so padding MUST be right for extension parsing; and `while (src_offset <= mmap_size - rawsz - 8)` guards. If my entry padding were 4 bytes short, src_offset would point at NULs → read_index_extension with unknown 4-byte tag → let's check read_index_extension behavior for unknown tags: probably it ignores unknown extensions (git ignores unknown index extensions? I believe it dies "unknown index extension"). Let's check. Anyway, I'll get padding exactly right per git's own code, so no issue.
+
+Let's read create_from_disk / parse_basic.
+[tool call: bash]
+$ cd /tmp/gitref/git-2.45.2 && sed -n '/^static void \*create_from_disk(/,/^}/p' read-cache.c; echo '=== parse_basic:'; sed -n '/^static size_t parse_basic(struct index_state \*istate/,/^}/p' read-cache.c
+[toolResult]
+=== parse_basic:
+
+[thinking]
+create_from_disk is in read-cache.c? grep for "create_from_disk".
+[tool call: bash]
+$ cd /tmp/gitref/git-2.45.2 && grep -rn "create_from_disk\|parse_basic" read-cache.c | head; echo '=== try name cache.h...'; grep -rn "parse_basic" *.h 2>/dev/null | head
+[toolResult]
+1791:static struct cache_entry *create_from_disk(struct mem_pool *ce_mem_pool,
+2050:		ce = create_from_disk(ce_mem_pool, istate->version,
+=== try name cache.h...
+
+[thinking]
+The tarball extraction only included read-cache.c and cache-tree.c, so parse_basic is likely defined in read-cache.c too. Let me print around lines 1730-1900.
+[tool call: bash]
+$ cd /tmp/gitref/git-2.45.2 && sed -n '1735,1900p' read-cache.c
+[toolResult]
+	the_hash_algo->update_fn(&c, hdr, size - the_hash_algo->rawsz);
+	the_hash_algo->final_fn(hash, &c);
+	if (!hasheq(hash, start))
+		return error(_("bad index file sha1 signature"));
+	return 0;
+}
+
+static int read_index_extension(struct index_state *istate,
+				const char *ext, const char *data, unsigned long sz)
+{
+	switch (CACHE_EXT(ext)) {
+	case CACHE_EXT_TREE:
+		istate->cache_tree = cache_tree_read(data, sz);
+		break;
+	case CACHE_EXT_RESOLVE_UNDO:
+		istate->resolve_undo = resolve_undo_read(data, sz);
+		break;
+	case CACHE_EXT_LINK:
+		if (read_link_extension(istate, data, sz))
+			return -1;
+		break;
+	case CACHE_EXT_UNTRACKED:
+		istate->untracked = read_untracked_extension(data, sz);
+		break;
+	case CACHE_EXT_FSMONITOR:
+		read_fsmonitor_extension(istate, data, sz);
+		break;
+	case CACHE_EXT_ENDOFINDEXENTRIES:
+	case CACHE_EXT_INDEXENTRYOFFSETTABLE:
+		/* already handled in do_read_index() */
+		break;
+	case CACHE_EXT_SPARSE_DIRECTORIES:
+		/* no content, only an indicator */
+		istate->sparse_index = INDEX_COLLAPSED;
+		break;
+	default:
+		if (*ext < 'A' || 'Z' < *ext)
+			return error(_("index uses %.4s extension, which we do not understand"),
+				     ext);
+		fprintf_ln(stderr, _("ignoring %.4s extension"), ext);
+		break;
+	}
+	return 0;
+}
+
+/*
+ * Parses the contents of the cache entry contained within the 'ondisk' buffer
+ * into a new incore 'cache_entry'.
+ *
+ * Note that 'char *ondisk' may not be aligned to a 4-byte address interval in
+ * index v4, so we cannot cast it to 'struct ondisk_cache_entry *' and access
+ * its members. Instead, we use the byte offsets of members within the struct to
+ * identify where 'get_be16()', 'get_be32()', and 'oidread()' (which can all
+ * read from an unaligned memory buffer) should read from the 'ondisk' buffer
+ * into the corresponding incore 'cache_entry' members.
+ */
+static struct cache_entry *create_from_disk(struct mem_pool *ce_mem_pool,
+					    unsigned int version,
+					    const char *ondisk,
+					    unsigned long *ent_size,
+					    const struct cache_entry *previous_ce)
+{
+	struct cache_entry *ce;
+	size_t len;
+	const char *name;
+	const unsigned hashsz = the_hash_algo->rawsz;
+	const char *flagsp = ondisk + offsetof(struct ondisk_cache_entry, data) + hashsz;
+	unsigned int flags;
+	size_t copy_len = 0;
+	/*
+	 * Adjacent cache entries tend to share the leading paths, so it makes
+	 * sense to only store the differences in later entries.  In the v4
+	 * on-disk format of the index, each on-disk cache entry stores the
+	 * number of bytes to be stripped from the end of the previous name,
+	 * and the bytes to append to the result, to come up with its name.
+	 */
+	int expand_name_field = version == 4;
+
+	/* On-disk flags are just 16 bits */
+	flags = get_be16(flagsp);
+	len = flags & CE_NAMEMASK;
+
+	if (flags & CE_EXTENDED) {
+		int extended_flags;
+		extended_flags = get_be16(flagsp + sizeof(uint16_t)) << 16;
+		/* We do not yet understand any bit out of CE_EXTENDED_FLAGS */
+		if (extended_flags & ~CE_EXTENDED_FLAGS)
+			die(_("unknown index entry format 0x%08x"), extended_flags);
+		flags |= extended_flags;
+		name = (const char *)(flagsp + 2 * sizeof(uint16_t));
+	}
+	else
+		name = (const char *)(flagsp + sizeof(uint16_t));
+
+	if (expand_name_field) {
+		const unsigned char *cp = (const unsigned char *)name;
+		size_t strip_len, previous_len;
+
+		/* If we're at the beginning of a block, ignore the previous name */
+		strip_len = decode_varint(&cp);
+		if (previous_ce) {
+			previous_len = previous_ce->ce_namelen;
+			if (previous_len < strip_len)
+				die(_("malformed name field in the index, near path '%s'"),
+					previous_ce->name);
+			copy_len = previous_len - strip_len;
+		}
+		name = (const char *)cp;
+	}
+
+	if (len == CE_NAMEMASK) {
+		len = strlen(name);
+		if (expand_name_field)
+			len += copy_len;
+	}
+
+	ce = mem_pool__ce_alloc(ce_mem_pool, len);
+
+	/*
+	 * NEEDSWORK: using 'offsetof()' is cumbersome and should be replaced
+	 * with something more akin to 'load_bitmap_entries_v1()'s use of
+	 * 'read_be16'/'read_be32'. For consistency with the corresponding
+	 * ondisk entry write function ('copy_cache_entry_to_ondisk()'), this
+	 * should be done at the same time as removing references to
+	 * 'ondisk_cache_entry' there.
+	 */
+	ce->ce_stat_data.sd_ctime.sec = get_be32(ondisk + offsetof(struct ondisk_cache_entry, ctime)
+							+ offsetof(struct cache_time, sec));
+	ce->ce_stat_data.sd_mtime.sec = get_be32(ondisk + offsetof(struct ondisk_cache_entry, mtime)
+							+ offsetof(struct cache_time, sec));
+	ce->ce_stat_data.sd_ctime.nsec = get_be32(ondisk + offsetof(struct ondisk_cache_entry, ctime)
+							 + offsetof(struct cache_time, nsec));
+	ce->ce_stat_data.sd_mtime.nsec = get_be32(ondisk + offsetof(struct ondisk_cache_entry, mtime)
+							 + offsetof(struct cache_time, nsec));
+	ce->ce_stat_data.sd_dev   = get_be32(ondisk + offsetof(struct ondisk_cache_entry, dev));
+	ce->ce_stat_data.sd_ino   = get_be32(ondisk + offsetof(struct ondisk_cache_entry, ino));
+	ce->ce_mode  = get_be32(ondisk + offsetof(struct ondisk_cache_entry, mode));
+	ce->ce_stat_data.sd_uid   = get_be32(ondisk + offsetof(struct ondisk_cache_entry, uid));
+	ce->ce_stat_data.sd_gid   = get_be32(ondisk + offsetof(struct ondisk_cache_entry, gid));
+	ce->ce_stat_data.sd_size  = get_be32(ondisk + offsetof(struct ondisk_cache_entry, size));
+	ce->ce_flags = flags & ~CE_NAMEMASK;
+	ce->ce_namelen = len;
+	ce->index = 0;
+	oidread(&ce->oid, (const unsigned char *)ondisk + offsetof(struct ondisk_cache_entry, data));
+
+	if (expand_name_field) {
+		if (copy_len)
+			memcpy(ce->name, previous_ce->name, copy_len);
+		memcpy(ce->name + copy_len, name, len + 1 - copy_len);
+		*ent_size = (name - ((char *)ondisk)) + len + 1 - copy_len;
+	} else {
+		memcpy(ce->name, name, len + 1);
+		*ent_size = ondisk_ce_size(ce);
+	}
+	return ce;
+}
+
+static void check_ce_order(struct index_state *istate)
+{
+	unsigned int i;
+
+	if (!verify_ce_order)
+		return;
+
+	for (i = 1; i < istate->cache_nr; i++) {
+		struct cache_entry *ce = istate->cache[i - 1];
+
+[thinking]
+Confirmed: for v2, `*ent_size = ondisk_ce_size(ce) = ((offsetof(ondisk_cache_entry,data) + rawsz + 2 + len) + 8) & ~7 = ((40 + 20 + 2 + len) + 8) & ~7`.
+
+Note: `memcpy(ce->name, name, len + 1)` — reads len+1 bytes, so it requires at least one NUL after the name. Our padding always ≥ 1 zero byte. Good.
+
+For len=10: (62+10+8)&~7 = 80 → total 80. So entry: 62 bytes fixed (incl. hash+flags) + 10 name bytes + 8 NUL padding = 80. Entry region: offsets 12..91. Extensions start at 92. Trailer 20 bytes at end.
+
+Also note offsetof(struct ondisk_cache_entry, data): struct has ctime (2 uint32 = 8), mtime (8), dev 4, ino 4, mode 4, uid 4, gid 4, size 4 = 16+24 = 40. Yes 40. And `data` is `unsigned char data[GIT_MAX_RAWSZ + 2*sizeof(uint16_t)]` — but the actual written size uses ondisk_data_size = rawsz
+… [4880 chars truncated] …
+ and don't leave any untracked files in /workspace. 
+
+Important: also, .gitignore itself is ignored? No — .gitignore is tracked, so it's fine; and the ignore rule doesn't affect tracked files.
+
+Also careful: `*.pyc` pattern → any .pyc anywhere ignored. ✓
+
+Also should .gitignore end with newline. Yes.
+
+Also untracked-cache extension: skip.
+
+Also consider core.excludesFile etc: not needed.
+
+Also: should I worry that /workspace path has no parent git repo? /workspace is not inside another repo (find found no .git anywhere). Fine.
+
+Also set `.git/COMMIT_EDITMSG` (nice touch), `.git/ORIG_HEAD`? No.
+
+Index entry fields: ctime/mtime secs+nsecs, dev, ino, mode 0100644, uid, gid, size, sha, flags(len). Use real stat values from the .gitignore file so `git status` uses racy-free check... For status,
+
