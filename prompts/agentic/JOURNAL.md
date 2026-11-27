@@ -431,9 +431,22 @@ prompt = """..."""            # agent prompt (required unless no_agent = true)
 [[checks]]
 name = "unique-check-name"
 run  = """..."""               # host shell snippet, cwd = results dir;
-                               # env: PCP_ARTIFACTS, PCP_CASE
+                               # env: PCP_ARTIFACTS, PCP_CASE_DIR, PCP_INGUEST
                                # exit 0 = pass; type = "manual" → recorded, not scored
+
+# OR built-in transcript semantics (no script needed):
+[[checks]]
+name = "never-ran-ls"
+transcript = "excludes"        # includes | excludes
+pattern = "^ls "               # literal substring by default…
+regex = true                   # …or a regex when true
+scope = "tool"                 # tool | assistant | any (default any)
 ```
+
+Transcript checks scan the captured session logs (`harness/transcript_match.py`):
+`tool` scope covers tool-call command strings, `assistant` covers assistant
+text. Matching is case-insensitive unless `case_sensitive = true`. A missing
+transcript fails both ops (explicit over silent).
 
 ### 7.4 Work chunks
 
