@@ -49,8 +49,19 @@ DEFAULT_CHECK_TIMEOUT = 600
 
 
 # --- check classes (instances are created by the `pcp.checks` DSL) ---
+class CheckResult:
+    """Outcome of one check execution: status is pass, fail or manual."""
+
+    def __init__(self, status: str, detail: str = ""):
+        if status not in ("pass", "fail", "manual"):
+            fail(f"invalid check status {status!r}")
+        self.status = status
+        self.detail = detail
+
+
 class PcpCheck:
-    """Base class for case checks. Subclasses implement execute()."""
+    """Base class for case checks. Subclasses implement execute(), which
+    returns a CheckResult — the runner stays agnostic to how checks work."""
 
     def __init__(self, name: str, manual: bool = False):
         if not name:
@@ -58,9 +69,7 @@ class PcpCheck:
         self.name = name
         self.type = "manual" if manual else "check"
 
-    def execute(self, results: str, env: dict,
-                timeout: int) -> tuple[int, str, str]:
-        """Run the check; return (exit_code, stdout, stderr). exit 0 = pass."""
+    def execute(self, results: str, env: dict, timeout: int) -> CheckResult:
         raise NotImplementedError
 
     def provenance(self) -> str:
@@ -70,18 +79,18 @@ class PcpCheck:
 
 class RunCheck(PcpCheck):
     """Shell command, run on the host (or in a throwaway guest container
-    when in_guest=True — for checks that must execute Linux binaries)."""
+    when in_guest=True — for checks that must execute Linux binaries).
+    Exit code 0 = pass, anything else = fail."""
 
     def __init__(self, name: str, cmd: str, manual: bool = False,
-                 in_guest: bool = False, timeout: int = DEFAULT_CHECK_TIMEOUT):
+                 in_guest: bool = False):
         super().__init__(name, manual)
         if not cmd:
             fail(f"check {name!r}: 'cmd' is required")
         self.cmd = cmd
         self.in_guest = in_guest
-        self.timeout = timeout
 
-    def execute(self, results: str, env: dict, timeout: int):
+    def execute(self, results: str, env: dict, timeout: int) -> CheckResult:
         if self.in_guest:
             tag = env.get("PCP_TAG") or "1.1"
             cmd = ["container", "run", "--rm",
@@ -91,9 +100,19 @@ class RunCheck(PcpCheck):
                    f"agent-sandbox:{tag}", "bash", "-c", self.cmd]
         else:
             cmd = ["bash", "-c", self.cmd]
-        proc = subprocess.run(cmd, cwd=results, env=env, capture_output=True,
-                              text=True, timeout=timeout)
-        return proc.returncode, proc.stdout, proc.stderr
+        try:
+            proc = subprocess.run(cmd, cwd=results, env=env,
+                                  capture_output=True, text=True,
+                                  timeout=timeout)
+        except subprocess.TimeoutExpired as e:
+            return CheckResult("fail", f"check timed out after {timeout}s\n"
+                                       f"{(e.stdout or b'').decode(errors='replace')[-2000:] if isinstance(e.stdout, bytes) else (e.stdout or '')[-2000:]}")
+        detail = (proc.stdout + ("\n" + proc.stderr if proc.stderr else "")).strip()
+        if self.type == "manual":
+            status = "manual"  # recorded, never scores
+        else:
+            status = "pass" if proc.returncode == 0 else "fail"
+        return CheckResult(status, detail)
 
     def provenance(self) -> str:
         where = "in-guest" if self.in_guest else "host"
@@ -118,12 +137,12 @@ class TranscriptCheck(PcpCheck):
         self.scope = scope
         self.case_sensitive = not icase
 
-    def execute(self, results: str, env: dict, timeout: int):
+    def execute(self, results: str, env: dict, timeout: int) -> CheckResult:
         sessions = os.path.join(env["PCP_ARTIFACTS"], "sessions")
         rc, msg = transcript_match(
             self.mode, self.pattern, regex=self.regex, scope=self.scope,
             case_sensitive=self.case_sensitive, sessions=sessions)
-        return rc, msg, ""
+        return CheckResult("pass" if rc == 0 else "fail", msg)
 
     def provenance(self) -> str:
         kind = "regex" if self.regex else "literal"
@@ -375,23 +394,17 @@ def run_checks(case: dict, case_dir: str, results: str, artifacts: str) -> list[
     for chk in case.get("checks", []):
         t0 = time.monotonic()
         try:
-            rc, stdout, stderr = chk.execute(results, env_common,
-                                             DEFAULT_CHECK_TIMEOUT)
-        except subprocess.TimeoutExpired:
-            rc, stdout, stderr = 124, "", f"check timed out"
+            result = chk.execute(results, env_common, DEFAULT_CHECK_TIMEOUT)
+        except Exception as e:  # a broken check must not break the run
+            result = CheckResult("fail", f"check crashed: {e!r}")
         dt = int((time.monotonic() - t0) * 1000)
-        if chk.type == "manual":
-            status = "manual"
-        else:
-            status = "pass" if rc == 0 else "fail"
         entry = {
-            "name": chk.name, "type": chk.type, "status": status,
-            "check": chk.provenance(),
-            "exitCode": rc, "durationMs": dt,
-            "stdout": stdout[-4000:], "stderr": stderr[-2000:],
+            "name": chk.name, "type": chk.type, "status": result.status,
+            "check": chk.provenance(), "detail": result.detail[-4000:],
+            "durationMs": dt,
         }
         out.append(entry)
-        print(f"pcp_case: check {chk.name:<28} {status:<7} rc={rc} ({dt} ms)")
+        print(f"pcp_case: check {chk.name:<28} {result.status:<7} ({dt} ms)")
     return out
 
 
@@ -410,8 +423,6 @@ def write_results(case: dict, results: str, checks: list[dict]) -> int:
         verdict = "PASS"
     else:
         verdict = "MANUAL"  # nothing mechanical to score (or checks-only, empty)
-    with open(os.path.join(results, "verdict.txt"), "w") as f:
-        f.write(verdict + "\n")
     print(f"pcp_case: verdict {verdict} ({len(checks)} checks) → {results}")
     return 0 if verdict in ("PASS", "MANUAL") else 1
 
@@ -611,15 +622,11 @@ def render_output(case: dict, results: str, artifacts: str,
     if not checks:
         out.append("  (no checks defined)")
     for c in checks:
-        out.append(f"  [{c['status']}] {c['name']}  rc={c['exitCode']} "
-                   f"({c['durationMs']} ms)")
+        out.append(f"  [{c['status']}] {c['name']}  ({c['durationMs']} ms)")
         out.append(f"      {c.get('check', '')}")
-        if c.get("stdout", "").strip():
-            for ln in c["stdout"].rstrip().splitlines()[:20]:
+        if c.get("detail", "").strip():
+            for ln in c["detail"].rstrip().splitlines()[:20]:
                 out.append(f"      | {ln}")
-        if c.get("stderr", "").strip():
-            for ln in c["stderr"].rstrip().splitlines()[:5]:
-                out.append(f"      ! {ln}")
 
     out.append("")
     out.append(_hr("ARTIFACTS"))
