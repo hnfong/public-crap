@@ -444,6 +444,8 @@ DESCRIPTION = "what this case measures"
 SETUP = ["""..."""]        # optional guest shell snippets, cwd = workspace,
                            # run BEFORE the agent
 PROMPTS = ["""..."""]      # agent prompt(s); empty list = no agent (smoke cases)
+TIMEOUT = 300             # optional per-case VM timeout in seconds
+                          # (default 600; overrides PCP_TIMEOUT_SECS)
 
 CHECKS = [
   # host shell check, cwd = results dir; env: PCP_ARTIFACTS, PCP_CASE_DIR,

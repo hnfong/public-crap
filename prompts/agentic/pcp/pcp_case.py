@@ -254,6 +254,8 @@ def load_case(case_dir: str) -> dict:
         "setup": "\n".join(setup),
         "no_agent": not prompts,
         "checks": list(checks),
+        # per-case VM timeout (seconds); owner decision: driven by the case
+        "timeout": int(namespace.get("TIMEOUT", 600)),
     }
 
 
@@ -283,9 +285,13 @@ def run_vm(case: dict, case_dir: str, results: str) -> int:
     if case.get("prompt"):
         with open(os.path.join(rundir, "prompt.txt"), "w") as f:
             f.write(case["prompt"])
+    # per-case timeout wins; PCP_TIMEOUT_SECS env is the fallback for cases
+    # that don't define TIMEOUT
+    timeout = case.get("timeout") or int(os.environ.get("PCP_TIMEOUT_SECS") or 600)
     cmd = [sys.executable, SANDBOX_TOOL, "run", case_dir,
            "--guest-script", os.path.join(rundir, "guest-run.sh"),
-           "--results-dir", results]
+           "--results-dir", results,
+           "--timeout-secs", str(timeout)]
     if os.environ.get("PCP_MODEL"):
         cmd += ["--model", os.environ["PCP_MODEL"]]
     print(f"pcp_case: running VM for {case['name']} …")

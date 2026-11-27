@@ -8,6 +8,9 @@ SCHEMA = PCP_CASE_V0
 NAME = "fix-median"
 DESCRIPTION = "Fix the bug in median.py so the failing stdlib unittest passes; tests must stay unmodified."
 
+# VM timeout for this case, seconds (the whole run: agent + checks)
+TIMEOUT = 600
+
 PROMPTS = [
   """The test suite in this directory is failing.
 

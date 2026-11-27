@@ -7,6 +7,9 @@ SCHEMA = PCP_CASE_V0
 NAME = "harness-smoke"
 DESCRIPTION = "Smoke test that uses the LLM minimally to ensure the VM, harness and LLM are correctly set up and functional."
 
+# VM timeout for this case, seconds (the whole run: agent + checks)
+TIMEOUT = 120
+
 SETUP = ["""{
   echo "user: $(id)"
   echo "cwd:  $(pwd)"

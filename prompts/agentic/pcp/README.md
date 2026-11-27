@@ -62,6 +62,10 @@ pcp/pcp_sandbox.py cleanup --images # also remove images except the pinned tag
 PCP_MODEL_PORT (9931), PCP_CPUS (2), PCP_MEMORY (4G), PCP_NET,
 PCP_TIMEOUT_SECS (1800), PCP_CONTEXT_WINDOW (262144)`.
 
+Exception: the VM timeout is driven by the **test case** (`TIMEOUT` in
+case.py — 000: 120s, 001: 300s, 002/003: 600s); `PCP_TIMEOUT_SECS` only
+applies to cases that don't define one.
+
 ## Adding a test case
 
 `tests/case-NNN-short-slug/case.py` (see JOURNAL.md §7.3 for the DSL). The
