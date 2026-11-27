@@ -418,40 +418,45 @@ run `ls`"), which requires peeking at the agent session transcript.
 6. **Schema evolved from real cases** (not designed up front): the first four
    cases define v0; the schema grows only when a real case demands it.
 
-### 7.3 Case format `pcp-case/v0` (first cut)
+### 7.3 Case format `pcp-case/v0` (first cut → Python DSL)
 
 Run parameter: the model is passed as `--model` (owner request — first-class
 run parameter, wins over the `PCP_MODEL` env var, which stays for scripting);
 results are stored per model (`results/<MODEL>/`, `_nomodel` for agent-less
 cases).
 
-```toml
-schema = "pcp-case/v0"
-name  = "short-slug"
-prompt = """..."""            # agent prompt (required unless no_agent = true)
-# fixture = "fixture"          # optional dir copied into the guest workspace
-# no_agent = true              # run setup only, don't invoke pi (harness smoke)
-# setup = """..."""            # optional guest shell snippet, cwd = workspace,
-                               # runs BEFORE the agent
-[[checks]]
-name = "unique-check-name"
-run  = """..."""               # host shell snippet, cwd = results dir;
-                               # env: PCP_ARTIFACTS, PCP_CASE_DIR, PCP_INGUEST
-                               # exit 0 = pass; type = "manual" → recorded, not scored
+Format history: started as TOML (chosen for stdlib `tomllib`), but host
+python3 is 3.9 (no `tomllib`), and the interpreter-hunting wrapper was ugly.
+Owner decision: **cases are Python** (`case.py`) — a small DSL injected by the
+loader instead of a data format. Runs on stock host python3, comments and
+multiline strings for free; validation happens after load.
 
-# OR built-in transcript semantics (no script needed):
-[[checks]]
-name = "never-ran-ls"
-transcript = "excludes"        # includes | excludes
-pattern = "^ls "               # literal substring by default…
-regex = true                   # …or a regex when true
-scope = "tool"                 # tool | assistant | any (default any)
+```python
+SCHEMA = PCP_CASE_V0
+NAME = "short-slug"
+DESCRIPTION = "what this case measures"
+
+SETUP = ["""..."""]        # optional guest shell snippets, cwd = workspace,
+                           # run BEFORE the agent
+PROMPTS = ["""..."""]      # agent prompt(s); empty list = no agent (smoke cases)
+
+CHECKS = [
+  # host shell check, cwd = results dir; env: PCP_ARTIFACTS, PCP_CASE_DIR,
+  # PCP_INGUEST. exit 0 = pass. manual=True: recorded, never scores.
+  pcp.checks.run(name="unique-check-name", cmd="""...""", manual=False),
+
+  # built-in transcript semantics (scan captured session logs):
+  pcp.checks.transcript(name="never-ran-ls",
+                        mode=pcp.checks.mode.excludes,
+                        pattern="^ls ",          # str = literal (icase=True default)…
+                        scope=pcp.checks.scope.tool),  # …or re.compile() = regex
+                        # scope: tool | assistant | any
+]
 ```
 
-Transcript checks scan the captured session logs (`harness/transcript_match.py`):
-`tool` scope covers tool-call command strings, `assistant` covers assistant
-text. Matching is case-insensitive unless `case_sensitive = true`. A missing
-transcript fails both ops (explicit over silent).
+`case.py` is executed by `harness/pcp_case.py` with `PCP_CASE_V0`, `pcp`, and
+`re` injected. `run-test.sh`'s `run.sh` legacy path still exists for
+standalone use, but all PCP cases are `case.py` now.
 
 ### 7.4 Work chunks
 
