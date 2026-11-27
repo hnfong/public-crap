@@ -30,40 +30,47 @@ mkdir -p results
 SERVER_LOG=results/llama-server.log
 
 set -x
-killall -9 llama-server || true
 
-# 100k context should be enough for everybody (in some models allowing it to
-# use its built-in context size causes OOM, maybe it hasn't had all the KV
-# cache optimizations.)
-nohup "$LLAMA_SERVER" -np 1 --models-dir "$MODELS_DIR" -c 100000 --cache-ram 10000 \
-    >> "$SERVER_LOG" 2>&1 &
+function start_server() {
+    killall -9 llama-server || true
 
-# always clean up the server on exit (including Ctrl-C / mid-sweep failure)
-trap 'killall -9 llama-server || true' EXIT
+    # 100k context should be enough for everybody (in some models allowing it to
+    # use its built-in context size causes OOM, maybe it hasn't had all the KV
+    # cache optimizations.)
+    nohup "$LLAMA_SERVER" -np 1 --models-dir "$MODELS_DIR" -c 100000 --cache-ram 10000 >> "$SERVER_LOG" 2>&1 &
 
-# warmup: router mode loads the GGUF on first request, which can take minutes
-# for a large model — do it here so it does not eat into the first case's
-# case-defined TIMEOUT. Retry until the model answers.
-i=0
-until curl -s -m 300 http://127.0.0.1:9931/v1/chat/completions \
-        -H 'Content-Type: application/json' \
-        -d "{\"model\": \"$MODEL_NAME\", \"messages\": [{\"role\": \"user\", \"content\": \"hi\"}], \"max_tokens\": 1}" \
-        | grep -q '"content"'; do
-    i=$((i + 1))
-    if [ "$i" -gt 120 ]; then
-        echo "Model failed to load after 10 minutes; see $SERVER_LOG" >&2
-        exit 1
-    fi
-    sleep 5
-done
-echo "model $MODEL_NAME loaded"
+    # always clean up the server on exit (including Ctrl-C / mid-sweep failure)
+    trap 'killall -9 llama-server || true' EXIT
 
+    # warmup: router mode loads the GGUF on first request, which can take minutes
+    # for a large model — do it here so it does not eat into the first case's
+    # case-defined TIMEOUT. Retry until the model answers.
+    i=0
+    until curl -s -m 300 http://127.0.0.1:9931/v1/chat/completions \
+            -H 'Content-Type: application/json' \
+            -d "{\"model\": \"$MODEL_NAME\", \"messages\": [{\"role\": \"user\", \"content\": \"hi\"}], \"max_tokens\": 1}" \
+            | grep -q '"content"'; do
+        i=$((i + 1))
+        if [ "$i" -gt 120 ]; then
+            echo "Model failed to load after 10 minutes; see $SERVER_LOG" >&2
+            exit 1
+        fi
+        sleep 5
+    done
+    echo "model $MODEL_NAME loaded"
+}
+
+STARTED_SERVER=0
 FAILED=""
 for test_case in tests/*.py; do
     EXPECTED_OUTFILE="results/`basename $test_case .py`.$MODEL_NAME.out"
     if [ -f "$EXPECTED_OUTFILE" ]; then
         echo "$EXPECTED_OUTFILE exists, skipping"
         continue
+    fi
+    if [ "$STARTED_SERVER" = "0" ]; then
+        start_server
+        STARTED_SERVER=1
     fi
     # continue on failure: one bad case must not abort the sweep
     echo "************ Running test: model=$MODEL_NAME test_case=$test_case (`date`) ************"

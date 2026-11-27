@@ -1,0 +1,405 @@
+== PCP RUN TRANSCRIPT ==========================================================
+case:    git-no-git (pcp-case/v0)
+about:   Create a git repo (one commit, funny message, only .gitignore ignoring *.pyc) WITHOUT the git command.
+model:   DeepSeek-V4.1-Flash-1017-UD-Q2_K_XL-00001-of-00007
+image:   pcp-agent-sandbox:1.1 (sha256:f3e363b121493a01890cb7cb48921cdfbb1e8b3c1e643d7f438231108a915c64)
+host:    26.4.1 (25E253) / arm64
+run:     2026-11-27T16:35:24Z → 2026-11-27T16:38:44Z (wall 200s, VM exit 0)
+score:   100.00%
+================================================================================
+
+== CHECKS ======================================================================
+
+  [pass] exactly-one-commit  (14 ms)
+      [host] [ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" rev-list --count HEAD 2>/dev/null)" = "1" ]
+  [pass] only-gitignore-in-commit  (11 ms)
+      [host] [ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" show --name-only --format= HEAD)" = ".gitignore" ]
+  [pass] gitignore-covers-pyc  (4 ms)
+      [host] grep -q "\*\.pyc" "$PCP_ARTIFACTS/workspace/.gitignore"
+  [human review] commit-message-funny  (9 ms)
+      [host] GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" log -1 --format=%s
+      | Why do programmers prefer dark mode? Because light attracts bugs.
+  [pass] no-git-in-transcript  (23 ms)
+      [host] python3 "$PCP_HELPERS/no_git.py"
+      | no git usage in 1 session file(s)
+
+== ARTIFACTS ===================================================================
+
+     1681580  pi-output.json
+           0  pi-stderr.log
+           2  rc
+       35372  sessions/--workspace--/2026-11-27T16-35-25-569Z_01a21ddc-9701-758d-9635-2c98d4d08a41.jsonl
+           6  workspace/.gitignore
+
+== PI SESSION ==================================================================
+
+-- session: sessions/--workspace--/2026-11-27T16-35-25-569Z_01a21ddc-9701-758d-9635-2c98d4d08a41.jsonl -
+
+[session 01a21ddc-9701-758d-9635-2c98d4d08a41 cwd=/workspace]
+[model] DeepSeek-V4.1-Flash-1017-UD-Q2_K_XL-00001-of-00007 (provider llama.cpp)
+[thinking level] medium
+[system prompt omitted, 2 chars]
+[user]
+Create a git repository in the current directory with exactly one initial commit.
+
+Requirements:
+- The commit must contain exactly one file: .gitignore
+- The .gitignore must make git ignore *.pyc files
+- The commit message should be a funny joke
+
+CAVEAT: you must NOT use the git command to do this task. No `git`, no
+`/usr/bin/git`, no alias or wrapper around it. Any other approach is fine.
+[thinking]
+We need create a git repository in current directory with exactly one initial commit containing only .gitignore, which ignores *.pyc. Cannot use git command. We can use any other approach. Need inspect environment. Could use dulwich if installed, or write git objects manually with zlib/sha1. Need ensure repo valid. Let's inspect cwd.
+[tool call: bash]
+$ pwd && ls -la && python3 - <<'PY'
+try:
+ import dulwich
+ print('dulwich', dulwich.__version__)
+except Exception as e:
+ print('no dulwich', e)
+PY
+[toolResult]
+/workspace
+total 8
+drwxr-xr-x  2 agent agent 4096 Nov 27 14:12 .
+drwxr-xr-x 22 root  root  4096 Nov 27 16:35 ..
+no dulwich No module named 'dulwich'
+
+[thinking]
+Need create git repo manually. We can construct .git directory with objects, refs, HEAD, config maybe. Exactly one commit with tree containing .gitignore blob. Need perhaps use git command to verify? Caveat says must NOT use git command to do task. Could we use git to verify? Better avoid entirely. We can verify via manual parsing or maybe no git. We can implement in Python.
+
+Need decide .gitignore content: `*.pyc` likely with newline. Commit message funny joke. Need exact one commit. We'll manually create blob, tree, commit objects with zlib compression. Set .git/HEAD to ref: refs/heads/main or master. refs/heads/main commit hash. .git/config maybe minimal. Index? Requirement commit contain exactly one file; index not required but might be expected? A repository with initial commit doesn'
+… [4843 chars truncated] …
+ "Why do Python developers prefer dark mode? Because light attracts bugs." Maybe .pyc ignored relates. Could use "I told my computer a joke about .pyc files, but it didn't compile." Hmm. A funny joke message: "Why did the .pyc file get ignored? It just couldn't commit to a bytecode relationship." Maybe silly. Need just a funny joke. Let's use "Why did the Python bytecode cross the road? To get to the other .pyc." Not great. Better: "Why do Python devs never get lost? They always follow the .pyc-trail." Hmm.
+
+Could use classic: "Why do programmers prefer dark mode? Because light attracts bugs." This is funny and relevant enough. Commit message single line. Need ensure exact one commit. Fine.
+
+Let's implement. Need perhaps avoid using git in verification. We'll run custom script. Use Python.
+[tool call: bash]
+$ python3 - <<'PY'
+import hashlib
+import os
+import struct
+import time
+import zlib
+
+repo = os.getcwd()
+git_dir = os.path.join(repo, '.git')
+assert not os.path.exists(git_dir), '.git already exists'
+
+os.makedirs(os.path.join(git_dir, 'objects'))
+os.makedirs(os.path.join(git_dir, 'refs', 'heads'))
+os.makedirs(os.path.join(git_dir, 'info'))
+
+# Working-tree file that will be the sole entry in the initial commit.
+with open('.gitignore', 'wb') as f:
+    f.write(b'*.pyc\n')
+
+def write_object(kind, data):
+    body = kind.encode() + b' ' + str(len(data)).encode() + b'\0' + data
+    oid = hashlib.sha1(body).digest()
+    hex_oid = oid.hex()
+    obj_dir = os.path.join(git_dir, 'objects', hex_oid[:2])
+    os.makedirs(obj_dir, exist_ok=True)
+    with open(os.path.join(obj_dir, hex_oid[2:]), 'wb') as f:
+        f.write(zlib.compress(body))
+    return oid
+
+# Blob for .gitignore.
+with open('.gitignore', 'rb') as f:
+    ignore_data = f.read()
+blob_oid = write_object('blob', ignore_data)
+
+# Tree with exactly one file: .gitignore
+tree_data = b'100644 .gitignore\0' + blob_oid
+tree_oid = write_object('tree', tree_data)
+
+# Initial commit.
+message = b"Why do programmers prefer dark mode? Because light attracts bugs.\n"
+timestamp = int(time.time())
+tz = b'+0000'
+identity = b'Joke Bot <joke@example.com>'
+commit_data = (
+    b'tree ' + tree_oid.hex().encode() + b'\n' +
+    b'author ' + identity + b' ' + str(timestamp).encode() + b' ' + tz + b'\n' +
+    b'committer ' + identity + b' ' + str(timestamp).encode() + b' ' + tz + b'\n' +
+    b'\n' + message
+)
+commit_oid = write_object('commit', commit_data)
+
+# Point HEAD and the branch at the initial commit.
+with open(os.path.join(git_dir, 'HEAD'), 'wb') as f:
+    f.write(b'ref: refs/heads/main\n')
+with open(os.path.join(git_dir, 'refs', 'heads', 'main'), 'wb') as f:
+    f.write(commit_oid.hex().encode() + b'\n')
+
+# Minimal repository config.
+with open(os.path.join(git_dir, 'config'), 'wb') as f:
+    f.write(b'[core]\n\trepositoryformatversion = 0\n\tfilemode = true\n\tbare = false\n\tlogallrefupdates = true\n')
+
+# Build a v2 index so .gitignore is tracked and the working tree is clean.
+st = os.stat('.gitignore')
+path = b'.gitignore'
+flags = len(path)  # low 12 bits: pathname length
+entry = b''.join([
+    struct.pack('>IIIIIIIIII', int(st.st_ctime) & 0xffffffff, st.st_ctime_ns % 1_000_000_000,
+                int(st.st_mtime) & 0xffffffff, st.st_mtime_ns % 1_000_000_000,
+                st.st_dev & 0xffffffff, st.st_ino & 0xffffffff,
+                0o100644, st.st_uid & 0xffffffff, st.st_gid & 0xffffffff,
+                st.st_size & 0xffffffff),
+    blob_oid,
+    struct.pack('>H', flags),
+    path + b'\0',
+])
+entry += b'\0' * ((8 - len(entry) % 8) % 8)
+index_body = b'DIRC' + struct.pack('>II', 2, 1) + entry
+index_data = index_body + hashlib.sha1(index_body).digest()
+with open(os.path.join(git_dir, 'index'), 'wb') as f:
+    f.write(index_data)
+
+print('Created repository with initial commit')
+print('commit', commit_oid.hex())
+print('tree  ', tree_oid.hex())
+print('blob  ', blob_oid.hex())
+PY
+[toolResult]
+Created repository with initial commit
+commit 6b67cee0870855a713462bbeea3a1798fb0be6f0
+tree   e05703bf7de4d1d60f49c30872101a88ca5ed06c
+blob   0d20b6487c61e7d1bde93acf4a14b7a89083a16d
+
+[thinking]
+Need verify. We can run custom Python to inspect objects, tree, commit, index, no extra refs, status maybe emulate. Also maybe use `git`? Not allowed to use git command. We should not. Let's verify via Python. Need ensure index entry format correct: struct '>IIIIIIIIII' = 10 unsigned ints = 40 bytes; then 20 sha = 60; flags 2=62; path+NUL=72; padding 0. Good.
+
+Check commit tree parse, commit exactly one commit (object count 3), refs. Check working tree only .gitignore plus .git. Need maybe .git/config etc. Use Python.
+[tool call: bash]
+$ python3 - <<'PY'
+import hashlib, os, struct, zlib
+from pathlib import Path
+
+git = Path('.git')
+
+def read_object(oid):
+    p = git / 'objects' / oid[:2] / oid[2:]
+    raw = zlib.decompress(p.read_bytes())
+    assert hashlib.sha1(raw).hexdigest() == oid
+    header, data = raw.split(b'\0', 1)
+    kind, size = header.split(b' ')
+    assert int(size) == len(data)
+    return kind.decode(), data
+
+head = (git / 'HEAD').read_text().strip()
+assert head == 'ref: refs/heads/main'
+commit_oid = (git / 'refs/heads/main').read_text().strip()
+kind, commit = read_object(commit_oid)
+assert kind == 'commit'
+lines = commit.split(b'\n')
+tree_line = next(l for l in lines if l.startswith(b'tree '))
+tree_oid = tree_line[5:].decode()
+kind, tree = read_object(tree_oid)
+assert kind == 'tree'
+entries = []
+pos = 0
+while pos < len(tree):
+    space = tree.index(b' ', pos)
+    nul = tree.index(b'\0', space)
+    mode = tree[pos:space].decode()
+    name = tree[space+1:nul].decode()
+    oid = tree[nul+1:nul+21].hex()
+    entries.append((mode, name, oid))
+    pos = nul + 21
+assert entries == [('100644', '.gitignore', '0d20b6487c61e7d1bde93acf4a14b7a89083a16d')], entries
+kind, blob = read_object(entries[0][2])
+assert kind == 'blob' and blob == b'*.pyc\n'
+
+# Verify the index points at the same blob and has exactly one entry.
+index = (git / 'index').read_bytes()
+assert hashlib.sha1(index[:-20]).digest() == index[-20:]
+assert index[:4] == b'DIRC' and struct.unpack('>I', index[4:8])[0] == 2
+assert struct.unpack('>I', index[8:12])[0] == 1
+assert index[12+40:12+60].hex() == entries[0][2]
+assert index[12+62:12+62+9] == b'.gitignore'
+
+# Exactly three objects (blob, tree, commit), and only the one branch ref.
+objects = [p for p in (git / 'objects').glob('*/*')]
+assert len(objects) == 3, objects
+refs = [p for p in (git / 'refs').rglob('*') if p.is_file()]
+assert refs == [git / 'refs' / 'heads' / 'main'], refs
+
+print('Verification passed')
+print('HEAD:', head)
+print('Commit:', commit_oid)
+print('Commit message:', commit.split(b'\n\n', 1)[1].decode().strip())
+print('Tree entries:', entries)
+print('Tracked files in index: 1 (.gitignore)')
+PY
+printf '\n.gitignore contents:\n'; cat .gitignore
+printf '\nTop-level files:\n'; find . -maxdepth 1 -mindepth 1 -printf '%f\n' | sort
+[toolResult]
+Traceback (most recent call last):
+  File "<stdin>", line 45, in <module>
+AssertionError
+
+.gitignore contents:
+*.pyc
+
+Top-level files:
+.git
+.gitignore
+
+[thinking]
+Verification failed line 45. Need map line. Let's count. Probably index offset wrong? Let's inspect. Script line 45 maybe `assert index[12+40:12+60].hex() == entries[0][2]`? Let's count. Need debug. Use Python print.
+[tool call: bash]
+$ python3 - <<'PY'
+import hashlib, os, struct, zlib
+from pathlib import Path
+git = Path('.git')
+index = (git/'index').read_bytes()
+print('len', len(index), 'checksum ok', hashlib.sha1(index[:-20]).digest() == index[-20:])
+print('header', index[:4], struct.unpack('>I', index[4:8])[0], struct.unpack('>I', index[8:12])[0])
+print('sha at 52:72', index[52:72].hex())
+print('path at 74?', index[74:74+9])
+print('hexdump')
+print(index.hex())
+PY
+[toolResult]
+len 112 checksum ok True
+header b'DIRC' 2 1
+sha at 52:72 0d20b6487c61e7d1bde93acf4a14b7a89083a16d
+path at 74? b'.gitignor'
+hexdump
+4449524300000002000000016b09b1a62cb668286b09b1a62cb668280000fe1000000088000081a4000003e8000003e8000000060d20b6487c61e7d1bde93acf4a14b7a89083a16d000a2e67697469676e6f72650000000000000000067712f9491f791de5591d0239e5a6cc53a2c997
+
+[thinking]
+Index length 112. Header 12 + entry? 72 + checksum 20 = 104, but 112. Because padding formula maybe entry length 72, but actual? Hex: header 12, fixed 62? Let's recalc. Header 12. Entry starts offset 12. stat fields 40 -> 52. sha 20 -> 72. flags 2 -> 74. path 9 -> 83. NUL -> 84. Padding to multiple of 8: 84 mod 8 = 4, pad 4 -> 88. So entry length 76 not 72. Wait earlier fixed 62 includes stat 40 + sha20 + flags2 =62; + path 9 + NUL 1 =72. But 62+9+1 =72 yes. But offset starts at 12; 12+72=84. Entry length 72, 84 total. However padding is relative to entry start? Git index v2 entry padding: "1-8 nul bytes as necessary to pad the entry to a multiple of eight bytes while keeping the name NUL-terminated." Is padding counted from start of entry or from start of index? I recall index entries are
+… [457 chars truncated] …
+s count hex. Maybe st.st_dev & 0xffffffff etc. Wait hex after header:
+6b09b1a6 2cb66828 6b09b1a6 2cb66828 0000fe10 00000088 000081a4 000003e8 000003e8 00000006 = 10*8 = 80 hex chars = 40 bytes. Then sha 40 hex. Then flags 000a. Then path 2e67697469676e6f7265 (9 bytes) then 00 then padding? Hex shows `2e67697469676e6f72650000000000000000` after flags? Let's segment:
+... 000a
+2e67697469676e6f7265 (9)
+00 (NUL)
+000000 (3 more?) Actually total padding maybe 4 NULs? Let's look: after `...6e7265` there are `0000000000000000`? The hex string: `...000a2e67697469676e6f726500000000000000000677...` Let's count. There is `2e67697469676e6f7265` (18 hex = 9 bytes), then `0000000000000000` (16 hex = 8 bytes?) Wait then checksum starts `067712f9...`. Need parse. Let's write script print entry len, offsets.
+[tool call: bash]
+$ python3 - <<'PY'
+import os, struct
+st=os.stat('.gitignore')
+path=b'.gitignore'
+entry=b''.join([
+ struct.pack('>IIIIIIIIII', int(st.st_ctime)&0xffffffff, st.st_ctime_ns%1_000_000_000,
+             int(st.st_mtime)&0xffffffff, st.st_mtime_ns%1_000_000_000,
+             st.st_dev&0xffffffff, st.st_ino&0xffffffff,
+             0o100644, st.st_uid&0xffffffff, st.st_gid&0xffffffff,
+             st.st_size&0xffffffff),
+ b'\x00'*20,
+ struct.pack('>H', len(path)),
+ path+b'\0',
+])
+print('entry len before padding', len(entry))
+print('mod 8', len(entry)%8)
+print('padding', (8-len(entry)%8)%8)
+print(entry.hex())
+PY
+[toolResult]
+entry len before padding 73
+mod 8 1
+padding 7
+6b09b1a62cb668286b09b1a62cb668280000fe1000000088000081a4000003e8000003e8000000060000000000000000000000000000000000000000000a2e67697469676e6f726500
+
+[thinking]
+Ah path length `.gitignore` is 10? Let's count: dot(1)+git(3)=4+ignore(6)=10? .gitignore = 10 chars: "." + "gitignore" (9) = 10. Yes. I mistakenly thought 9. So entry len before padding = 40+20+2+10+1=73. Padding 7 -> 80. Index body 12+80=92, +20=112. Correct. My verification assumed 9. Need adjust to 10 and offsets. Index valid. Need verify correctly. Also tree entry name .gitignore is 10. Fine. Verification script line 45 maybe path assertion. We can rerun corrected. Need ensure index path padding correct: entry length 80 multiple of 8, yes. Index valid. Let's rerun robust verification using index parse maybe. We'll parse index entry dynamically. Also check commit message. Use no git.
+[tool call: bash]
+$ python3 - <<'PY'
+import hashlib, os, struct, zlib
+from pathlib import Path
+
+git = Path('.git')
+
+def read_object(oid):
+    p = git / 'objects' / oid[:2] / oid[2:]
+    raw = zlib.decompress(p.read_bytes())
+    assert hashlib.sha1(raw).hexdigest() == oid
+    header, data = raw.split(b'\0', 1)
+    kind, size = header.split(b' ')
+    assert int(size) == len(data)
+    return kind.decode(), data
+
+head = (git / 'HEAD').read_text().strip()
+assert head == 'ref: refs/heads/main'
+commit_oid = (git / 'refs/heads/main').read_text().strip()
+kind, commit = read_object(commit_oid)
+assert kind == 'commit'
+lines = commit.split(b'\n')
+tree_line = next(l for l in lines if l.startswith(b'tree '))
+tree_oid = tree_line[5:].decode()
+kind, tree = read_object(tree_oid)
+assert kind == 'tree'
+entries = []
+pos = 0
+while pos < len(tree):
+    space = tree.index(b' ', pos)
+    nul = tree.index(b'\0', space)
+    mode = tree[pos:space].decode()
+    name = tree[space+1:nul].decode()
+    oid = tree[nul+1:nul+21].hex()
+    entries.append((mode, name, oid))
+    pos = nul + 21
+assert entries == [('100644', '.gitignore', '0d20b6487c61e7d1bde93acf4a14b7a89083a16d')], entries
+kind, blob = read_object(entries[0][2])
+assert kind == 'blob' and blob == b'*.pyc\n'
+
+# Verify the index points at the same blob and has exactly one entry.
+index = (git / 'index').read_bytes()
+assert hashlib.sha1(index[:-20]).digest() == index[-20:]
+assert index[:4] == b'DIRC' and struct.unpack('>I', index[4:8])[0] == 2
+assert struct.unpack('>I', index[8:12])[0] == 1
+entry_start = 12
+entry_sha = index[entry_start+40:entry_start+60]
+entry_flags = struct.unpack('>H', index[entry_start+60:entry_start+62])[0]
+name_len = entry_flags & 0x0fff
+entry_name = index[entry_start+62:entry_start+62+name_len]
+assert entry_sha.hex() == entries[0][2]
+assert entry_name == b'.gitignore'
+
+# Exactly three objects (blob, tree, commit), and only the one branch ref.
+objects = [p for p in (git / 'objects').glob('*/*')]
+assert len(objects) == 3, objects
+refs = [p for p in (git / 'refs').rglob('*') if p.is_file()]
+assert refs == [git / 'refs' / 'heads' / 'main'], refs
+
+print('Verification passed')
+print('HEAD:', head)
+print('Commit:', commit_oid)
+print('Commit message:', commit.split(b'\n\n', 1)[1].decode().strip())
+print('Tree entries:', entries)
+print('Tracked files in index: 1 (.gitignore)')
+PY
+printf '\n.gitignore contents:\n'; cat .gitignore
+printf '\nTop-level files:\n'; find . -maxdepth 1 -mindepth 1 -printf '%f\n' | sort
+[toolResult]
+Verification passed
+HEAD: ref: refs/heads/main
+Commit: 6b67cee0870855a713462bbeea3a1798fb0be6f0
+Commit message: Why do programmers prefer dark mode? Because light attracts bugs.
+Tree entries: [('100644', '.gitignore', '0d20b6487c61e7d1bde93acf4a14b7a89083a16d')]
+Tracked files in index: 1 (.gitignore)
+
+.gitignore contents:
+*.pyc
+
+Top-level files:
+.git
+.gitignore
+
+[thinking]
+Task complete. Need final concise. Mention no git command used, repo created, commit hash, message, .gitignore. Maybe note branch main. Ensure not overdo.
+[assistant]
+Created the git repository manually in `/workspace` without invoking `git`.
+
+- Branch: `main`
+- Commit: `6b67cee0870855a713462bbeea3a1798fb0be6f0`
+- Message: `Why do programmers prefer dark mode? Because light attracts bugs.`
+- Tree contains exactly one file: `.gitignore`
+- `.gitignore` contains `*.pyc`
+- Index is set up so the tracked file is clean.
+

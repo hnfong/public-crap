@@ -380,7 +380,8 @@ def score_of(checks: list[dict]) -> float:
     if not checks:
         return 0.0
     passed = sum(1 for c in checks if c["status"] == "pass")
-    return round(passed / len(checks) * 100, 2)
+    passable = sum(1 for c in checks if c["status"] != "human review")
+    return round(passed / passable * 100, 2)
 
 
 def write_results(case: dict, results: str, checks: list[dict]) -> int:
@@ -621,13 +622,11 @@ def main() -> None:
         os.makedirs(results, exist_ok=True)
 
     checks = run_checks(case, support_dir, results, artifacts)
-    rc = write_results(case, results, checks)
+    write_results(case, results, checks)
     render_output(case, results, artifacts, checks, run_rc)
     if run_rc is not None and run_rc != 0:
         print(f"pcp_case: note — VM run exited nonzero ({run_rc}); "
               f"see results/metadata.json", file=sys.stderr)
-    sys.exit(rc)
-
 
 if __name__ == "__main__":
     try:

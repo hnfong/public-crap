@@ -1,0 +1,482 @@
+== PCP RUN TRANSCRIPT ==========================================================
+case:    git-no-git (pcp-case/v0)
+about:   Create a git repo (one commit, funny message, only .gitignore ignoring *.pyc) WITHOUT the git command.
+model:   Qwen3.6-27B-Q6_K
+image:   pcp-agent-sandbox:1.1 (sha256:f3e363b121493a01890cb7cb48921cdfbb1e8b3c1e643d7f438231108a915c64)
+host:    26.4.1 (25E253) / arm64
+run:     2026-11-27T16:08:53Z → 2026-11-27T16:11:46Z (wall 172s, VM exit 0)
+score:   100.00%
+================================================================================
+
+== CHECKS ======================================================================
+
+  [pass] exactly-one-commit  (12 ms)
+      [host] [ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" rev-list --count HEAD 2>/dev/null)" = "1" ]
+  [pass] only-gitignore-in-commit  (11 ms)
+      [host] [ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" show --name-only --format= HEAD)" = ".gitignore" ]
+  [pass] gitignore-covers-pyc  (4 ms)
+      [host] grep -q "\*\.pyc" "$PCP_ARTIFACTS/workspace/.gitignore"
+  [human review] commit-message-funny  (9 ms)
+      [host] GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" log -1 --format=%s
+      | Why did the git repository break up with its partner? Because it had too many unresolved conflicts!
+  [pass] no-git-in-transcript  (22 ms)
+      [host] python3 "$PCP_HELPERS/no_git.py"
+      | no git usage in 1 session file(s)
+
+== ARTIFACTS ===================================================================
+
+     1078600  pi-output.json
+           0  pi-stderr.log
+           2  rc
+       28779  sessions/--workspace--/2026-11-27T16-08-54-578Z_01a21dc4-5032-735b-99a0-678b412c64e3.jsonl
+           6  workspace/.gitignore
+
+== PI SESSION ==================================================================
+
+-- session: sessions/--workspace--/2026-11-27T16-08-54-578Z_01a21dc4-5032-735b-99a0-678b412c64e3.jsonl -
+
+[session 01a21dc4-5032-735b-99a0-678b412c64e3 cwd=/workspace]
+[model] Qwen3.6-27B-Q6_K (provider llama.cpp)
+[thinking level] medium
+[system prompt omitted, 2 chars]
+[user]
+Create a git repository in the current directory with exactly one initial commit.
+
+Requirements:
+- The commit must contain exactly one file: .gitignore
+- The .gitignore must make git ignore *.pyc files
+- The commit message should be a funny joke
+
+CAVEAT: you must NOT use the git command to do this task. No `git`, no
+`/usr/bin/git`, no alias or wrapper around it. Any other approach is fine.
+[thinking]
+The user wants me to create a git repository with one initial commit, but I cannot use the `git` command. I need to manually create the git repository structure.
+
+A git repository consists of:
+1. A `.git` directory with specific structure
+2. Objects stored in `.git/objects/`
+3. A HEAD file pointing to refs/heads/master
+4. The index file for staging
+
+Let me think about how to create this manually:
+
+1. Create the `.git` directory structure
+2. Create the `.gitignore` file with `*.pyc`
+3. Create the git objects manually (blob for the file, tree, commit)
+4. Set up refs, HEAD, etc.
+
+I can use Python or shell tools to create the git objects using zlib and the appropriate formats.
+
+Let me write a Python script to do this.
+[assistant]
+I'll create the git repository manually using Python to construct the internal git structures without invoking the `git` command.
+[tool call: bash]
+$ ls /workspace
+[toolResult]
+(no output)
+[thinking]
+<think>
+
+[tool call: write]
+{"path": "/workspace/.gitignore", "content": "*.pyc\n"}
+[toolResult]
+Successfully wrote to /workspace/.gitignore
+[thinking]
+Now I need to create the git repository structure manually. Let me write a Python script that:
+1. Creates the `.git` directory structure
+2. Creates the blob object for `.gitignore`
+3. Creates the tree object
+4. Creates the commit object
+5. Sets up HEAD, refs, config, etc.
+[tool call: bash]
+$ python3 << 'PYEOF'
+import os, zlib, hashlib, struct, time
+
+workdir = "/workspace"
+gitdir = os.path.join(workdir, ".git")
+
+# Create .git directory structure
+for d in ["objects", "objects/info", "refs", "refs/heads", "refs/tags"]:
+    os.makedirs(os.path.join(gitdir, d), exist_ok=True)
+
+# Write HEAD
+with open(os.path.join(gitdir, "HEAD"), "w") as f:
+    f.write("ref: refs/heads/main\n")
+
+# Write a minimal config
+with open(os.path.join(gitdir, "config"), "w") as f:
+    f.write('[core]\n\trepositoryformatversion = 0\n\tfilemode = true\n\tbare = false\n\tlogallrefupdates = true\n')
+
+# Read .gitignore content
+filepath = os.path.join(workdir, ".gitignore")
+with open(filepath, "rb") as f:
+    content = f.read()
+
+# Helper: create a git object and return its hash
+def make_object(data):
+    """Pack data as a git object, store it, return its SHA-1 hex."""
+    header = f"blob {len(data)}\0".encode()
+    raw = header + data
+    sha = hashlib.sha1(raw).hexdigest()
+    compressed = zlib.compress(raw)
+    obj_path = os.path.join(gitdir, "objects", sha[:2], sha[2:])
+    with open(obj_path, "wb") as f:
+        f.write(compressed)
+    return sha
+
+def make_tree_object(entries):
+    """Create a tree object. entries = [(mode, name, sha1_hex), ...]"""
+    raw = b""
+    for mode, name, sha_hex in entries:
+        raw += f"{mode} {name}\0".encode()
+        raw += bytes.fromhex(sha_hex)
+    header = f"tree {len(raw)}\0".encode()
+    data = header + raw
+    sha = hashlib.sha1(data).hexdigest()
+    compressed = zlib.compress(data)
+    obj_path = os.path.join(gitdir, "objects", sha[:2], sha[2:])
+    with open(obj_path, "wb") as f:
+        f.write(compressed)
+    return sha
+
+def make_commit_object(tree_sha, parents, message, author, timestamp):
+    """Create a commit object."""
+    commit_msg = f"tree {tree_sha}\n"
+    for p in parents:
+        commit_msg += f"parent {p}\n"
+    commit_msg += f"author {author} {timestamp} +0000\n"
+    commit_msg += f"committer {author} {timestamp} +0000\n\n"
+    commit_msg += message + "\n"
+    data = commit_msg.encode()
+    header = f"commit {len(data)}\0".encode()
+    raw = header + data
+    sha = hashlib.sha1(raw).hexdigest()
+    compressed = zlib.compress(raw)
+    obj_path = os.path.join(gitdir, "objects", sha[:2], sha[2:])
+    with open(obj_path, "wb") as f:
+        f.write(compressed)
+    return sha
+
+# 1. Create blob object for .gitignore
+blob_sha = make_object(content)
+print(f"Blob SHA: {blob_sha}")
+
+# 2. Create tree object
+tree_sha = make_tree_object([("100644", ".gitignore", blob_sha)])
+print(f"Tree SHA: {tree_sha}")
+
+# 3. Create commit object with a funny joke
+timestamp = int(time.time())
+author = "Gitless Gopher <gopher@noshell.local>"
+joke = "Why did the git repository break up with its partner? Because it had too many unresolved conflicts!"
+commit_sha = make_commit_object(tree_sha, [], joke, author, timestamp)
+print(f"Commit SHA: {commit_sha}")
+
+# 4. Write the ref for main branch
+with open(os.path.join(gitdir, "refs", "heads", "main"), "w") as f:
+    f.write(commit_sha + "\n")
+
+# 5. Write the index file (simple v2 format)
+# Git index v2 header: "DIRC" + version(4) + entry_count(4)
+# Each entry has a fixed header then variable parts
+import struct
+
+def make_index_entry(mode, ctime, mtime, sha_hex, flags, filename):
+    """Create a single index entry (32+ bytes fixed header)."""
+    entry = struct.pack(">I", ctime[0])      # ctime sec
+    entry += struct.pack(">I", ctime[1])      # ctime nsec
+    entry += struct.pack(">I", mtime[0])      # mtime sec
+    entry += struct.pack(">I", mtime[1])      # mtime nsec
+    entry += struct.pack(">I", os.stat(filepath).st_dev)
+    entry += struct.pack(">I", os.stat(filepath).st_ino)
+    entry += struct.pack(">I", os.stat(filepath).st_uid)
+    entry += struct.pack(">I", os.stat(filepath).st_gid)
+    entry += struct.pack(">I", os.stat(filepath).st_size)
+    entry += struct.pack(">I", mode)          # mode
+    entry += bytes.fromhex(sha_hex)           # SHA1 (20 bytes)
+    entry += struct.pack(">H", flags)         # flags (2 bytes)
+    # variable part
+    entry += filename.encode() + b"\0"
+    return entry
+
+idx = struct.pack(">4sII", b"DIRC", 2, 1)  # signature, version 2, 1 entry
+idx += make_index_entry(0o100644, (timestamp, 0), (timestamp, 0), blob_sha, 0, ".gitignore")
+
+with open(os.path.join(gitdir, "index"), "wb") as f:
+    f.write(idx)
+
+print(f"\nDone! Repository created with commit {commit_sha}")
+PYEOF
+[toolResult]
+Traceback (most recent call last):
+  File "<stdin>", line 69, in <module>
+  File "<stdin>", line 31, in make_object
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/.git/objects/0d/20b6487c61e7d1bde93acf4a14b7a89083a16d'
+
+
+Command exited with code 1
+[thinking]
+The subdirectory wasn't created. I need to create the subdirectory before writing the object file.
+[tool call: bash]
+$ python3 << 'PYEOF'
+import os, zlib, hashlib, struct, time
+
+workdir = "/workspace"
+gitdir = os.path.join(workdir, ".git")
+
+# Create .git directory structure
+for d in ["objects", "objects/info", "refs", "refs/heads", "refs/tags"]:
+    os.makedirs(os.path.join(gitdir, d), exist_ok=True)
+
+# Write HEAD
+with open(os.path.join(gitdir, "HEAD"), "w") as f:
+    f.write("ref: refs/heads/main\n")
+
+# Write a minimal config
+with open(os.path.join(gitdir, "config"), "w") as f:
+    f.write('[core]\n\trepositoryformatversion = 0\n\tfilemode = true\n\tbare = false\n\tlogallrefupdates = true\n')
+
+# Read .gitignore content
+filepath = os.path.join(workdir, ".gitignore")
+with open(filepath, "rb") as f:
+    content = f.read()
+
+# Helper: create a git object and return its hash
+def make_object(data):
+    """Pack data as a git object, store it, return its SHA-1 hex."""
+    header = f"blob {len(data)}\0".encode()
+    raw = header + data
+    sha = hashlib.sha1(raw).hexdigest()
+    compressed = zlib.compress(raw)
+    subdir = os.path.join(gitdir, "objects", sha[:2])
+    os.makedirs(subdir, exist_ok=True)
+    obj_path = os.path.join(subdir, sha[2:])
+    with open(obj_path, "wb") as f:
+        f.write(compressed)
+    return sha
+
+def make_tree_object(entries):
+    """Create a tree object. entries = [(mode, name, sha1_hex), ...]"""
+    raw = b""
+    for mode, name, sha_hex in entries:
+        raw += f"{mode} {name}\0".encode()
+        raw += bytes.fromhex(sha_hex)
+    header = f"tree {len(raw)}\0".encode()
+    data = header + raw
+    sha = hashlib.sha1(data).hexdigest()
+    compressed = zlib.compress(data)
+    subdir = os.path.join(gitdir, "objects", sha[:2])
+    os.makedirs(subdir, exist_ok=True)
+    obj_path = os.path.join(subdir, sha[2:])
+    with open(obj_path, "wb") as f:
+        f.write(compressed)
+    return sha
+
+def make_commit_object(tree_sha, parents, message, author, timestamp):
+    """Create a commit object."""
+    commit_msg = f"tree {tree_sha}\n"
+    for p in parents:
+        commit_msg += f"parent {p}\n"
+    commit_msg += f"author {author} {timestamp} +0000\n"
+    commit_msg += f"committer {author} {timestamp} +0000\n\n"
+    commit_msg += message + "\n"
+    data = commit_msg.encode()
+    header = f"commit {len(data)}\0".encode()
+    raw = header + data
+    sha = hashlib.sha1(raw).hexdigest()
+    compressed = zlib.compress(raw)
+    subdir = os.path.join(gitdir, "objects", sha[:2])
+    os.makedirs(subdir, exist_ok=True)
+    obj_path = os.path.join(subdir, sha[2:])
+    with open(obj_path, "wb") as f:
+        f.write(compressed)
+    return sha
+
+# 1. Create blob object for .gitignore
+blob_sha = make_object(content)
+print(f"Blob SHA: {blob_sha}")
+
+# 2. Create tree object
+tree_sha = make_tree_object([("100644", ".gitignore", blob_sha)])
+print(f"Tree SHA: {tree_sha}")
+
+# 3. Create commit object with a funny joke
+timestamp = int(time.time())
+author = "Gitless Gopher <gopher@noshell.local>"
+joke = "Why did the git repository break up with its partner? Because it had too many unresolved conflicts!"
+commit_sha = make_commit_object(tree_sha, [], joke, author, timestamp)
+print(f"Commit SHA: {commit_sha}")
+
+# 4. Write the ref for main branch
+with open(os.path.join(gitdir, "refs", "heads", "main"), "w") as f:
+    f.write(commit_sha + "\n")
+
+# 5. Write the index file (simple v2 format)
+def make_index_entry(mode, ctime, mtime, sha_hex, flags, filename):
+    entry = struct.pack(">I", ctime[0])
+    entry += struct.pack(">I", ctime[1])
+    entry += struct.pack(">I", mtime[0])
+    entry += struct.pack(">I", mtime[1])
+    entry += struct.pack(">I", os.stat(filepath).st_dev)
+    entry += struct.pack(">I", os.stat(filepath).st_ino)
+    entry += struct.pack(">I", os.stat(filepath).st_uid)
+    entry += struct.pack(">I", os.stat(filepath).st_gid)
+    entry += struct.pack(">I", os.stat(filepath).st_size)
+    entry += struct.pack(">I", mode)
+    entry += bytes.fromhex(sha_hex)
+    entry += struct.pack(">H", flags)
+    entry += filename.encode() + b"\0"
+    return entry
+
+idx = struct.pack(">4sII", b"DIRC", 2, 1)
+idx += make_index_entry(0o100644, (timestamp, 0), (timestamp, 0), blob_sha, 0, ".gitignore")
+
+with open(os.path.join(gitdir, "index"), "wb") as f:
+    f.write(idx)
+
+print(f"\nDone! Repository created with commit {commit_sha}")
+PYEOF
+[toolResult]
+Blob SHA: 0d20b6487c61e7d1bde93acf4a14b7a89083a16d
+Tree SHA: e05703bf7de4d1d60f49c30872101a88ca5ed06c
+Commit SHA: d5a5bd0b8a45983042677f2c76a1e88079b0fa5d
+
+Done! Repository created with commit d5a5bd0b8a45983042677f2c76a1e88079b0fa5d
+
+[thinking]
+Now let me verify the repository was created correctly. I can't use `git` commands, but I can check the structure and use Python to verify the objects.
+[assistant]
+Now let me verify the repository structure is correct:
+[tool call: bash]
+$ echo "=== Directory structure ==="
+find /workspace/.git -type f | sort
+echo ""
+echo "=== HEAD ==="
+cat /workspace/.git/HEAD
+echo ""
+echo "=== Config ==="
+cat /workspace/.git/config
+echo ""
+echo "=== Ref (main) ==="
+cat /workspace/.git/refs/heads/main
+echo ""
+echo "=== .gitignore content ==="
+cat /workspace/.gitignore
+[toolResult]
+=== Directory structure ===
+/workspace/.git/HEAD
+/workspace/.git/config
+/workspace/.git/index
+/workspace/.git/objects/0d/20b6487c61e7d1bde93acf4a14b7a89083a16d
+/workspace/.git/objects/d5/a5bd0b8a45983042677f2c76a1e88079b0fa5d
+/workspace/.git/objects/e0/5703bf7de4d1d60f49c30872101a88ca5ed06c
+/workspace/.git/refs/heads/main
+
+=== HEAD ===
+ref: refs/heads/main
+
+=== Config ===
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+
+=== Ref (main) ===
+d5a5bd0b8a45983042677f2c76a1e88079b0fa5d
+
+=== .gitignore content ===
+*.pyc
+
+[thinking]
+Let me also verify the objects are valid by reading them with Python.
+[tool call: bash]
+$ python3 << 'PYEOF'
+import os, zlib, hashlib
+
+gitdir = "/workspace/.git"
+
+def read_object(sha):
+    path = os.path.join(gitdir, "objects", sha[:2], sha[2:])
+    with open(path, "rb") as f:
+        compressed = f.read()
+    raw = zlib.decompress(compressed)
+    # Verify integrity
+    assert hashlib.sha1(raw).hexdigest() == sha, "SHA mismatch!"
+    # Parse header
+    null_idx = raw.index(b'\0')
+    header = raw[:null_idx].decode()
+    data = raw[null_idx+1:]
+    return header, data
+
+# Read blob
+blob_sha = "0d20b6487c61e7d1bde93acf4a14b7a89083a16d"
+header, data = read_object(blob_sha)
+print(f"Blob ({blob_sha}):")
+print(f"  Header: {header}")
+print(f"  Content: {data}")
+
+# Read tree
+tree_sha = "e05703bf7de4d1d60f49c30872101a88ca5ed06c"
+header, data = read_object(tree_sha)
+print(f"\nTree ({tree_sha}):")
+print(f"  Header: {header}")
+# Parse tree entries
+i = 0
+while i < len(data):
+    space = data.index(b' ', i)
+    null = data.index(b'\0', space)
+    mode_name = data[i:null].decode()
+    entry_sha = data[null+1:null+21].hex()
+    print(f"  Entry: {mode_name} -> {entry_sha}")
+    i = null + 21
+
+# Read commit
+commit_sha = "d5a5bd0b8a45983042677f2c76a1e88079b0fa5d"
+header, data = read_object(commit_sha)
+print(f"\nCommit ({commit_sha}):")
+print(f"  Header: {header}")
+print(f"  Data:\n{data.decode()}")
+
+print("\nAll objects verified successfully!")
+PYEOF
+[toolResult]
+Blob (0d20b6487c61e7d1bde93acf4a14b7a89083a16d):
+  Header: blob 6
+  Content: b'*.pyc\n'
+
+Tree (e05703bf7de4d1d60f49c30872101a88ca5ed06c):
+  Header: tree 38
+  Entry: 100644 .gitignore -> 0d20b6487c61e7d1bde93acf4a14b7a89083a16d
+
+Commit (d5a5bd0b8a45983042677f2c76a1e88079b0fa5d):
+  Header: commit 274
+  Data:
+tree e05703bf7de4d1d60f49c30872101a88ca5ed06c
+author Gitless Gopher <gopher@noshell.local> 1795795861 +0000
+committer Gitless Gopher <gopher@noshell.local> 1795795861 +0000
+
+Why did the git repository break up with its partner? Because it had too many unresolved conflicts!
+
+
+All objects verified successfully!
+
+[thinking]
+Everything looks good. Let me summarize what was created.
+[assistant]
+Done! Here's what was created:
+
+**Repository structure** (`.git/`):
+- `HEAD` → points to `refs/heads/main`
+- `config` → minimal git config
+- `refs/heads/main` → points to commit `d5a5bd0b...`
+- `objects/` → 3 objects (blob, tree, commit)
+- `index` → v2 index file with `.gitignore` entry
+
+**The single commit** (`d5a5bd0b8a45983042677f2c76a1e88079b0fa5d`):
+- Contains exactly one file: `.gitignore` (content: `*.pyc`)
+- No parent commits (initial commit)
+- Message: *"Why did the git repository break up with its partner? Because it had too many unresolved conflicts!"*
+
+All git objects were constructed manually using Python (zlib compression + SHA-1 hashing) — no `git` command was used at any point.
+
