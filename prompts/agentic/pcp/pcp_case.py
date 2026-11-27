@@ -413,6 +413,255 @@ def write_results(case: dict, results: str, checks: list[dict]) -> int:
     return 0 if verdict in ("PASS", "MANUAL") else 1
 
 
+# ---------------------------------------------------------------- output.txt
+def _hr(title: str = "", width: int = 80, ch: str = "=") -> str:
+    if title:
+        pad = max(1, width - len(title) - 4)
+        return f"{ch * 2} {title} " + ch * pad
+    return ch * width
+
+
+def _clip(text: str, head: int = 4000, tail: int = 4000) -> str:
+    """Clip long text for human reading, keeping head and tail."""
+    if len(text) <= head + tail:
+        return text
+    return (text[:head] + f"\n… [{len(text) - head - tail} chars truncated] …\n"
+            + text[-tail:])
+
+
+def _render_message(msg: dict) -> list[str]:
+    """Render one pi message (role + content items) as text lines."""
+    out = []
+    role = msg.get("role", "?")
+    content = msg.get("content")
+    if role == "system":
+        out.append(f"[system prompt omitted, {len(json.dumps(content))} chars]")
+        return out
+    if not isinstance(content, list):
+        out.append(f"[{role}] {_clip(str(content), 500, 0)}")
+        return out
+    for item in content:
+        if not isinstance(item, dict):
+            out.append(f"[{role}] {_clip(str(item), 500, 0)}")
+            continue
+        itype = item.get("type")
+        if itype == "text":
+            out.append(f"[{role}]\n{_clip(item.get('text', ''))}")
+        elif itype == "thinking":
+            t = item.get("thinking", "")
+            out.append(f"[thinking]\n{_clip(t, 800, 800)}")
+        elif itype == "toolCall":
+            name = item.get("name", "?")
+            args = item.get("arguments") or {}
+            if name == "bash" and isinstance(args, dict):
+                out.append(f"[tool call: bash]\n$ {_clip(args.get('command', ''))}")
+            else:
+                out.append(f"[tool call: {name}]\n{_clip(json.dumps(args), 500, 0)}")
+        else:
+            out.append(f"[{role}: {itype}] {_clip(json.dumps(item), 300, 0)}")
+    return out
+
+
+def _render_session_file(path: str) -> str:
+    """Render one pi session JSONL as readable text."""
+    out = []
+    for line in open(path, encoding="utf-8", errors="replace"):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            obj = json.loads(line)
+        except json.JSONDecodeError:
+            out.append(f"[unparsed line: {line[:120]}]")
+            continue
+        etype = obj.get("type")
+        if etype == "session":
+            out.append(f"[session {obj.get('id')} cwd={obj.get('cwd')}]")
+        elif etype == "model_change":
+            out.append(f"[model] {obj.get('modelId')} "
+                       f"(provider {obj.get('provider')})")
+        elif etype == "thinking_level_change":
+            out.append(f"[thinking level] {obj.get('thinkingLevel')}")
+        elif etype == "message":
+            out.extend(_render_message(obj.get("message") or {}))
+        elif etype in ("agent_start", "agent_end", "agent_settled",
+                       "turn_start", "turn_end"):
+            pass  # structural noise
+        else:
+            out.append(f"[{etype}]")
+    return "\n".join(out)
+
+
+def _render_stream_file(path: str) -> str:
+    """Render a pi --mode json event stream (pi-output.json). Used when the
+    session log was not captured (e.g. the run was killed mid-turn):
+    message_end events are complete; for turns that never ended, the last
+    message_update carries the accumulated partial text."""
+    out = []
+    ended_roles = set()
+    partial_text = {}  # role -> text of last message_update
+    streaming_calls = {}  # toolCall contentIndex -> {name, args}
+    for line in open(path, encoding="utf-8", errors="replace"):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            obj = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        etype = obj.get("type")
+        if etype == "session":
+            out.append(f"[session {obj.get('id')} cwd={obj.get('cwd')}]")
+        elif etype == "model_change":
+            out.append(f"[model] {obj.get('modelId')} "
+                       f"(provider {obj.get('provider')})")
+        elif etype == "thinking_level_change":
+            out.append(f"[thinking level] {obj.get('thinkingLevel')}")
+        elif etype == "message_end":
+            msg = obj.get("message") or {}
+            ended_roles.add(msg.get("role"))
+            out.extend(_render_message(msg))
+        elif etype == "message_update":
+            ev = obj.get("assistantMessageEvent") or {}
+            ekind = ev.get("type")
+            if ekind == "toolcall_start":
+                streaming_calls[ev.get("contentIndex")] = {
+                    "name": ev.get("toolName", "?"), "args": ""}
+            elif ekind == "toolcall_delta":
+                call = streaming_calls.setdefault(
+                    ev.get("contentIndex"), {"name": "?", "args": ""})
+                call["args"] += ev.get("delta") or ""
+            else:
+                msg = obj.get("message") or {}
+                role = msg.get("role", "?")
+                text = "".join(c.get("text", "") for c in msg.get("content", [])
+                               if isinstance(c, dict) and c.get("type") == "text")
+                if text:
+                    partial_text[role] = text
+        # message_start / agent_* / turn_* : structural noise
+    for idx in sorted(streaming_calls):
+        call = streaming_calls[idx]
+        out.append(f"[tool call: {call['name']} — INCOMPLETE, run killed while "
+                   f"streaming {len(call['args'])} chars of arguments]\n"
+                   f"args: {_clip(call['args'], 600, 600)}")
+    for role, text in partial_text.items():
+        if role not in ended_roles:
+            out.append(f"[{role} — turn incomplete, run killed]\n"
+                       f"{_clip(text, 2000, 4000)}")
+    return "\n".join(out)
+
+
+def _render_artifacts_listing(artifacts: str, limit: int = 300) -> str:
+    if not os.path.isdir(artifacts):
+        return "  (no artifacts captured)"
+    entries = []
+    for root, dirs, names in os.walk(artifacts):
+        dirs[:] = [d for d in dirs if d not in (".git", "node_modules", "target")]
+        for n in names:
+            p = os.path.join(root, n)
+            try:
+                size = os.path.getsize(p)
+            except OSError:
+                size = -1
+            entries.append((os.path.relpath(p, artifacts), size))
+    entries.sort()
+    lines = [f"  {size:>10}  {rel}" for rel, size in entries[:limit]]
+    if len(entries) > limit:
+        lines.append(f"  … [{len(entries) - limit} more files]")
+    if not lines:
+        lines.append("  (empty)")
+    return "\n".join(lines)
+
+
+def render_output(case: dict, results: str, artifacts: str,
+                  checks: list[dict], run_rc) -> None:
+    """Write results/output.txt — a human-readable run transcript."""
+    meta_path = os.path.join(results, "metadata.json")
+    meta = {}
+    if os.path.isfile(meta_path):
+        meta = json.load(open(meta_path))
+    verdict = ""
+    vpath = os.path.join(results, "verdict.txt")
+    if os.path.isfile(vpath):
+        verdict = open(vpath).read().strip()
+
+    out = [_hr("PCP RUN TRANSCRIPT")]
+    out.append(f"case:    {case['name']} ({case['schema']})")
+    if case.get("description"):
+        out.append(f"about:   {case['description']}")
+    out.append(f"model:   {meta.get('model') or os.environ.get('PCP_MODEL') or '<unset>'}")
+    if meta:
+        out.append(f"image:   {meta.get('image')} ({meta.get('imageDigest')})")
+        out.append(f"host:    {meta.get('hostOs')} / {meta.get('hostArch')}")
+        out.append(f"run:     {meta.get('startedAt')} → {meta.get('finishedAt')} "
+                       f"(wall {meta.get('wallTimeSecs')}s, VM exit "
+                       f"{meta.get('exitCode')})")
+    elif run_rc is not None:
+        out.append(f"run:     VM exit {run_rc} (no metadata — run failed early)")
+    if verdict:
+        out.append(f"verdict: {verdict}")
+    out.append(_hr())
+
+    out.append("")
+    out.append(_hr("CHECKS"))
+    out.append("")
+    if not checks:
+        out.append("  (no checks defined)")
+    for c in checks:
+        out.append(f"  [{c['status']}] {c['name']}  rc={c['exitCode']} "
+                   f"({c['durationMs']} ms)")
+        out.append(f"      {c.get('check', '')}")
+        if c.get("stdout", "").strip():
+            for ln in c["stdout"].rstrip().splitlines()[:20]:
+                out.append(f"      | {ln}")
+        if c.get("stderr", "").strip():
+            for ln in c["stderr"].rstrip().splitlines()[:5]:
+                out.append(f"      ! {ln}")
+
+    out.append("")
+    out.append(_hr("ARTIFACTS"))
+    out.append("")
+    out.append(_render_artifacts_listing(artifacts))
+
+    out.append("")
+    out.append(_hr("PI SESSION"))
+    sessions_dir = os.path.join(artifacts, "sessions")
+    files = []
+    if os.path.isdir(sessions_dir):
+        for root, _, names in os.walk(sessions_dir):
+            for n in names:
+                if n.endswith(".jsonl"):
+                    files.append(os.path.join(root, n))
+    out.append("")
+    if files:
+        for path in sorted(files):
+            rel = os.path.relpath(path, artifacts)
+            out.append(_hr(f"session: {rel}", ch="-"))
+            out.append("")
+            try:
+                out.append(_render_session_file(path))
+            except Exception as e:  # renderer must never break the run
+                out.append(f"  [failed to render session: {e}]")
+    elif os.path.isfile(os.path.join(artifacts, "pi-output.json")):
+        # session log not captured (e.g. the run was killed mid-turn) — fall
+        # back to the --mode json event stream, which survives on /results
+        out.append(_hr("from pi-output.json (session log not captured — "
+                       "run likely killed mid-turn)", ch="-"))
+        out.append("")
+        try:
+            out.append(_render_stream_file(os.path.join(artifacts,
+                                                        "pi-output.json")))
+        except Exception as e:
+            out.append(f"  [failed to render stream: {e}]")
+    else:
+        out.append("  (no pi session transcript captured)")
+    out.append("")
+
+    with open(os.path.join(results, "output.txt"), "w") as f:
+        f.write("\n".join(out) + "\n")
+    print(f"pcp_case: transcript written → {os.path.join(results, 'output.txt')}")
+
+
 def main() -> None:
     import argparse
     ap = argparse.ArgumentParser(add_help=True, description="PCP case runner")
@@ -440,6 +689,7 @@ def main() -> None:
 
     checks = run_checks(case, case_dir, results, artifacts)
     rc = write_results(case, results, checks)
+    render_output(case, results, artifacts, checks, run_rc)
     if run_rc is not None and run_rc != 0:
         print(f"pcp_case: note — VM run exited nonzero ({run_rc}); "
               f"see results/metadata.json", file=sys.stderr)
