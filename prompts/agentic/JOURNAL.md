@@ -407,12 +407,12 @@ run `ls`"), which requires peeking at the agent session transcript.
    `case.toml` cases are the new default when present.
 5. **Scoring output:** `results/checks.json` (per-check pass/fail + output)
    + `results/verdict.txt` (PASS = all mechanical checks pass; manual checks
-   are recorded but never score). A check type `manual` marks judgment calls
+   are recorded but never score). A check with `human_review=True` marks judgment calls
    (e.g. "is the commit message funny") for human/LLM-judge review later.
 6b. **Validation of sandboxes/isolation is empirical, not trace-parsing**
    (owner decision during prototyping): checks observe *behavior* — e.g. a
    program doing a non-whitelisted operation must actually fail. strace is
-   still captured as an informational artifact (`manual` check) for review.
+   still captured as an informational artifact (a `human review` check) for review.
 6c. **Checks that must execute Linux artifacts** (build/run/strace) set
    `in_guest=True` on the check: a throwaway `container run` of the guest
    image with the artifacts mounted. Checks stay host-orchestrated; nothing
@@ -451,7 +451,7 @@ TIMEOUT = 300             # optional per-case VM timeout in seconds
 CHECKS = [
   # host shell check, cwd = results dir; env: PCP_ARTIFACTS, PCP_CASE_DIR,
   # PCP_INGUEST. exit 0 = pass. manual=True: recorded, never scores.
-  pcp.checks.run(name="unique-check-name", cmd="""...""", manual=False),
+  pcp.checks.run(name="unique-check-name", cmd="""...""", human_review=False),
 
   # built-in transcript semantics (scan captured session logs):
   pcp.checks.transcript(name="never-ran-ls",
@@ -511,7 +511,7 @@ standalone use, but all PCP cases are `case.py` now.
   - `Qwen3.8-27B-Q6_K` — **PASS** (all mechanical checks): wrote git objects
     by hand with python3 (zlib + sha1), verified its own object graph, no git
     usage; commit message "Why did the developer go broke? He used up all his
-    cache." (manual funny-check: looks funny to me — owner confirms).
+    cache." (human-review funny-check: looks funny to me — owner confirms).
   - `Qwen3-30B-A3B-Instruct-2507-Q5_K_M` — **FAIL 3×**: run 1 used
     `git hash-object` (caught by transcript check), broken repo; run 2 was a
     host llama.cpp OOM ("Compute error", caveat 13 — not the model's fault);

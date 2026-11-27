@@ -27,7 +27,7 @@ Results are kept per model under the repo-wide results root:
 Check contract: shell snippet run with cwd = case results dir.
 Env: PCP_ARTIFACTS (…/results/artifacts), PCP_CASE_DIR, PCP_CASE,
      PCP_INGUEST (helper to run a command inside a throwaway guest container).
-Exit 0 = pass. `type = "manual"` checks are recorded but never fail the case.
+Exit 0 = pass. `human_review=True` checks are recorded but never fail the case.
 """
 from __future__ import annotations
 
@@ -50,10 +50,10 @@ DEFAULT_CHECK_TIMEOUT = 600
 
 # --- check classes (instances are created by the `pcp.checks` DSL) ---
 class CheckResult:
-    """Outcome of one check execution: status is pass, fail or manual."""
+    """Outcome of one check execution: status is pass, fail or human review."""
 
     def __init__(self, status: str, detail: str = ""):
-        if status not in ("pass", "fail", "manual"):
+        if status not in ("pass", "fail", "human review"):
             fail(f"invalid check status {status!r}")
         self.status = status
         self.detail = detail
@@ -63,11 +63,11 @@ class PcpCheck:
     """Base class for case checks. Subclasses implement execute(), which
     returns a CheckResult — the runner stays agnostic to how checks work."""
 
-    def __init__(self, name: str, manual: bool = False):
+    def __init__(self, name: str, human_review: bool = False):
         if not name:
             fail("check: 'name' is required")
         self.name = name
-        self.type = "manual" if manual else "check"
+        self.type = "human review" if human_review else "check"
 
     def execute(self, results: str, env: dict, timeout: int) -> CheckResult:
         raise NotImplementedError
@@ -82,9 +82,9 @@ class RunCheck(PcpCheck):
     when in_guest=True — for checks that must execute Linux binaries).
     Exit code 0 = pass, anything else = fail."""
 
-    def __init__(self, name: str, cmd: str, manual: bool = False,
+    def __init__(self, name: str, cmd: str, human_review: bool = False,
                  in_guest: bool = False):
-        super().__init__(name, manual)
+        super().__init__(name, human_review)
         if not cmd:
             fail(f"check {name!r}: 'cmd' is required")
         self.cmd = cmd
@@ -108,8 +108,8 @@ class RunCheck(PcpCheck):
             return CheckResult("fail", f"check timed out after {timeout}s\n"
                                        f"{(e.stdout or b'').decode(errors='replace')[-2000:] if isinstance(e.stdout, bytes) else (e.stdout or '')[-2000:]}")
         detail = (proc.stdout + ("\n" + proc.stderr if proc.stderr else "")).strip()
-        if self.type == "manual":
-            status = "manual"  # recorded, never scores
+        if self.type == "human review":
+            status = "human review"  # recorded, never scores
         else:
             status = "pass" if proc.returncode == 0 else "fail"
         return CheckResult(status, detail)
@@ -167,9 +167,9 @@ class _checks:
     scope = _TranscriptScope
 
     @staticmethod
-    def run(name: str, cmd: str, manual: bool = False,
+    def run(name: str, cmd: str, human_review: bool = False,
             in_guest: bool = False) -> RunCheck:
-        return RunCheck(name, cmd, manual=manual, in_guest=in_guest)
+        return RunCheck(name, cmd, human_review=human_review, in_guest=in_guest)
 
     @staticmethod
     def transcript(name: str, mode: str, pattern, scope: str = "any",
@@ -416,15 +416,15 @@ def write_results(case: dict, results: str, checks: list[dict]) -> int:
              "checks": checks},
             f, indent=2,
         )
-    mechanical = [c for c in checks if c["type"] != "manual"]
+    mechanical = [c for c in checks if c["type"] != "human review"]
     if any(c["status"] == "fail" for c in mechanical):
         verdict = "FAIL"
     elif mechanical and all(c["status"] == "pass" for c in mechanical):
         verdict = "PASS"
     else:
-        verdict = "MANUAL"  # nothing mechanical to score (or checks-only, empty)
+        verdict = "HUMAN REVIEW"  # nothing mechanical to score (or checks-only, empty)
     print(f"pcp_case: verdict {verdict} ({len(checks)} checks) → {results}")
-    return 0 if verdict in ("PASS", "MANUAL") else 1
+    return 0 if verdict in ("PASS", "HUMAN REVIEW") else 1
 
 
 # ---------------------------------------------------------------- output.txt
