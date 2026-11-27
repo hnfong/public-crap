@@ -500,6 +500,23 @@ standalone use, but all PCP cases are `case.py` now.
   2/11 checks (negative results conflated with invalid input; error sentinel
   folded into arithmetic), exactly the failure modes the case exists to
   surface.
+- **Code review round (owner comments on pcp_case.py, all applied)**:
+  - no `no_agent` cases — every case runs the agent (`PROMPTS` required)
+  - guest templates merged into ONE static wrapper, `pcp/guest-run.sh`,
+    outside Python; per-case inputs staged to `/pcp-run` (setup.sh,
+    prompt.txt, timeout)
+  - model is a config var (`MODEL` in pcp_case.py, set via `--model`);
+    `PCP_MODEL` env references removed from pcp_case.py entirely; model is
+    asserted (always present)
+  - `PCP_TIMEOUT_SECS` env removed from pcp_case.py; config var
+    `DEFAULT_TIMEOUT` (600) covers cases without `TIMEOUT`
+  - **score replaces verdict**: `score.txt` + `checks.json` carry the
+    percentage (2 decimals) of checks passed vs total checks
+    (`score_of()`); human-review checks count in the denominator
+  - inner watchdog in the guest: guest-run.sh runs pi under `timeout`
+    (case-defined TIMEOUT); the host-side outer watchdog is that + 30s, so
+    artifact capture always runs — the `_render_stream_file` fallback
+    renderer was removed along with the problem it worked around
 - **Chunk 7e — matrix runner** (models × cases, summary table): deferred
   until cases 001–003 have real recorded runs.
 - **Tool consolidation (owner request)**: the sandbox shell scripts became
