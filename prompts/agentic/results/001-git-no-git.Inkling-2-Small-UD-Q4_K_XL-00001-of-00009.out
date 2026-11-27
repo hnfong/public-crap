@@ -1,0 +1,237 @@
+== PCP RUN TRANSCRIPT ==========================================================
+case:    git-no-git (pcp-case/v0)
+about:   Create a git repo (one commit, funny message, only .gitignore ignoring *.pyc) WITHOUT the git command.
+model:   Inkling-2-Small-UD-Q4_K_XL-00001-of-00009
+image:   pcp-agent-sandbox:1.1 (sha256:f3e363b121493a01890cb7cb48921cdfbb1e8b3c1e643d7f438231108a915c64)
+host:    26.4.1 (25E253) / arm64
+run:     2026-11-27T15:22:58Z → 2026-11-27T15:27:53Z (wall 295s, VM exit 0)
+score:   80.00%
+================================================================================
+
+== CHECKS ======================================================================
+
+  [pass] exactly-one-commit  (36 ms)
+      [host] [ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" rev-list --count HEAD 2>/dev/null)" = "1" ]
+  [pass] only-gitignore-in-commit  (18 ms)
+      [host] [ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" show --name-only --format= HEAD)" = ".gitignore" ]
+  [pass] gitignore-covers-pyc  (5 ms)
+      [host] grep -q "\*\.pyc" "$PCP_ARTIFACTS/workspace/.gitignore"
+  [human review] commit-message-funny  (10 ms)
+      [host] GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" log -1 --format=%s
+      | Initial commit: I would tell you a joke about .gitignore, but you'd probably just ignore it.
+  [pass] no-git-in-transcript  (25 ms)
+      [host] python3 "$PCP_HELPERS/no_git.py"
+      | no git usage in 1 session file(s)
+
+== ARTIFACTS ===================================================================
+
+     1642083  pi-output.json
+           0  pi-stderr.log
+           2  rc
+       34048  sessions/--workspace--/2026-11-27T15-22-59-595Z_01a21d9a-468a-751c-b523-efd2ceef21e3.jsonl
+           6  workspace/.gitignore
+
+== PI SESSION ==================================================================
+
+-- session: sessions/--workspace--/2026-11-27T15-22-59-595Z_01a21d9a-468a-751c-b523-efd2ceef21e3.jsonl -
+
+[session 01a21d9a-468a-751c-b523-efd2ceef21e3 cwd=/workspace]
+[model] Inkling-2-Small-UD-Q4_K_XL-00001-of-00009 (provider llama.cpp)
+[thinking level] medium
+[system prompt omitted, 2 chars]
+[user]
+Create a git repository in the current directory with exactly one initial commit.
+
+Requirements:
+- The commit must contain exactly one file: .gitignore
+- The .gitignore must make git ignore *.pyc files
+- The commit message should be a funny joke
+
+CAVEAT: you must NOT use the git command to do this task. No `git`, no
+`/usr/bin/git`, no alias or wrapper around it. Any other approach is fine.
+[thinking]
+The user wants me to create a git repository in the current directory with exactly one initial commit, containing exactly one file `.gitignore` that ignores `*.pyc` files, with a funny commit message. But I cannot use the `git` command at all.
+
+So I need to construct a git repository manually — writing the git object files directly. That's doable: a git repo is just a directory structure with objects, refs, HEAD, etc.
+
+Let me think about what's needed:
+
+1. `.git/objects/` — object store with zlib-compressed objects
+2. `.git/refs/heads/` — branch refs
+3. `.git/HEAD` — points to refs/heads/master (or main)
+4. `.git/config` — repo config (optional but good)
+5. `.git/info/exclude`, `.git/hooks/` — optional, not needed for a valid repo necessarily. Actually a minimal repo can work with just obj
+… [8770 chars truncated] …
+ignore *.pyc files" — `*.pyc` line does that.
+
+Should the working tree contain only `.gitignore` and `.git`? Yes, keep it clean: just those two.
+
+Let me start.
+
+One more consideration: file permissions on objects — read-only not necessary.
+
+Verification plan (without git):
+- Read `.git/HEAD`, resolve ref, read ref file → commit sha.
+- Read object file, zlib decompress, check header `commit <len>`, parse tree line, author/committer, message.
+- Read tree object, parse entries, check `.gitignore` blob sha, compare with hash of blob file.
+- Read blob, check content equals `.gitignore`.
+- Verify index: parse entries, check sha matches blob, verify trailing checksum.
+- Also verify each object's filename matches sha1 of content.
+
+That's thorough. Let me do it.
+
+Let me first inspect the directory.
+[tool call: bash]
+$ ls -la /workspace && which python3 && python3 --version
+[toolResult]
+total 8
+drwxr-xr-x  2 agent agent 4096 Nov 27 14:12 .
+drwxr-xr-x 22 root  root  4096 Nov 27 15:22 ..
+/usr/bin/python3
+Python 3.13.5
+
+[thinking]
+The directory is empty. I'll build the git repo manually with Python (no git command). Let me write the script.
+[assistant]
+Empty directory. I'll construct the git repository by hand (writing the object store, refs, HEAD, and index directly with Python), since `git` itself is off-limits.
+[tool call: write]
+{"content": "import hashlib\nimport os\nimport struct\nimport time\nimport zlib\n\nROOT = \"/workspace\"\nGIT = os.path.join(ROOT, \".git\")\n\n# --- working tree file -------------------------------------------------------\ngitignore_path = os.path.join(ROOT, \".gitignore\")\nwith open(gitignore_path, \"wb\") as f:\n    f.write(b\"*.pyc\\n\")\n\n# --- git object helpers ------------------------------------------------------\ndef hash_object(obj_type: bytes, content: bytes) -> str:\n    store = 
+… [3418 chars truncated] …
+{"content": "import hashlib\nimport os\nimport struct\nimport time\nimport zlib\n\nROOT = \"/workspace\"\nGIT = os.path.join(ROOT, \".git\")\n\n# --- working tree file -------------------------------------------------------\ngitignore_path = os.path.join(ROOT, \".gitignore\")\nwith open(gitignore_path, \"wb\") as f:\n    f.write(b\"*.pyc\\n\")\n\n# --- git object helpers ------------------------------------------------------\ndef hash_object(obj_type: bytes, content: bytes) -> str:\n    store = obj_type + b\" \" + str(len(content)).encode() + b\"\\0\" + content\n    return hashlib.sha1(store).hexdigest(), store\n\ndef write_object(obj_type: bytes, content: bytes) -> str:\n    sha, store = hash_object(obj_type, content)\n    obj_dir = os.path.join(GIT, \"objects\", sha[:2])\n    os.makedirs(obj_dir, exist_ok=True)\n    obj_path = os.path.join(obj_dir, sha[2:])\n    with open(obj_path, \"wb\") as f:\n        f.write(zlib.compress(store))\n    return sha\n\n# --- create repo skeleton ----------------------------------------------------\nfor d in (\"objects\", \"refs/heads\", \"info\", \"hooks\"):\n    os.makedirs(os.path.join(GIT, d), exist_ok=True)\n\nwith open(os.path.join(GIT, \"HEAD\"), \"w\") as f:\n    f.write(\"ref: refs/heads/main\\n\")\n\nwith open(os.path.join(GIT, \"config\"), \"w\") as f:\n    f.write(\n        \"[core]\\n\"\n        \"\\trepositoryformatversion = 0\\n\"\n        \"\\tfilemode = true\\n\"\n        \"\\tbare = false\\n\"\n        \"\\tlogallrefupdates = true\\n\"\n    )\n\nwith open(os.path.join(GIT, \"description\"), \"w\") as f:\n    f.write(\"Unnamed repository; edit this file 'description' to name the repository.\\n\")\n\nwith open(os.path.join(GIT, \"info\", \"exclude\"), \"w\") as f:\n    f.write(\"# git ls-files --others --exclude-from=.git/info/exclude\\n\")\n\n# --- blob --------------------------------------------------------------------\nwith open(gitignore_path, \"rb\") as f:\n    blob_content = f.read()\nblob_sha = write_object(b\"blob\", blob_content)\n\n# --- tree (single entry: .gitignore, mode 100644) ----------------------------\nname = b\".gitignore\"\nentry = b\"100644 \" + name + b\"\\0\" + bytes.fromhex(blob_sha)\ntree_content = entry\ntree_sha = write_object(b\"tree\", tree_content)\n\n# --- commit ------------------------------------------------------------------\nnow = int(time.time())\ntz = time.strftime(\"%z\", time.localtime(now)) or \"+0000\"\nauthor = f\"Pi Agent <pi@example.com> {now} {tz}\"\nmessage = \"Initial commit: I would tell you a joke about .gitignore, but you'd probably just ignore it.\\n\"\ncommit_content = (\n    f\"tree {tree_sha}\\n\"\n    f\"author {author}\\n\"\n    f\"committer {author}\\n\"\n    f\"\\n\"\n    f\"{message}\"\n).encode()\ncommit_sha = write_object(b\"commit\", commit_content)\n\n# --- ref ---------------------------------------------------------------------\nwith open(os.path.join(GIT, \"refs\", \"heads\", \"main\"), \"w\") as f:\n    f.write(commit_sha + \"\\n\")\n\n# --- index (so the repo is consistent with the working tree) -----------------\nst = os.stat(gitignore_path)\nname_b = b\".gitignore\"\nfixed = struct.pack(\n    \">10I20sH\",\n    int(st.st_ctime), st.st_ctimensec if hasattr(st, \"st_ctimensec\") else 0,\n    int(st.st_mtime), st.st_mtimensec if hasattr(st, \"st_mtimensec\") else 0,\n    st.st_dev & 0xFFFFFFFF, st.st_ino & 0xFFFFFFFF,\n    0o100644,\n    st.st_uid, st.st_gid,\n    st.st_size,\n    bytes.fromhex(blob_sha),\n    len(name_b) & 0x0FFF,\n)\nentry = fixed + name_b + b\"\\0\"\nentry += b\"\\0\" * ((8 - (len(entry) % 8)) % 8)\n\nbody = b\"DIRC\" + struct.pack(\">II\", 2, 1) + entry\nindex_bytes = body + hashlib.sha1(body).digest()\nwith open(os.path.join(GIT, \"index\"), \"wb\") as f:\n    f.write(index_bytes)\n\nprint(\"blob   \", blob_sha)\nprint(\"tree   \", tree_sha)\nprint(\"commit \", commit_sha)\n", "path": "/tmp/build_repo.py"}
+[toolResult]
+Successfully wrote to /tmp/build_repo.py
+[tool call: bash]
+$ python3 /tmp/build_repo.py
+[toolResult]
+blob    0d20b6487c61e7d1bde93acf4a14b7a89083a16d
+tree    e05703bf7de4d1d60f49c30872101a88ca5ed06c
+commit  fcc5a7f5f62a6efc0adc86e8a8c2eb6b44cebcdb
+
+[thinking]
+Now verify the repo thoroughly without using git: parse HEAD → ref → commit → tree → blob, verify hashes, and validate the index checksum.
+[assistant]
+Repo built. Now verifying everything by parsing the raw git data structures myself (still no `git`):
+[tool call: bash]
+$ python3 - <<'EOF'
+import hashlib, os, struct, zlib
+
+GIT = "/workspace/.git"
+
+def read_obj(sha):
+    raw = zlib.decompress(open(f"{GIT}/objects/{sha[:2]}/{sha[2:]}", "rb").read())
+    # verify filename matches content hash
+    assert hashlib.sha1(raw).hexdigest() == sha, "object hash mismatch"
+    header, content = raw.split(b"\0", 1)
+    typ, size = header.split(b" ", 1)
+    assert int(size) == len(content), "size mismatch"
+    return typ.decode(), content
+
+# HEAD -> ref -> commit
+head = open(f"{GIT}/HEAD").read().strip()
+ref = head.split(": ", 1)[1]
+commit_sha = open(f"{GIT}/{ref}").read().strip()
+print("HEAD ->", ref, "->", commit_sha)
+
+typ, commit = read_obj(commit_sha)
+print("commit object OK, type:", typ)
+print(commit.decode())
+
+tree_sha = next(l.split()[1] for l in commit.decode().splitlines() if l.startswith("tree "))
+typ, tree = read_obj(tree_sha)
+print("tree object OK, type:", typ)
+
+# parse tree entries
+entries, i = [], 0
+while i < len(tree):
+    j = tree.index(b" ", i)
+    mode = tree[i:j].decode()
+    k = tree.index(b"\0", j)
+    name = tree[j+1:k].decode()
+    sha = tree[k+1:k+21].hex()
+    entries.append((mode, name, sha))
+    i = k + 21
+print("tree entries:", entries)
+assert len(entries) == 1 and entries[0][1] == ".gitignore", "commit must contain exactly one file: .gitignore"
+
+typ, blob = read_obj(entries[0][2])
+print("blob object OK, type:", typ, "content:", blob)
+assert blob == open("/workspace/.gitignore", "rb").read()
+assert b"*.pyc" in blob
+
+# index: verify structure and trailing checksum
+idx = open(f"{GIT}/index", "rb").read()
+assert idx[:4] == b"DIRC"
+version, count = struct.unpack(">II", idx[4:12])
+assert version == 2 and count == 1
+assert hashlib.sha1(idx[:-20]).digest() == idx[-20:], "index checksum mismatch"
+off = 12
+(ct_s, ct_n, mt_s, mt_n, dev, ino, mode, uid, gid, size) = struct.unpack(">10I", idx[off:off+40])
+off += 40
+sha = idx[off:off+20].hex(); off += 20
+flags, = struct.unpack(">H", idx[off:off+2]); off += 2
+namelen = flags & 0xFFF
+name = idx[off:off+namelen].decode()
+print(f"index OK: version={version} entries={count} file={name} mode={oct(mode)} size={size} sha={sha}")
+assert sha == entries[0][2]
+
+# exactly one commit reachable: commit has no parent line
+assert "parent " not in commit.decode()
+print("\nALL CHECKS PASSED")
+EOF
+[toolResult]
+HEAD -> refs/heads/main -> fcc5a7f5f62a6efc0adc86e8a8c2eb6b44cebcdb
+commit object OK, type: commit
+tree e05703bf7de4d1d60f49c30872101a88ca5ed06c
+author Pi Agent <pi@example.com> 1795793198 +0000
+committer Pi Agent <pi@example.com> 1795793198 +0000
+
+Initial commit: I would tell you a joke about .gitignore, but you'd probably just ignore it.
+
+tree object OK, type: tree
+tree entries: [('100644', '.gitignore', '0d20b6487c61e7d1bde93acf4a14b7a89083a16d')]
+blob object OK, type: blob content: b'*.pyc\n'
+index OK: version=2 entries=1 file=.gitignore mode=0o100644 size=6 sha=0d20b6487c61e7d1bde93acf4a14b7a89083a16d
+
+ALL CHECKS PASSED
+
+[tool call: bash]
+$ ls -la /workspace && cat /workspace/.gitignore && find /workspace/.git -type f | sort
+[toolResult]
+total 16
+drwxr-xr-x  3 agent agent 4096 Nov 27 15:26 .
+drwxr-xr-x 22 root  root  4096 Nov 27 15:22 ..
+drwxr-xr-x  6 agent agent 4096 Nov 27 15:26 .git
+-rw-r--r--  1 agent agent    6 Nov 27 15:26 .gitignore
+*.pyc
+/workspace/.git/HEAD
+/workspace/.git/config
+/workspace/.git/description
+/workspace/.git/index
+/workspace/.git/info/exclude
+/workspace/.git/objects/0d/20b6487c61e7d1bde93acf4a14b7a89083a16d
+/workspace/.git/objects/e0/5703bf7de4d1d60f49c30872101a88ca5ed06c
+/workspace/.git/objects/fc/c5a7f5f62a6efc0adc86e8a8c2eb6b44cebcdb
+/workspace/.git/refs/heads/main
+
+[thinking]
+Everything is in place. I never invoked git. Let me clean up the temp script (optional, it's in /tmp, fine to leave or remove — I'll remove it to be tidy). Actually /tmp is fine, but removing is cleaner.
+[tool call: bash]
+$ rm /tmp/build_repo.py
+[toolResult]
+(no output)
+[assistant]
+Done — without ever invoking `git`. I hand-built the repository by writing git's on-disk structures directly with Python (zlib-compressed objects, refs, HEAD, and a valid index).
+
+**What was created in `/workspace`:**
+- `.gitignore` — contains `*.pyc`
+- `.git/` — a valid repository:
+  - `objects/0d/20b6...` — blob (`*.pyc\n`)
+  - `objects/e057...` — tree with exactly one entry: `100644 .gitignore`
+  - `objects/fcc5...` — the single initial commit (no parents) on branch `main`
+  - `HEAD` → `refs/heads/main`, plus a valid `index` (v2, checksum verified) so the repo is consistent with the working tree
+
+**Commit message (a joke, as requested):**
+> Initial commit: I would tell you a joke about .gitignore, but you'd probably just ignore it.
+
+**Verification (also done without git):** I re-parsed every object from disk — confirmed each object's filename matches its SHA-1, the tree contains exactly one file (`.gitignore`), the blob matches the working-tree file, the commit has no parent, and the index checksum and entry SHA match. All checks passed.
+

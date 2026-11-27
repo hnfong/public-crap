@@ -1,0 +1,236 @@
+== PCP RUN TRANSCRIPT ==========================================================
+case:    git-no-git (pcp-case/v0)
+about:   Create a git repo (one commit, funny message, only .gitignore ignoring *.pyc) WITHOUT the git command.
+model:   Qwen3.5-35B-A3B-UD-Q5_K_XL
+image:   pcp-agent-sandbox:1.1 (sha256:f3e363b121493a01890cb7cb48921cdfbb1e8b3c1e643d7f438231108a915c64)
+host:    26.4.1 (25E253) / arm64
+run:     2026-11-27T15:38:01Z → 2026-11-27T15:38:24Z (wall 23s, VM exit 0)
+score:   80.00%
+================================================================================
+
+== CHECKS ======================================================================
+
+  [pass] exactly-one-commit  (23 ms)
+      [host] [ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" rev-list --count HEAD 2>/dev/null)" = "1" ]
+  [pass] only-gitignore-in-commit  (14 ms)
+      [host] [ "$(GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" show --name-only --format= HEAD)" = ".gitignore" ]
+  [pass] gitignore-covers-pyc  (4 ms)
+      [host] grep -q "\*\.pyc" "$PCP_ARTIFACTS/workspace/.gitignore"
+  [human review] commit-message-funny  (11 ms)
+      [host] GIT_CEILING_DIRECTORIES="$PCP_ARTIFACTS" git -C "$PCP_ARTIFACTS/workspace" log -1 --format=%s
+      | Why did the scarecrow win an award? Because he was outstanding in his field!
+  [pass] no-git-in-transcript  (23 ms)
+      [host] python3 "$PCP_HELPERS/no_git.py"
+      | no git usage in 1 session file(s)
+
+== ARTIFACTS ===================================================================
+
+      477810  pi-output.json
+           0  pi-stderr.log
+           2  rc
+       18170  sessions/--workspace--/2026-11-27T15-38-02-565Z_01a21da8-0dc5-76a7-bc50-f536a26ec9c9.jsonl
+           6  workspace/.gitignore
+
+== PI SESSION ==================================================================
+
+-- session: sessions/--workspace--/2026-11-27T15-38-02-565Z_01a21da8-0dc5-76a7-bc50-f536a26ec9c9.jsonl -
+
+[session 01a21da8-0dc5-76a7-bc50-f536a26ec9c9 cwd=/workspace]
+[model] Qwen3.5-35B-A3B-UD-Q5_K_XL (provider llama.cpp)
+[thinking level] medium
+[system prompt omitted, 2 chars]
+[user]
+Create a git repository in the current directory with exactly one initial commit.
+
+Requirements:
+- The commit must contain exactly one file: .gitignore
+- The .gitignore must make git ignore *.pyc files
+- The commit message should be a funny joke
+
+CAVEAT: you must NOT use the git command to do this task. No `git`, no
+`/usr/bin/git`, no alias or wrapper around it. Any other approach is fine.
+[thinking]
+The user wants me to create a git repository with a specific structure, but I'm not allowed to use the `git` command. I need to manually create the git repository structure.
+
+A git repository is essentially a directory with a `.git` folder containing specific files and structure. Let me think about what I need to create:
+
+1. Create the `.git` directory
+2. Create the `HEAD` file pointing to `refs/heads/main` (or `master`)
+3. Create the `refs/heads/main` file with a commit hash
+4. Create the commit object in `objects/` directory
+5. Create the `.gitignore` file with `*.pyc`
+6. Create the index/staging area
+
+Actually, the simplest approach is to:
+1. Create the `.git` directory structure manually
+2. Write a `.gitignore` file with `*.pyc`
+3. Create the git objects and references manually
+
+Let me
+… [635 chars truncated] …
+ture. Git objects are compressed using zlib, so I could use Python's zlib module.
+
+Let me think about this more carefully:
+
+1. First, create the `.git` directory
+2. Create `.gitignore` file
+3. Create git objects:
+   - Blob for `.gitignore`
+   - Tree pointing to the blob
+   - Commit pointing to the tree with a funny joke as message
+
+I can write a Python script that:
+1. Creates the `.git` directory structure
+2. Creates git objects using the correct format
+
+
+3. Sets up the references properly
+
+Git objects follow a specific format: compressed with zlib, with header "type size\0content". For a blob, type is "blob"; for a tree, type is "tree" (with entries in a specific format); for a commit, type is "commit" (with tree, parent, author, message fields). I'll write a Python script to handle this.
+[assistant]
+I'll create a git repository manually by creating the internal structure. I'll use Python to create the git objects with proper formatting.
+[tool call: write]
+{"path": "/workspace/.gitignore", "content": "*.pyc\n"}
+[tool call: bash]
+$ python3 << 'EOF'
+import os
+import zlib
+import hashlib
+import time
+
+# Create .git directory structure
+os.makedirs(".git/objects", exist_ok=True)
+os.makedirs(".git/refs/heads", exist_ok=True)
+
+def create_git_object(obj_type, content):
+    """Create a git object and return its hash"""
+    header = f"{obj_type} {len(content)}\0".encode()
+    full_content = header + content.encode() if isinstance(content, str) else header + content
+    sha = hashlib.sha1(full_content).hexdigest()
+    
+    # Create object file
+    packed = zlib.compress(full_content)
+    object_path = f".git/objects/{sha[:2]}/{sha[2:]}"
+    os.makedirs(os.path.dirname(object_path), exist_ok=True)
+    with open(object_path, "wb") as f:
+        f.write(packed)
+    return sha
+
+def format_tree_entry(name, sha, mode=0o100644):
+    """Format a tree entry"""
+    return f"{mode:04o} {name}\0".encode() + bytes.fromhex(sha)
+
+# 1. Create blob for .gitignore
+blob_sha = create_git_object("blob", "*.pyc\n")
+
+# 2. Create tree pointing to the blob
+tree_content = format_tree_entry(".gitignore", blob_sha)
+tree_sha = create_git_object("tree", tree_content)
+
+# 3. Create commit object
+# Using a fixed timestamp for reproducibility
+author_name = "Repo Creator"
+author_email = "creator@localhost"
+timestamp = 1000000000
+commit_msg = "Why did the scarecrow win an award? Because he was outstanding in his field!"
+
+commit_content = f"""tree {tree_sha}
+author {author_name} <{author_email}> {timestamp} +0000
+committer {author_name} <{author_email}> {timestamp} +0000
+
+{commit_msg}"""
+commit_sha = create_git_object("commit", commit_content)
+
+# 4. Set up HEAD and branch reference
+with open(".git/HEAD", "w") as f:
+    f.write("ref: refs/heads/main\n")
+
+with open(".git/refs/heads/main", "w") as f:
+    f.write(commit_sha + "\n")
+
+# 5. Create config
+with open(".git/config", "w") as f:
+    f.write("""[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+""")
+
+print(f"Repository created!")
+print(f"Blob SHA: {blob_sha}")
+print(f"Tree SHA: {tree_sha}")
+print(f"Commit SHA: {commit_sha}")
+EOF
+[toolResult]
+Successfully wrote to /workspace/.gitignore
+[toolResult]
+Repository created!
+Blob SHA: 0d20b6487c61e7d1bde93acf4a14b7a89083a16d
+Tree SHA: e05703bf7de4d1d60f49c30872101a88ca5ed06c
+Commit SHA: 4c4f5b20168721c88d0ddd4d7b2f3e45453c59cd
+
+[thinking]
+I've created a git repository manually. Let me verify the structure is correct by checking the files.
+[assistant]
+Now let me verify the repository structure is correct:
+[tool call: bash]
+$ ls -la && echo "---" && ls -la .git/ && echo "---" && cat .git/HEAD && echo "---" && cat .git/refs/heads/main && echo "---" && cat .gitignore
+[toolResult]
+total 16
+drwxr-xr-x  3 agent agent 4096 Nov 27 15:38 .
+drwxr-xr-x 22 root  root  4096 Nov 27 15:38 ..
+drwxr-xr-x  4 agent agent 4096 Nov 27 15:38 .git
+-rw-r--r--  1 agent agent    6 Nov 27 15:38 .gitignore
+---
+total 24
+drwxr-xr-x 4 agent agent 4096 Nov 27 15:38 .
+drwxr-xr-x 3 agent agent 4096 Nov 27 15:38 ..
+-rw-r--r-- 1 agent agent   21 Nov 27 15:38 HEAD
+-rw-r--r-- 1 agent agent   92 Nov 27 15:38 config
+drwxr-xr-x 5 agent agent 4096 Nov 27 15:38 objects
+drwxr-xr-x 3 agent agent 4096 Nov 27 15:38 refs
+---
+ref: refs/heads/main
+---
+4c4f5b20168721c88d0ddd4d7b2f3e45453c59cd
+---
+*.pyc
+
+[thinking]
+The repository has been created successfully. Let me verify the objects are there as well:
+[tool call: bash]
+$ find .git/objects -type f
+[toolResult]
+.git/objects/0d/20b6487c61e7d1bde93acf4a14b7a89083a16d
+.git/objects/e0/5703bf7de4d1d60f49c30872101a88ca5ed06c
+.git/objects/4c/4f5b20168721c88d0ddd4d7b2f3e45453c59cd
+
+[thinking]
+The git repository has been created successfully with:
+1. The `.gitignore` file containing `*.pyc`
+2. Three git objects:
+   - A blob object (0d20b6...) for the .gitignore content
+   - A tree object (e05703...) pointing to the blob
+   - A commit object (4c4f5b...) with the joke message and pointing to the tree
+3. HEAD pointing to refs/heads/main
+4. refs/heads/main containing the commit SHA
+5. A config file
+
+No git command was used - everything was created manually using Python's zlib and hashlib modules.
+[assistant]
+The git repository has been created successfully without using the `git` command:
+
+**Repository structure:**
+- `.gitignore` - contains `*.pyc` (the only file in the commit)
+- `.git/HEAD` - points to `refs/heads/main`
+- `.git/refs/heads/main` - contains the commit SHA
+- `.git/objects/` - contains 3 objects:
+  - `0d20b6...` - blob for `.gitignore` content
+  - `e05703...` - tree object listing the file
+  - `4c4f5b...` - commit object with the joke message
+
+**Commit message:** "Why did the scarecrow win an award? Because he was outstanding in his field!"
+
+The repository was created entirely manually using Python to generate valid git objects (compressed with zlib) following git's internal format.
+
